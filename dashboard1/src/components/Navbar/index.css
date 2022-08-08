@@ -1,0 +1,18 @@
+
+
+.Nv-left{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.TechLogo{
+    width: 51px;
+    height: 49px;
+    left: 36px;
+    top: 19px;
+}
+
+.St-Dd{
+    margin-inline: 24px
+}
