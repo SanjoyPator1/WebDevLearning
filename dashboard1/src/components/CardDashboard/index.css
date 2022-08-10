@@ -1,0 +1,118 @@
+.card-dashboard-header{
+    height: 85px;
+    width: 100%;
+    border: 2px solid #6633F2;
+    border-radius: 5px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-top-color: transparent;
+}
+
+.card-dashboard-badge{
+    width: 65px;
+    height: 65px;
+    position: absolute;
+    right : 162px;
+    top: -38px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 2px  solid #6633F2;
+    border-radius: 50%;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    transform: rotate(-45deg);
+}
+
+.badgeLogo{
+    height: 32px;
+    width: 27.9834041595459px;
+    transform: rotate(45deg);
+}
+
+.card-dashboard-title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.card-dashboard-main-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%
+}
+.card-dashboard-body{
+    flex:1;
+    width: 100%;
+    
+}
+
+.card-dashboard-body-container{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-around;
+}
+
+.footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.card-dashboard-body-container{
+    padding: 15px;
+}
+
+.card-dashboard-body-row{
+    padding: 2px;
+}
+
+.card-dashboard-body-row{
+     display: flex;
+     flex-direction: row;
+}
+
+.card-body-value{
+    margin-inline: 5px;
+    text-align: start;
+}
+
+.hrdiv{
+    width: 354px;
+    height: 0px;
+    left: 192px;
+    top: 531px;
+
+    border: 1px solid rgba(0, 0, 0, 0.25);
+
+}
+
+.view-div{
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+    margin-right: 21px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.circle-outline{
+    width: 30px;
+    height: 30px;
+    border: 2px solid #D04A5C;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-inline: 5px;
+}

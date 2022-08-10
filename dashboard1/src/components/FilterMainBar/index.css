@@ -1,0 +1,46 @@
+.filter-bar-container{
+    display: flex;
+    flex-direction: row;
+    
+    border: 1px solid rgba(0, 0, 0, 0.25)
+}
+
+.filter-bar-left{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+}
+
+.filter-bar-right{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    flex: 1;
+    align-items: center;
+    padding: 10px;
+}
+
+.typography-search-results{
+    width: 179px;
+    height: 29px;
+    left: 170px;
+    top: 127px;
+
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 29px;
+
+    color: #6633F2;
+}
+
+.distanceDDF{
+    margin: 5px;
+    width: 45px;
+    height: 45px;
+    
+    border: 1px solid #6633F2;
+    border-radius: 5px;
+}

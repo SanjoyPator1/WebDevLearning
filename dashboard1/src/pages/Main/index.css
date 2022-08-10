@@ -1,0 +1,23 @@
+.Main{
+    display: flex;
+    flex-direction: column;
+}
+
+.BottomMainScreen{
+    display: flex;
+    flex-direction: row;
+}
+
+.RightBottomMainScreen{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.TopRightBottomMainScreen{
+
+}
+
+.DownRightBottomMainScreen{
+    padding: 50px;
+}

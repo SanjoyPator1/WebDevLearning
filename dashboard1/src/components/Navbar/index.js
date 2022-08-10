@@ -11,6 +11,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 
 const Navbar = ({searchQuery, setSearchQuery}) => {
   return (
+    <React.Fragment>
     <AppBar color="inherit">
         <Toolbar style={{
             justifyContent: "space-between"
@@ -31,6 +32,8 @@ const Navbar = ({searchQuery, setSearchQuery}) => {
                 </div>
         </Toolbar>
     </AppBar>
+    <Toolbar />
+    </React.Fragment>
     )
 }
 
