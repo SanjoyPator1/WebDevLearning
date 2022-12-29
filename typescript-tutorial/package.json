@@ -1,28 +1,23 @@
 {
-  "name": "formik-ts-mui",
+  "name": "typescript-tutorial",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@date-io/date-fns": "^1.3.13",
-    "@material-ui/core": "^4.12.3",
-    "@material-ui/pickers": "^3.3.10",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.11.64",
+    "@types/node": "^16.11.60",
     "@types/react": "^18.0.21",
+    "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-dom": "^18.0.6",
-    "date-fns": "^2.29.3",
-    "formik": "^2.2.9",
-    "lodash": "^4.17.21",
-    "moment": "^2.29.4",
     "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "^2.1.3",
-    "typescript": "^4.8.4",
-    "web-vitals": "^2.1.4",
-    "yup": "^0.32.11"
+    "react-icons": "^4.2.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.8.3",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -47,8 +42,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.186"
   }
 }
