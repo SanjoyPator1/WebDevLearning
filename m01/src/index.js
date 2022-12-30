@@ -1,12 +1,6 @@
-const http = require("http");
-
-const server = http.createServer((req, res) => {
-  if (req.method === "GET" && req.url === "/") {
-    console.log("main rout hit in backend");
-    res.end();
-  }
-});
-
-server.listen(3001, () => {
-  console.log("server on http://localhost:3001");
+const app = require("./server");
+const port = 3001;
+// creates and starts a server for our API on a defined port
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
 });
