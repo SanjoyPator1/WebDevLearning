@@ -1,0 +1,2 @@
+POST http://localhost:3001/auth/signin
+content-type: application/json
