@@ -1,0 +1,20 @@
+.flex-container{
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    border: 1px solid #140047;
+    border-radius: 10px;
+    width: 718px;
+    height: 42px;
+}
+
+.icons{
+    display: flex;
+    flex-direction: row;
+    width: 75px;
+    height: 42px;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+
