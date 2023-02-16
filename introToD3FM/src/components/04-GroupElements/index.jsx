@@ -18,6 +18,7 @@ const M4 = () => {
       >
         <GroupElements />
       </div>
+      <hr />
     </div>
   );
 };
