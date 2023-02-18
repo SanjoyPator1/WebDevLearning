@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import _ from "lodash";
 
-const EnterUpdateOldWay = () => {
+const EnterUpdateNewWayJoin = () => {
   let barData = [45, 67, 96, 84, 41];
   const [dataToShow, setDataToShow] = useState(barData);
 
@@ -16,37 +16,23 @@ const EnterUpdateOldWay = () => {
     randomNumbers.push(45);
     barData = randomNumbers;
     setDataToShow(barData);
+
     //selection
-    const rect = d3
-      .select(elRef.current)
+    d3.select(elRef.current)
       .selectAll("rect")
-      .data(barData, (d) => d);
-
-    // console.log("enter-update old way rect ", rect);
-    //exit
-    rect.exit().remove();
-    // console.log("enter-update old way rect after exit ", rect);
-
-    //enter
-    const enter = rect
-      .enter()
-      .append("rect")
-      .attr("width", rectWidth)
-      .attr("stroke-width", 3)
-      .attr("stroke", "plum")
-      .attr("fill", "pink");
-
-    //enter + update
-    enter
-      .merge(rect)
+      .data(barData, (d) => d)
+      .join("rect")
       // calculate x-position based on its index
       .attr("x", (d, i) => i * rectWidth)
       // calculate y-position based on its index
       .attr("y", (d, i) => 100 - d)
       // set height based on the bound datum
-      .attr("height", (d) => d);
-
-    // console.log("enter-update old way enter after update ", rect);
+      .attr("height", (d) => d)
+      .attr("width", rectWidth)
+      .attr("stroke-width", 3)
+      .attr("stroke", "#C3EEFF")
+      .attr("fill", "#C3EEFF")
+      .attr("fill-opacity", "0.5");
   };
 
   useEffect(() => {
@@ -55,7 +41,7 @@ const EnterUpdateOldWay = () => {
 
   return (
     <div>
-      <div style={{ color: "black" }}>Old Way</div>
+      <div style={{ color: "black" }}>New Way</div>
       <svg
         ref={elRef}
         width={rectWidth * barData.length}
@@ -87,4 +73,4 @@ const EnterUpdateOldWay = () => {
   );
 };
 
-export default EnterUpdateOldWay;
+export default EnterUpdateNewWayJoin;

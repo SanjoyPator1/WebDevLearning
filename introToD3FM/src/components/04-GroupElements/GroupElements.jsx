@@ -14,7 +14,7 @@ import _ from "lodash";
 // const movies = movieData.splice(0, 500);
 
 const GroupElements = () => {
-  const pathWidth = 120;
+  const pathWidth = 120 + 13;
   const [width, setWidth] = useState(window.innerWidth);
   const [perRow, setPerRow] = useState(Math.floor(width / pathWidth));
   const [svgHeight, setSvgHeight] = useState(
@@ -126,7 +126,7 @@ const GroupElements = () => {
         ref={elRef}
         width={width}
         height={svgHeight}
-        style={{ border: "1px dashed" }}
+        style={{ border: "1px dashed", padding: "10px" }}
       ></svg>
     </div>
   );

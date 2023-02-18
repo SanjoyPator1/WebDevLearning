@@ -6,7 +6,7 @@ import { colors } from "../../data";
 // const movies = movieData.splice(0, 500);
 
 const CreateDomElementsExercise = () => {
-  console.log("movies coming out", movies);
+  // console.log("movies coming out", movies);
 
   const pathWidth = 120;
   const [width, setWidth] = useState(window.innerWidth);

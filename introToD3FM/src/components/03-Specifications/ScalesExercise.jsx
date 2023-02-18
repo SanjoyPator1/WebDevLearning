@@ -57,10 +57,10 @@ const ScalesExercise = () => {
       .domain(minMaxVotes)
       .range([5, 6, 7, 8, 9, 10]);
 
-    console.log("topGenres", topGenres);
-    console.log("petalColors", petalColors);
-    console.log("colorObj", colorObj);
-    console.log("petalPaths", petalPaths);
+    // console.log("topGenres", topGenres);
+    // console.log("petalColors", petalColors);
+    // console.log("colorObj", colorObj);
+    // console.log("petalPaths", petalPaths);
 
     setFlowers(
       movies.map((d, i) => ({
@@ -76,7 +76,7 @@ const ScalesExercise = () => {
 
   //after flower data is set
   useEffect(() => {
-    console.log("flowers data", flowers);
+    // console.log("flowers data", flowers);
 
     //magic with svg
     // console.log("movies sp", movies);

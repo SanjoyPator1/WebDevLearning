@@ -1,3 +1,4 @@
+import EnterUpdateNewWayJoin from "./EnterUpdateNewWayJoin";
 import EnterUpdateOldWay from "./EnterUpdateOldWay";
 
 const M5 = () => {
@@ -17,6 +18,20 @@ const M5 = () => {
         }}
       >
         <EnterUpdateOldWay />
+      </div>
+      <h4>Exercise 02 - Enter-Update New way Join</h4>
+      <div
+        style={{
+          border: "1px solid black",
+          width: "100%",
+          // height: "400px",
+          overflow: "auto",
+          backgroundColor: "white",
+          padding: 30,
+          margin: "0 auto",
+        }}
+      >
+        <EnterUpdateNewWayJoin />
       </div>
       <hr />
     </div>
