@@ -90,39 +90,19 @@ const ForceFlowersPosition = () => {
   );
 
   const [flowers, setFlowers] = useState([]);
-  const [filteredMovies, setFilteredMovies] = useState([]);
+  // const [filteredMovies, setFilteredMovies] = useState([]);
   const [graph, setGraph] = useState(null);
 
   const calculateGridPos = (i) => {
     const x = ((i % perRow) + 0.5) * pathWidth;
     const y = (Math.floor(i / perRow) + 0.5) * pathWidth;
-    // console.log(`trans pos x= ${x } & y=${y}`);
+    // console.log(`trans pos x= ${x} & y=${y}`);
     return [x, y];
   };
 
   const elRef = useRef(null);
 
-  //call this function to generate filtered raw movies data whenever checkbox state changes for both genres and rated
-  const createFilterData = () => {
-    const filteredGenres = getTrueKeys(checkboxes); //e.g. ["Comedy","Drama"]
-    const filteredRated = getTrueKeys(checkboxesRating); //e.g. ["G","PG"]
-
-    const filteredData = movies.filter(
-      (movie) =>
-        filteredGenres.includes(movie.genres[0].toLowerCase()) &&
-        filteredRated.includes(movie.rated)
-    );
-
-    console.log("filteredData", filteredData);
-    setFilteredMovies(filteredData);
-  };
-
-  //filter flowers
-  useEffect(() => {
-    createFilterData();
-  }, [checkboxes, checkboxesRating]);
-
-  //initial flower data setup from filteredMovies data
+  //initial flower data setup from movies
   useEffect(() => {
     // movie genre → `color` (color of petals)
     // array of top genres: `topGenres`
@@ -138,18 +118,18 @@ const ForceFlowersPosition = () => {
     const pathScale = d3.scaleOrdinal().range(petalPaths);
 
     // `rating` → `scale` (size of petals)
-    const minMaxRating = d3.extent(filteredMovies, (d) => d.rating);
+    const minMaxRating = d3.extent(movies, (d) => d.rating);
     const sizeScale = d3.scaleLinear().domain(minMaxRating).range([0.2, 0.75]);
 
     // `votes` → `numPetals` (number of petals)
-    const minMaxVotes = d3.extent(filteredMovies, (d) => d.votes);
+    const minMaxVotes = d3.extent(movies, (d) => d.votes);
     const numPetalScale = d3
       .scaleQuantize()
       .domain(minMaxVotes)
       .range([5, 6, 7, 8, 9, 10]);
 
     setFlowers(
-      filteredMovies.map((d, i) => ({
+      movies.map((d, i) => ({
         color: colorScale(d.genres[0]),
         path: pathScale(d.rated),
         scale: sizeScale(d.rating),
@@ -158,40 +138,111 @@ const ForceFlowersPosition = () => {
         translate: calculateGridPos(i),
       }))
     );
-  }, [filteredMovies]);
+  }, [movies]);
 
   ////////////////////////////////       CREATE SVG D3 CODE HERE            //////////////////////////////////////
-  //after flower data is set
-  const createFlowers = () => {
-    // console.log("flowers data", flowers);
-    const t = d3.select(elRef.current).transition().duration(1000);
 
-    //magic with svg
-    // console.log("movies sp", movies);
-    setWidth(window.innerWidth);
-    setPerRow(Math.floor(width / pathWidth));
-    setSvgHeight((Math.ceil(flowers.length / perRow) + 0.5) * pathWidth);
+  //force position
+  const calculateGraph = (prevGraph) => {
+    // create an empty object to store genres
+    const genres = {};
+    // create empty arrays to store nodes and links
+    const nodes = [];
+    const links = [];
+    // console.log("force flowers ", flowers);
+    // console.log("force prevGraph ", prevGraph);
 
-    // ✨ CODE HERE
-    const g = d3
-      .select(elRef.current)
-      .selectAll("g")
-      .data(flowers, (d) => d.title)
-      .join(
-        (enter) => {
-          const g = enter
-            .append("g")
-            .attr("opacity", 0)
-            .attr("transform", (d) => `translate(${d.translate})`);
+    // loop through each item in filtered array
+    _.each(movies, (d, i) => {
+      // check if the flower is already in the previous graph
+      // console.log("force i = ", i);
+      let flower;
+      flower =
+        prevGraph && _.find(prevGraph.nodes, ({ title }) => title === d.title);
+      // if not, use the filtered flower
+      flower = flower || flowers[i];
+      if ((i = 0)) {
+        console.log("force first flower from flowers ", flowers[i]);
+      }
+
+      // insert flower into nodes
+      nodes.push(flower);
+
+      // loop through genres and link the movie flower to the genre
+      _.each(d.genres, (genre) => {
+        // check if the genre already exists in previous graph's genres object
+        if (prevGraph) {
+          genres[genre] = _.find(
+            prevGraph.genres,
+            ({ label }) => label === genre
+          );
+        }
+        // if the genre doesn't exist, create it
+        if (!genres[genre]) {
+          genres[genre] = {
+            label: genre,
+            size: 0,
+          };
+        }
+        // increase the genre size by 1
+        genres[genre].size += 1;
+
+        // then create a new link between the genre and the movie flower
+        links.push({
+          source: genres[genre],
+          target: flower,
+          id: `${genre}-movie${i}`,
+        });
+      });
+    });
+
+    // return an object with nodes, genres, and links
+    return { nodes, genres: _.values(genres), links };
+  };
+
+  //make force in D3
+  useEffect(() => {
+    // console.log("force setGraph useEffect");
+    if (flowers.length > 0) {
+      setGraph((prevGraph) => {
+        return calculateGraph(prevGraph);
+      });
+    }
+  }, [flowers]);
+
+  useEffect(() => {
+    // let graph = calculateGraph(graph);
+    if (flowers.length > 0) {
+      console.log("graph force ", graph);
+
+      const link = d3
+        .select(elRef.current)
+        .selectAll(".link")
+        .data(graph.links, (d) => d.id)
+        .join("line")
+        .classed("link", true)
+        .attr("stroke", "#ccc")
+        .attr("opacity", 0.5);
+
+      //create flowers
+      const flower = d3
+        .select(elRef.current)
+        .selectAll("g")
+        .data(graph.nodes, (d) => d.title)
+        .join((enter) => {
+          const g = enter.append("g");
           //create paths and texts
           g.selectAll("path")
             .data((d) =>
-              _.times(d.numPetals, (i) => {
-                return { rotate: i * (360 / d.numPetals), ...d };
-              })
+              _.times(d.numPetals, (i) =>
+                Object.assign({}, d, { rotate: i * (360 / d.numPetals) })
+              )
             )
             .join("path") //enter+update+exit
-            .attr("transform", (d) => `rotate(${d.rotate})scale(${d.scale})`)
+            .attr(
+              "transform",
+              (d) => `rotate(${d.rotate})scale(${0.8 * d.scale})`
+            )
             .attr("d", (d) => d.path)
             .attr("fill", (d) => d.color)
             .attr("fill-opacity", 0.5)
@@ -207,326 +258,45 @@ const ForceFlowersPosition = () => {
             .attr("dy", ".35em");
 
           return g;
-        },
-        (update) => update,
-        (exit) => {
-          exit.transition(t).attr("opacity", 0).remove();
-        }
-      )
-      .transition(t)
-      .attr("opacity", 1)
-      .attr("transform", (d) => `translate(${d.translate})`);
-  };
-
-  //force position
-  const calculateGraph = (prevGraph) => {
-    const genres = {};
-    const nodes = [];
-    const links = [];
-
-    _.each(filtered, (d, i) => {
-      let flower;
-      flower =
-        prevGraph && _.find(prevGraph.nodes, ({ title }) => title === d.title);
-      flower = flower || filteredFlowers[i];
-
-      // insert flower into nodes
-      nodes.push(flower);
-
-      // loop through genres and link the movie flower to the genre
-      _.each(d.genres, (genre) => {
-        if (prevGraph) {
-          genres[genre] = _.find(
-            prevGraph.genres,
-            ({ label }) => label === genre
-          );
-        }
-        if (!genres[genre]) {
-          // if genre doesn't yet exist, create it
-          genres[genre] = {
-            label: genre,
-            size: 0,
-          };
-        }
-        genres[genre].size += 1;
-
-        // then create a new link
-        links.push({
-          source: genres[genre],
-          target: flower,
-          id: `${genre}-movie${i}`,
         });
-      });
-    });
 
-    return { nodes, genres: _.values(genres), links };
-  };
+      const genres = d3
+        .select(elRef.current)
+        .selectAll(".genre")
+        .data(graph.genres, (d) => d.label)
+        .join("text")
+        .classed("genre", true)
+        .text((d) => d.label)
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle");
 
-  //make force in D3
-  useEffect(() => {
-    // let graph = calculateGraph(graph);
-    setGraph((prevGraph) => calculateGraph(prevGraph));
-
-    const link = d3
-      .select(elRef.current)
-      .selectAll("line")
-      .data(graph.links, (d) => d.id)
-      .join("line")
-      .classed("link", true)
-      .attr("opacity", 0.5);
-
-    //create flowers
-    const flower = d3
-      .select(elRef.current)
-      .selectAll("g")
-      .data(graph.nodes, (d) => d.title)
-      .join((enter) => {
-        const g = enter.append("g");
-        //create paths and texts
-        g.selectAll("path")
-          .data((d) =>
-            _.times(d.numPetals, (i) => {
-              return { rotate: i * (360 / d.numPetals), ...d };
-            })
-          )
-          .join("path") //enter+update+exit
-          .attr("transform", (d) => `rotate(${d.rotate})scale(${d.scale})`)
-          .attr("d", (d) => d.path)
-          .attr("fill", (d) => d.color)
-          .attr("fill-opacity", 0.5)
-          .attr("stroke", (d) => d.color)
-          .attr("stroke-width", 2);
-
-        //create our text titles
-        g.append("text")
-          .text((d) => _.truncate(d.title, 10))
-          .style("font-size", ".7em")
-          .style("font-style", "italic")
-          .attr("text-anchor", "middle")
-          .attr("dy", ".35em");
-
-        return g;
-      });
-
-    const genres = d3
-      .select(elRef.current)
-      .selectAll(".genre")
-      .data(graph.genres, (d) => d.label)
-      .join("text")
-      .classed("genre", true)
-      .text((d) => d.title);
-    attr("text-anchor", "middle");
-
-    //use force simulation
-    const nodes = _.union(graph.nodes, graph.genres);
-    const simulation = d3
-      .forceSimulation(nodes)
-      .force("link", d3.forceLink(graph.links))
-      .force(
-        "collide",
-        d3.forceCollide((d) => d.scale * pathWidth)
-      )
-      .force("center", d3.forceCenter(width / 2, width / 4))
-      .on("tick", () => {
-        flower.attr("transform", (d) => `translate(${d.x},${d.y})`);
-        genres.attr("transform", (d) => `translate(${d.x},${d.y})`);
-        links
-          .attr("x1", (d) => d.source.x)
-          .attr("y1", (d) => d.source.y)
-          .attr("x1", (d) => d.target.x)
-          .attr("y1", (d) => d.target.y);
-      });
-  }, [flowers]);
+      //use force simulation
+      const nodes = _.union(graph.nodes, graph.genres);
+      const simulation = d3
+        .forceSimulation(nodes)
+        .force("charge", d3.forceManyBody(-300))
+        .force("link", d3.forceLink(graph.links).distance(100))
+        .force(
+          "collide",
+          d3.forceCollide((d) => 150 * d.scale || 50)
+        )
+        .force("center", d3.forceCenter(width / 2, width / 4))
+        // .alpha(0.5)
+        // .alphaMin(0.1)
+        .on("tick", () => {
+          flower.attr("transform", (d) => `translate(${d.x},${d.y})`);
+          genres.attr("transform", (d) => `translate(${d.x},${d.y})`);
+          link
+            .attr("x1", (d) => d.source.x)
+            .attr("y1", (d) => d.source.y)
+            .attr("x2", (d) => d.target.x)
+            .attr("y2", (d) => d.target.y);
+        });
+    }
+  }, [graph]);
 
   return (
     <div>
-      <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
-        <div
-          style={{
-            backgroundColor: "black",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignContent: "flex-start",
-            margin: "0.3em",
-            padding: "0.3em",
-          }}
-        >
-          <div style={{ width: "fit-content", fontSize: "1.3em" }}>Genres</div>
-          <div
-            style={{
-              display: "flex",
-              backgroundColor: "black",
-              padding: "10px",
-              marginInline: "5px",
-            }}
-          >
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="action"
-                checked={checkboxes.action}
-                onChange={handleCheckboxChange}
-              />
-              Action
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="comedy"
-                checked={checkboxes.comedy}
-                onChange={handleCheckboxChange}
-              />
-              Comedy
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="animation"
-                checked={checkboxes.animation}
-                onChange={handleCheckboxChange}
-              />
-              Animation
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="drama"
-                checked={checkboxes.drama}
-                onChange={handleCheckboxChange}
-              />
-              Drama
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="other"
-                checked={checkboxes.other}
-                onChange={handleCheckboxChange}
-              />
-              Other
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="checkAllGenre"
-                checked={
-                  checkboxes.action &&
-                  checkboxes.comedy &&
-                  checkboxes.animation &&
-                  checkboxes.drama &&
-                  checkboxes.other
-                }
-                onChange={handleCheckAllChangeGenre}
-              />
-              Check all
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="uncheckAllGenre"
-                checked={
-                  !checkboxes.action &&
-                  !checkboxes.comedy &&
-                  !checkboxes.animation &&
-                  !checkboxes.drama &&
-                  !checkboxes.other
-                }
-                onChange={handleUncheckAllChangeGenre}
-              />
-              Uncheck all
-            </label>
-          </div>
-        </div>
-        <div
-          style={{
-            backgroundColor: "black",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignContent: "flex-start",
-            margin: "0.3em",
-            padding: "0.3em",
-          }}
-        >
-          <div style={{ width: "fit-content", fontSize: "1.3em" }}>
-            Parental Guidance Ratings
-          </div>
-          <div
-            style={{
-              display: "flex",
-              backgroundColor: "black",
-              padding: "10px",
-              marginInline: "5px",
-            }}
-          >
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="G"
-                checked={checkboxesRating.G}
-                onChange={handleCheckboxChangeRating}
-              />
-              G
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="PG"
-                checked={checkboxesRating.PG}
-                onChange={handleCheckboxChangeRating}
-              />
-              PG
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="PG13"
-                checked={checkboxesRating.PG13}
-                onChange={handleCheckboxChangeRating}
-              />
-              PG-13
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="R"
-                checked={checkboxesRating.R}
-                onChange={handleCheckboxChangeRating}
-              />
-              R
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="checkAllGenre"
-                checked={
-                  checkboxesRating.G &&
-                  checkboxesRating.PG &&
-                  checkboxesRating.PG13 &&
-                  checkboxesRating.R
-                }
-                onChange={handleCheckAllChangeRatings}
-              />
-              Check all
-            </label>
-            <label style={{ marginInline: "5px" }}>
-              <input
-                type="checkbox"
-                name="uncheckAllGenre"
-                checked={
-                  !checkboxesRating.G &&
-                  !checkboxesRating.PG &&
-                  !checkboxesRating.PG13 &&
-                  !checkboxesRating.R
-                }
-                onChange={handleUncheckAllChangeRatings}
-              />
-              Uncheck all
-            </label>
-          </div>
-        </div>
-      </div>
       <svg
         ref={elRef}
         width={width}

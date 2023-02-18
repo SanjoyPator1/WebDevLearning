@@ -10,7 +10,7 @@ const M7 = () => {
           justifyContent: "center",
           border: "1px solid black",
           width: "95%",
-          height: "700px",
+          height: "auto",
           overflow: "auto",
           backgroundColor: "white",
           padding: "20",
