@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import _ from "lodash";
+import { Button } from "@mui/material";
 
 const EnterUpdateNewWayJoin = () => {
   let barData = [45, 67, 96, 84, 41];
@@ -30,8 +31,8 @@ const EnterUpdateNewWayJoin = () => {
       .attr("height", (d) => d)
       .attr("width", rectWidth)
       .attr("stroke-width", 3)
-      .attr("stroke", "#C3EEFF")
-      .attr("fill", "#C3EEFF")
+      .attr("stroke", "#AF7AC5 ")
+      .attr("fill", "#AF7AC5 ")
       .attr("fill-opacity", "0.5");
   };
 
@@ -42,13 +43,18 @@ const EnterUpdateNewWayJoin = () => {
   return (
     <div>
       <div style={{ color: "black" }}>New Way</div>
-      <svg
-        ref={elRef}
-        width={rectWidth * barData.length}
-        height={150}
-        style={{ border: "1px dashed" }}
-      ></svg>
-      <button onClick={createBarGraph}>Change Data</button>
+      <div
+        style={{ margin: "0 auto", width: "fit-content", marginBlock: "0.5em" }}
+      >
+        <svg ref={elRef} width={rectWidth * barData.length} height={150}></svg>
+      </div>
+      <Button
+        style={{ marginBlock: "0.5em", marginLeft: "5px" }}
+        variant="contained"
+        onClick={createBarGraph}
+      >
+        Change Data
+      </Button>
       <div
         style={{
           backgroundColor: "black",
@@ -59,7 +65,7 @@ const EnterUpdateNewWayJoin = () => {
           margin: "0.3em",
         }}
       >
-        Data =
+        <label style={{ color: "white" }}>Data =</label>
         {dataToShow.map((item) => {
           {
             // console.log("item sp ", item);

@@ -17,6 +17,7 @@ import { getTrueKeys } from "../../utils/functions";
 // const movies = movieData.splice(0, 500);
 
 const ForceFlowersPosition = () => {
+  console.log("animation flower component rendering");
   //checkbox - genre
   const [checkboxes, setCheckboxes] = useState({
     action: true,
@@ -161,9 +162,6 @@ const ForceFlowersPosition = () => {
         prevGraph && _.find(prevGraph.nodes, ({ title }) => title === d.title);
       // if not, use the filtered flower
       flower = flower || flowers[i];
-      if ((i = 0)) {
-        console.log("force first flower from flowers ", flowers[i]);
-      }
 
       // insert flower into nodes
       nodes.push(flower);
@@ -213,7 +211,7 @@ const ForceFlowersPosition = () => {
   useEffect(() => {
     // let graph = calculateGraph(graph);
     if (flowers.length > 0) {
-      console.log("graph force ", graph);
+      // console.log("graph force ", graph);
 
       const link = d3
         .select(elRef.current)
@@ -222,7 +220,7 @@ const ForceFlowersPosition = () => {
         .join("line")
         .classed("link", true)
         .attr("stroke", "#ccc")
-        .attr("opacity", 0.5);
+        .attr("opacity", 0.65);
 
       //create flowers
       const flower = d3
@@ -268,6 +266,8 @@ const ForceFlowersPosition = () => {
         .classed("genre", true)
         .text((d) => d.label)
         .attr("dy", ".35em")
+        .style("font-size", "1.2em")
+        .style("font-style", "bold")
         .attr("text-anchor", "middle");
 
       //use force simulation
@@ -275,14 +275,22 @@ const ForceFlowersPosition = () => {
       const simulation = d3
         .forceSimulation(nodes)
         .force("charge", d3.forceManyBody(-300))
-        .force("link", d3.forceLink(graph.links).distance(100))
+        .force("link", d3.forceLink(graph.links).distance(50))
         .force(
           "collide",
           d3.forceCollide((d) => 150 * d.scale || 50)
         )
-        .force("center", d3.forceCenter(width / 2, width / 4))
-        // .alpha(0.5)
-        // .alphaMin(0.1)
+        // .force("collide", d3.forceCollide((d) => d.scale * 80).strength(0.7))
+
+        .force("center", d3.forceCenter(width / 2, svgHeight / 2))
+        .force("x", d3.forceX().x(width / 2))
+        .force("y", d3.forceY().y(svgHeight / 2))
+
+        .alpha(1) // set the initial alpha value to 1
+        .alphaDecay(0.01) // reduce the rate at which alpha decreases
+        .alphaMin(0.001) // set the minimum alpha value
+        .alphaTarget(0.01)
+
         .on("tick", () => {
           flower.attr("transform", (d) => `translate(${d.x},${d.y})`);
           genres.attr("transform", (d) => `translate(${d.x},${d.y})`);
@@ -293,6 +301,10 @@ const ForceFlowersPosition = () => {
             .attr("y2", (d) => d.target.y);
         });
     }
+
+    d3.timeout(() => {
+      simulation.alpha(1).restart();
+    }, 5000);
   }, [graph]);
 
   return (

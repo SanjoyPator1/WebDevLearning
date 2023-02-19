@@ -1,3 +1,5 @@
+import { Typography } from "@mui/material";
+import { moduleTypoStyle } from "../styles";
 import AnimatedFlower from "./AnimatedFlower";
 import ScalesExercise from "./ScalesExercise";
 import ScalesImplementation from "./ScalesImplementation";
@@ -6,25 +8,13 @@ import TranslateAndScale from "./TranslateAndScale";
 const M3 = () => {
   return (
     <div>
-      <h3>Module 03 - Specifications</h3>
-      {/* <h4>Exercise 00 - Animated flower</h4>
-      <div
-        style={{
-          border: "1px solid black",
-          width: "100%",
-          height: "fit-content",
-          backgroundColor: "white",
-          padding: 10,
-          margin: "0 auto"
-        }}
-      >
-        <AnimatedFlower />
-      </div> */}
+      <Typography variant="h4" sx={moduleTypoStyle}>
+        Module 03 - Specifications
+      </Typography>
       <h4>Exercise 01 - Selections</h4>
       <div
         style={{
           border: "1px solid black",
-          width: "100%",
           height: "fit-content",
           backgroundColor: "white",
           padding: 10,
@@ -49,12 +39,9 @@ const M3 = () => {
         <ScalesExercise />
       </div>
       <h4>Exercise 03 - Translate And Scale</h4>
-      Do it later: implement scale
       <div
         style={{
           border: "1px solid black",
-          width: "100%",
-          // height: "400px",
           overflow: "auto",
           backgroundColor: "white",
           padding: 30,

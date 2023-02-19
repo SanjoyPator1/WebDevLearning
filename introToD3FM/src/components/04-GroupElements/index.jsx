@@ -1,9 +1,13 @@
+import { Typography } from "@mui/material";
+import { moduleTypoStyle } from "../styles";
 import GroupElements from "./GroupElements";
 
 const M4 = () => {
   return (
     <div>
-      <h3>Module 04 - Group Elements</h3>
+      <Typography variant="h4" sx={moduleTypoStyle}>
+        Module 04 - Group Elements
+      </Typography>
       <div
         style={{
           justifyContent: "center",

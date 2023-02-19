@@ -70,9 +70,13 @@ const ScalesImplementation = () => {
   return (
     <div style={{ padding: "40px", width: "95%" }}>
       <svg ref={svgRef} width={width} height={height} />
-      <div style={{ backgroundColor: "black", padding: "0.6em" }}>
-        <div>
-          <label>Number of bars:</label>
+      <div
+        style={{ backgroundColor: "black", padding: "1em", marginTop: "0.5em" }}
+      >
+        <div style={{ marginBlock: "0.5em" }}>
+          <label style={{ color: "white", marginInline: "0.4em" }}>
+            Number of bars:
+          </label>
           <input
             type="range"
             min={1}
@@ -82,8 +86,10 @@ const ScalesImplementation = () => {
           />
           <span>{bars}</span>
         </div>
-        <div>
-          <label>Width:</label>
+        <div style={{ marginBlock: "0.5em" }}>
+          <label style={{ color: "white", marginInline: "0.4em" }}>
+            Width:
+          </label>
           <input
             type="range"
             min={100}
@@ -93,8 +99,10 @@ const ScalesImplementation = () => {
           />
           <span>{width}</span>
         </div>
-        <div>
-          <label>Height:</label>
+        <div style={{ marginBlock: "0.5em" }}>
+          <label style={{ color: "white", marginInline: "0.4em" }}>
+            Height:
+          </label>
           <input
             type="range"
             min={50}
@@ -104,8 +112,8 @@ const ScalesImplementation = () => {
           />
           <span>{height}</span>
         </div>
-        <div>
-          <label>Padding:</label>
+        <div style={{ marginBlock: "0.5em" }}>
+          <label style={{ color: "white" }}>Padding:</label>
           <input
             type="range"
             min={0}

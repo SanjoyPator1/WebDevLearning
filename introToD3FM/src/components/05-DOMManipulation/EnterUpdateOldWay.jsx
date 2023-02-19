@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import _ from "lodash";
+import Button from "@mui/material/Button";
 
 const EnterUpdateOldWay = () => {
   let barData = [45, 67, 96, 84, 41];
@@ -56,13 +57,18 @@ const EnterUpdateOldWay = () => {
   return (
     <div>
       <div style={{ color: "black" }}>Old Way</div>
-      <svg
-        ref={elRef}
-        width={rectWidth * barData.length}
-        height={150}
-        style={{ border: "1px dashed" }}
-      ></svg>
-      <button onClick={createBarGraph}>Change Data</button>
+      <div
+        style={{ margin: "0 auto", width: "fit-content", marginBlock: "0.5em" }}
+      >
+        <svg ref={elRef} width={rectWidth * barData.length} height={150}></svg>
+      </div>
+      <Button
+        style={{ marginBlock: "0.5em", marginLeft: "5px" }}
+        variant="contained"
+        onClick={createBarGraph}
+      >
+        Change Data
+      </Button>
       <div
         style={{
           backgroundColor: "black",
@@ -73,7 +79,7 @@ const EnterUpdateOldWay = () => {
           margin: "0.3em",
         }}
       >
-        Data =
+        <label style={{ color: "white" }}>Data =</label>
         {dataToShow.map((item) => {
           {
             // console.log("item sp ", item);

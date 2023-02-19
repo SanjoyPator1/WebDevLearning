@@ -83,7 +83,7 @@ const FilteringAndUpdatingFlowers = () => {
   };
 
   const pathWidth = 120 + 13;
-  const [width, setWidth] = useState(window.innerWidth);
+  const [width, setWidth] = useState(window.innerWidth - 100);
   const [perRow, setPerRow] = useState(Math.floor(width / pathWidth));
   const [svgHeight, setSvgHeight] = useState(
     (Math.ceil(movies.length / perRow) + 0.5) * pathWidth
@@ -167,7 +167,7 @@ const FilteringAndUpdatingFlowers = () => {
 
     //magic with svg
     // console.log("movies sp", movies);
-    setWidth(window.innerWidth);
+    setWidth(window.innerWidth - 100);
     setPerRow(Math.floor(width / pathWidth));
     setSvgHeight((Math.ceil(flowers.length / perRow) + 0.5) * pathWidth);
 
@@ -222,7 +222,7 @@ const FilteringAndUpdatingFlowers = () => {
       <div style={{ position: "sticky", top: 0, zIndex: 1 }}>
         <div
           style={{
-            backgroundColor: "black",
+            backgroundColor: "#A084DC",
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-start",
@@ -231,16 +231,26 @@ const FilteringAndUpdatingFlowers = () => {
             padding: "0.3em",
           }}
         >
-          <div style={{ width: "fit-content", fontSize: "1.3em" }}>Genres</div>
+          <div
+            style={{
+              width: "fit-content",
+              fontSize: "1.5em",
+              color: "white",
+              margin: "0.4em",
+              marginInline: "0.9em",
+            }}
+          >
+            Genres
+          </div>
           <div
             style={{
               display: "flex",
-              backgroundColor: "black",
+              backgroundColor: "#A084DC",
               padding: "10px",
               marginInline: "5px",
             }}
           >
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="action"
@@ -249,7 +259,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               Action
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="comedy"
@@ -258,7 +268,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               Comedy
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="animation"
@@ -267,7 +277,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               Animation
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="drama"
@@ -276,7 +286,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               Drama
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="other"
@@ -285,7 +295,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               Other
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="checkAllGenre"
@@ -300,7 +310,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               Check all
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="uncheckAllGenre"
@@ -319,7 +329,7 @@ const FilteringAndUpdatingFlowers = () => {
         </div>
         <div
           style={{
-            backgroundColor: "black",
+            backgroundColor: "#A084DC",
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-start",
@@ -328,18 +338,26 @@ const FilteringAndUpdatingFlowers = () => {
             padding: "0.3em",
           }}
         >
-          <div style={{ width: "fit-content", fontSize: "1.3em" }}>
+          <div
+            style={{
+              width: "fit-content",
+              fontSize: "1.4em",
+              color: "white",
+              margin: "0.4em",
+              marginInline: "0.9em",
+            }}
+          >
             Parental Guidance Ratings
           </div>
           <div
             style={{
               display: "flex",
-              backgroundColor: "black",
+              backgroundColor: "#A084DC",
               padding: "10px",
               marginInline: "5px",
             }}
           >
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="G"
@@ -348,7 +366,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               G
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="PG"
@@ -357,7 +375,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               PG
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="PG13"
@@ -366,7 +384,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               PG-13
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="R"
@@ -375,7 +393,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               R
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="checkAllGenre"
@@ -389,7 +407,7 @@ const FilteringAndUpdatingFlowers = () => {
               />
               Check all
             </label>
-            <label style={{ marginInline: "5px" }}>
+            <label style={{ marginInline: "5px", color: "white" }}>
               <input
                 type="checkbox"
                 name="uncheckAllGenre"
@@ -408,7 +426,7 @@ const FilteringAndUpdatingFlowers = () => {
       </div>
       <svg
         ref={elRef}
-        width={width}
+        width={"99.5%"}
         height={svgHeight}
         style={{ border: "1px dashed" }}
       ></svg>

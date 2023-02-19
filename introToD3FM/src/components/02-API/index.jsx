@@ -1,3 +1,5 @@
+import { Typography } from "@mui/material";
+import { moduleTypoStyle } from "../styles";
 import AttrAndStyle from "./AttrAndStyle";
 import AttrAndStyleGenreExercise from "./AttrAndStyleGenreExercise";
 import CreateDomElements from "./CreateDomElements";
@@ -9,7 +11,9 @@ import TranslateTransform from "./TranslateTransform";
 const M2 = () => {
   return (
     <div>
-      <h3>Module 02 - API</h3>
+      <Typography variant="h4" sx={moduleTypoStyle}>
+        Module 02 - API
+      </Typography>
       <h4>Exercise 01 - Selections</h4>
       <div
         style={{
@@ -18,7 +22,7 @@ const M2 = () => {
           height: "170px",
           backgroundColor: "white",
           padding: 10,
-          margin: "0 auto"
+          margin: "0 auto",
         }}
       >
         <SelectComponent />
@@ -32,7 +36,7 @@ const M2 = () => {
           height: "170px",
           backgroundColor: "white",
           padding: 10,
-          margin: "0 auto"
+          margin: "0 auto",
         }}
       >
         <DataBinding />
@@ -46,7 +50,7 @@ const M2 = () => {
           height: "100px",
           backgroundColor: "white",
           padding: 10,
-          margin: "0 auto"
+          margin: "0 auto",
         }}
       >
         <AttrAndStyle />
@@ -60,7 +64,7 @@ const M2 = () => {
           height: "100px",
           backgroundColor: "white",
           padding: 10,
-          margin: "0 auto"
+          margin: "0 auto",
         }}
       >
         <AttrAndStyleGenreExercise />
@@ -74,7 +78,7 @@ const M2 = () => {
           height: "100px",
           backgroundColor: "white",
           padding: 10,
-          margin: "0 auto"
+          margin: "0 auto",
         }}
       >
         <CreateDomElements />
@@ -90,7 +94,7 @@ const M2 = () => {
           overflow: "auto",
           backgroundColor: "white",
           padding: "20",
-          margin: "0 auto"
+          margin: "0 auto",
         }}
       >
         <CreateDomElementsExercise />
@@ -99,12 +103,10 @@ const M2 = () => {
       <div
         style={{
           border: "1px solid black",
-          width: "100%",
-          // height: "400px",
           overflow: "auto",
           backgroundColor: "white",
           padding: 30,
-          margin: "0 auto"
+          margin: "0 auto",
         }}
       >
         <TranslateTransform />

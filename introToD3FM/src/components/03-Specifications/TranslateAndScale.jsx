@@ -8,7 +8,7 @@ const TranslateAndScale = () => {
   const svgRefBox = useRef();
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
-  const [boxSizeScale, setBoxSizeScale] = useState(800);
+  const [boxSizeScale, setBoxSizeScale] = useState(100);
 
   useEffect(() => {
     const svgBox = d3.select(svgRefBox.current);
@@ -19,8 +19,8 @@ const TranslateAndScale = () => {
   useEffect(() => {
     const svg = d3.select(svgRef.current);
     // Define the x and y scales
-    const xScale = d3.scaleLinear().domain([0, 8]).range([0, 800]);
-    const yScale = d3.scaleLinear().domain([0, 8]).range([0, 800]);
+    const xScale = d3.scaleLinear().domain([0, 6]).range([0, 600]);
+    const yScale = d3.scaleLinear().domain([0, 6]).range([0, 600]);
 
     // Draw the grid lines
     svg
@@ -32,7 +32,7 @@ const TranslateAndScale = () => {
       .attr("x1", (d) => xScale(d))
       .attr("y1", 0)
       .attr("x2", (d) => xScale(d))
-      .attr("y2", 800);
+      .attr("y2", 600);
 
     svg
       .selectAll(".y-line")
@@ -42,7 +42,7 @@ const TranslateAndScale = () => {
       .attr("class", "y-line")
       .attr("x1", 0)
       .attr("y1", (d) => yScale(d))
-      .attr("x2", 800)
+      .attr("x2", 600)
       .attr("y2", (d) => yScale(d));
 
     // Draw the squares
@@ -52,8 +52,8 @@ const TranslateAndScale = () => {
       .enter()
       .append("rect")
       .attr("class", "square")
-      .attr("x", (d, i) => xScale(i % 8))
-      .attr("y", (d, i) => yScale(Math.floor(i / 8)))
+      .attr("x", (d, i) => xScale(i % 6))
+      .attr("y", (d, i) => yScale(Math.floor(i / 6)))
       .attr("width", 100)
       .attr("height", 100)
       .attr("fill", "none")
@@ -66,8 +66,8 @@ const TranslateAndScale = () => {
       .append("rect")
       .attr("x", 0)
       .attr("y", 0)
-      .attr("width", 800)
-      .attr("height", 800)
+      .attr("width", 600)
+      .attr("height", 600)
       .attr("stroke", "#526FAD")
       .attr("stroke-width", 4)
       .attr("fill", "none");
@@ -87,19 +87,25 @@ const TranslateAndScale = () => {
           display: "flex",
           justifyContent: "center",
           position: "relative",
-          width: "800px",
-          height: "800px",
+          width: "600px",
+          height: "600px",
           backgroundColor: "white",
         }}
       >
-        <svg ref={svgRef} width={800} height={800} />
+        <svg ref={svgRef} width={600} height={600} />
         <svg
           ref={svgRefBox}
           style={{ position: "absolute", top: 0, left: 0 }}
-          width={800}
-          height={800}
+          width={600}
+          height={600}
         >
-          <rect x={0} y={0} width={100} height={100} fill="#526FAD" />
+          <rect
+            x={0}
+            y={0}
+            width={boxSizeScale}
+            height={boxSizeScale}
+            fill="#526FAD"
+          />
         </svg>
       </div>
       <div
@@ -158,7 +164,7 @@ const TranslateAndScale = () => {
             type="range"
             id="y-axis"
             min={0}
-            max={700}
+            max={500}
             value={y}
             onChange={(e) => setY(e.target.value)}
             style={{
@@ -196,7 +202,7 @@ const TranslateAndScale = () => {
             type="range"
             id="x-axis"
             min={0}
-            max={700}
+            max={500}
             value={x}
             onChange={(e) => setX(e.target.value)}
           />
@@ -228,8 +234,8 @@ const TranslateAndScale = () => {
           <input
             type="range"
             id="scale-slider"
-            min={200}
-            max={1500}
+            min={50}
+            max={600}
             value={boxSizeScale}
             onChange={(e) => setBoxSizeScale(e.target.value)}
           />

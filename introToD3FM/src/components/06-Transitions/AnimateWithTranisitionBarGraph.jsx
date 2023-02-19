@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import _ from "lodash";
 import { useState } from "react";
+import { Button } from "@mui/material";
 
 const AnimateWithTranisitionBarGraph = () => {
   let barData = [45, 20, 67, 96, 84, 41];
@@ -54,34 +55,6 @@ const AnimateWithTranisitionBarGraph = () => {
       .attr("x", (d, i) => i * rectWidth)
       .attr("height", (d) => d)
       .attr("y", (d) => svgHeight - d);
-
-    // //selection
-    // const rect = d3
-    //   .select(elRef.current)
-    //   .selectAll("rect")
-    //   .data(barData, (d) => d);
-
-    // //exit
-    // rect.exit().remove();
-
-    // //enter
-    // const enter = rect
-    //   .enter()
-    //   .append("rect")
-    //   .attr("width", rectWidth)
-    //   .attr("stroke-width", 3)
-    //   .attr("stroke", "plum")
-    //   .attr("fill", "pink");
-
-    // //enter + update
-    // enter
-    //   .merge(rect)
-    //   // calculate x-position based on its index
-    //   .attr("x", (d, i) => i * rectWidth)
-    //   // calculate y-position based on its index
-    //   .attr("y", (d, i) => 100 - d)
-    //   // set height based on the bound datum
-    //   .attr("height", (d) => d);
   };
 
   useEffect(() => {
@@ -90,13 +63,18 @@ const AnimateWithTranisitionBarGraph = () => {
 
   return (
     <div>
-      <svg
-        ref={elRef}
-        width={rectWidth * barData.length}
-        height={150}
-        style={{ border: "1px dashed", margin: "10px" }}
-      ></svg>
-      <button onClick={createBarGraph}>Change Data</button>
+      <div
+        style={{ margin: "0 auto", width: "fit-content", marginBlock: "0.5em" }}
+      >
+        <svg ref={elRef} width={rectWidth * barData.length} height={150}></svg>
+      </div>
+      <Button
+        style={{ marginBlock: "0.5em" }}
+        variant="contained"
+        onClick={createBarGraph}
+      >
+        Change Data
+      </Button>
       <div
         style={{
           backgroundColor: "black",
@@ -104,10 +82,10 @@ const AnimateWithTranisitionBarGraph = () => {
           display: "flex",
           alignItems: "center",
           margin: "5px",
-          padding: "5px",
+          padding: "10px",
         }}
       >
-        Data =
+        <label style={{ color: "white" }}>Data =</label>
         {dataToShow.map((item) => {
           {
             // console.log("item sp ", item);
