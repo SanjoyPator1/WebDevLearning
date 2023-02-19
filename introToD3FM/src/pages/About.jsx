@@ -19,7 +19,7 @@ const About = () => {
       }}
     >
       <Typography variant="h6" sx={{ color: "#937DC2", fontFamily: "cursive" }}>
-        This website is mainly for learning purpose. No adds are present here
+        This website is mainly for learning purpose. No ads are present here
       </Typography>
       <Grid container alignItems={"flex-start"}>
         <Grid item xs={12}>

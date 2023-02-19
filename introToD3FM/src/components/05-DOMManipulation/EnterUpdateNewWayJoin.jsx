@@ -57,9 +57,9 @@ const EnterUpdateNewWayJoin = () => {
       </Button>
       <div
         style={{
-          backgroundColor: "black",
+          backgroundColor: "#A084DC",
           height: "30px",
-          width: "70%",
+          width: "100%",
           display: "flex",
           padding: "10px",
           margin: "0.3em",

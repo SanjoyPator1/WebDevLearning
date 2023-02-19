@@ -77,7 +77,7 @@ const AnimateWithTranisitionBarGraph = () => {
       </Button>
       <div
         style={{
-          backgroundColor: "black",
+          backgroundColor: "#A084DC",
           height: "40px",
           display: "flex",
           alignItems: "center",

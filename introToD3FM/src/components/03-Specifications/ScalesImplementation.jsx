@@ -71,7 +71,11 @@ const ScalesImplementation = () => {
     <div style={{ padding: "40px", width: "95%" }}>
       <svg ref={svgRef} width={width} height={height} />
       <div
-        style={{ backgroundColor: "black", padding: "1em", marginTop: "0.5em" }}
+        style={{
+          backgroundColor: "#A084DC",
+          padding: "1em",
+          marginTop: "0.5em",
+        }}
       >
         <div style={{ marginBlock: "0.5em" }}>
           <label style={{ color: "white", marginInline: "0.4em" }}>
@@ -84,7 +88,16 @@ const ScalesImplementation = () => {
             value={bars}
             onChange={(e) => setBars(e.target.value)}
           />
-          <span>{bars}</span>
+          <span
+            style={{
+              color: "white",
+              marginLeft: "0.3em",
+              fontWeight: 700,
+              fontSize: 22,
+            }}
+          >
+            {bars}
+          </span>
         </div>
         <div style={{ marginBlock: "0.5em" }}>
           <label style={{ color: "white", marginInline: "0.4em" }}>
@@ -97,7 +110,16 @@ const ScalesImplementation = () => {
             value={width}
             onChange={(e) => setWidth(e.target.value)}
           />
-          <span>{width}</span>
+          <span
+            style={{
+              color: "white",
+              marginLeft: "0.3em",
+              fontWeight: 700,
+              fontSize: 22,
+            }}
+          >
+            {width}
+          </span>
         </div>
         <div style={{ marginBlock: "0.5em" }}>
           <label style={{ color: "white", marginInline: "0.4em" }}>
@@ -110,7 +132,16 @@ const ScalesImplementation = () => {
             value={height}
             onChange={(e) => setHeight(e.target.value)}
           />
-          <span>{height}</span>
+          <span
+            style={{
+              color: "white",
+              marginLeft: "0.3em",
+              fontWeight: 700,
+              fontSize: 22,
+            }}
+          >
+            {height}
+          </span>
         </div>
         <div style={{ marginBlock: "0.5em" }}>
           <label style={{ color: "white" }}>Padding:</label>
@@ -122,7 +153,16 @@ const ScalesImplementation = () => {
             value={padding}
             onChange={(e) => setPadding(e.target.value)}
           />
-          <span>{padding}</span>
+          <span
+            style={{
+              color: "white",
+              marginLeft: "0.3em",
+              fontWeight: 700,
+              fontSize: 22,
+            }}
+          >
+            {padding}
+          </span>
         </div>
       </div>
     </div>
