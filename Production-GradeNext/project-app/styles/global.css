@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    [data-nextjs-scroll-focus-boundary] {
+      display: contents;
+    }
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  .rainbow-mesh {
+    background-color: rgb(59 130 246 / 0.5);
+    background-image: radial-gradient(
+        at 40% 20%,
+        rgb(122, 255, 255) 0px,
+        transparent 50%
+      ), radial-gradient(at 80% 0%, hsla(189, 100%, 56%, 1) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgb(91, 239, 255) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, rgb(133, 218, 255) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgb(0, 98, 255) 0px, transparent 50%),
+      radial-gradient(at 80% 100%, hsla(242, 100%, 70%, 1) 0px, transparent 50%),
+      radial-gradient(at 0% 0%, rgb(0, 255, 225) 0px, transparent 50%);
+  }
+  
+  .candy-mesh {
+    background-color: #7bffa5;
+    background-image: radial-gradient(
+        at 99% 6%,
+        hsla(195, 69%, 67%, 1) 0px,
+        transparent 50%
+      ), radial-gradient(at 55% 88%, hsla(189, 74%, 69%, 1) 0px, transparent 50%),
+      radial-gradient(at 53% 27%, rgb(87, 192, 234) 0px, transparent 50%),
+      radial-gradient(at 89% 89%, rgb(110, 169, 247) 0px, transparent 50%),
+      radial-gradient(at 35% 44%, rgb(64, 247, 244) 0px, transparent 50%);
+  }
+  
+  .glass {
+    backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+  
+  [data-nextjs-scroll-focus-boundary] {
+    display: contents;
+  }
