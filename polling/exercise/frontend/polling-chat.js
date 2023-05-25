@@ -30,7 +30,7 @@ async function postNewMsg(user, text) {
   }
 
   const res = await fetch("/poll", options);
-  await res.json();
+   await res.json();
 
 }
 
@@ -47,8 +47,6 @@ async function getNewMsgs() {
   allChat = json.msg;
   render();
 
-  setTimeout(getNewMsgs, INTERVAL);
-
 }
 
 function render() {
@@ -64,5 +62,16 @@ function render() {
 const template = (user, msg) =>
   `<li class="collection-item"><span class="badge">${user}</span>${msg}</li>`;
 
-// make the first request
-getNewMsgs();
+let timeToMakeNewRequest = 0
+
+async function rafTimer(time){
+  if(timeToMakeNewRequest <= time){
+    await getNewMsgs();
+    timeToMakeNewRequest = time + INTERVAL;
+  }
+
+  requestAnimationFrame(rafTimer)
+}
+
+requestAnimationFrame(rafTimer)
+
