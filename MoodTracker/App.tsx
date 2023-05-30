@@ -1,13 +1,11 @@
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { BottomTabsNavigator } from './src/screens/BottomTabs.navigator';
 
 export const App: React.FC = () => {
-  return <View style={styles.container} />;
+  return (
+    <NavigationContainer>
+      <BottomTabsNavigator />
+    </NavigationContainer>
+  );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'teal',
-  },
-});
