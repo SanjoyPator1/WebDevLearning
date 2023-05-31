@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import { MoodOptionType } from '../types';
 import { theme } from '../theme';
 
@@ -15,25 +15,39 @@ type MoodPickerProps = {
   handleSelectMood: (mood: MoodOptionType) => void;
 };
 
+const imageSource = require('../../assets/butterflies.png');
+
 export const MoodPicker: React.FC<MoodPickerProps> = ({ handleSelectMood }) => {
   const [selectedMood, setSelectedMood] = React.useState<MoodOptionType>();
+  const [hasSelected, setHasSelected] = React.useState(false);
 
   const handleSelect = React.useCallback(() => {
     if (selectedMood) {
       handleSelectMood(selectedMood);
       setSelectedMood(undefined);
+      setHasSelected(true);
     }
   }, [handleSelectMood, selectedMood]);
+
+  if (hasSelected) {
+    return (
+      <View style={styles.container}>
+        <Image source={imageSource} style={styles.image} />
+        <Pressable onPress={() => setHasSelected(false)} style={styles.button}>
+          <Text style={styles.moodText}>Choose another!</Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>How are you right now?</Text>
       <View style={styles.moodList}>
         {moodOptions.map(option => (
-          <View>
+          <View key={option.emoji}>
             <Pressable
               onPress={() => setSelectedMood(option)}
-              key={option.emoji}
               style={[
                 styles.moodItem,
                 option.emoji === selectedMood?.emoji
@@ -58,6 +72,7 @@ export const MoodPicker: React.FC<MoodPickerProps> = ({ handleSelectMood }) => {
 const styles = StyleSheet.create({
   moodText: {
     fontSize: 24,
+    color: 'white',
   },
   moodList: {
     flexDirection: 'row',
@@ -99,7 +114,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: theme.colorPurple,
-    width: 150,
+    width: 200,
     borderRadius: 20,
     marginTop: 20,
     alignSelf: 'center',
@@ -109,5 +124,8 @@ const styles = StyleSheet.create({
     color: theme.colorWhite,
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  image: {
+    alignSelf: 'center',
   },
 });
