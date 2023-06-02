@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     padding: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.0.7)',
   },
   heading: {
     fontSize: 20,
