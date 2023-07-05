@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { moduleTypoStyle } from "../styles";
+import { moduleTypoStyle } from "../../styles";
 import EnterUpdateNewWayJoin from "./EnterUpdateNewWayJoin";
 import EnterUpdateOldWay from "./EnterUpdateOldWay";
 

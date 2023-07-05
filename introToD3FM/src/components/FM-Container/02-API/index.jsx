@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { moduleTypoStyle } from "../styles";
+import { moduleTypoStyle } from "../../styles";
 import AttrAndStyle from "./AttrAndStyle";
 import AttrAndStyleGenreExercise from "./AttrAndStyleGenreExercise";
 import CreateDomElements from "./CreateDomElements";

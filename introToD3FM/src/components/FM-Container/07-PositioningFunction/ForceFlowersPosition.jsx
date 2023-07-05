@@ -9,10 +9,8 @@ import {
   petalColors,
   petalPaths,
   topGenres,
-} from "../../data";
-import { colors } from "../../data";
+} from "../../../data";
 import _ from "lodash";
-import { getTrueKeys } from "../../utils/functions";
 
 // const movies = movieData.splice(0, 500);
 

@@ -2,7 +2,7 @@ import ForceFlowersPosition from "./ForceFlowersPosition";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 import { Typography } from "@mui/material";
-import { moduleTypoStyle } from "../styles";
+import { moduleTypoStyle } from "../../styles";
 
 const M7 = () => {
   const { ref, inView, entry } = useInView({
@@ -13,7 +13,7 @@ const M7 = () => {
   useEffect(() => {
     if (inView) {
       // do something here to trigger a re-render
-      console.log("animation inview state ", inView);
+      // console.log("animation inview state ", inView);
     }
   }, [inView]);
   return (

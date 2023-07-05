@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-import { movies, pathObj } from "../../data";
-import { colors } from "../../data";
+import { movies, pathObj,colors } from "../../../data";
 
 // const movies = movieData.splice(0, 500);
 

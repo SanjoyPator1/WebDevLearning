@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { moduleTypoStyle } from "../styles";
+import { moduleTypoStyle } from "../../styles";
 import AnimatedFlower from "./AnimatedFlower";
 import ScalesExercise from "./ScalesExercise";
 import ScalesImplementation from "./ScalesImplementation";
@@ -11,7 +11,7 @@ const M3 = () => {
       <Typography variant="h4" sx={moduleTypoStyle}>
         Module 03 - Specifications
       </Typography>
-      <h4>Exercise 01 - Selections</h4>
+      <h4>Exercise 01 - Using D3.js Scales</h4>
       <div
         style={{
           border: "1px solid black",

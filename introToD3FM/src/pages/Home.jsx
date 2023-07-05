@@ -7,6 +7,7 @@ import FilterFlowers from "./FilterFlowers";
 import "./Home.css";
 import MainProject from "./MainProject";
 import { NavBarHead } from "./Style";
+import Elements from "./Elements";
 
 function Home() {
   const [open, setOpen] = useState(false);
@@ -35,6 +36,9 @@ function Home() {
               <Link to="/allProjects">ALL PROJECTS</Link>
             </li>
             <li>
+              <Link to="/elements">ELEMENTS</Link>
+            </li>
+            <li>
               <Link to="/about">ABOUT</Link>
             </li>
           </ul>
@@ -48,6 +52,7 @@ function Home() {
           <Route path="/" element={<MainProject />} />
           <Route path="/filterFlowers" element={<FilterFlowers />} />
           <Route path="/allProjects" element={<AllProjects />} />
+          <Route path="/elements" element={<Elements />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </div>

@@ -1,5 +1,5 @@
-import FilteringAndUpdatingFlowers from "../components/06-Transitions/FilteringAndUpdatingFlowers";
-import ForceFlowersPosition from "../components/07-PositioningFunction/ForceFlowersPosition";
+// import FilteringAndUpdatingFlowers from "../components/06-Transitions/FilteringAndUpdatingFlowers";
+import ForceFlowersPosition from "../components/FM-Container/07-PositioningFunction/ForceFlowersPosition";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 

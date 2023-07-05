@@ -1,4 +1,4 @@
-import FilteringAndUpdatingFlowers from "../components/06-Transitions/FilteringAndUpdatingFlowers";
+import FilteringAndUpdatingFlowers from "../components/FM-Container/06-Transitions/FilteringAndUpdatingFlowers";
 
 const FilterFlowers = () => {
   return (

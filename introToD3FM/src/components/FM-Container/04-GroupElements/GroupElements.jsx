@@ -7,8 +7,7 @@ import {
   petalColors,
   petalPaths,
   topGenres,
-} from "../../data";
-import { colors } from "../../data";
+} from "../../../data";
 import _ from "lodash";
 
 // const movies = movieData.splice(0, 500);
@@ -94,6 +93,8 @@ const GroupElements = () => {
       .append("g")
       .attr("transform", (d) => `translate(${d.translate})`);
 
+    // console.log("initial g value ",{g})
+
     //create our petal paths
     g.selectAll("path")
       .data((d) => {
@@ -111,6 +112,8 @@ const GroupElements = () => {
       .attr("stroke", (d) => d.color)
       .attr("stroke-width", 2);
 
+      // console.log("g value after path added ",{g})
+
     //create our text titles
     g.append("text")
       .text((d) => _.truncate(d.title, 10))
@@ -118,6 +121,9 @@ const GroupElements = () => {
       .style("font-style", "italic")
       .attr("text-anchor", "middle")
       .attr("dy", ".35em");
+
+      // console.log("g value after text added ",{g})
+
   }, [flowers]);
 
   return (

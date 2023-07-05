@@ -10,9 +10,9 @@ function DataBinding() {
 
     const rects = svg.selectAll("rect").data(data);
 
-    console.log("select datum ", svg.select("rect").datum(data));
-    console.log("selectAll datum ", svg.selectAll("rect").datum(data));
-    console.log("selectAll data ", svg.selectAll("rect").data(data));
+    // console.log("select datum ", svg.select("rect").datum(data));
+    // console.log("selectAll datum ", svg.selectAll("rect").datum(data));
+    // console.log("selectAll data ", svg.selectAll("rect").data(data));
 
     rects.exit().remove();
   }, [data]);

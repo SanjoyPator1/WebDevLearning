@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import { movies } from "../../data";
-import { colors } from "../../data";
+import { movies,colors } from "../../../data";
 
 const AttrAndStyleGenreExercise = () => {
   const elRef = useRef(null);

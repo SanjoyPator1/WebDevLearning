@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { moduleTypoStyle } from "../styles";
+import { moduleTypoStyle } from "../../styles";
 
 const M1SVG = () => {
   return (

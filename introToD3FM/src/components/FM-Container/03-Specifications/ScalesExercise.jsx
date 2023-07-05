@@ -7,8 +7,7 @@ import {
   petalColors,
   petalPaths,
   topGenres,
-} from "../../data";
-import { colors } from "../../data";
+} from "../../../data";
 
 // const movies = movieData.splice(0, 500);
 
