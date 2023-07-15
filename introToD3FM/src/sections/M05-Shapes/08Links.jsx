@@ -241,9 +241,9 @@ const convertLinksVerticalRadial = (svgRef, type) => {
         // Create a link generator for horizontal links
         xScale = d3.scaleLinear().domain([0, 4]).range([0, Math.PI * 2]);
         yScale = d3.scaleLinear().domain([0, 2]).range([0, 90]);
-        console.log("radial")
-        console.log({ xScale })
-        console.log({ yScale })
+        // console.log("radial")
+        // console.log({ xScale })
+        // console.log({ yScale })
 
         linkGenerator = d3.linkRadial()
             .source(d => d.position)
