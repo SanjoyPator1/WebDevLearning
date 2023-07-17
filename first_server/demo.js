@@ -2,6 +2,17 @@ const gql = require('graphql-tag')
 const {ApolloServer} = require('apollo-server')
 
 const typeDefs = gql`
+
+    """
+    comments to be shown in the toolbox
+    """
+
+    enum ShoeType {
+        JORDAN
+        NIKE
+        ADIDAS
+    }
+
     type User{
         email: String!
         avatar: String
@@ -9,17 +20,17 @@ const typeDefs = gql`
     }
 
     type Shoe {
-        brand: String!
+        brand: ShoeType
         size: Int!
     }
 
     input ShoesInput {
-        brand: String
+        brand: ShoeType
         size: Int
     }
 
     input NewShoeInput {
-        brand : String!
+        brand : ShoeType!
         size: Int!
     }
 
