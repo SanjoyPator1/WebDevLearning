@@ -8,7 +8,8 @@
       "id": "1",
       "createdAt": "182578",
       "name": "Moose",
-      "type": "DOG"
+      "type": "DOG",
+      "user": "jBWMVGjm50l6LGwepDoty"
     },
     {
       "id": "2",
@@ -20,7 +21,8 @@
       "id": "3",
       "createdAt": "202578",
       "name": "Garfield",
-      "type": "CAT"
+      "type": "CAT",
+      "user": "jBWMVGjm50l6LGwepDoty"
     },
     {
       "id": "4",
@@ -32,7 +34,8 @@
       "id": "IKPPv2K_cCd2EbzywWLCk",
       "createdAt": 1689576342325,
       "name": "Dragun",
-      "type": "DRAGON"
+      "type": "DRAGON",
+      "user": "jBWMVGjm50l6LGwepDoty"
     }
   ]
 }
