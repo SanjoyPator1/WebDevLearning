@@ -11,7 +11,7 @@ const typeDefs = gql`
     type User{
         email: String!
         avatar: String
-        friends: [User!]!
+        shoes: [Shoe!]!
     }
     
     enum ShoeType {
@@ -23,21 +23,22 @@ const typeDefs = gql`
     interface Shoe {
         brand: ShoeType
         size: Int!
+        user: User!
     }
 
     type Sneaker implements Shoe {
         brand: ShoeType
         size: Int!
         sport : String!
+        user: User!
     }
 
     type Boot implements Shoe {
         brand: ShoeType
         size: Int!
         hasGrip : Boolean!
+        user: User!
     }
-
-    union Footwear = Sneaker | Boot
 
     input ShoesInput {
         brand: ShoeType
@@ -51,7 +52,7 @@ const typeDefs = gql`
 
     type Query {
         me: User!
-        shoes(input: ShoesInput): [Footwear]!
+        shoes(input: ShoesInput): [Shoe]!
     }
 
     type Mutation{
@@ -59,26 +60,44 @@ const typeDefs = gql`
     }
 
 `
+
+const user = {
+    id: 1,
+    email: 'yoda@masters.com',
+    avatar: 'http://www.masters.com',
+    shoes: []
+}
+
+const shoesData =  [
+    { brand: 'NIKE', size: 12, sport: 'basketball', user: 1 },
+    { brand: 'ADIDAS', size: 13, hasGrip: true , user: 1},
+]
+
 const resolvers = {
     Query: {
         me() {
             return {
+                id: 1,
                 email: 'yoda@masters.com',
                 avatar: 'http://www.masters.com',
-                friends: []
+                shoes: []
             }
         },
         shoes(_, { input }) {
-            return [
-                { brand: 'NIKE', size: 12, sport: 'basketball' },
-                { brand: 'ADIDAS', size: 13, hasGrip: true },
-            ]
+            return shoesData
         }
     },
     Mutation: {
         newShoe(_, { input }) {
             //for now just return input
             return input
+        }
+    },
+    User:{
+        shoes(user) {
+            //what we will do is :
+            //we will use the user.id and go to database then get all the shoes that has this user id
+            return shoesData
         }
     },
     Shoe: {
@@ -88,13 +107,16 @@ const resolvers = {
             return null;
         }
     },
-    Footwear: {
-        __resolveType(obj) {
-          if (obj.sport) return 'Sneaker';
-          if (obj.hasGrip) return 'Boot';
-          return null;
-        },
-      },
+    Sneaker:{
+        user(shoe){
+            return user
+        }
+    },
+    Boot:{
+        user(shoe){
+            return user
+        }
+    }
 }
 
 const server = new ApolloServer({
