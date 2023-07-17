@@ -37,6 +37,8 @@ const typeDefs = gql`
         hasGrip : Boolean!
     }
 
+    union Footwear = Sneaker | Boot
+
     input ShoesInput {
         brand: ShoeType
         size: Int
@@ -49,7 +51,7 @@ const typeDefs = gql`
 
     type Query {
         me: User!
-        shoes(input: ShoesInput): [Shoe]!
+        shoes(input: ShoesInput): [Footwear]!
     }
 
     type Mutation{
@@ -85,7 +87,14 @@ const resolvers = {
             if (shoe.hasGrip) return 'Boot';
             return null;
         }
-    }
+    },
+    Footwear: {
+        __resolveType(obj) {
+          if (obj.sport) return 'Sneaker';
+          if (obj.hasGrip) return 'Boot';
+          return null;
+        },
+      },
 }
 
 const server = new ApolloServer({
