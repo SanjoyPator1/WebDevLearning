@@ -1,5 +1,5 @@
 const gql = require('graphql-tag')
-const {ApolloServer} = require('apollo-server')
+const { ApolloServer } = require('apollo-server')
 
 const typeDefs = gql`
 
@@ -7,21 +7,34 @@ const typeDefs = gql`
     comments to be shown in the toolbox
     """
 
+    
+    type User{
+        email: String!
+        avatar: String
+        friends: [User!]!
+    }
+    
     enum ShoeType {
         JORDAN
         NIKE
         ADIDAS
     }
 
-    type User{
-        email: String!
-        avatar: String
-        friends: [User!]!
-    }
-
-    type Shoe {
+    interface Shoe {
         brand: ShoeType
         size: Int!
+    }
+
+    type Sneaker implements Shoe {
+        brand: ShoeType
+        size: Int!
+        sport : String!
+    }
+
+    type Boot implements Shoe {
+        brand: ShoeType
+        size: Int!
+        hasGrip : Boolean!
     }
 
     input ShoesInput {
@@ -45,25 +58,32 @@ const typeDefs = gql`
 
 `
 const resolvers = {
-    Query : {
-        me(){
+    Query: {
+        me() {
             return {
                 email: 'yoda@masters.com',
                 avatar: 'http://www.masters.com',
                 friends: []
             }
         },
-        shoes(_, {input}){
+        shoes(_, { input }) {
             return [
-                {brand: 'Nike', size: 12},
-                {brand: 'Adidas', size: 13},
-            ].filter(shoe => shoe.brand === input.brand)
+                { brand: 'NIKE', size: 12, sport: 'basketball' },
+                { brand: 'ADIDAS', size: 13, hasGrip: true },
+            ]
         }
     },
-    Mutation : {
-        newShoe(_, {input}){
+    Mutation: {
+        newShoe(_, { input }) {
             //for now just return input
             return input
+        }
+    },
+    Shoe: {
+        __resolveType(shoe) {
+            if (shoe.sport) return 'Sneaker';
+            if (shoe.hasGrip) return 'Boot';
+            return null;
         }
     }
 }
@@ -74,6 +94,6 @@ const server = new ApolloServer({
 })
 
 server.listen(5000)
-    .then(()=>{
+    .then(() => {
         console.log('listening on port 5000')
     })
