@@ -1,0 +1,33 @@
+{
+  "users": [
+    {
+      "email": "member@member.com",
+      "password": "password",
+      "role": "ADMIN",
+      "verified": false,
+      "avatar": "http",
+      "createdAt": 1571213104370,
+      "id": "Z2hlvDmLOSRZGebC_Z_aA"
+    },
+    {
+      "email": "master@code.com",
+      "password": "password",
+      "role": "ADMIN",
+      "verified": false,
+      "avatar": "http",
+      "createdAt": 1689671574665,
+      "id": "DKx2oLWoyyokRXyk3xXoX"
+    },
+    {
+      "email": "member@code.com",
+      "password": "password",
+      "role": "MEMBER",
+      "verified": false,
+      "avatar": "http",
+      "createdAt": 1689672107893,
+      "id": "GjgH0OlNzWtS6WNEjooZD"
+    }
+  ],
+  "posts": [],
+  "settings": []
+}
