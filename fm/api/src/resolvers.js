@@ -24,10 +24,12 @@ module.exports = {
       //since we have only one user now
       return ctx.models.User.findOne()
     },
-    // name(pet, _, ctx) {
-    //   //here the pet is not guaranteed to have owner data 
-		// 	//after the above owner resolver is executed
-    // }
+    ownerName(pet, _, ctx) {
+      //here the pet is not guaranteed to have owner data 
+			//after the above owner resolver is executed
+      console.log("PET => name "+ JSON.stringify(pet))
+      return "hello"
+    }
   },
   User: {
     pets(user, _,ctx){
