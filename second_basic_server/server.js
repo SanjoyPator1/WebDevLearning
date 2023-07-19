@@ -1,8 +1,8 @@
-const { ApolloServer,PubSub } = require('apollo-server')
+const { ApolloServer, AuthenticationError, UserInputError, ApolloError } = require('apollo-server')
 const gql = require('graphql-tag')
-
-const pubSub = new PubSub()
-const NEW_ITEM = 'NEW_ITEM'
+// const {PubSub} = require("apollo-server")
+// const pubSub = new PubSub()
+// const NEW_ITEM = 'NEW_ITEM'
 
 const typeDefs = gql`
 
@@ -37,9 +37,9 @@ const typeDefs = gql`
         createItem(task: String!): Item!
     }
 
-    type Subscription {
-        newItem: Item
-    }
+    # type Subscription {
+    #     newItem: Item
+    # }
 
 `
 
@@ -66,15 +66,15 @@ const resolvers = {
         },
         createItem(_, {task}) {
             const item = {task}
-            pubSub.publish(NEW_ITEM, {newItem: item})
+            // pubSub.publish(NEW_ITEM, {newItem: item})
             return item
         }
     },
-    Subscription: {
-        newItem : {
-            subscribe: () => pubSub.asyncIterator(NEW_ITEM)
-        }
-    },
+    // Subscription: {
+    //     newItem : {
+    //         subscribe: () => pubSub.asyncIterator(NEW_ITEM)
+    //     }
+    // },
     Settings: {
         user(){
             return {
@@ -86,7 +86,7 @@ const resolvers = {
     },
     User : {
         error() {
-            throw new Error("User error")
+            throw new UserInputError("User auth error")
         }
     }
     
@@ -95,16 +95,20 @@ const resolvers = {
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context(){
-        if(connection) {
-            return {...connection.context}
-        }
-    },
-    subscriptions : {
-        onConnect(params){
-
-        }
+    formatError(e){
+        // console.log({e})
+        return e
     }
+    // context(){
+    //     if(connection) {
+    //         return {...connection.context}
+    //     }
+    // },
+    // subscriptions : {
+    //     onConnect(params){
+
+    //     }
+    // }
 })
 
 server.listen(5000)
