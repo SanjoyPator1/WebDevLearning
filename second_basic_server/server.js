@@ -8,7 +8,7 @@ const typeDefs = gql`
 
     type User{
         id: ID!
-        error: String!
+        error: String! @deprecated(reason:"because we are shifting to a new field")
         username: String!
         createdAt: Int!
     }
@@ -95,10 +95,10 @@ const resolvers = {
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    formatError(e){
-        // console.log({e})
-        return e
-    }
+    // formatError(e){
+    //     // console.log({e})
+    //     return e
+    // }
     // context(){
     //     if(connection) {
     //         return {...connection.context}
