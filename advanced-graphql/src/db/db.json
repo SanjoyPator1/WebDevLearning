@@ -28,6 +28,13 @@
       "id": "GjgH0OlNzWtS6WNEjooZD"
     }
   ],
-  "posts": [],
+  "posts": [
+    {
+      "message": "new post 01",
+      "author": "DKx2oLWoyyokRXyk3xXoX",
+      "createdAt": 1689748584870,
+      "id": "sIVxuZpv1iVlB0E9rqBXf"
+    }
+  ],
   "settings": []
 }

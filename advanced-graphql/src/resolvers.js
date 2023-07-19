@@ -1,5 +1,8 @@
+const {PubSub} = require('apollo-server')
 const {authenticated, authorized} = require('./auth')
 const NEW_POST = 'NEW_POST'
+
+const pubSub = new PubSub()
 
 /**
  * Anything Query / Mutation resolver
@@ -33,6 +36,12 @@ module.exports = {
     }),
 
     createPost: authenticated((_, {input}, {user, models}) => {
+      const post = models.Post.createOne({...input, author: user.id})
+      pubSub.publish(NEW_POST, { newPost: post })
+      return post
+    }),
+
+    updateMe: authenticated((_, {input}, {user, models}) => {
       return models.User.updateOne({id: user.id}, input)
     }),
     // admin role
@@ -59,6 +68,11 @@ module.exports = {
 
       const token = createToken(user)
       return {token, user}
+    }
+  },
+  Subscription : {
+    newPost : {
+      subscribe: () => pubSub.asyncIterator(NEW_POST)
     }
   },
   User: {

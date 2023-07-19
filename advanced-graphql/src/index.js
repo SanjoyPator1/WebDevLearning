@@ -7,10 +7,25 @@ const db = require('./db')
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context({req}) {
+  context({req, connection}) {
+    const context = {...db}
+    if(connection){
+      return {...context, ...connection.context}
+    }
     const token = req.headers.authorization
     const user = getUserFromToken(token)
-    return {...db, user, createToken}
+    return {...context, user, createToken}
+  },
+  subscriptions:{
+    onConnect(params){
+      const token = params.authToken
+      const user = getUserFromToken(token)
+      // console.log({user})
+      if(!user){
+        throw new Error('Authentication failed on subscriptions')
+      }
+      return {user}
+    }
   }
 })
 
