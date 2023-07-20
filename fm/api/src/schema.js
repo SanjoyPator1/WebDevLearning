@@ -16,6 +16,7 @@ const typeDefs = gql`
     name: String!
     type: String!
     owner: User!
+    img: String!
     ownerName : String
   }
 

@@ -9,33 +9,44 @@
       "createdAt": "182578",
       "name": "Moose",
       "type": "DOG",
-      "user": "jBWMVGjm50l6LGwepDoty"
+      "user": "jBWMVGjm50l6LGwepDoty",
+      "img": "https://2.bp.blogspot.com/-ttWDaNMCm9U/XhMVL044kAI/AAAAAAABW2c/R_hChX277CUaFcJhYzn2RglPMNeJFh8DwCLcBGAsYHQ/s1600/MUCH%2BADO%2B%25281%2529.png"
     },
     {
       "id": "2",
       "createdAt": "192578",
       "name": "Brave",
-      "type": "DOG"
+      "type": "DOG",
+      "img": "https://i.pinimg.com/originals/dc/de/66/dcde666a64ab8d2b0d26f2374110066e.jpg"
     },
     {
       "id": "3",
       "createdAt": "202578",
       "name": "Garfield",
       "type": "CAT",
-      "user": "jBWMVGjm50l6LGwepDoty"
+      "user": "jBWMVGjm50l6LGwepDoty",
+      "img": "https://staticg.sportskeeda.com/editor/2022/02/4f7fb-16459619545738-1920.jpg?w=840"
     },
     {
       "id": "4",
       "createdAt": "212578",
       "name": "Tom",
-      "type": "CAT"
+      "type": "CAT",
+      "img": "https://i.ytimg.com/vi/7HWXUjlNsMk/maxresdefault.jpg"
     },
     {
       "id": "IKPPv2K_cCd2EbzywWLCk",
       "createdAt": 1689576342325,
       "name": "Dragun",
       "type": "DRAGON",
-      "user": "jBWMVGjm50l6LGwepDoty"
+      "user": "jBWMVGjm50l6LGwepDoty",
+      "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSD56tWsjBMi2SScgz03G2la-tSlJ27C-G3mbTBmejU_CGCTHa2RPNoNrdV866wN7UNXB0&usqp=CAU"
+    },
+    {
+      "id": "6CCXlV4VLJBTpVgxNjh32",
+      "createdAt": 1689860432483,
+      "name": "teddy",
+      "type": "DOG"
     }
   ]
 }
