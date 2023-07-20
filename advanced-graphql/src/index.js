@@ -4,28 +4,32 @@ const typeDefs = require('./typedefs')
 const resolvers = require('./resolvers')
 const { createToken, getUserFromToken } = require('./auth')
 const db = require('./db')
+const {FormatDateDirective, AuthenticationDirective, AuthorizationDirective} = require('./directives')
 
-class LogDirective extends SchemaDirectiveVisitor {
-  visitFieldDefinition(field) {
-      // console.log(field)
-      const resolver = field.resolve || defaultFieldResolver
-      const {message: schemaMessage} = this.args
-      field.args.push({
-        type : GraphQLString,
-        name: 'message'
-      })
-      field.resolve = (root, {message, ...rest}, ctx, info) => {
-        console.log('⚡ hello : ',message || schemaMessage)
-        return resolver.apply(this, root, rest, ctx, info)
-      }
-  }
-}
+// class LogDirective extends SchemaDirectiveVisitor {
+//   visitFieldDefinition(field) {
+//       // console.log(field)
+//       const resolver = field.resolve || defaultFieldResolver
+//       const {message: schemaMessage} = this.args
+//       field.args.push({
+//         type : GraphQLString,
+//         name: 'message'
+//       })
+//       field.resolve = (root, {message, ...rest}, ctx, info) => {
+//         console.log('⚡ hello : ',message || schemaMessage)
+//         return resolver.apply(this, root, rest, ctx, info)
+//       }
+//   }
+// }
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   schemaDirectives: {
-    log: LogDirective
+    // log: LogDirective,
+    formatDate: FormatDateDirective,
+    authenticated: AuthenticationDirective,
+    authorized : AuthorizationDirective
   },
   context({ req, connection }) {
     const context = { ...db }

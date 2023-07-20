@@ -26,13 +26,22 @@
       "avatar": "http",
       "createdAt": 1689672107893,
       "id": "GjgH0OlNzWtS6WNEjooZD"
+    },
+    {
+      "email": "member2@code.com",
+      "password": "password",
+      "role": "MEMBER",
+      "verified": false,
+      "avatar": "http",
+      "createdAt": 1689837916258,
+      "id": "vjOnh3kFdCVSzvhc5QnYT"
     }
   ],
   "posts": [
     {
       "message": "new post 01",
       "author": "DKx2oLWoyyokRXyk3xXoX",
-      "createdAt": 1689748584870,
+      "createdAt": 1678892096789,
       "id": "sIVxuZpv1iVlB0E9rqBXf"
     }
   ],
