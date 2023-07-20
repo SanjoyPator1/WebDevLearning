@@ -1,9 +1,28 @@
-import { ApolloClient } from 'apollo-client'
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import { HttpLink } from 'apollo-link-http'
-import gql from 'graphql-tag'
+import { ApolloClient } from "apollo-client";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { HttpLink } from "apollo-link-http";
+import gql from "graphql-tag";
 
+const link = new HttpLink({ uri: "https://rickandmortyapi.com/graphql" });
 
-const client = new ApolloClient()
+const cache = new InMemoryCache();
 
-export default client
+const client = new ApolloClient({
+    link,
+    cache,
+});
+
+const query = gql`
+    {
+        characters {
+		    results {
+			    name
+		    }
+	    }
+    }
+`;
+
+client.query({query})
+    .then(res => console.log({res}))
+
+export default cache;
