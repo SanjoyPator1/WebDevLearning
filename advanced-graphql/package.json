@@ -19,6 +19,8 @@
     "@mdx-deck/themes": "^3.0.8",
     "apollo-server": "^2.9.6",
     "date-fns": "^2.5.0",
+    "graphql": "^14.7.0",
+    "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^8.5.1",
     "lowdb": "^1.0.0",
     "nanoid": "^2.1.3"
