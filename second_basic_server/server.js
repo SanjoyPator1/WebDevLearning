@@ -1,4 +1,10 @@
-const { ApolloServer, AuthenticationError, UserInputError, ApolloError } = require('apollo-server')
+const { 
+    ApolloServer, 
+    AuthenticationError, 
+    UserInputError, 
+    ApolloError,
+    SchemaDirectiveVisitor
+} = require('apollo-server')
 const gql = require('graphql-tag')
 // const {PubSub} = require("apollo-server")
 // const pubSub = new PubSub()
@@ -6,11 +12,13 @@ const gql = require('graphql-tag')
 
 const typeDefs = gql`
 
+    directive @log on FIELD_DEFINITION
+
     type User{
         id: ID!
         error: String! @deprecated(reason:"because we are shifting to a new field")
         username: String!
-        createdAt: Int!
+        createdAt: String!
     }
     
     type Settings {
