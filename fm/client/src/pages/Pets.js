@@ -12,6 +12,10 @@ const ALL_PETS = gql`
       name
       type
       img
+      owner {
+        id
+        age @client
+      }
     }
   }
 `;
@@ -23,6 +27,10 @@ const NEW_PET = gql`
       name
       type
       img
+      owner {
+        id
+        age @client
+      }
     }
   }
 `
@@ -32,12 +40,12 @@ export default function Pets() {
   const queryResult = useQuery(ALL_PETS);
   const { data, loading, error } = queryResult || {};
 
-  const [createPet, newPet] = useMutation(NEW_PET , {
-    update(cache, {data: {newPet}}){
-      const data = cache.readQuery({query: ALL_PETS})
+  const [createPet, newPet] = useMutation(NEW_PET, {
+    update(cache, { data: { newPet } }) {
+      const data = cache.readQuery({ query: ALL_PETS })
       cache.writeQuery({
         query: ALL_PETS,
-        data : {pets: [newPet, ...data.pets]}
+        data: { pets: [newPet, ...data.pets] }
       })
     }
   })
@@ -49,17 +57,29 @@ export default function Pets() {
     createPet({
       variables: {
         newPet: input
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        addPet: {
+          __typename: 'Pet', //name of the returned type
+          id: Math.floor(Math.random() * 10000) + '',
+          name: input.name,
+          type: input.type,
+          img: 'https://placehold.co/300'
+        }
       }
     })
   };
 
-  if (loading || newPet.loading) {
+  if (loading) {
     return <Loader />
   }
 
   if (error || newPet.error) {
     return <p>Error! ....</p>
   }
+
+  console.log(data.pets[0])
 
   if (modal) {
     return <NewPetModal onSubmit={onSubmit} onCancel={() => setModal(false)} />;
