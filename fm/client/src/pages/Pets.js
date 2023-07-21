@@ -33,8 +33,8 @@ const NEW_PET = gql`
     newPet(input: $newPet){
       ...PetsFields
     }
-    ${PETS_FIELDS}
   }
+  ${PETS_FIELDS}
 `
 
 export default function Pets() {

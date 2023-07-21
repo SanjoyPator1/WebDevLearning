@@ -20,14 +20,16 @@ module.exports = {
   },
   Pet: {
     owner(pet, _, ctx) {
-      console.log("PET => owner")
       //since we have only one user now
       return ctx.models.User.findOne()
     },
     img(pet) {
-      return pet.type === 'DOG'
-        ? 'https://placedog.net/300/300'
-        : 'http://placekitten.com/300/300'
+      const defaultImageUrl = (pet.type === 'DOG'
+      ? 'https://placedog.net/300/300'
+      : 'http://placekitten.com/300/300')
+
+      const imageData = pet.img ? pet.img : defaultImageUrl
+      return imageData
     },
     ownerName(pet, _, ctx) {
       //here the pet is not guaranteed to have owner data 
