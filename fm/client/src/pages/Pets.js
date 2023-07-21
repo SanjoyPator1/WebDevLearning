@@ -32,7 +32,15 @@ export default function Pets() {
   const queryResult = useQuery(ALL_PETS);
   const { data, loading, error } = queryResult || {};
 
-  const [createPet, newPet] = useMutation(NEW_PET)
+  const [createPet, newPet] = useMutation(NEW_PET , {
+    update(cache, {data: {newPet}}){
+      const data = cache.readQuery({query: ALL_PETS})
+      cache.writeQuery({
+        query: ALL_PETS,
+        data : {pets: [newPet, ...data.pets]}
+      })
+    }
+  })
 
   console.log({ data })
 

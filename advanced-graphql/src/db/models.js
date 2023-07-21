@@ -52,7 +52,7 @@ const createModel = (db, table) => ({
   createMany(toCreate) {
     const manyToCreate = (Array.isArray(toCreate) ?
       toCreate :
-      [toCreate]).map(item => ({
+      [toCreate])?.map(item => ({
         ...item, createdAt: Date.now(), id: nano()
       }))
 
