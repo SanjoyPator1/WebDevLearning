@@ -1,0 +1,293 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@supports (-webkit-touch-callout: none) {
+  .h-screen {
+    height: -webkit-fill-available;
+  }
+}
+
+/* @supports (-webkit-touch-callout: none) {
+  .h-screen {
+    height: -webkit-fill-available;
+  }
+} */
+
+@layer utilities {
+  @variants responsive {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+
+    ::-webkit-scrollbar{
+      width: 4px;
+      height: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f2;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 7px;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  }
+}
+
+@layer components {
+  /* component design system */
+  .avatar-style {
+    @apply w-16 h-16;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+ 
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+ 
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+ 
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+ 
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+ 
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+ 
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+ 
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+ 
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+ 
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+ 
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+ 
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+ 
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+
+  /* font design system */
+  /* Page header */
+  h1 {
+    @apply text-5xl md:text-7xl font-light tracking-wider font-title;
+  }
+
+  /* Section Header */
+  h2 {
+    @apply text-4xl md:text-5xl font-normal tracking-wider font-header;
+  }
+
+  /* Group Header */
+  h3 {
+    @apply text-sm md:text-base font-bold tracking-wider font-header;
+  }
+
+  /* h4 {
+    @apply text-xl md:text-2xl tracking-wide font-header;
+  }
+
+  h5 {
+    @apply text-lg md:text-xl  tracking-wide font-header;
+  }
+
+  h6 {
+    @apply text-base md:text-lg  tracking-wide font-header;
+  } */
+
+  /* Paragraphs */
+  p {
+    @apply py-[0.5px] text-sm md:text-base font-normal font-body text-justify;
+  }
+
+  /* custom padding class */
+  /* padding design system */
+  .py-base {
+    @apply py-1;
+  }
+
+  .px-base {
+    @apply px-2;
+  }
+
+  .p-base-container {
+    @apply px-base py-base;
+  }
+
+  /* constants : section header distance */
+  .px-md {
+    @apply px-2;
+  }
+
+  .py-md {
+    @apply py-2;
+  }
+
+  .px-lg {
+    @apply px-3;
+  }
+
+  .p-md-container {
+    @apply py-2 px-3;
+  }
+
+  .py-lg {
+    @apply py-4;
+  }
+
+  .px-lg {
+    @apply px-5;
+  }
+
+  .p-lg-container {
+    @apply py-lg px-lg;
+  }
+
+  .py-xl {
+    @apply py-5;
+  }
+
+  .px-xl {
+    @apply px-8;
+  }
+
+  .p-xl-container {
+    @apply py-xl px-xl;
+  }
+
+  .px-2xl {
+    @apply px-12;
+  }
+  .py-2xl {
+    @apply py-8;
+  }
+  .p-2xl-container {
+    @apply py-2xl px-2xl;
+  }
+
+  /* margin design system */
+
+  .mb-base {
+    @apply mb-1;
+  }
+
+  .mb-md {
+    @apply mb-2;
+  }
+
+  .mb-lg {
+    @apply mb-4;
+  }
+  .mb-xl {
+    @apply mb-7;
+  }
+
+  /* gap design system */
+
+  .gap-sm {
+    @apply gap-1;
+  }
+
+  .gap-base {
+    @apply gap-2;
+  }
+
+  /* constants : card gap */
+  .gap-md {
+    @apply gap-5;
+  }
+
+  /* constants : page section */
+  .gap-lg {
+    @apply gap-7;
+  }
+
+  .gap-xl {
+    @apply gap-12;
+  }
+
+  .gap-2xl {
+    @apply gap-20;
+  }
+
+  /* icon design system */
+  .icon-xl {
+    @apply text-3xl;
+  }
+  .icon-lg {
+    @apply text-2xl;
+  }
+  .icon-md {
+    @apply text-xl;
+  }
+
+  /* animation */
+  .expand {
+    @apply md:hover:tracking-[0.3rem] transition-all ease-in-out;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply min-h-screen;
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-screen;
+  }
+}
