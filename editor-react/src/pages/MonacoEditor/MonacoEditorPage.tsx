@@ -25,7 +25,7 @@ const MonacoEditorPage = () => {
       <Button onClick={() => setIsEditable((prev) => !prev)} className="w-fit">
         {isEditable ? "View Only" : "Edit"}
       </Button>
-      <div className="h-[60dvh] border-3">
+      <div className="h-fit flex flex-col gap-base">
         <CodeEditor
           codeDataProp={CodeEditorData}
           onChange={handleCodeEditorChange}

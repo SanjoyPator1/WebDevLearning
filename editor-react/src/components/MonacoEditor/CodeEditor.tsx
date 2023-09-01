@@ -8,6 +8,7 @@ import { optionsProgrammingLanguage } from "@/libs/constants";
 import { SearchSelectCommand } from "../SearchCommand/SearchCommand";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { Badge } from "../ui/badge";
+import ComboboxComponent from "../ComboboxComponent";
 
 const heightExtraSpace = 30;
 
@@ -44,8 +45,6 @@ const CodeEditor: FC<CodeEditorProps> = ({
   const [selectedLanguage, setSelectedLanguage] = useState(
     optionsProgrammingLanguage[1]
   );
-  const [openStateLanguageSelect, setOpenStateLanguageSelect] =
-    useState<boolean>(false);
 
   useEffect(() => {
     editorRef.current &&
@@ -79,7 +78,7 @@ const CodeEditor: FC<CodeEditorProps> = ({
   const handleEditorChange: OnChangeType = (value, editor) => {
     const linesCount = editorRef.current.getModel().getLineCount();
     const heightValue = linesCount * heightExtraSpace;
-    setHeight(heightValue <= 600 ? heightValue : 600);
+    setHeight(heightValue <= 600 ? heightValue : 400);
     if (value !== undefined && onChange) {
       onChange(value, linesCount);
     }
@@ -128,32 +127,30 @@ const CodeEditor: FC<CodeEditorProps> = ({
   // }
 
   return (
-    <div className="h-full flex flex-col gap-sm">
-      <SearchSelectCommand
-        open={openStateLanguageSelect}
-        setOpen={setOpenStateLanguageSelect}
-        options={optionsProgrammingLanguage}
-        getSelectedValue={handleLanguageSelect}
-      />
+    <div className="flex flex-col gap-sm">
       {/* top bar of code editor */}
       <div className="flex gap-sm md:gap-md">
         {isEditable && (
-          <div
-            className="bg-primary dark:bg-primary-foreground text-input text-sm rounded-md w-32 overflow-hidden flex gap-2 justify-between items-center py-1 px-2"
-            onClick={() => setOpenStateLanguageSelect((prev) => !prev)}
-          >
-            {selectedLanguage.label}
-            <IoMdArrowDropdown className="h-4 w-4" />
-          </div>
+          <ComboboxComponent
+            initialValue={selectedLanguage.value}
+            selectLabel="Select languages..."
+            searchLabel="Search languages..."
+            notFoundLabel="Not found..."
+            optionData={optionsProgrammingLanguage}
+            getSelectedValue={handleLanguageSelect}
+          />
         )}
         {!isEditable && (
-          <Badge className="py-1" variant={"outline"}>
+          <Badge
+            className="py-1 bg-secondary dark:bg-secondary-foreground dark:text-white"
+            variant={"outline"}
+          >
             {selectedLanguage?.label}
           </Badge>
         )}
       </div>
       <div
-        className={`relative h-full group border border-3 border-primary border-opacity-50 ${
+        className={`relative group border border-3 border-primary border-opacity-50 ${
           !isEditable && "pointer-events-none md:pointer-events-auto"
         }`}
       >
