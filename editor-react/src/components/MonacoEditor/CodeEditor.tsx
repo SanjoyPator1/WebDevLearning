@@ -1,14 +1,15 @@
 import { FC, useEffect, useRef, useState } from "react";
-import MonacoEditor from "@monaco-editor/react";
+import MonacoEditor, { loader } from "@monaco-editor/react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { editor } from "monaco-editor";
 import prettier from "prettier";
 import parser from "prettier/parser-babel";
-import { optionsProgrammingLanguage } from "@/libs/constants";
+import { monacoThemesList, optionsProgrammingLanguage } from "@/libs/constants";
 import { SearchSelectCommand } from "../SearchCommand/SearchCommand";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { Badge } from "../ui/badge";
 import ComboboxComponent from "../ComboboxComponent";
+import monacoThemes from "monaco-themes/themes/themelist.json";
 
 const heightExtraSpace = 30;
 
@@ -46,6 +47,39 @@ const CodeEditor: FC<CodeEditorProps> = ({
     optionsProgrammingLanguage[1]
   );
 
+  const defineTheme = (theme: string) => {
+    return new Promise(async () => {
+      await Promise.all([loader.init(), monacoThemesList[theme]]).then(
+        ([monaco, themeData]) => {
+          monaco.editor.defineTheme(
+            theme,
+            themeData as editor.IStandaloneThemeData
+          );
+          monaco.editor.setTheme(theme);
+        }
+      );
+    });
+  };
+
+  monaco.editor;
+
+  const [selectedTheme, setSelectedTheme] = useState({
+    label: "Vs Dark",
+    value: "vs-dark",
+  });
+
+  function handleThemeChange(themeChoosen: { label: string; value: string }) {
+    setSelectedTheme(themeChoosen);
+
+    if (["light", "vs-dark"].includes(themeChoosen.value)) {
+      setSelectedTheme(themeChoosen);
+    } else {
+      defineTheme(themeChoosen.value).then(() =>
+        setSelectedTheme(themeChoosen)
+      );
+    }
+  }
+
   useEffect(() => {
     editorRef.current &&
       editorRef.current.updateOptions({
@@ -75,7 +109,7 @@ const CodeEditor: FC<CodeEditorProps> = ({
     setHeight(heightValue);
   };
 
-  const handleEditorChange: OnChangeType = (value, editor) => {
+  const handleEditorChange: OnChangeType = (value) => {
     const linesCount = editorRef.current.getModel().getLineCount();
     const heightValue = linesCount * heightExtraSpace;
     setHeight(heightValue <= 600 ? heightValue : 400);
@@ -84,60 +118,35 @@ const CodeEditor: FC<CodeEditorProps> = ({
     }
   };
 
-  // const onFormatClick = async () => {
-  //   // //get the current value from the editor
-  //   // const unformatted = editorRef.current.getModel().getValue();
-  //   // console.log({ unformatted });
-  //   // //format the value
-  //   // const formatted = await prettier.format(unformatted, {
-  //   //   parser: "babel",
-  //   //   plugins: [parser],
-  //   //   useTabs: false,
-  //   // });
-  //   // //set the formatted value back in the editor
-  //   // if (formatted) {
-  //   //   console.log({ formatted });
-  //   //   editorRef.current.setValue(formatted.replace(/\n$/, ""));
-  //   // }
-  // };
-
-  // try {
-  //   const test = async () => {
-  //     const code = `function add(a, b) {
-  //             return a + b;
-  //           }`;
-
-  //     // const prettier = await import("prettier/standalone");
-  //     // const babylon = await import('prettier/parser-babylon');
-  //     // const babel = await import("prettier/parser-babel");
-  //     // window.nigga = prettier;
-
-  //     const formattedCode = await prettier.format(code, {
-  //       parser: "babel",
-  //       plugins: [parser],
-  //       semi: true,
-  //       useTabs: false,
-  //     });
-
-  //     console.log({ formattedCode });
-  //   };
-  //   test();
-  // } catch (e) {
-  //   console.log({ e });
-  // }
-
   return (
     <div className="flex flex-col gap-sm">
       {/* top bar of code editor */}
       <div className="flex gap-sm md:gap-md">
         {isEditable && (
           <ComboboxComponent
-            initialValue={selectedLanguage.value}
+            selectedValue={selectedLanguage.value}
             selectLabel="Select languages..."
             searchLabel="Search languages..."
             notFoundLabel="Not found..."
             optionData={optionsProgrammingLanguage}
             getSelectedValue={handleLanguageSelect}
+          />
+        )}
+        {isEditable && (
+          <ComboboxComponent
+            selectedValue={selectedTheme.value}
+            selectLabel="Select theme..."
+            searchLabel="Search theme..."
+            notFoundLabel="Not found..."
+            optionData={[
+              ...Object.entries(monacoThemes).map(([themeId, themeName]) => ({
+                label: themeName,
+                value: themeId,
+              })),
+              { label: "VS Dark", value: "vs-dark" },
+              { label: "VS Light", value: "light" },
+            ]}
+            getSelectedValue={handleThemeChange}
           />
         )}
         {!isEditable && (
@@ -154,17 +163,11 @@ const CodeEditor: FC<CodeEditorProps> = ({
           !isEditable && "pointer-events-none md:pointer-events-auto"
         }`}
       >
-        {/* <Button
-          className="absolute top-0 right-0 z-10 invisible group-hover:visible"
-          onClick={onFormatClick}
-        >
-          Format
-        </Button> */}
         <MonacoEditor
           value={codeDataProp?.codeValue}
           onMount={handleEditorDidMount}
           onChange={handleEditorChange}
-          theme="vs-dark"
+          theme={selectedTheme.value}
           language={selectedLanguage.value}
           height={height}
           options={{

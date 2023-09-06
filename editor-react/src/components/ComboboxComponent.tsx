@@ -17,7 +17,7 @@ import {
 import { cn } from "@/libs/utils";
 
 interface ComboboxComponentProp {
-  initialValue: string;
+  selectedValue: string;
   selectLabel: string;
   searchLabel: string;
   notFoundLabel: string;
@@ -29,7 +29,7 @@ interface ComboboxComponentProp {
 }
 
 const ComboboxComponent: FC<ComboboxComponentProp> = ({
-  initialValue,
+  selectedValue,
   selectLabel,
   searchLabel,
   notFoundLabel,
@@ -37,7 +37,9 @@ const ComboboxComponent: FC<ComboboxComponentProp> = ({
   getSelectedValue,
 }) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(initialValue);
+  // const [value, setValue] = useState(selectedValue);
+
+  console.log({ selectedValue });
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -48,8 +50,9 @@ const ComboboxComponent: FC<ComboboxComponentProp> = ({
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {value
-            ? optionData.find((framework) => framework.value === value)?.label
+          {selectedValue
+            ? optionData.find((framework) => framework.value === selectedValue)
+                ?.label
             : selectLabel}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -62,8 +65,8 @@ const ComboboxComponent: FC<ComboboxComponentProp> = ({
             {optionData.map((framework) => (
               <CommandItem
                 key={framework.value}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue);
+                onSelect={() => {
+                  // setValue(currentValue === value ? "" : currentValue);
                   getSelectedValue(framework);
                   setOpen(false);
                 }}
@@ -71,7 +74,9 @@ const ComboboxComponent: FC<ComboboxComponentProp> = ({
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    value === framework.value ? "opacity-100" : "opacity-0"
+                    selectedValue === framework.value
+                      ? "opacity-100"
+                      : "opacity-0"
                   )}
                 />
                 {framework.label}
