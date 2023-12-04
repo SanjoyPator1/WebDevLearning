@@ -26,6 +26,9 @@ const ScalesImplementation = () => {
     .domain([0, max + 20])
     .range([height, 0]);
 
+    console.log({xScale})
+    console.log({yScale})
+
   const svgRef = useRef();
 
   useEffect(() => {

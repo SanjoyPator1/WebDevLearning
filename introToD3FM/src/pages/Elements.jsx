@@ -2,6 +2,7 @@ import React from "react";
 import { Typography } from "@mui/material";
 import S1Shapes from "../sections/M05-Shapes/Shapes";
 import S6HierarchalLayouts from "../sections/M06-HierarchalLayouts/HierarchalLayouts";
+import S9Zoom from "../sections/M09-Zoom/Zoom";
 
 
 const Elements = () => {
@@ -17,7 +18,8 @@ const Elements = () => {
       <S1Shapes/>
       <br />
       <S6HierarchalLayouts/>
-      
+      <br/>
+      <S9Zoom/>
     </div>
   );
 }
