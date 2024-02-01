@@ -181,7 +181,6 @@ const E2ZoomableTimeline = () => {
   // Returning the component JSX
   return (
     <div style={{ width: "100%" }} ref={containerRef}>
-      <h5>Example 01 - Zoomable timeline</h5>
       <svg
         ref={svgRefZoom}
         height={height}

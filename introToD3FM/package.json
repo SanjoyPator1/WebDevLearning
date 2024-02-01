@@ -9,10 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.9",
-    "@mui/material": "^5.11.9",
+    "@mui/material": "^5.15.6",
+    "@tabler/icons-react": "^2.46.0",
     "d3": "^7.8.2",
     "lodash": "^4.17.21",
     "react": "^18.2.0",

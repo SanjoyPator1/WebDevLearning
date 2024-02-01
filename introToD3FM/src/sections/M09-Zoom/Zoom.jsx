@@ -3,6 +3,7 @@ import { moduleTypoStyle } from "../../components/styles";
 import React from "react";
 import E1SimpleZoom from "./01SimpleZoom";
 import E2ZoomableTimeline from "./02ZoomableTimeline";
+import E3TimelineGraphAdvanced from "./03TimelineGraphAdvanced";
 
 const S9Zoom = () => {
   return (
@@ -35,6 +36,17 @@ const S9Zoom = () => {
         <E2ZoomableTimeline/>
       </div>
       <hr/>
+      <h3>Exercise 03 - Timeline graph advanced</h3>
+      <div
+        style={{
+          width: "100%",
+          height: "fit-content",
+          backgroundColor: "white",
+          margin: "0 auto",
+        }}
+      >
+        <E3TimelineGraphAdvanced/>
+      </div>
     </div>
   );
 };
