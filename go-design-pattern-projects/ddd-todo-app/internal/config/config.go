@@ -20,7 +20,6 @@ var (
 )
 
 // LoadConfig loads environment variables from the .env file.
-// LoadConfig loads environment variables from the .env file.
 func LoadConfig() {
 	err := godotenv.Load(".env")
 	if err != nil {
