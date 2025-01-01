@@ -2491,3 +2491,1070 @@
 25/01/01 12:36:05 INFO ShutdownHookManager: Deleting directory /tmp/spark-328d5580-337a-4a97-8674-80459d25dc33
 25/01/01 12:36:05 INFO ShutdownHookManager: Deleting directory /tmp/spark-328d5580-337a-4a97-8674-80459d25dc33/pyspark-0702cada-9e7f-4a94-a765-a44b687255f6
 25/01/01 12:36:05 INFO ShutdownHookManager: Deleting directory /tmp/spark-0d74e7ff-5853-42b6-b68e-1e17daec429c
+25/01/01 12:51:25 WARN Utils: Your hostname, bidut-HP-Laptop-14s-fq1xxx resolves to a loopback address: 127.0.1.1; using 192.168.29.182 instead (on interface wlo1)
+25/01/01 12:51:25 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+25/01/01 12:51:25 INFO SparkContext: Running Spark version 3.5.4
+25/01/01 12:51:25 INFO SparkContext: OS info Linux, 5.15.0-126-generic, amd64
+25/01/01 12:51:25 INFO SparkContext: Java version 11.0.25
+25/01/01 12:51:25 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+25/01/01 12:51:25 INFO ResourceUtils: ==============================================================
+25/01/01 12:51:25 INFO ResourceUtils: No custom resources configured for spark.driver.
+25/01/01 12:51:25 INFO ResourceUtils: ==============================================================
+25/01/01 12:51:25 INFO SparkContext: Submitted application: Bucket Join
+25/01/01 12:51:25 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+25/01/01 12:51:25 INFO ResourceProfile: Limiting resource is cpu
+25/01/01 12:51:25 INFO ResourceProfileManager: Added ResourceProfile id: 0
+25/01/01 12:51:25 INFO SecurityManager: Changing view acls to: bidut
+25/01/01 12:51:25 INFO SecurityManager: Changing modify acls to: bidut
+25/01/01 12:51:25 INFO SecurityManager: Changing view acls groups to: 
+25/01/01 12:51:25 INFO SecurityManager: Changing modify acls groups to: 
+25/01/01 12:51:26 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: bidut; groups with view permissions: EMPTY; users with modify permissions: bidut; groups with modify permissions: EMPTY
+25/01/01 12:51:26 INFO Utils: Successfully started service 'sparkDriver' on port 39479.
+25/01/01 12:51:26 INFO SparkEnv: Registering MapOutputTracker
+25/01/01 12:51:26 INFO SparkEnv: Registering BlockManagerMaster
+25/01/01 12:51:26 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+25/01/01 12:51:26 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+25/01/01 12:51:26 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+25/01/01 12:51:26 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-f525ae49-6d15-498c-bf7e-4ed50e841d1f
+25/01/01 12:51:26 INFO MemoryStore: MemoryStore started with capacity 434.4 MiB
+25/01/01 12:51:26 INFO SparkEnv: Registering OutputCommitCoordinator
+25/01/01 12:51:26 INFO log: Logging initialized @2421ms to org.sparkproject.jetty.util.log.Slf4jLog
+25/01/01 12:51:26 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+25/01/01 12:51:26 INFO Server: jetty-9.4.56.v20240826; built: 2024-08-26T17:15:05.868Z; git: ec6782ff5ead824dabdcf47fa98f90a4aedff401; jvm 11.0.25+9-post-Ubuntu-1ubuntu120.04
+25/01/01 12:51:26 INFO Server: Started @2549ms
+25/01/01 12:51:26 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+25/01/01 12:51:26 INFO AbstractConnector: Started ServerConnector@3ec2c48{HTTP/1.1, (http/1.1)}{0.0.0.0:4041}
+25/01/01 12:51:26 INFO Utils: Successfully started service 'SparkUI' on port 4041.
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@60c47b9c{/,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO Executor: Starting executor ID driver on host 192.168.29.182
+25/01/01 12:51:26 INFO Executor: OS info Linux, 5.15.0-126-generic, amd64
+25/01/01 12:51:26 INFO Executor: Java version 11.0.25
+25/01/01 12:51:26 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+25/01/01 12:51:26 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@4fdc97b5 for default.
+25/01/01 12:51:26 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 44689.
+25/01/01 12:51:26 INFO NettyBlockTransferService: Server created on 192.168.29.182:44689
+25/01/01 12:51:26 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+25/01/01 12:51:26 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 192.168.29.182, 44689, None)
+25/01/01 12:51:26 INFO BlockManagerMasterEndpoint: Registering block manager 192.168.29.182:44689 with 434.4 MiB RAM, BlockManagerId(driver, 192.168.29.182, 44689, None)
+25/01/01 12:51:26 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 192.168.29.182, 44689, None)
+25/01/01 12:51:26 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 192.168.29.182, 44689, None)
+25/01/01 12:51:26 INFO ContextHandler: Stopped o.s.j.s.ServletContextHandler@60c47b9c{/,null,STOPPED,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@3bc0b0b1{/jobs,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@4a99e51b{/jobs/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@17825c8a{/jobs/job,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@72a5cdd6{/jobs/job/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@53431028{/stages,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@58e8bc65{/stages/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@20404bd9{/stages/stage,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@9bac979{/stages/stage/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@68eb8d8c{/stages/pool,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@67cd3d8e{/stages/pool/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@2117ab57{/storage,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@92aed36{/storage/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@26f05ec2{/storage/rdd,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@53cb6171{/storage/rdd/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@45c4276d{/environment,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@7311c468{/environment/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@45200d49{/executors,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@c96da1b{/executors/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@3514e283{/executors/threadDump,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@351dfc8a{/executors/threadDump/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@8a71719{/executors/heapHistogram,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@50ac29c4{/executors/heapHistogram/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@55f265c4{/static,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@3af04d52{/,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@721940c{/api,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@64f2a82f{/jobs/job/kill,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@1dedc7fe{/stages/stage/kill,null,AVAILABLE,@Spark}
+25/01/01 12:51:26 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@369102af{/metrics/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:27 INFO SharedState: Setting hive.metastore.warehouse.dir ('null') to the value of spark.sql.warehouse.dir.
+25/01/01 12:51:27 INFO SharedState: Warehouse path is 'file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse'.
+25/01/01 12:51:27 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@21ed3703{/SQL,null,AVAILABLE,@Spark}
+25/01/01 12:51:27 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@5cd80324{/SQL/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:27 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@4685ca0d{/SQL/execution,null,AVAILABLE,@Spark}
+25/01/01 12:51:27 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@57ddc221{/SQL/execution/json,null,AVAILABLE,@Spark}
+25/01/01 12:51:27 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@25502668{/static/sql,null,AVAILABLE,@Spark}
+25/01/01 12:51:28 INFO InMemoryFileIndex: It took 65 ms to list leaf files for 1 paths.
+25/01/01 12:51:28 INFO InMemoryFileIndex: It took 4 ms to list leaf files for 3 paths.
+25/01/01 12:51:30 INFO FileSourceStrategy: Pushed Filters: 
+25/01/01 12:51:30 INFO FileSourceStrategy: Post-Scan Filters: 
+25/01/01 12:51:30 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 199.1 KiB, free 434.2 MiB)
+25/01/01 12:51:30 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 34.2 KiB, free 434.2 MiB)
+25/01/01 12:51:30 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on 192.168.29.182:44689 (size: 34.2 KiB, free: 434.4 MiB)
+25/01/01 12:51:30 INFO SparkContext: Created broadcast 0 from json at NativeMethodAccessorImpl.java:0
+25/01/01 12:51:30 INFO FileSourceScanExec: Planning scan with bin packing, max size: 31960205 bytes, open cost is considered as scanning 4194304 bytes.
+25/01/01 12:51:30 INFO SparkContext: Starting job: json at NativeMethodAccessorImpl.java:0
+25/01/01 12:51:30 INFO DAGScheduler: Got job 0 (json at NativeMethodAccessorImpl.java:0) with 3 output partitions
+25/01/01 12:51:30 INFO DAGScheduler: Final stage: ResultStage 0 (json at NativeMethodAccessorImpl.java:0)
+25/01/01 12:51:30 INFO DAGScheduler: Parents of final stage: List()
+25/01/01 12:51:30 INFO DAGScheduler: Missing parents: List()
+25/01/01 12:51:30 INFO DAGScheduler: Submitting ResultStage 0 (MapPartitionsRDD[3] at json at NativeMethodAccessorImpl.java:0), which has no missing parents
+25/01/01 12:51:30 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 15.6 KiB, free 434.2 MiB)
+25/01/01 12:51:30 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 7.7 KiB, free 434.1 MiB)
+25/01/01 12:51:30 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on 192.168.29.182:44689 (size: 7.7 KiB, free: 434.4 MiB)
+25/01/01 12:51:30 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1585
+25/01/01 12:51:30 INFO DAGScheduler: Submitting 3 missing tasks from ResultStage 0 (MapPartitionsRDD[3] at json at NativeMethodAccessorImpl.java:0) (first 15 tasks are for partitions Vector(0, 1, 2))
+25/01/01 12:51:30 INFO TaskSchedulerImpl: Adding task set 0.0 with 3 tasks resource profile 0
+25/01/01 12:51:31 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0) (192.168.29.182, executor driver, partition 0, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:51:31 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1) (192.168.29.182, executor driver, partition 1, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:51:31 INFO TaskSetManager: Starting task 2.0 in stage 0.0 (TID 2) (192.168.29.182, executor driver, partition 2, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:51:31 INFO Executor: Running task 1.0 in stage 0.0 (TID 1)
+25/01/01 12:51:31 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+25/01/01 12:51:31 INFO Executor: Running task 2.0 in stage 0.0 (TID 2)
+25/01/01 12:51:31 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d1/part-00001-00af64b6-7ef5-4909-8f82-b8897114efaf-c000.json, range: 0-30670316, partition values: [empty row]
+25/01/01 12:51:31 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d1/part-00002-00af64b6-7ef5-4909-8f82-b8897114efaf-c000.json, range: 0-22695020, partition values: [empty row]
+25/01/01 12:51:31 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d1/part-00000-00af64b6-7ef5-4909-8f82-b8897114efaf-c000.json, range: 0-29932367, partition values: [empty row]
+25/01/01 12:51:31 INFO CodeGenerator: Code generated in 174.618059 ms
+25/01/01 12:51:32 INFO Executor: Finished task 2.0 in stage 0.0 (TID 2). 2256 bytes result sent to driver
+25/01/01 12:51:32 INFO TaskSetManager: Finished task 2.0 in stage 0.0 (TID 2) in 1368 ms on 192.168.29.182 (executor driver) (1/3)
+25/01/01 12:51:32 INFO Executor: Finished task 1.0 in stage 0.0 (TID 1). 2213 bytes result sent to driver
+25/01/01 12:51:32 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 1470 ms on 192.168.29.182 (executor driver) (2/3)
+25/01/01 12:51:32 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 2213 bytes result sent to driver
+25/01/01 12:51:32 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 1522 ms on 192.168.29.182 (executor driver) (3/3)
+25/01/01 12:51:32 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool 
+25/01/01 12:51:32 INFO DAGScheduler: ResultStage 0 (json at NativeMethodAccessorImpl.java:0) finished in 1.662 s
+25/01/01 12:51:32 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+25/01/01 12:51:32 INFO TaskSchedulerImpl: Killing all running tasks in stage 0: Stage finished
+25/01/01 12:51:32 INFO DAGScheduler: Job 0 finished: json at NativeMethodAccessorImpl.java:0, took 1.717811 s
+25/01/01 12:51:32 INFO InMemoryFileIndex: It took 2 ms to list leaf files for 1 paths.
+25/01/01 12:51:32 INFO InMemoryFileIndex: It took 2 ms to list leaf files for 3 paths.
+25/01/01 12:51:32 INFO FileSourceStrategy: Pushed Filters: 
+25/01/01 12:51:32 INFO FileSourceStrategy: Post-Scan Filters: 
+25/01/01 12:51:32 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 199.1 KiB, free 434.0 MiB)
+25/01/01 12:51:32 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 34.2 KiB, free 433.9 MiB)
+25/01/01 12:51:32 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on 192.168.29.182:44689 (size: 34.2 KiB, free: 434.3 MiB)
+25/01/01 12:51:32 INFO SparkContext: Created broadcast 2 from json at NativeMethodAccessorImpl.java:0
+25/01/01 12:51:32 INFO FileSourceScanExec: Planning scan with bin packing, max size: 26547366 bytes, open cost is considered as scanning 4194304 bytes.
+25/01/01 12:51:32 INFO SparkContext: Starting job: json at NativeMethodAccessorImpl.java:0
+25/01/01 12:51:32 INFO DAGScheduler: Got job 1 (json at NativeMethodAccessorImpl.java:0) with 3 output partitions
+25/01/01 12:51:32 INFO DAGScheduler: Final stage: ResultStage 1 (json at NativeMethodAccessorImpl.java:0)
+25/01/01 12:51:32 INFO DAGScheduler: Parents of final stage: List()
+25/01/01 12:51:32 INFO DAGScheduler: Missing parents: List()
+25/01/01 12:51:32 INFO DAGScheduler: Submitting ResultStage 1 (MapPartitionsRDD[7] at json at NativeMethodAccessorImpl.java:0), which has no missing parents
+25/01/01 12:51:32 INFO MemoryStore: Block broadcast_3 stored as values in memory (estimated size 15.6 KiB, free 433.9 MiB)
+25/01/01 12:51:32 INFO MemoryStore: Block broadcast_3_piece0 stored as bytes in memory (estimated size 7.7 KiB, free 433.9 MiB)
+25/01/01 12:51:32 INFO BlockManagerInfo: Added broadcast_3_piece0 in memory on 192.168.29.182:44689 (size: 7.7 KiB, free: 434.3 MiB)
+25/01/01 12:51:32 INFO SparkContext: Created broadcast 3 from broadcast at DAGScheduler.scala:1585
+25/01/01 12:51:32 INFO DAGScheduler: Submitting 3 missing tasks from ResultStage 1 (MapPartitionsRDD[7] at json at NativeMethodAccessorImpl.java:0) (first 15 tasks are for partitions Vector(0, 1, 2))
+25/01/01 12:51:32 INFO TaskSchedulerImpl: Adding task set 1.0 with 3 tasks resource profile 0
+25/01/01 12:51:32 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 3) (192.168.29.182, executor driver, partition 0, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:51:32 INFO TaskSetManager: Starting task 1.0 in stage 1.0 (TID 4) (192.168.29.182, executor driver, partition 1, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:51:32 INFO TaskSetManager: Starting task 2.0 in stage 1.0 (TID 5) (192.168.29.182, executor driver, partition 2, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:51:32 INFO Executor: Running task 2.0 in stage 1.0 (TID 5)
+25/01/01 12:51:32 INFO Executor: Running task 0.0 in stage 1.0 (TID 3)
+25/01/01 12:51:32 INFO Executor: Running task 1.0 in stage 1.0 (TID 4)
+25/01/01 12:51:32 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d2/part-00000-ee8814fd-bbb7-4a16-912b-f74b04a6d4fa-c000.json, range: 0-24318011, partition values: [empty row]
+25/01/01 12:51:32 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d2/part-00002-ee8814fd-bbb7-4a16-912b-f74b04a6d4fa-c000.json, range: 0-17923969, partition values: [empty row]
+25/01/01 12:51:32 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d2/part-00001-ee8814fd-bbb7-4a16-912b-f74b04a6d4fa-c000.json, range: 0-24817208, partition values: [empty row]
+25/01/01 12:51:33 INFO Executor: Finished task 2.0 in stage 1.0 (TID 5). 2182 bytes result sent to driver
+25/01/01 12:51:33 INFO TaskSetManager: Finished task 2.0 in stage 1.0 (TID 5) in 862 ms on 192.168.29.182 (executor driver) (1/3)
+25/01/01 12:51:33 INFO Executor: Finished task 1.0 in stage 1.0 (TID 4). 2182 bytes result sent to driver
+25/01/01 12:51:33 INFO TaskSetManager: Finished task 1.0 in stage 1.0 (TID 4) in 906 ms on 192.168.29.182 (executor driver) (2/3)
+25/01/01 12:51:33 INFO Executor: Finished task 0.0 in stage 1.0 (TID 3). 2182 bytes result sent to driver
+25/01/01 12:51:33 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 3) in 934 ms on 192.168.29.182 (executor driver) (3/3)
+25/01/01 12:51:33 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool 
+25/01/01 12:51:33 INFO DAGScheduler: ResultStage 1 (json at NativeMethodAccessorImpl.java:0) finished in 0.948 s
+25/01/01 12:51:33 INFO DAGScheduler: Job 1 is finished. Cancelling potential speculative or zombie tasks for this job
+25/01/01 12:51:33 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+25/01/01 12:51:33 INFO DAGScheduler: Job 1 finished: json at NativeMethodAccessorImpl.java:0, took 0.956293 s
+25/01/01 12:51:33 INFO HiveConf: Found configuration file null
+25/01/01 12:51:33 INFO HiveUtils: Initializing HiveMetastoreConnection version 2.3.9 using Spark classes.
+25/01/01 12:51:34 INFO HiveClientImpl: Warehouse location for Hive client (version 2.3.9) is file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse
+25/01/01 12:51:34 WARN HiveConf: HiveConf of name hive.stats.jdbc.timeout does not exist
+25/01/01 12:51:34 WARN HiveConf: HiveConf of name hive.stats.retries.wait does not exist
+25/01/01 12:51:34 INFO HiveMetaStore: 0: Opening raw store with implementation class:org.apache.hadoop.hive.metastore.ObjectStore
+25/01/01 12:51:34 INFO ObjectStore: ObjectStore, initialize called
+25/01/01 12:51:34 INFO Persistence: Property hive.metastore.integral.jdo.pushdown unknown - will be ignored
+25/01/01 12:51:34 INFO Persistence: Property datanucleus.cache.level2 unknown - will be ignored
+25/01/01 12:51:34 INFO BlockManagerInfo: Removed broadcast_3_piece0 on 192.168.29.182:44689 in memory (size: 7.7 KiB, free: 434.3 MiB)
+25/01/01 12:51:34 INFO BlockManagerInfo: Removed broadcast_2_piece0 on 192.168.29.182:44689 in memory (size: 34.2 KiB, free: 434.4 MiB)
+25/01/01 12:51:35 INFO ObjectStore: Setting MetaStore object pin classes with hive.metastore.cache.pinobjtypes="Table,StorageDescriptor,SerDeInfo,Partition,Database,Type,FieldSchema,Order"
+25/01/01 12:51:37 INFO MetaStoreDirectSql: Using direct SQL, underlying DB is DERBY
+25/01/01 12:51:37 INFO ObjectStore: Initialized ObjectStore
+25/01/01 12:51:37 WARN ObjectStore: Version information not found in metastore. hive.metastore.schema.verification is not enabled so recording the schema version 2.3.0
+25/01/01 12:51:37 WARN ObjectStore: setMetaStoreSchemaVersion called but recording version is disabled: version = 2.3.0, comment = Set by MetaStore bidut@127.0.1.1
+25/01/01 12:51:37 WARN ObjectStore: Failed to get database default, returning NoSuchObjectException
+25/01/01 12:51:37 INFO HiveMetaStore: Added admin role in metastore
+25/01/01 12:51:37 INFO HiveMetaStore: Added public role in metastore
+25/01/01 12:51:38 INFO HiveMetaStore: No user is added in admin role, since config is empty
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_database: default
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: default	
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:38 WARN ObjectStore: Failed to get database my_db, returning NoSuchObjectException
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:38 WARN ObjectStore: Failed to get database my_db, returning NoSuchObjectException
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_database: global_temp
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: global_temp	
+25/01/01 12:51:38 WARN ObjectStore: Failed to get database global_temp, returning NoSuchObjectException
+25/01/01 12:51:38 INFO HiveMetaStore: 0: create_database: Database(name:my_db, description:, locationUri:file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db, parameters:{}, ownerName:bidut)
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=create_database: Database(name:my_db, description:, locationUri:file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db, parameters:{}, ownerName:bidut)	
+25/01/01 12:51:38 WARN ObjectStore: Failed to get database my_db, returning NoSuchObjectException
+25/01/01 12:51:38 INFO FileUtils: Creating directory if it doesn't exist: file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data1
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data1	
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data1
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data1	
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:38 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:38 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:38 INFO FileSourceStrategy: Pushed Filters: 
+25/01/01 12:51:38 INFO FileSourceStrategy: Post-Scan Filters: 
+25/01/01 12:51:38 INFO ParquetUtils: Using default output committer for Parquet: org.apache.parquet.hadoop.ParquetOutputCommitter
+25/01/01 12:51:38 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+25/01/01 12:51:38 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+25/01/01 12:51:38 INFO SQLHadoopMapReduceCommitProtocol: Using user defined output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+25/01/01 12:51:38 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+25/01/01 12:51:38 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+25/01/01 12:51:38 INFO SQLHadoopMapReduceCommitProtocol: Using output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+25/01/01 12:51:38 INFO CodeGenerator: Code generated in 23.722889 ms
+25/01/01 12:51:38 INFO MemoryStore: Block broadcast_4 stored as values in memory (estimated size 198.9 KiB, free 434.0 MiB)
+25/01/01 12:51:38 INFO MemoryStore: Block broadcast_4_piece0 stored as bytes in memory (estimated size 34.1 KiB, free 433.9 MiB)
+25/01/01 12:51:38 INFO BlockManagerInfo: Added broadcast_4_piece0 in memory on 192.168.29.182:44689 (size: 34.1 KiB, free: 434.3 MiB)
+25/01/01 12:51:38 INFO SparkContext: Created broadcast 4 from saveAsTable at NativeMethodAccessorImpl.java:0
+25/01/01 12:51:38 INFO FileSourceScanExec: Planning scan with bin packing, max size: 31960205 bytes, open cost is considered as scanning 4194304 bytes.
+25/01/01 12:51:38 INFO SparkContext: Starting job: saveAsTable at NativeMethodAccessorImpl.java:0
+25/01/01 12:51:38 INFO DAGScheduler: Got job 2 (saveAsTable at NativeMethodAccessorImpl.java:0) with 1 output partitions
+25/01/01 12:51:38 INFO DAGScheduler: Final stage: ResultStage 2 (saveAsTable at NativeMethodAccessorImpl.java:0)
+25/01/01 12:51:38 INFO DAGScheduler: Parents of final stage: List()
+25/01/01 12:51:38 INFO DAGScheduler: Missing parents: List()
+25/01/01 12:51:38 INFO DAGScheduler: Submitting ResultStage 2 (MapPartitionsRDD[12] at saveAsTable at NativeMethodAccessorImpl.java:0), which has no missing parents
+25/01/01 12:51:38 INFO MemoryStore: Block broadcast_5 stored as values in memory (estimated size 228.5 KiB, free 433.7 MiB)
+25/01/01 12:51:38 INFO MemoryStore: Block broadcast_5_piece0 stored as bytes in memory (estimated size 84.2 KiB, free 433.6 MiB)
+25/01/01 12:51:38 INFO BlockManagerInfo: Added broadcast_5_piece0 in memory on 192.168.29.182:44689 (size: 84.2 KiB, free: 434.2 MiB)
+25/01/01 12:51:38 INFO SparkContext: Created broadcast 5 from broadcast at DAGScheduler.scala:1585
+25/01/01 12:51:38 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 2 (MapPartitionsRDD[12] at saveAsTable at NativeMethodAccessorImpl.java:0) (first 15 tasks are for partitions Vector(0))
+25/01/01 12:51:38 INFO TaskSchedulerImpl: Adding task set 2.0 with 1 tasks resource profile 0
+25/01/01 12:51:38 INFO TaskSetManager: Starting task 0.0 in stage 2.0 (TID 6) (192.168.29.182, executor driver, partition 0, PROCESS_LOCAL, 10379 bytes) 
+25/01/01 12:51:38 INFO Executor: Running task 0.0 in stage 2.0 (TID 6)
+25/01/01 12:51:38 INFO CodeGenerator: Code generated in 10.980619 ms
+25/01/01 12:51:38 INFO CodeGenerator: Code generated in 15.532602 ms
+25/01/01 12:51:38 INFO CodeGenerator: Code generated in 9.943681 ms
+25/01/01 12:51:38 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+25/01/01 12:51:38 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+25/01/01 12:51:38 INFO SQLHadoopMapReduceCommitProtocol: Using user defined output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+25/01/01 12:51:38 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+25/01/01 12:51:38 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+25/01/01 12:51:38 INFO SQLHadoopMapReduceCommitProtocol: Using output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+25/01/01 12:51:38 INFO CodeGenerator: Code generated in 12.521993 ms
+25/01/01 12:51:38 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d1/part-00001-00af64b6-7ef5-4909-8f82-b8897114efaf-c000.json, range: 0-30670316, partition values: [empty row]
+25/01/01 12:51:39 INFO BlockManagerInfo: Removed broadcast_0_piece0 on 192.168.29.182:44689 in memory (size: 34.2 KiB, free: 434.3 MiB)
+25/01/01 12:51:39 INFO BlockManagerInfo: Removed broadcast_1_piece0 on 192.168.29.182:44689 in memory (size: 7.7 KiB, free: 434.3 MiB)
+25/01/01 12:51:40 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d1/part-00000-00af64b6-7ef5-4909-8f82-b8897114efaf-c000.json, range: 0-29932367, partition values: [empty row]
+25/01/01 12:51:40 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d1/part-00002-00af64b6-7ef5-4909-8f82-b8897114efaf-c000.json, range: 0-22695020, partition values: [empty row]
+25/01/01 12:51:41 INFO CodeGenerator: Code generated in 14.830425 ms
+25/01/01 12:51:41 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:41 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:41 INFO ParquetOutputFormat: ParquetRecordWriter [block size: 134217728b, row group padding size: 8388608b, validating: false]
+25/01/01 12:51:41 INFO ParquetWriteSupport: Initialized Parquet WriteSupport with Catalyst schema:
+{
+  "type" : "struct",
+  "fields" : [ {
+    "name" : "DEST",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "DEST_CITY_NAME",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "FL_DATE",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "OP_CARRIER",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "OP_CARRIER_FL_NUM",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "ORIGIN",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "ORIGIN_CITY_NAME",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "id",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  } ]
+}
+and corresponding Parquet message type:
+message spark_schema {
+  optional binary DEST (STRING);
+  optional binary DEST_CITY_NAME (STRING);
+  optional binary FL_DATE (STRING);
+  optional binary OP_CARRIER (STRING);
+  optional int64 OP_CARRIER_FL_NUM;
+  optional binary ORIGIN (STRING);
+  optional binary ORIGIN_CITY_NAME (STRING);
+  optional int64 id;
+}
+
+       
+25/01/01 12:51:41 INFO CodecPool: Got brand-new compressor [.snappy]
+25/01/01 12:51:42 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:42 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:42 INFO ParquetOutputFormat: ParquetRecordWriter [block size: 134217728b, row group padding size: 8388608b, validating: false]
+25/01/01 12:51:42 INFO ParquetWriteSupport: Initialized Parquet WriteSupport with Catalyst schema:
+{
+  "type" : "struct",
+  "fields" : [ {
+    "name" : "DEST",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "DEST_CITY_NAME",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "FL_DATE",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "OP_CARRIER",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "OP_CARRIER_FL_NUM",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "ORIGIN",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "ORIGIN_CITY_NAME",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "id",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  } ]
+}
+and corresponding Parquet message type:
+message spark_schema {
+  optional binary DEST (STRING);
+  optional binary DEST_CITY_NAME (STRING);
+  optional binary FL_DATE (STRING);
+  optional binary OP_CARRIER (STRING);
+  optional int64 OP_CARRIER_FL_NUM;
+  optional binary ORIGIN (STRING);
+  optional binary ORIGIN_CITY_NAME (STRING);
+  optional int64 id;
+}
+
+       
+25/01/01 12:51:42 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:42 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:42 INFO ParquetOutputFormat: ParquetRecordWriter [block size: 134217728b, row group padding size: 8388608b, validating: false]
+25/01/01 12:51:42 INFO ParquetWriteSupport: Initialized Parquet WriteSupport with Catalyst schema:
+{
+  "type" : "struct",
+  "fields" : [ {
+    "name" : "DEST",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "DEST_CITY_NAME",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "FL_DATE",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "OP_CARRIER",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "OP_CARRIER_FL_NUM",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "ORIGIN",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "ORIGIN_CITY_NAME",
+    "type" : "string",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "id",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  } ]
+}
+and corresponding Parquet message type:
+message spark_schema {
+  optional binary DEST (STRING);
+  optional binary DEST_CITY_NAME (STRING);
+  optional binary FL_DATE (STRING);
+  optional binary OP_CARRIER (STRING);
+  optional int64 OP_CARRIER_FL_NUM;
+  optional binary ORIGIN (STRING);
+  optional binary ORIGIN_CITY_NAME (STRING);
+  optional int64 id;
+}
+
+       
+25/01/01 12:51:42 INFO FileOutputCommitter: Saved output of task 'attempt_202501011251386301485144118843340_0002_m_000000_6' to file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data1/_temporary/0/task_202501011251386301485144118843340_0002_m_000000
+25/01/01 12:51:42 INFO SparkHadoopMapRedUtil: attempt_202501011251386301485144118843340_0002_m_000000_6: Committed. Elapsed time: 1 ms.
+25/01/01 12:51:42 INFO Executor: Finished task 0.0 in stage 2.0 (TID 6). 3099 bytes result sent to driver
+25/01/01 12:51:42 INFO TaskSetManager: Finished task 0.0 in stage 2.0 (TID 6) in 4209 ms on 192.168.29.182 (executor driver) (1/1)
+25/01/01 12:51:42 INFO TaskSchedulerImpl: Removed TaskSet 2.0, whose tasks have all completed, from pool 
+25/01/01 12:51:42 INFO DAGScheduler: ResultStage 2 (saveAsTable at NativeMethodAccessorImpl.java:0) finished in 4.241 s
+25/01/01 12:51:42 INFO DAGScheduler: Job 2 is finished. Cancelling potential speculative or zombie tasks for this job
+25/01/01 12:51:42 INFO TaskSchedulerImpl: Killing all running tasks in stage 2: Stage finished
+25/01/01 12:51:42 INFO DAGScheduler: Job 2 finished: saveAsTable at NativeMethodAccessorImpl.java:0, took 4.249505 s
+25/01/01 12:51:42 INFO FileFormatWriter: Start to commit write Job 88a9eadd-481a-42e7-8f1d-0b9e2e0305c3.
+25/01/01 12:51:43 INFO FileFormatWriter: Write Job 88a9eadd-481a-42e7-8f1d-0b9e2e0305c3 committed. Elapsed time: 28 ms.
+25/01/01 12:51:43 INFO FileFormatWriter: Finished processing stats for write job 88a9eadd-481a-42e7-8f1d-0b9e2e0305c3.
+25/01/01 12:51:43 INFO InMemoryFileIndex: It took 3 ms to list leaf files for 1 paths.
+25/01/01 12:51:43 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:43 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data1
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data1	
+25/01/01 12:51:43 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:43 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data1
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data1	
+25/01/01 12:51:43 INFO HiveExternalCatalog: Persisting bucketed data source table `spark_catalog`.`my_db`.`flight_data1` into Hive metastore in Spark SQL specific format, which is NOT compatible with Hive bucketed table. But Hive can read this table as a non-bucketed table.
+25/01/01 12:51:43 INFO SQLStdHiveAccessController: Created SQLStdHiveAccessController for session context : HiveAuthzSessionContext [sessionString=23fa5fda-e7ca-41c3-ac92-9d849a9f366b, clientType=HIVECLI]
+25/01/01 12:51:43 WARN SessionState: METASTORE_FILTER_HOOK will be ignored, since hive.security.authorization.manager is set to instance of HiveAuthorizerFactory.
+25/01/01 12:51:43 INFO metastore: Mestastore configuration hive.metastore.filter.hook changed from org.apache.hadoop.hive.metastore.DefaultMetaStoreFilterHookImpl to org.apache.hadoop.hive.ql.security.authorization.plugin.AuthorizationMetaStoreFilterHook
+25/01/01 12:51:43 INFO HiveMetaStore: 0: Cleaning up thread local RawStore...
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=Cleaning up thread local RawStore...	
+25/01/01 12:51:43 INFO HiveMetaStore: 0: Done cleaning up thread local RawStore
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=Done cleaning up thread local RawStore	
+25/01/01 12:51:43 INFO HiveMetaStore: 0: create_table: Table(tableName:flight_data1, dbName:my_db, owner:bidut, createTime:1735716098, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:DEST, type:string, comment:null), FieldSchema(name:DEST_CITY_NAME, type:string, comment:null), FieldSchema(name:FL_DATE, type:string, comment:null), FieldSchema(name:OP_CARRIER, type:string, comment:null), FieldSchema(name:OP_CARRIER_FL_NUM, type:bigint, comment:null), FieldSchema(name:ORIGIN, type:string, comment:null), FieldSchema(name:ORIGIN_CITY_NAME, type:string, comment:null), FieldSchema(name:id, type:bigint, comment:null)], location:null, inputFormat:org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe, parameters:{path=file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data1, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}, skewedInfo:SkewedInfo(skewedColNames:[], skewedColValues:[], skewedColValueLocationMaps:{})), partitionKeys:[], parameters:{spark.sql.sources.schema.bucketCol.0=id, spark.sql.sources.schema.numBuckets=3, spark.sql.sources.schema={"type":"struct","fields":[{"name":"DEST","type":"string","nullable":true,"metadata":{}},{"name":"DEST_CITY_NAME","type":"string","nullable":true,"metadata":{}},{"name":"FL_DATE","type":"string","nullable":true,"metadata":{}},{"name":"OP_CARRIER","type":"string","nullable":true,"metadata":{}},{"name":"OP_CARRIER_FL_NUM","type":"long","nullable":true,"metadata":{}},{"name":"ORIGIN","type":"string","nullable":true,"metadata":{}},{"name":"ORIGIN_CITY_NAME","type":"string","nullable":true,"metadata":{}},{"name":"id","type":"long","nullable":true,"metadata":{}}]}, spark.sql.sources.schema.numBucketCols=1, spark.sql.sources.provider=parquet, spark.sql.create.version=3.5.4}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE, privileges:PrincipalPrivilegeSet(userPrivileges:{bidut=[PrivilegeGrantInfo(privilege:INSERT, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:SELECT, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:UPDATE, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:DELETE, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true)]}, groupPrivileges:null, rolePrivileges:null))
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=create_table: Table(tableName:flight_data1, dbName:my_db, owner:bidut, createTime:1735716098, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:DEST, type:string, comment:null), FieldSchema(name:DEST_CITY_NAME, type:string, comment:null), FieldSchema(name:FL_DATE, type:string, comment:null), FieldSchema(name:OP_CARRIER, type:string, comment:null), FieldSchema(name:OP_CARRIER_FL_NUM, type:bigint, comment:null), FieldSchema(name:ORIGIN, type:string, comment:null), FieldSchema(name:ORIGIN_CITY_NAME, type:string, comment:null), FieldSchema(name:id, type:bigint, comment:null)], location:null, inputFormat:org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe, parameters:{path=file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data1, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}, skewedInfo:SkewedInfo(skewedColNames:[], skewedColValues:[], skewedColValueLocationMaps:{})), partitionKeys:[], parameters:{spark.sql.sources.schema.bucketCol.0=id, spark.sql.sources.schema.numBuckets=3, spark.sql.sources.schema={"type":"struct","fields":[{"name":"DEST","type":"string","nullable":true,"metadata":{}},{"name":"DEST_CITY_NAME","type":"string","nullable":true,"metadata":{}},{"name":"FL_DATE","type":"string","nullable":true,"metadata":{}},{"name":"OP_CARRIER","type":"string","nullable":true,"metadata":{}},{"name":"OP_CARRIER_FL_NUM","type":"long","nullable":true,"metadata":{}},{"name":"ORIGIN","type":"string","nullable":true,"metadata":{}},{"name":"ORIGIN_CITY_NAME","type":"string","nullable":true,"metadata":{}},{"name":"id","type":"long","nullable":true,"metadata":{}}]}, spark.sql.sources.schema.numBucketCols=1, spark.sql.sources.provider=parquet, spark.sql.create.version=3.5.4}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE, privileges:PrincipalPrivilegeSet(userPrivileges:{bidut=[PrivilegeGrantInfo(privilege:INSERT, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:SELECT, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:UPDATE, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:DELETE, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true)]}, groupPrivileges:null, rolePrivileges:null))	
+25/01/01 12:51:43 WARN HiveConf: HiveConf of name hive.internal.ss.authz.settings.applied.marker does not exist
+25/01/01 12:51:43 WARN HiveConf: HiveConf of name hive.stats.jdbc.timeout does not exist
+25/01/01 12:51:43 WARN HiveConf: HiveConf of name hive.stats.retries.wait does not exist
+25/01/01 12:51:43 INFO HiveMetaStore: 0: Opening raw store with implementation class:org.apache.hadoop.hive.metastore.ObjectStore
+25/01/01 12:51:43 INFO ObjectStore: ObjectStore, initialize called
+25/01/01 12:51:43 INFO MetaStoreDirectSql: Using direct SQL, underlying DB is DERBY
+25/01/01 12:51:43 INFO ObjectStore: Initialized ObjectStore
+25/01/01 12:51:43 INFO log: Updating table stats fast for flight_data1
+25/01/01 12:51:43 INFO log: Updated size of table flight_data1 to 3647653
+25/01/01 12:51:43 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data2
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data2	
+25/01/01 12:51:43 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data2
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data2	
+25/01/01 12:51:43 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:43 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:43 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:43 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:43 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:43 INFO FileSourceStrategy: Pushed Filters: 
+25/01/01 12:51:43 INFO FileSourceStrategy: Post-Scan Filters: 
+25/01/01 12:51:43 INFO ParquetUtils: Using default output committer for Parquet: org.apache.parquet.hadoop.ParquetOutputCommitter
+25/01/01 12:51:43 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+25/01/01 12:51:43 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+25/01/01 12:51:43 INFO SQLHadoopMapReduceCommitProtocol: Using user defined output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+25/01/01 12:51:43 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+25/01/01 12:51:43 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+25/01/01 12:51:43 INFO SQLHadoopMapReduceCommitProtocol: Using output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+25/01/01 12:51:43 INFO MemoryStore: Block broadcast_6 stored as values in memory (estimated size 198.9 KiB, free 433.7 MiB)
+25/01/01 12:51:43 INFO MemoryStore: Block broadcast_6_piece0 stored as bytes in memory (estimated size 34.1 KiB, free 433.6 MiB)
+25/01/01 12:51:43 INFO BlockManagerInfo: Added broadcast_6_piece0 in memory on 192.168.29.182:44689 (size: 34.1 KiB, free: 434.3 MiB)
+25/01/01 12:51:43 INFO SparkContext: Created broadcast 6 from saveAsTable at NativeMethodAccessorImpl.java:0
+25/01/01 12:51:43 INFO FileSourceScanExec: Planning scan with bin packing, max size: 26547366 bytes, open cost is considered as scanning 4194304 bytes.
+25/01/01 12:51:43 INFO SparkContext: Starting job: saveAsTable at NativeMethodAccessorImpl.java:0
+25/01/01 12:51:43 INFO DAGScheduler: Got job 3 (saveAsTable at NativeMethodAccessorImpl.java:0) with 1 output partitions
+25/01/01 12:51:43 INFO DAGScheduler: Final stage: ResultStage 3 (saveAsTable at NativeMethodAccessorImpl.java:0)
+25/01/01 12:51:43 INFO DAGScheduler: Parents of final stage: List()
+25/01/01 12:51:43 INFO DAGScheduler: Missing parents: List()
+25/01/01 12:51:43 INFO DAGScheduler: Submitting ResultStage 3 (MapPartitionsRDD[17] at saveAsTable at NativeMethodAccessorImpl.java:0), which has no missing parents
+25/01/01 12:51:43 INFO BlockManagerInfo: Removed broadcast_5_piece0 on 192.168.29.182:44689 in memory (size: 84.2 KiB, free: 434.3 MiB)
+25/01/01 12:51:43 INFO MemoryStore: Block broadcast_7 stored as values in memory (estimated size 228.6 KiB, free 433.7 MiB)
+25/01/01 12:51:43 INFO MemoryStore: Block broadcast_7_piece0 stored as bytes in memory (estimated size 84.1 KiB, free 433.6 MiB)
+25/01/01 12:51:43 INFO BlockManagerInfo: Added broadcast_7_piece0 in memory on 192.168.29.182:44689 (size: 84.1 KiB, free: 434.3 MiB)
+25/01/01 12:51:43 INFO SparkContext: Created broadcast 7 from broadcast at DAGScheduler.scala:1585
+25/01/01 12:51:43 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 3 (MapPartitionsRDD[17] at saveAsTable at NativeMethodAccessorImpl.java:0) (first 15 tasks are for partitions Vector(0))
+25/01/01 12:51:43 INFO TaskSchedulerImpl: Adding task set 3.0 with 1 tasks resource profile 0
+25/01/01 12:51:43 INFO TaskSetManager: Starting task 0.0 in stage 3.0 (TID 7) (192.168.29.182, executor driver, partition 0, PROCESS_LOCAL, 10379 bytes) 
+25/01/01 12:51:43 INFO Executor: Running task 0.0 in stage 3.0 (TID 7)
+25/01/01 12:51:43 INFO CodeGenerator: Code generated in 10.267301 ms
+25/01/01 12:51:43 INFO CodeGenerator: Code generated in 9.304693 ms
+25/01/01 12:51:43 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+25/01/01 12:51:43 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+25/01/01 12:51:43 INFO SQLHadoopMapReduceCommitProtocol: Using user defined output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+25/01/01 12:51:43 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+25/01/01 12:51:43 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+25/01/01 12:51:43 INFO SQLHadoopMapReduceCommitProtocol: Using output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+25/01/01 12:51:43 INFO CodeGenerator: Code generated in 12.746447 ms
+25/01/01 12:51:43 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d2/part-00001-ee8814fd-bbb7-4a16-912b-f74b04a6d4fa-c000.json, range: 0-24817208, partition values: [empty row]
+25/01/01 12:51:43 INFO BlockManagerInfo: Removed broadcast_4_piece0 on 192.168.29.182:44689 in memory (size: 34.1 KiB, free: 434.3 MiB)
+25/01/01 12:51:44 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d2/part-00000-ee8814fd-bbb7-4a16-912b-f74b04a6d4fa-c000.json, range: 0-24318011, partition values: [empty row]
+25/01/01 12:51:45 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d2/part-00002-ee8814fd-bbb7-4a16-912b-f74b04a6d4fa-c000.json, range: 0-17923969, partition values: [empty row]
+25/01/01 12:51:45 INFO CodeGenerator: Code generated in 8.169737 ms
+25/01/01 12:51:45 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:45 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:45 INFO ParquetOutputFormat: ParquetRecordWriter [block size: 134217728b, row group padding size: 8388608b, validating: false]
+25/01/01 12:51:45 INFO ParquetWriteSupport: Initialized Parquet WriteSupport with Catalyst schema:
+{
+  "type" : "struct",
+  "fields" : [ {
+    "name" : "ARR_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "CANCELLED",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "CRS_ARR_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "CRS_DEP_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "DEP_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "DISTANCE",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "TAXI_IN",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "WHEELS_ON",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "id",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  } ]
+}
+and corresponding Parquet message type:
+message spark_schema {
+  optional int64 ARR_TIME;
+  optional int64 CANCELLED;
+  optional int64 CRS_ARR_TIME;
+  optional int64 CRS_DEP_TIME;
+  optional int64 DEP_TIME;
+  optional int64 DISTANCE;
+  optional int64 TAXI_IN;
+  optional int64 WHEELS_ON;
+  optional int64 id;
+}
+
+       
+25/01/01 12:51:45 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:45 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:45 INFO ParquetOutputFormat: ParquetRecordWriter [block size: 134217728b, row group padding size: 8388608b, validating: false]
+25/01/01 12:51:45 INFO ParquetWriteSupport: Initialized Parquet WriteSupport with Catalyst schema:
+{
+  "type" : "struct",
+  "fields" : [ {
+    "name" : "ARR_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "CANCELLED",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "CRS_ARR_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "CRS_DEP_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "DEP_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "DISTANCE",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "TAXI_IN",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "WHEELS_ON",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "id",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  } ]
+}
+and corresponding Parquet message type:
+message spark_schema {
+  optional int64 ARR_TIME;
+  optional int64 CANCELLED;
+  optional int64 CRS_ARR_TIME;
+  optional int64 CRS_DEP_TIME;
+  optional int64 DEP_TIME;
+  optional int64 DISTANCE;
+  optional int64 TAXI_IN;
+  optional int64 WHEELS_ON;
+  optional int64 id;
+}
+
+       
+25/01/01 12:51:45 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:45 INFO CodecConfig: Compression: SNAPPY
+25/01/01 12:51:45 INFO ParquetOutputFormat: ParquetRecordWriter [block size: 134217728b, row group padding size: 8388608b, validating: false]
+25/01/01 12:51:45 INFO ParquetWriteSupport: Initialized Parquet WriteSupport with Catalyst schema:
+{
+  "type" : "struct",
+  "fields" : [ {
+    "name" : "ARR_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "CANCELLED",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "CRS_ARR_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "CRS_DEP_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "DEP_TIME",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "DISTANCE",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "TAXI_IN",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "WHEELS_ON",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  }, {
+    "name" : "id",
+    "type" : "long",
+    "nullable" : true,
+    "metadata" : { }
+  } ]
+}
+and corresponding Parquet message type:
+message spark_schema {
+  optional int64 ARR_TIME;
+  optional int64 CANCELLED;
+  optional int64 CRS_ARR_TIME;
+  optional int64 CRS_DEP_TIME;
+  optional int64 DEP_TIME;
+  optional int64 DISTANCE;
+  optional int64 TAXI_IN;
+  optional int64 WHEELS_ON;
+  optional int64 id;
+}
+
+       
+25/01/01 12:51:45 INFO FileOutputCommitter: Saved output of task 'attempt_202501011251436940817091196782289_0003_m_000000_7' to file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data2/_temporary/0/task_202501011251436940817091196782289_0003_m_000000
+25/01/01 12:51:45 INFO SparkHadoopMapRedUtil: attempt_202501011251436940817091196782289_0003_m_000000_7: Committed. Elapsed time: 0 ms.
+25/01/01 12:51:45 INFO Executor: Finished task 0.0 in stage 3.0 (TID 7). 3056 bytes result sent to driver
+25/01/01 12:51:45 INFO TaskSetManager: Finished task 0.0 in stage 3.0 (TID 7) in 2339 ms on 192.168.29.182 (executor driver) (1/1)
+25/01/01 12:51:45 INFO TaskSchedulerImpl: Removed TaskSet 3.0, whose tasks have all completed, from pool 
+25/01/01 12:51:45 INFO DAGScheduler: ResultStage 3 (saveAsTable at NativeMethodAccessorImpl.java:0) finished in 2.387 s
+25/01/01 12:51:45 INFO DAGScheduler: Job 3 is finished. Cancelling potential speculative or zombie tasks for this job
+25/01/01 12:51:45 INFO TaskSchedulerImpl: Killing all running tasks in stage 3: Stage finished
+25/01/01 12:51:45 INFO DAGScheduler: Job 3 finished: saveAsTable at NativeMethodAccessorImpl.java:0, took 2.393943 s
+25/01/01 12:51:45 INFO FileFormatWriter: Start to commit write Job b482cc4a-c35e-475b-99cb-3c23bd37f9c5.
+25/01/01 12:51:45 INFO FileFormatWriter: Write Job b482cc4a-c35e-475b-99cb-3c23bd37f9c5 committed. Elapsed time: 12 ms.
+25/01/01 12:51:45 INFO FileFormatWriter: Finished processing stats for write job b482cc4a-c35e-475b-99cb-3c23bd37f9c5.
+25/01/01 12:51:45 INFO InMemoryFileIndex: It took 2 ms to list leaf files for 1 paths.
+25/01/01 12:51:45 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:45 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:45 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data2
+25/01/01 12:51:45 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data2	
+25/01/01 12:51:45 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:51:45 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:51:45 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data2
+25/01/01 12:51:45 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data2	
+25/01/01 12:51:45 INFO HiveExternalCatalog: Persisting bucketed data source table `spark_catalog`.`my_db`.`flight_data2` into Hive metastore in Spark SQL specific format, which is NOT compatible with Hive bucketed table. But Hive can read this table as a non-bucketed table.
+25/01/01 12:51:45 INFO HiveMetaStore: 0: create_table: Table(tableName:flight_data2, dbName:my_db, owner:bidut, createTime:1735716103, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:ARR_TIME, type:bigint, comment:null), FieldSchema(name:CANCELLED, type:bigint, comment:null), FieldSchema(name:CRS_ARR_TIME, type:bigint, comment:null), FieldSchema(name:CRS_DEP_TIME, type:bigint, comment:null), FieldSchema(name:DEP_TIME, type:bigint, comment:null), FieldSchema(name:DISTANCE, type:bigint, comment:null), FieldSchema(name:TAXI_IN, type:bigint, comment:null), FieldSchema(name:WHEELS_ON, type:bigint, comment:null), FieldSchema(name:id, type:bigint, comment:null)], location:null, inputFormat:org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe, parameters:{path=file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data2, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}, skewedInfo:SkewedInfo(skewedColNames:[], skewedColValues:[], skewedColValueLocationMaps:{})), partitionKeys:[], parameters:{spark.sql.sources.schema.bucketCol.0=id, spark.sql.sources.schema.numBuckets=3, spark.sql.sources.schema={"type":"struct","fields":[{"name":"ARR_TIME","type":"long","nullable":true,"metadata":{}},{"name":"CANCELLED","type":"long","nullable":true,"metadata":{}},{"name":"CRS_ARR_TIME","type":"long","nullable":true,"metadata":{}},{"name":"CRS_DEP_TIME","type":"long","nullable":true,"metadata":{}},{"name":"DEP_TIME","type":"long","nullable":true,"metadata":{}},{"name":"DISTANCE","type":"long","nullable":true,"metadata":{}},{"name":"TAXI_IN","type":"long","nullable":true,"metadata":{}},{"name":"WHEELS_ON","type":"long","nullable":true,"metadata":{}},{"name":"id","type":"long","nullable":true,"metadata":{}}]}, spark.sql.sources.schema.numBucketCols=1, spark.sql.sources.provider=parquet, spark.sql.create.version=3.5.4}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE, privileges:PrincipalPrivilegeSet(userPrivileges:{bidut=[PrivilegeGrantInfo(privilege:INSERT, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:SELECT, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:UPDATE, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:DELETE, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true)]}, groupPrivileges:null, rolePrivileges:null))
+25/01/01 12:51:45 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=create_table: Table(tableName:flight_data2, dbName:my_db, owner:bidut, createTime:1735716103, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:ARR_TIME, type:bigint, comment:null), FieldSchema(name:CANCELLED, type:bigint, comment:null), FieldSchema(name:CRS_ARR_TIME, type:bigint, comment:null), FieldSchema(name:CRS_DEP_TIME, type:bigint, comment:null), FieldSchema(name:DEP_TIME, type:bigint, comment:null), FieldSchema(name:DISTANCE, type:bigint, comment:null), FieldSchema(name:TAXI_IN, type:bigint, comment:null), FieldSchema(name:WHEELS_ON, type:bigint, comment:null), FieldSchema(name:id, type:bigint, comment:null)], location:null, inputFormat:org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe, parameters:{path=file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data2, serialization.format=1}), bucketCols:[], sortCols:[], parameters:{}, skewedInfo:SkewedInfo(skewedColNames:[], skewedColValues:[], skewedColValueLocationMaps:{})), partitionKeys:[], parameters:{spark.sql.sources.schema.bucketCol.0=id, spark.sql.sources.schema.numBuckets=3, spark.sql.sources.schema={"type":"struct","fields":[{"name":"ARR_TIME","type":"long","nullable":true,"metadata":{}},{"name":"CANCELLED","type":"long","nullable":true,"metadata":{}},{"name":"CRS_ARR_TIME","type":"long","nullable":true,"metadata":{}},{"name":"CRS_DEP_TIME","type":"long","nullable":true,"metadata":{}},{"name":"DEP_TIME","type":"long","nullable":true,"metadata":{}},{"name":"DISTANCE","type":"long","nullable":true,"metadata":{}},{"name":"TAXI_IN","type":"long","nullable":true,"metadata":{}},{"name":"WHEELS_ON","type":"long","nullable":true,"metadata":{}},{"name":"id","type":"long","nullable":true,"metadata":{}}]}, spark.sql.sources.schema.numBucketCols=1, spark.sql.sources.provider=parquet, spark.sql.create.version=3.5.4}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE, privileges:PrincipalPrivilegeSet(userPrivileges:{bidut=[PrivilegeGrantInfo(privilege:INSERT, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:SELECT, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:UPDATE, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true), PrivilegeGrantInfo(privilege:DELETE, createTime:-1, grantor:bidut, grantorType:USER, grantOption:true)]}, groupPrivileges:null, rolePrivileges:null))	
+25/01/01 12:51:45 INFO log: Updating table stats fast for flight_data2
+25/01/01 12:51:45 INFO log: Updated size of table flight_data2 to 6224212
+25/01/01 12:51:46 INFO SparkContext: Invoking stop() from shutdown hook
+25/01/01 12:51:46 INFO SparkContext: SparkContext is stopping with exitCode 0.
+25/01/01 12:51:46 INFO AbstractConnector: Stopped Spark@3ec2c48{HTTP/1.1, (http/1.1)}{0.0.0.0:4041}
+25/01/01 12:51:46 INFO SparkUI: Stopped Spark web UI at http://192.168.29.182:4041
+25/01/01 12:51:46 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+25/01/01 12:51:46 INFO MemoryStore: MemoryStore cleared
+25/01/01 12:51:46 INFO BlockManager: BlockManager stopped
+25/01/01 12:51:46 INFO BlockManagerMaster: BlockManagerMaster stopped
+25/01/01 12:51:46 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+25/01/01 12:51:46 INFO SparkContext: Successfully stopped SparkContext
+25/01/01 12:51:46 INFO ShutdownHookManager: Shutdown hook called
+25/01/01 12:51:46 INFO ShutdownHookManager: Deleting directory /tmp/spark-a474f325-6726-4dbb-b16f-16242bf05bb0
+25/01/01 12:51:46 INFO ShutdownHookManager: Deleting directory /tmp/spark-31ce5176-2189-4e15-b449-2841d72bfc70
+25/01/01 12:51:46 INFO ShutdownHookManager: Deleting directory /tmp/spark-a474f325-6726-4dbb-b16f-16242bf05bb0/pyspark-f031c4ac-cc0d-4f2b-8918-162ce95661f0
+25/01/01 12:52:07 WARN Utils: Your hostname, bidut-HP-Laptop-14s-fq1xxx resolves to a loopback address: 127.0.1.1; using 192.168.29.182 instead (on interface wlo1)
+25/01/01 12:52:07 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+25/01/01 12:52:08 INFO SparkContext: Running Spark version 3.5.4
+25/01/01 12:52:08 INFO SparkContext: OS info Linux, 5.15.0-126-generic, amd64
+25/01/01 12:52:08 INFO SparkContext: Java version 11.0.25
+25/01/01 12:52:08 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+25/01/01 12:52:08 INFO ResourceUtils: ==============================================================
+25/01/01 12:52:08 INFO ResourceUtils: No custom resources configured for spark.driver.
+25/01/01 12:52:08 INFO ResourceUtils: ==============================================================
+25/01/01 12:52:08 INFO SparkContext: Submitted application: Bucket Join
+25/01/01 12:52:08 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+25/01/01 12:52:08 INFO ResourceProfile: Limiting resource is cpu
+25/01/01 12:52:08 INFO ResourceProfileManager: Added ResourceProfile id: 0
+25/01/01 12:52:08 INFO SecurityManager: Changing view acls to: bidut
+25/01/01 12:52:08 INFO SecurityManager: Changing modify acls to: bidut
+25/01/01 12:52:08 INFO SecurityManager: Changing view acls groups to: 
+25/01/01 12:52:08 INFO SecurityManager: Changing modify acls groups to: 
+25/01/01 12:52:08 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: bidut; groups with view permissions: EMPTY; users with modify permissions: bidut; groups with modify permissions: EMPTY
+25/01/01 12:52:08 INFO Utils: Successfully started service 'sparkDriver' on port 34949.
+25/01/01 12:52:08 INFO SparkEnv: Registering MapOutputTracker
+25/01/01 12:52:08 INFO SparkEnv: Registering BlockManagerMaster
+25/01/01 12:52:08 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+25/01/01 12:52:08 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+25/01/01 12:52:08 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+25/01/01 12:52:08 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-eb18e10a-c8f0-4b6a-bd59-af97a0510f3e
+25/01/01 12:52:08 INFO MemoryStore: MemoryStore started with capacity 434.4 MiB
+25/01/01 12:52:08 INFO SparkEnv: Registering OutputCommitCoordinator
+25/01/01 12:52:08 INFO log: Logging initialized @2503ms to org.sparkproject.jetty.util.log.Slf4jLog
+25/01/01 12:52:09 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+25/01/01 12:52:09 INFO Server: jetty-9.4.56.v20240826; built: 2024-08-26T17:15:05.868Z; git: ec6782ff5ead824dabdcf47fa98f90a4aedff401; jvm 11.0.25+9-post-Ubuntu-1ubuntu120.04
+25/01/01 12:52:09 INFO Server: Started @2649ms
+25/01/01 12:52:09 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+25/01/01 12:52:09 INFO AbstractConnector: Started ServerConnector@727a381b{HTTP/1.1, (http/1.1)}{0.0.0.0:4041}
+25/01/01 12:52:09 INFO Utils: Successfully started service 'SparkUI' on port 4041.
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@57d143ee{/,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO Executor: Starting executor ID driver on host 192.168.29.182
+25/01/01 12:52:09 INFO Executor: OS info Linux, 5.15.0-126-generic, amd64
+25/01/01 12:52:09 INFO Executor: Java version 11.0.25
+25/01/01 12:52:09 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+25/01/01 12:52:09 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@2dd4c6f0 for default.
+25/01/01 12:52:09 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 45099.
+25/01/01 12:52:09 INFO NettyBlockTransferService: Server created on 192.168.29.182:45099
+25/01/01 12:52:09 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+25/01/01 12:52:09 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 192.168.29.182, 45099, None)
+25/01/01 12:52:09 INFO BlockManagerMasterEndpoint: Registering block manager 192.168.29.182:45099 with 434.4 MiB RAM, BlockManagerId(driver, 192.168.29.182, 45099, None)
+25/01/01 12:52:09 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 192.168.29.182, 45099, None)
+25/01/01 12:52:09 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 192.168.29.182, 45099, None)
+25/01/01 12:52:09 INFO ContextHandler: Stopped o.s.j.s.ServletContextHandler@57d143ee{/,null,STOPPED,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@1b9a8b9{/jobs,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@92be2f2{/jobs/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@6fc75c98{/jobs/job,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@27644231{/jobs/job/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@23c70edf{/stages,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@1967fb1e{/stages/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@30d4f552{/stages/stage,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@5bd96adf{/stages/stage/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@40d23bf5{/stages/pool,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@50e23f6e{/stages/pool/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@fda5863{/storage,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@6787fd84{/storage/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@52c32407{/storage/rdd,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@518f7210{/storage/rdd/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@2e723609{/environment,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@6b3f644f{/environment/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@6706b4f4{/executors,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@62985068{/executors/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@308c71eb{/executors/threadDump,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@4801986b{/executors/threadDump/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@7f07411{/executors/heapHistogram,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@7f80158e{/executors/heapHistogram/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@2d805d12{/static,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@58e75b0d{/,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@24d4a949{/api,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@5b683109{/jobs/job/kill,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@32324b14{/stages/stage/kill,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@61fa59a6{/metrics/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO SharedState: Setting hive.metastore.warehouse.dir ('null') to the value of spark.sql.warehouse.dir.
+25/01/01 12:52:09 INFO SharedState: Warehouse path is 'file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse'.
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@7541988b{/SQL,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@170c7003{/SQL/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@6c2c2f1b{/SQL/execution,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@2bec4779{/SQL/execution/json,null,AVAILABLE,@Spark}
+25/01/01 12:52:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@7793cad2{/static/sql,null,AVAILABLE,@Spark}
+25/01/01 12:52:10 INFO InMemoryFileIndex: It took 57 ms to list leaf files for 1 paths.
+25/01/01 12:52:10 INFO InMemoryFileIndex: It took 4 ms to list leaf files for 3 paths.
+25/01/01 12:52:12 INFO FileSourceStrategy: Pushed Filters: 
+25/01/01 12:52:12 INFO FileSourceStrategy: Post-Scan Filters: 
+25/01/01 12:52:12 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 199.1 KiB, free 434.2 MiB)
+25/01/01 12:52:13 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 34.2 KiB, free 434.2 MiB)
+25/01/01 12:52:13 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on 192.168.29.182:45099 (size: 34.2 KiB, free: 434.4 MiB)
+25/01/01 12:52:13 INFO SparkContext: Created broadcast 0 from json at NativeMethodAccessorImpl.java:0
+25/01/01 12:52:13 INFO FileSourceScanExec: Planning scan with bin packing, max size: 31960205 bytes, open cost is considered as scanning 4194304 bytes.
+25/01/01 12:52:13 INFO SparkContext: Starting job: json at NativeMethodAccessorImpl.java:0
+25/01/01 12:52:13 INFO DAGScheduler: Got job 0 (json at NativeMethodAccessorImpl.java:0) with 3 output partitions
+25/01/01 12:52:13 INFO DAGScheduler: Final stage: ResultStage 0 (json at NativeMethodAccessorImpl.java:0)
+25/01/01 12:52:13 INFO DAGScheduler: Parents of final stage: List()
+25/01/01 12:52:13 INFO DAGScheduler: Missing parents: List()
+25/01/01 12:52:13 INFO DAGScheduler: Submitting ResultStage 0 (MapPartitionsRDD[3] at json at NativeMethodAccessorImpl.java:0), which has no missing parents
+25/01/01 12:52:13 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 15.6 KiB, free 434.2 MiB)
+25/01/01 12:52:13 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 7.7 KiB, free 434.1 MiB)
+25/01/01 12:52:13 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on 192.168.29.182:45099 (size: 7.7 KiB, free: 434.4 MiB)
+25/01/01 12:52:13 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1585
+25/01/01 12:52:13 INFO DAGScheduler: Submitting 3 missing tasks from ResultStage 0 (MapPartitionsRDD[3] at json at NativeMethodAccessorImpl.java:0) (first 15 tasks are for partitions Vector(0, 1, 2))
+25/01/01 12:52:13 INFO TaskSchedulerImpl: Adding task set 0.0 with 3 tasks resource profile 0
+25/01/01 12:52:13 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0) (192.168.29.182, executor driver, partition 0, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:52:13 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1) (192.168.29.182, executor driver, partition 1, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:52:13 INFO TaskSetManager: Starting task 2.0 in stage 0.0 (TID 2) (192.168.29.182, executor driver, partition 2, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:52:13 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+25/01/01 12:52:13 INFO Executor: Running task 1.0 in stage 0.0 (TID 1)
+25/01/01 12:52:13 INFO Executor: Running task 2.0 in stage 0.0 (TID 2)
+25/01/01 12:52:13 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d1/part-00000-00af64b6-7ef5-4909-8f82-b8897114efaf-c000.json, range: 0-29932367, partition values: [empty row]
+25/01/01 12:52:13 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d1/part-00002-00af64b6-7ef5-4909-8f82-b8897114efaf-c000.json, range: 0-22695020, partition values: [empty row]
+25/01/01 12:52:13 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d1/part-00001-00af64b6-7ef5-4909-8f82-b8897114efaf-c000.json, range: 0-30670316, partition values: [empty row]
+25/01/01 12:52:13 INFO CodeGenerator: Code generated in 157.224144 ms
+25/01/01 12:52:14 INFO Executor: Finished task 2.0 in stage 0.0 (TID 2). 2256 bytes result sent to driver
+25/01/01 12:52:14 INFO TaskSetManager: Finished task 2.0 in stage 0.0 (TID 2) in 1304 ms on 192.168.29.182 (executor driver) (1/3)
+25/01/01 12:52:14 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 2213 bytes result sent to driver
+25/01/01 12:52:14 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 1416 ms on 192.168.29.182 (executor driver) (2/3)
+25/01/01 12:52:14 INFO Executor: Finished task 1.0 in stage 0.0 (TID 1). 2213 bytes result sent to driver
+25/01/01 12:52:14 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 1429 ms on 192.168.29.182 (executor driver) (3/3)
+25/01/01 12:52:14 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool 
+25/01/01 12:52:14 INFO DAGScheduler: ResultStage 0 (json at NativeMethodAccessorImpl.java:0) finished in 1.564 s
+25/01/01 12:52:14 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+25/01/01 12:52:14 INFO TaskSchedulerImpl: Killing all running tasks in stage 0: Stage finished
+25/01/01 12:52:14 INFO DAGScheduler: Job 0 finished: json at NativeMethodAccessorImpl.java:0, took 1.613727 s
+25/01/01 12:52:14 INFO InMemoryFileIndex: It took 3 ms to list leaf files for 1 paths.
+25/01/01 12:52:14 INFO InMemoryFileIndex: It took 4 ms to list leaf files for 3 paths.
+25/01/01 12:52:14 INFO FileSourceStrategy: Pushed Filters: 
+25/01/01 12:52:14 INFO FileSourceStrategy: Post-Scan Filters: 
+25/01/01 12:52:14 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 199.1 KiB, free 434.0 MiB)
+25/01/01 12:52:14 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 34.2 KiB, free 433.9 MiB)
+25/01/01 12:52:14 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on 192.168.29.182:45099 (size: 34.2 KiB, free: 434.3 MiB)
+25/01/01 12:52:14 INFO SparkContext: Created broadcast 2 from json at NativeMethodAccessorImpl.java:0
+25/01/01 12:52:14 INFO FileSourceScanExec: Planning scan with bin packing, max size: 26547366 bytes, open cost is considered as scanning 4194304 bytes.
+25/01/01 12:52:14 INFO SparkContext: Starting job: json at NativeMethodAccessorImpl.java:0
+25/01/01 12:52:14 INFO DAGScheduler: Got job 1 (json at NativeMethodAccessorImpl.java:0) with 3 output partitions
+25/01/01 12:52:14 INFO DAGScheduler: Final stage: ResultStage 1 (json at NativeMethodAccessorImpl.java:0)
+25/01/01 12:52:14 INFO DAGScheduler: Parents of final stage: List()
+25/01/01 12:52:14 INFO DAGScheduler: Missing parents: List()
+25/01/01 12:52:14 INFO DAGScheduler: Submitting ResultStage 1 (MapPartitionsRDD[7] at json at NativeMethodAccessorImpl.java:0), which has no missing parents
+25/01/01 12:52:14 INFO MemoryStore: Block broadcast_3 stored as values in memory (estimated size 15.6 KiB, free 433.9 MiB)
+25/01/01 12:52:14 INFO MemoryStore: Block broadcast_3_piece0 stored as bytes in memory (estimated size 7.7 KiB, free 433.9 MiB)
+25/01/01 12:52:14 INFO BlockManagerInfo: Added broadcast_3_piece0 in memory on 192.168.29.182:45099 (size: 7.7 KiB, free: 434.3 MiB)
+25/01/01 12:52:14 INFO SparkContext: Created broadcast 3 from broadcast at DAGScheduler.scala:1585
+25/01/01 12:52:14 INFO DAGScheduler: Submitting 3 missing tasks from ResultStage 1 (MapPartitionsRDD[7] at json at NativeMethodAccessorImpl.java:0) (first 15 tasks are for partitions Vector(0, 1, 2))
+25/01/01 12:52:14 INFO TaskSchedulerImpl: Adding task set 1.0 with 3 tasks resource profile 0
+25/01/01 12:52:15 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 3) (192.168.29.182, executor driver, partition 0, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:52:15 INFO TaskSetManager: Starting task 1.0 in stage 1.0 (TID 4) (192.168.29.182, executor driver, partition 1, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:52:15 INFO TaskSetManager: Starting task 2.0 in stage 1.0 (TID 5) (192.168.29.182, executor driver, partition 2, PROCESS_LOCAL, 9704 bytes) 
+25/01/01 12:52:15 INFO Executor: Running task 1.0 in stage 1.0 (TID 4)
+25/01/01 12:52:15 INFO Executor: Running task 0.0 in stage 1.0 (TID 3)
+25/01/01 12:52:15 INFO Executor: Running task 2.0 in stage 1.0 (TID 5)
+25/01/01 12:52:15 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d2/part-00000-ee8814fd-bbb7-4a16-912b-f74b04a6d4fa-c000.json, range: 0-24318011, partition values: [empty row]
+25/01/01 12:52:15 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d2/part-00001-ee8814fd-bbb7-4a16-912b-f74b04a6d4fa-c000.json, range: 0-24817208, partition values: [empty row]
+25/01/01 12:52:15 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/data/d2/part-00002-ee8814fd-bbb7-4a16-912b-f74b04a6d4fa-c000.json, range: 0-17923969, partition values: [empty row]
+25/01/01 12:52:15 INFO BlockManagerInfo: Removed broadcast_1_piece0 on 192.168.29.182:45099 in memory (size: 7.7 KiB, free: 434.3 MiB)
+25/01/01 12:52:15 INFO Executor: Finished task 2.0 in stage 1.0 (TID 5). 2182 bytes result sent to driver
+25/01/01 12:52:15 INFO TaskSetManager: Finished task 2.0 in stage 1.0 (TID 5) in 410 ms on 192.168.29.182 (executor driver) (1/3)
+25/01/01 12:52:15 INFO Executor: Finished task 1.0 in stage 1.0 (TID 4). 2182 bytes result sent to driver
+25/01/01 12:52:15 INFO TaskSetManager: Finished task 1.0 in stage 1.0 (TID 4) in 472 ms on 192.168.29.182 (executor driver) (2/3)
+25/01/01 12:52:15 INFO Executor: Finished task 0.0 in stage 1.0 (TID 3). 2182 bytes result sent to driver
+25/01/01 12:52:15 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 3) in 476 ms on 192.168.29.182 (executor driver) (3/3)
+25/01/01 12:52:15 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool 
+25/01/01 12:52:15 INFO DAGScheduler: ResultStage 1 (json at NativeMethodAccessorImpl.java:0) finished in 0.488 s
+25/01/01 12:52:15 INFO DAGScheduler: Job 1 is finished. Cancelling potential speculative or zombie tasks for this job
+25/01/01 12:52:15 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+25/01/01 12:52:15 INFO DAGScheduler: Job 1 finished: json at NativeMethodAccessorImpl.java:0, took 0.496413 s
+25/01/01 12:52:15 INFO HiveConf: Found configuration file null
+25/01/01 12:52:15 INFO HiveUtils: Initializing HiveMetastoreConnection version 2.3.9 using Spark classes.
+25/01/01 12:52:15 INFO HiveClientImpl: Warehouse location for Hive client (version 2.3.9) is file:/home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse
+25/01/01 12:52:15 INFO BlockManagerInfo: Removed broadcast_2_piece0 on 192.168.29.182:45099 in memory (size: 34.2 KiB, free: 434.4 MiB)
+25/01/01 12:52:15 INFO BlockManagerInfo: Removed broadcast_3_piece0 on 192.168.29.182:45099 in memory (size: 7.7 KiB, free: 434.4 MiB)
+25/01/01 12:52:15 WARN HiveConf: HiveConf of name hive.stats.jdbc.timeout does not exist
+25/01/01 12:52:15 WARN HiveConf: HiveConf of name hive.stats.retries.wait does not exist
+25/01/01 12:52:15 INFO HiveMetaStore: 0: Opening raw store with implementation class:org.apache.hadoop.hive.metastore.ObjectStore
+25/01/01 12:52:15 INFO ObjectStore: ObjectStore, initialize called
+25/01/01 12:52:16 INFO Persistence: Property hive.metastore.integral.jdo.pushdown unknown - will be ignored
+25/01/01 12:52:16 INFO Persistence: Property datanucleus.cache.level2 unknown - will be ignored
+25/01/01 12:52:17 INFO ObjectStore: Setting MetaStore object pin classes with hive.metastore.cache.pinobjtypes="Table,StorageDescriptor,SerDeInfo,Partition,Database,Type,FieldSchema,Order"
+25/01/01 12:52:18 INFO MetaStoreDirectSql: Using direct SQL, underlying DB is DERBY
+25/01/01 12:52:18 INFO ObjectStore: Initialized ObjectStore
+25/01/01 12:52:18 WARN ObjectStore: Version information not found in metastore. hive.metastore.schema.verification is not enabled so recording the schema version 2.3.0
+25/01/01 12:52:18 WARN ObjectStore: setMetaStoreSchemaVersion called but recording version is disabled: version = 2.3.0, comment = Set by MetaStore bidut@127.0.1.1
+25/01/01 12:52:18 INFO HiveMetaStore: Added admin role in metastore
+25/01/01 12:52:18 INFO HiveMetaStore: Added public role in metastore
+25/01/01 12:52:18 INFO HiveMetaStore: No user is added in admin role, since config is empty
+25/01/01 12:52:18 INFO HiveMetaStore: 0: get_database: default
+25/01/01 12:52:18 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: default	
+25/01/01 12:52:18 INFO HiveMetaStore: 0: get_database: global_temp
+25/01/01 12:52:18 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: global_temp	
+25/01/01 12:52:18 WARN ObjectStore: Failed to get database global_temp, returning NoSuchObjectException
+25/01/01 12:52:18 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:52:18 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:52:18 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data1
+25/01/01 12:52:18 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data1	
+25/01/01 12:52:18 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data1
+25/01/01 12:52:18 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data1	
+25/01/01 12:52:18 INFO InMemoryFileIndex: It took 2 ms to list leaf files for 1 paths.
+25/01/01 12:52:18 INFO HiveMetaStore: 0: get_database: my_db
+25/01/01 12:52:18 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_database: my_db	
+25/01/01 12:52:18 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data2
+25/01/01 12:52:18 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data2	
+25/01/01 12:52:18 INFO HiveMetaStore: 0: get_table : db=my_db tbl=flight_data2
+25/01/01 12:52:18 INFO audit: ugi=bidut	ip=unknown-ip-addr	cmd=get_table : db=my_db tbl=flight_data2	
+25/01/01 12:52:18 INFO InMemoryFileIndex: It took 2 ms to list leaf files for 1 paths.
+25/01/01 12:52:19 INFO FileSourceStrategy: Pruned 0 out of 3 buckets.
+25/01/01 12:52:19 INFO FileSourceStrategy: Pushed Filters: IsNotNull(id)
+25/01/01 12:52:19 INFO FileSourceStrategy: Post-Scan Filters: isnotnull(id#57L)
+25/01/01 12:52:19 INFO FileSourceStrategy: Pruned 0 out of 3 buckets.
+25/01/01 12:52:19 INFO FileSourceStrategy: Pushed Filters: IsNotNull(id)
+25/01/01 12:52:19 INFO FileSourceStrategy: Post-Scan Filters: isnotnull(id#74L)
+25/01/01 12:52:19 INFO CodeGenerator: Code generated in 58.403935 ms
+25/01/01 12:52:19 INFO CodeGenerator: Code generated in 36.992585 ms
+25/01/01 12:52:19 INFO MemoryStore: Block broadcast_4 stored as values in memory (estimated size 201.7 KiB, free 434.0 MiB)
+25/01/01 12:52:19 INFO MemoryStore: Block broadcast_4_piece0 stored as bytes in memory (estimated size 35.1 KiB, free 433.9 MiB)
+25/01/01 12:52:19 INFO BlockManagerInfo: Added broadcast_4_piece0 in memory on 192.168.29.182:45099 (size: 35.1 KiB, free: 434.3 MiB)
+25/01/01 12:52:19 INFO SparkContext: Created broadcast 4 from collect at /home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/BucketJoinDemo.py:49
+25/01/01 12:52:19 INFO FileSourceScanExec: Planning with 3 buckets
+25/01/01 12:52:19 INFO CodeGenerator: Code generated in 23.394919 ms
+25/01/01 12:52:19 INFO MemoryStore: Block broadcast_5 stored as values in memory (estimated size 201.7 KiB, free 433.7 MiB)
+25/01/01 12:52:19 INFO MemoryStore: Block broadcast_5_piece0 stored as bytes in memory (estimated size 35.1 KiB, free 433.7 MiB)
+25/01/01 12:52:19 INFO BlockManagerInfo: Added broadcast_5_piece0 in memory on 192.168.29.182:45099 (size: 35.1 KiB, free: 434.3 MiB)
+25/01/01 12:52:19 INFO SparkContext: Created broadcast 5 from collect at /home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/BucketJoinDemo.py:49
+25/01/01 12:52:19 INFO FileSourceScanExec: Planning with 3 buckets
+25/01/01 12:52:19 INFO SparkContext: Starting job: collect at /home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/BucketJoinDemo.py:49
+25/01/01 12:52:19 INFO DAGScheduler: Got job 2 (collect at /home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/BucketJoinDemo.py:49) with 3 output partitions
+25/01/01 12:52:19 INFO DAGScheduler: Final stage: ResultStage 2 (collect at /home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/BucketJoinDemo.py:49)
+25/01/01 12:52:19 INFO DAGScheduler: Parents of final stage: List()
+25/01/01 12:52:19 INFO DAGScheduler: Missing parents: List()
+25/01/01 12:52:19 INFO DAGScheduler: Submitting ResultStage 2 (MapPartitionsRDD[16] at collect at /home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/BucketJoinDemo.py:49), which has no missing parents
+25/01/01 12:52:19 INFO MemoryStore: Block broadcast_6 stored as values in memory (estimated size 54.8 KiB, free 433.7 MiB)
+25/01/01 12:52:19 INFO MemoryStore: Block broadcast_6_piece0 stored as bytes in memory (estimated size 20.8 KiB, free 433.6 MiB)
+25/01/01 12:52:19 INFO BlockManagerInfo: Added broadcast_6_piece0 in memory on 192.168.29.182:45099 (size: 20.8 KiB, free: 434.3 MiB)
+25/01/01 12:52:19 INFO SparkContext: Created broadcast 6 from broadcast at DAGScheduler.scala:1585
+25/01/01 12:52:19 INFO DAGScheduler: Submitting 3 missing tasks from ResultStage 2 (MapPartitionsRDD[16] at collect at /home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/BucketJoinDemo.py:49) (first 15 tasks are for partitions Vector(0, 1, 2))
+25/01/01 12:52:19 INFO TaskSchedulerImpl: Adding task set 2.0 with 3 tasks resource profile 0
+25/01/01 12:52:19 INFO TaskSetManager: Starting task 0.0 in stage 2.0 (TID 6) (192.168.29.182, executor driver, partition 0, PROCESS_LOCAL, 10273 bytes) 
+25/01/01 12:52:19 INFO TaskSetManager: Starting task 1.0 in stage 2.0 (TID 7) (192.168.29.182, executor driver, partition 1, PROCESS_LOCAL, 10273 bytes) 
+25/01/01 12:52:19 INFO TaskSetManager: Starting task 2.0 in stage 2.0 (TID 8) (192.168.29.182, executor driver, partition 2, PROCESS_LOCAL, 10273 bytes) 
+25/01/01 12:52:19 INFO Executor: Running task 0.0 in stage 2.0 (TID 6)
+25/01/01 12:52:19 INFO Executor: Running task 2.0 in stage 2.0 (TID 8)
+25/01/01 12:52:19 INFO Executor: Running task 1.0 in stage 2.0 (TID 7)
+25/01/01 12:52:19 INFO CodeGenerator: Code generated in 18.736276 ms
+25/01/01 12:52:19 INFO CodeGenerator: Code generated in 9.843251 ms
+25/01/01 12:52:19 INFO CodeGenerator: Code generated in 7.32391 ms
+25/01/01 12:52:19 INFO CodeGenerator: Code generated in 22.018017 ms
+25/01/01 12:52:19 INFO CodeGenerator: Code generated in 5.680645 ms
+25/01/01 12:52:19 INFO CodeGenerator: Code generated in 5.131187 ms
+25/01/01 12:52:19 INFO CodeGenerator: Code generated in 17.093702 ms
+25/01/01 12:52:19 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data1/part-00000-95a3773e-b997-4718-8aa7-5769f6c3fcb0_00001.c000.snappy.parquet, range: 0-1214269, partition values: [empty row]
+25/01/01 12:52:19 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data1/part-00000-95a3773e-b997-4718-8aa7-5769f6c3fcb0_00002.c000.snappy.parquet, range: 0-1218617, partition values: [empty row]
+25/01/01 12:52:19 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data1/part-00000-95a3773e-b997-4718-8aa7-5769f6c3fcb0_00000.c000.snappy.parquet, range: 0-1214767, partition values: [empty row]
+25/01/01 12:52:19 INFO FilterCompat: Filtering using predicate: noteq(id, null)
+25/01/01 12:52:19 INFO FilterCompat: Filtering using predicate: noteq(id, null)
+25/01/01 12:52:19 INFO FilterCompat: Filtering using predicate: noteq(id, null)
+25/01/01 12:52:20 INFO CodecPool: Got brand-new decompressor [.snappy]
+25/01/01 12:52:20 INFO CodecPool: Got brand-new decompressor [.snappy]
+25/01/01 12:52:20 INFO CodecPool: Got brand-new decompressor [.snappy]
+25/01/01 12:52:20 INFO BlockManagerInfo: Removed broadcast_0_piece0 on 192.168.29.182:45099 in memory (size: 34.2 KiB, free: 434.3 MiB)
+25/01/01 12:52:20 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data2/part-00000-41d2f5ce-3b95-47a9-b1f5-809380a3e1b9_00001.c000.snappy.parquet, range: 0-2073715, partition values: [empty row]
+25/01/01 12:52:20 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data2/part-00000-41d2f5ce-3b95-47a9-b1f5-809380a3e1b9_00002.c000.snappy.parquet, range: 0-2079654, partition values: [empty row]
+25/01/01 12:52:20 INFO FileScanRDD: Reading File path: file:///home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/spark-warehouse/my_db.db/flight_data2/part-00000-41d2f5ce-3b95-47a9-b1f5-809380a3e1b9_00000.c000.snappy.parquet, range: 0-2070843, partition values: [empty row]
+25/01/01 12:52:20 INFO FilterCompat: Filtering using predicate: noteq(id, null)
+25/01/01 12:52:20 INFO FilterCompat: Filtering using predicate: noteq(id, null)
+25/01/01 12:52:20 INFO FilterCompat: Filtering using predicate: noteq(id, null)
+25/01/01 12:52:21 INFO MemoryStore: Block taskresult_6 stored as bytes in memory (estimated size 9.1 MiB, free 312.7 MiB)
+25/01/01 12:52:21 INFO BlockManagerInfo: Added taskresult_6 in memory on 192.168.29.182:45099 (size: 9.1 MiB, free: 425.2 MiB)
+25/01/01 12:52:21 INFO Executor: Finished task 0.0 in stage 2.0 (TID 6). 9567958 bytes result sent via BlockManager)
+25/01/01 12:52:21 INFO TransportClientFactory: Successfully created connection to /192.168.29.182:45099 after 81 ms (0 ms spent in bootstraps)
+25/01/01 12:52:21 INFO MemoryStore: Block taskresult_7 stored as bytes in memory (estimated size 9.1 MiB, free 415.6 MiB)
+25/01/01 12:52:21 INFO BlockManagerInfo: Added taskresult_7 in memory on 192.168.29.182:45099 (size: 9.1 MiB, free: 416.1 MiB)
+25/01/01 12:52:21 INFO MemoryStore: Block taskresult_8 stored as bytes in memory (estimated size 9.1 MiB, free 406.5 MiB)
+25/01/01 12:52:21 INFO Executor: Finished task 1.0 in stage 2.0 (TID 7). 9556006 bytes result sent via BlockManager)
+25/01/01 12:52:21 INFO BlockManagerInfo: Added taskresult_8 in memory on 192.168.29.182:45099 (size: 9.1 MiB, free: 406.9 MiB)
+25/01/01 12:52:21 INFO Executor: Finished task 2.0 in stage 2.0 (TID 8). 9592253 bytes result sent via BlockManager)
+25/01/01 12:52:21 INFO TaskSetManager: Finished task 2.0 in stage 2.0 (TID 8) in 2443 ms on 192.168.29.182 (executor driver) (1/3)
+25/01/01 12:52:21 INFO BlockManagerInfo: Removed taskresult_8 on 192.168.29.182:45099 in memory (size: 9.1 MiB, free: 416.1 MiB)
+25/01/01 12:52:22 INFO TaskSetManager: Finished task 0.0 in stage 2.0 (TID 6) in 2511 ms on 192.168.29.182 (executor driver) (2/3)
+25/01/01 12:52:22 INFO BlockManagerInfo: Removed taskresult_6 on 192.168.29.182:45099 in memory (size: 9.1 MiB, free: 425.2 MiB)
+25/01/01 12:52:22 INFO TaskSetManager: Finished task 1.0 in stage 2.0 (TID 7) in 2533 ms on 192.168.29.182 (executor driver) (3/3)
+25/01/01 12:52:22 INFO TaskSchedulerImpl: Removed TaskSet 2.0, whose tasks have all completed, from pool 
+25/01/01 12:52:22 INFO BlockManagerInfo: Removed taskresult_7 on 192.168.29.182:45099 in memory (size: 9.1 MiB, free: 434.3 MiB)
+25/01/01 12:52:22 INFO DAGScheduler: ResultStage 2 (collect at /home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/BucketJoinDemo.py:49) finished in 2.548 s
+25/01/01 12:52:22 INFO DAGScheduler: Job 2 is finished. Cancelling potential speculative or zombie tasks for this job
+25/01/01 12:52:22 INFO TaskSchedulerImpl: Killing all running tasks in stage 2: Stage finished
+25/01/01 12:52:22 INFO DAGScheduler: Job 2 finished: collect at /home/bidut/Desktop/dev/pyspark_learn/Course01Learn/21-BucketJoinDemo/BucketJoinDemo.py:49, took 2.555758 s
+25/01/01 12:52:22 INFO BlockManagerInfo: Removed broadcast_6_piece0 on 192.168.29.182:45099 in memory (size: 20.8 KiB, free: 434.3 MiB)
