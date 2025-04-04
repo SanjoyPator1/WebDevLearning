@@ -4,14 +4,6 @@
       
       <div class="mb-4">
         <h3 class="text-lg font-semibold mb-2">Tailwind Test</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-primary text-white p-4 rounded">
-            Primary Color Block
-          </div>
-          <div class="bg-secondary text-white p-4 rounded">
-            Secondary Color Block
-          </div>
-        </div>
       </div>
       
       <div class="mt-6">

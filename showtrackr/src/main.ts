@@ -10,6 +10,7 @@ import Tooltip from 'primevue/tooltip'
 
 // Import only our Tailwind-based CSS
 import './assets/styles/main.css'
+import 'primeicons/primeicons.css'
 
 import App from './App.vue'
 import router from './router'
@@ -27,6 +28,9 @@ app.use(router)
 app.use(PrimeVue, {
   theme: {
     preset: Aura,
+    options: {
+      darkModeSelector: '.dark',
+    },
   },
 })
 

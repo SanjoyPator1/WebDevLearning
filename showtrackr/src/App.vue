@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <AppHeader />
-    <main class="flex-grow container-custom py-6">
+    <main class="flex-grow container-custom py-6 px-4">
       <TestComponent class="mt-4" />
       <!-- <router-view /> -->
     </main>
