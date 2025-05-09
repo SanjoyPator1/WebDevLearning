@@ -1,0 +1,85 @@
+.task-list {
+  width: 280px;
+  overflow-y: auto;
+  max-height: calc(100vh - 150px);
+}
+
+.task-list h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.task-category h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.task-category ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-item {
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-left: 3px solid transparent;
+}
+
+.task-item:hover {
+  background-color: #f0f0f0;
+}
+
+.task-item.active {
+  background-color: #f0f0f0;
+  border-left: 3px solid #000;
+  font-weight: 500;
+}
+
+.task-item.completed {
+  color: #666;
+  position: relative;
+}
+
+.task-item.completed::after {
+  content: "✓";
+  position: absolute;
+  right: 10px;
+  color: #000;
+}
+
+.progress {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.progress p {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.progress-bar {
+  height: 6px;
+  background-color: #eee;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #000;
+  transition: width 0.3s ease;
+}
