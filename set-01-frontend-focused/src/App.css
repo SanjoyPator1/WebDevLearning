@@ -73,7 +73,6 @@ header .subtitle {
   max-height: calc(100vh - 150px);
   overflow-y: scroll;
   display: flex;
-  justify-content: center;
 }
 
 .task-component {
@@ -129,6 +128,36 @@ footer {
 
 .task-list .progress {
   padding: 10px;
+}
+
+code {
+  font-family: "Fira Code", "Source Code Pro", Menlo, monospace;
+  background-color: #f3f4f6; /* Tailwind's gray-100 */
+  color: #111827; /* Tailwind's gray-900 */
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+pre {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: "Fira Code", "Source Code Pro", Menlo, monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
 }
 
 /* Responsive Styles */
