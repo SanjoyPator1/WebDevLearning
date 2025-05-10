@@ -16,7 +16,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  width: 100%;
 }
 
 body {
@@ -30,7 +29,6 @@ body {
 
 /* App Container */
 .app-container {
-  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -74,9 +72,12 @@ header .subtitle {
   min-height: 500px;
   max-height: calc(100vh - 150px);
   overflow-y: scroll;
+  display: flex;
+  justify-content: center;
 }
 
 .task-component {
+  max-width: 1200px;
   background-color: var(--background-color);
   height: 100%;
   min-height: 400px;
