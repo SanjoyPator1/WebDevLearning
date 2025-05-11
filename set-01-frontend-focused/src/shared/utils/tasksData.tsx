@@ -1,7 +1,4 @@
-import type {
-  AccordionItemType,
-  AccordionProps,
-} from "../../tasks/Task04_Accordion/Accordion";
+import type { AccordionItemType } from "../../tasks/Task04_Accordion/Accordion";
 import type { TabItemType } from "../../tasks/Task05_Tabs/Tabs";
 
 export interface TaskData {
@@ -18,11 +15,11 @@ export interface TaskCategory {
 // List of all available tasks
 const tasks: TaskData[] = [
   // Basic Components
-  { id: "counter", name: "Task 1: Counter", completed: false },
-  { id: "toggle", name: "Task 2: Toggle", completed: false },
-  { id: "textExpander", name: "Task 3: Text Expander", completed: false },
-  { id: "accordion", name: "Task 4: Accordion", completed: false },
-  { id: "tabs", name: "Task 5: Tabs", completed: false },
+  { id: "counter", name: "Task 1: Counter", completed: true },
+  { id: "toggle", name: "Task 2: Toggle", completed: true },
+  { id: "textExpander", name: "Task 3: Text Expander", completed: true },
+  { id: "accordion", name: "Task 4: Accordion", completed: true },
+  { id: "tabs", name: "Task 5: Tabs", completed: true },
 
   // State Management
   { id: "todoList", name: "Task 6: Todo List", completed: false },
