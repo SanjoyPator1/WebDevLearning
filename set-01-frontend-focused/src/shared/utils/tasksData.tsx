@@ -2,6 +2,7 @@ import type {
   AccordionItemType,
   AccordionProps,
 } from "../../tasks/Task04_Accordion/Accordion";
+import type { TabItemType } from "../../tasks/Task05_Tabs/Tabs";
 
 export interface TaskData {
   id: string;
@@ -192,5 +193,32 @@ export const AccordionMockData: AccordionItemType[] = [
     id: "id-title-3",
     title: "Accordion 3",
     content: "Content for accordion 03",
+  },
+];
+
+export const TabDummyContent = ({ text }: { text: string }) => {
+  return (
+    <div>
+      <h3>Tab Dummy component</h3>
+      <p>{text}</p>
+    </div>
+  );
+};
+
+export const TabData: TabItemType[] = [
+  {
+    id: "tab-id-01",
+    tabTitle: "Tab 01",
+    tabContent: <TabDummyContent text="Tab content 01" />,
+  },
+  {
+    id: "tab-id-02",
+    tabTitle: "Tab 02",
+    tabContent: <TabDummyContent text="Tab content 02" />,
+  },
+  {
+    id: "tab-id-03",
+    tabTitle: "Tab 03",
+    tabContent: <TabDummyContent text="Tab content 03" />,
   },
 ];

@@ -264,7 +264,7 @@
 
   /* Button variants */
   .btn {
-    @apply px-4 py-2 rounded-md text-sm font-medium;
+    @apply px-4 py-2 rounded-md text-sm font-medium cursor-pointer;
   }
 
   .btn-primary {
