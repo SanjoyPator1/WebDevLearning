@@ -1,5 +1,6 @@
 import type { AccordionItemType } from "../../tasks/Task04_Accordion/Accordion";
 import type { TabItemType } from "../../tasks/Task05_Tabs/Tabs";
+import type { TodoItemType } from "../../tasks/Task06_TodoList/TodoList";
 
 export interface TaskData {
   id: string;
@@ -218,4 +219,10 @@ export const TabData: TabItemType[] = [
     tabTitle: "Tab 03",
     tabContent: <TabDummyContent text="Tab content 03" />,
   },
+];
+
+export const todoDummyData: TodoItemType[] = [
+  { id: 1, text: "Learn React", completed: true, priority: "high" },
+  { id: 2, text: "Build a project", completed: false, priority: "medium" },
+  { id: 3, text: "Deploy the project", completed: false, priority: "medium" },
 ];

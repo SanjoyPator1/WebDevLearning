@@ -15,6 +15,7 @@ import {
   AccordionMockData,
   longText,
   TabData,
+  todoDummyData,
 } from "../../shared/utils/tasksData";
 
 interface TaskRendererProps {
@@ -28,7 +29,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     textExpander: <TextExpander text={longText} />,
     accordion: <Accordion accordionData={AccordionMockData} />,
     tabs: <Tabs tabData={TabData} />,
-    todoList: <TodoList />,
+    todoList: <TodoList todoData={todoDummyData} />,
     trafficLight: <TrafficLight />,
     formInputs: <FormInputs />,
     parentChild: <ParentChild />,
