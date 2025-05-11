@@ -1,3 +1,8 @@
+import type {
+  AccordionItemType,
+  AccordionProps,
+} from "../../tasks/Task04_Accordion/Accordion";
+
 export interface TaskData {
   id: string;
   name: string;
@@ -171,3 +176,21 @@ export const taskCategories: TaskCategory[] = [
 export default tasks;
 
 export const longText = `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`;
+
+export const AccordionMockData: AccordionItemType[] = [
+  {
+    id: "id-title-1",
+    title: "Accordion 1",
+    content: "Content for accordion 01",
+  },
+  {
+    id: "id-title-2",
+    title: "Accordion 2",
+    content: "Content for accordion 02",
+  },
+  {
+    id: "id-title-3",
+    title: "Accordion 3",
+    content: "Content for accordion 03",
+  },
+];
