@@ -251,7 +251,33 @@ function ShoppingCart() {
       <div className="task-notes">
         <h3>Implementation Notes:</h3>
         <ul>
-          <li></li>
+          <li>
+            Used React Context API to manage and share cart state globally
+            across components.
+          </li>
+          <li>
+            Maintained the shopping cart as a list of items with `id`, `name`,
+            `price`, and `quantity`.
+          </li>
+          <li>
+            Handled `addToCart` and `removeFromCart` logic with care to avoid
+            mutating state directly.
+          </li>
+          <li>
+            Used `useCallback` for cart manipulation functions to avoid
+            unnecessary re-renders.
+          </li>
+          <li>
+            Computed derived data like total price and total item count using
+            `reduce`.
+          </li>
+          <li>
+            Displayed product list and cart items with buttons for
+            adding/removing products.
+          </li>
+          <li>
+            Ensured performance by memoizing the context value using `useMemo`.
+          </li>
         </ul>
       </div>
     </div>

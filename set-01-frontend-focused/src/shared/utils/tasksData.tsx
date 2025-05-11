@@ -23,14 +23,14 @@ const tasks: TaskData[] = [
   { id: "tabs", name: "Task 5: Tabs", completed: true },
 
   // State Management
-  { id: "todoList", name: "Task 6: Todo List", completed: false },
-  { id: "trafficLight", name: "Task 7: Traffic Light", completed: false },
-  { id: "formInputs", name: "Task 8: Form Inputs", completed: false },
-  { id: "parentChild", name: "Task 9: Parent-Child", completed: false },
+  { id: "todoList", name: "Task 6: Todo List", completed: true },
+  { id: "trafficLight", name: "Task 7: Traffic Light", completed: true },
+  { id: "formInputs", name: "Task 8: Form Inputs", completed: true },
+  { id: "parentChild", name: "Task 9: Parent-Child", completed: true },
   {
     id: "shoppingCart",
     name: "Task 10: Shopping Cart with Context",
-    completed: false,
+    completed: true,
   },
 
   // Effects & Lifecycle
