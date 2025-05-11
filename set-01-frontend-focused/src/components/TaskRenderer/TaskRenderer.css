@@ -30,6 +30,7 @@
 
 .task-description ul {
   padding-left: 20px;
+  list-style-type: disc;
 }
 
 .task-description li {
@@ -50,44 +51,7 @@
 
 .task-notes ul {
   padding-left: 20px;
-}
-
-/* Styles for buttons and interactive elements */
-button {
-  background-color: #000;
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-  margin: 0 5px;
-}
-
-button:hover {
-  background-color: #333;
-}
-
-button:active {
-  transform: translateY(1px);
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background-color: #555;
-}
-
-.btn-danger {
-  background-color: #c00;
-}
-
-.btn-reset {
-  background-color: #444;
+  list-style-type: disc;
 }
 
 /* Styles for inputs and form elements */

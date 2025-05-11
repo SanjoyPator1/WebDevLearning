@@ -36,14 +36,22 @@ function Counter() {
           <h4>Counter:</h4>
           <p className="text-5xl">{counter}</p>
         </div>
-        <div className="flex ">
-          <button onClick={() => handleUpdateCounter("increment")}>
+        <div className="flex gap-4">
+          <button
+            className="btn btn-primary"
+            onClick={() => handleUpdateCounter("increment")}
+          >
             + (increment)
           </button>
-          <button onClick={() => handleUpdateCounter("decrement")}>
+          <button
+            className="btn btn-primary"
+            onClick={() => handleUpdateCounter("decrement")}
+          >
             - (decrement)
           </button>
-          <button onClick={handleReset}>0 (reset)</button>
+          <button className="btn btn-secondary" onClick={handleReset}>
+            0 (reset)
+          </button>
         </div>
       </div>
 

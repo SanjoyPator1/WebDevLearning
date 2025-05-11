@@ -41,7 +41,7 @@ function TextExpander({ text, charLimit = 100 }: TextExpanderProps) {
       <div className="implementation md:w-[50vw] flex flex-col gap-3">
         <p>{currentText}</p>
         {text && text.length > charLimit && (
-          <button className="w-fit" onClick={toggleExpand}>
+          <button className="w-fit btn btn-accent" onClick={toggleExpand}>
             {isExpanded ? "Read Less" : "Read More"}
           </button>
         )}

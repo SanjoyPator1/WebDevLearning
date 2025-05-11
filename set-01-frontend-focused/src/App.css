@@ -14,8 +14,6 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
@@ -76,9 +74,9 @@ header .subtitle {
 }
 
 .task-component {
-  max-width: 1200px;
   background-color: var(--background-color);
   height: 100%;
+  width: 100%;
   min-height: 400px;
 }
 

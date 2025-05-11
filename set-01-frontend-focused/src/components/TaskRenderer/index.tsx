@@ -11,7 +11,7 @@ import FormInputs from "../../tasks/Task08_FormInputs/FormInputs";
 import ParentChild from "../../tasks/Task09_ParentChild/ParentChild";
 import ShoppingCart from "../../tasks/Task10_ShoppingCart/ShoppingCart";
 import Counter from "../../tasks/Task01_Counter/Counter";
-import { longText } from "../../shared/utils/tasksData";
+import { AccordionMockData, longText } from "../../shared/utils/tasksData";
 
 interface TaskRendererProps {
   currentTask: string | null;
@@ -22,7 +22,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     counter: <Counter />,
     toggle: <Toggle />,
     textExpander: <TextExpander text={longText} />,
-    accordion: <Accordion />,
+    accordion: <Accordion accordionData={AccordionMockData}/>,
     tabs: <Tabs />,
     todoList: <TodoList />,
     trafficLight: <TrafficLight />,
