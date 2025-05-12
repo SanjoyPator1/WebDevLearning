@@ -19,6 +19,7 @@ import {
 } from "../../shared/utils/tasksData";
 import Timer from "../../tasks/Task11_Timer/Timer";
 import DebouncedSearch from "../../tasks/Task12_DebouncedSearch/DebouncedSearch";
+import DebouncedSearchEnhanced from "../../tasks/Task12_DebouncedSearch/DebouncedSearchEnhanced";
 
 interface TaskRendererProps {
   currentTask: string | null;
@@ -37,7 +38,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     parentChild: <ParentChild />,
     shoppingCart: <ShoppingCart />,
     timer: <Timer />,
-    debouncedSearch: <DebouncedSearch />,
+    debouncedSearch: <DebouncedSearchEnhanced />,
   };
 
   if (currentTask && taskComponents[currentTask]) {
