@@ -20,6 +20,7 @@ import {
 import Timer from "../../tasks/Task11_Timer/Timer";
 import DebouncedSearch from "../../tasks/Task12_DebouncedSearch/DebouncedSearch";
 import DebouncedSearchEnhanced from "../../tasks/Task12_DebouncedSearch/DebouncedSearchEnhanced";
+import WindowSizeTracker from "../../tasks/Task13_WindowSizeTracker/WindowSizeTracker";
 
 interface TaskRendererProps {
   currentTask: string | null;
@@ -39,6 +40,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     shoppingCart: <ShoppingCart />,
     timer: <Timer />,
     debouncedSearch: <DebouncedSearchEnhanced />,
+    windowSizeTracker: <WindowSizeTracker />,
   };
 
   if (currentTask && taskComponents[currentTask]) {
