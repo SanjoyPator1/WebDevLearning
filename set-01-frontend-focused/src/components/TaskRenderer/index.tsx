@@ -17,6 +17,7 @@ import {
   TabData,
   todoDummyData,
 } from "../../shared/utils/tasksData";
+import Timer from "../../tasks/Task11_Timer/Timer";
 
 interface TaskRendererProps {
   currentTask: string | null;
@@ -34,6 +35,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     formInputs: <FormInputs />,
     parentChild: <ParentChild />,
     shoppingCart: <ShoppingCart />,
+    timer: <Timer />,
   };
 
   if (currentTask && taskComponents[currentTask]) {
