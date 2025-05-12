@@ -18,6 +18,7 @@ import {
   todoDummyData,
 } from "../../shared/utils/tasksData";
 import Timer from "../../tasks/Task11_Timer/Timer";
+import DebouncedSearch from "../../tasks/Task12_DebouncedSearch/DebouncedSearch";
 
 interface TaskRendererProps {
   currentTask: string | null;
@@ -36,6 +37,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     parentChild: <ParentChild />,
     shoppingCart: <ShoppingCart />,
     timer: <Timer />,
+    debouncedSearch: <DebouncedSearch />,
   };
 
   if (currentTask && taskComponents[currentTask]) {
