@@ -1,6 +1,6 @@
 import React from "react";
-import "./TaskList.css";
 import { taskCategories } from "../../shared/utils/tasksData";
+import "./TaskList.css";
 
 interface TaskListProps {
   currentTask: string | null;
@@ -13,6 +13,11 @@ const TaskList: React.FC<TaskListProps> = ({ currentTask, setCurrentTask }) => {
 
   // Count completed tasks
   const completedCount = allTasks.filter((task) => task.completed).length;
+
+  // Handle click on task item
+  const handleTaskClick = (taskId: string) => {
+    setCurrentTask(taskId);
+  };
 
   return (
     <div className="task-list">
@@ -28,7 +33,7 @@ const TaskList: React.FC<TaskListProps> = ({ currentTask, setCurrentTask }) => {
                 className={`task-item ${
                   currentTask === task.id ? "active" : ""
                 } ${task.completed ? "completed" : ""}`}
-                onClick={() => setCurrentTask(task.id)}
+                onClick={() => handleTaskClick(task.id)}
               >
                 {task.name}
               </li>

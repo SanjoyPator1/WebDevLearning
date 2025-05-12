@@ -1,6 +1,7 @@
 import React from "react";
 import "./TaskRenderer.css";
 
+import Counter from "../../tasks/Task01_Counter/Counter";
 import Toggle from "../../tasks/Task02_Toggle/Toggle";
 import TextExpander from "../../tasks/Task03_TextExpander/TextExpander";
 import Accordion from "../../tasks/Task04_Accordion/Accordion";
@@ -10,24 +11,42 @@ import TrafficLight from "../../tasks/Task07_TrafficLight/TrafficLight";
 import FormInputs from "../../tasks/Task08_FormInputs/FormInputs";
 import ParentChild from "../../tasks/Task09_ParentChild/ParentChild";
 import ShoppingCart from "../../tasks/Task10_ShoppingCart/ShoppingCart";
-import Counter from "../../tasks/Task01_Counter/Counter";
+import Timer from "../../tasks/Task11_Timer/Timer";
+import DebouncedSearchEnhanced from "../../tasks/Task12_DebouncedSearch/DebouncedSearchEnhanced";
+import WindowSizeTracker from "../../tasks/Task13_WindowSizeTracker/WindowSizeTracker";
 import {
   AccordionMockData,
   longText,
   TabData,
   todoDummyData,
 } from "../../shared/utils/tasksData";
-import Timer from "../../tasks/Task11_Timer/Timer";
-import DebouncedSearch from "../../tasks/Task12_DebouncedSearch/DebouncedSearch";
-import DebouncedSearchEnhanced from "../../tasks/Task12_DebouncedSearch/DebouncedSearchEnhanced";
-import WindowSizeTracker from "../../tasks/Task13_WindowSizeTracker/WindowSizeTracker";
+
+// Welcome component with Tailwind CSS
+const Welcome = () => (
+  <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-center p-6">
+    <div className="max-w-md">
+      <h2 className="text-2xl font-bold mb-4 text-gray-900">
+        React Interview Practice Tasks
+      </h2>
+      <p className="text-gray-600 mb-3">
+        Select a task from the list to see the implementation.
+      </p>
+      <p className="text-sm text-gray-500 italic mt-6">
+        Start with basic components and work your way up to more advanced
+        patterns.
+      </p>
+    </div>
+  </div>
+);
 
 interface TaskRendererProps {
   currentTask: string | null;
 }
 
 const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
+  // Map of task IDs to their respective components
   const taskComponents: Record<string, React.ReactNode> = {
+    welcome: <Welcome />,
     counter: <Counter />,
     toggle: <Toggle />,
     textExpander: <TextExpander text={longText} />,
@@ -41,22 +60,41 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     timer: <Timer />,
     debouncedSearch: <DebouncedSearchEnhanced />,
     windowSizeTracker: <WindowSizeTracker />,
+    // Add more task components as you implement them
   };
 
-  if (currentTask && taskComponents[currentTask]) {
-    return <div className="task-component">{taskComponents[currentTask]}</div>;
+  // If no task is selected (null), show the welcome page
+  if (!currentTask) {
+    return (
+      <div className="task-component">
+        <Welcome />
+      </div>
+    );
   }
 
-  return (
-    <div className="welcome">
-      <h2>React Interview Practice Tasks</h2>
-      <p>Select a task from the list to see the implementation.</p>
-      <p className="hint">
-        Start with basic components and work your way up to more advanced
-        patterns.
-      </p>
-    </div>
-  );
+  // If the task is selected but not in our components map
+  if (!taskComponents[currentTask]) {
+    // This should never happen with our current setup since App.tsx handles the validation
+    // But we'll include it for safety in case the component is used elsewhere
+    return (
+      <div className="task-component">
+        <div className="flex flex-col items-center justify-center h-full text-center p-6">
+          <div className="max-w-md">
+            <h2 className="text-2xl font-bold mb-4 text-red-600">
+              Task Component Missing
+            </h2>
+            <p className="text-gray-600 mb-3">
+              The task "{currentTask}" exists but its component hasn't been
+              implemented yet.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Return the selected task component
+  return <div className="task-component">{taskComponents[currentTask]}</div>;
 };
 
 export default TaskRenderer;
