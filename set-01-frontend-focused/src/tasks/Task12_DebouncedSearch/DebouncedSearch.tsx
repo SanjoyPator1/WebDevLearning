@@ -41,7 +41,7 @@ function DebouncedSearch() {
 
   return (
     <div className="task-container">
-      <h2>Task 12: Debounced Search</h2>
+      <h2>Task 12.1: Debounced Search</h2>
 
       <div className="task-description">
         <h3>Requirements:</h3>
