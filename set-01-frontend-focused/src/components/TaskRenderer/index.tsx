@@ -20,6 +20,7 @@ import {
   TabData,
   todoDummyData,
 } from "../../shared/utils/tasksData";
+import DataFetchingSimulation from "../../tasks/Task14_DataFetching/DataFetching";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -60,6 +61,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     timer: <Timer />,
     debouncedSearch: <DebouncedSearchEnhanced />,
     windowSizeTracker: <WindowSizeTracker />,
+    dataFetching:<DataFetchingSimulation/>
     // Add more task components as you implement them
   };
 

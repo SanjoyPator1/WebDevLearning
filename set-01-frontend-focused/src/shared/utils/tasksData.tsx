@@ -226,3 +226,33 @@ export const todoDummyData: TodoItemType[] = [
   { id: 2, text: "Build a project", completed: false, priority: "medium" },
   { id: 3, text: "Deploy the project", completed: false, priority: "medium" },
 ];
+
+// mock user data for usage
+export type UserType = {
+  id: number;
+  name: string;
+  avatar: string;
+};
+
+export const USER_DATA: UserType[] = [
+  { id: 0, name: "Sanjoy", avatar: "🤓" },
+  { id: 1, name: "Aisha", avatar: "😎" },
+  { id: 2, name: "Liam", avatar: "🧠" },
+  { id: 3, name: "Zara", avatar: "🧚" },
+  { id: 4, name: "Noah", avatar: "🧙" },
+  { id: 5, name: "Maya", avatar: "🧝" },
+  { id: 6, name: "Ethan", avatar: "👨‍💻" },
+  { id: 7, name: "Aria", avatar: "👩‍🚀" },
+  { id: 8, name: "Leo", avatar: "🦁" },
+  { id: 9, name: "Nina", avatar: "🐱" },
+  { id: 10, name: "Omar", avatar: "🐼" },
+  { id: 11, name: "Chloe", avatar: "🦄" },
+  { id: 12, name: "Aiden", avatar: "🐉" },
+  { id: 13, name: "Layla", avatar: "🧞" },
+  { id: 14, name: "Kai", avatar: "🐺" },
+  { id: 15, name: "Mila", avatar: "🦋" },
+  { id: 16, name: "Jasper", avatar: "🦊" },
+  { id: 17, name: "Sofia", avatar: "🐰" },
+  { id: 18, name: "Ravi", avatar: "🐯" },
+  { id: 19, name: "Yuki", avatar: "🐧" },
+];
