@@ -21,6 +21,8 @@ import {
   todoDummyData,
 } from "../../shared/utils/tasksData";
 import DataFetchingSimulation from "../../tasks/Task14_DataFetching/DataFetching";
+import DebouncedSearch from "../../tasks/Task12_DebouncedSearch/DebouncedSearch";
+import DataFetchingSimulationEnhanced from "../../tasks/Task14_DataFetching/DataFetchingEnhanced";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -59,9 +61,11 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     parentChild: <ParentChild />,
     shoppingCart: <ShoppingCart />,
     timer: <Timer />,
-    debouncedSearch: <DebouncedSearchEnhanced />,
+    debouncedSearch: <DebouncedSearch/>,
+    debouncedSearchEnhanced: <DebouncedSearchEnhanced />,
     windowSizeTracker: <WindowSizeTracker />,
-    dataFetching:<DataFetchingSimulation/>
+    dataFetching:<DataFetchingSimulation/>,
+    dataFetchingEnhanced: <DataFetchingSimulationEnhanced/>
     // Add more task components as you implement them
   };
 
@@ -73,6 +77,12 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
       </div>
     );
   }
+
+   console.log("task renderer - taskComponents ",{taskComponents})
+    console.log("task r - currentTask ",currentTask)
+    console.log("task r - taskComponents[currentTask] ",
+      taskComponents[currentTask]
+    )
 
   // If the task is selected but not in our components map
   if (!taskComponents[currentTask]) {

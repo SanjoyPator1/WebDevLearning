@@ -37,15 +37,17 @@ const tasks: TaskData[] = [
   { id: "timer", name: "Task 11: Timer/Stopwatch", completed: false },
   {
     id: "debouncedSearch",
-    name: "Task 12: Debounced Search",
+    name: "Task 12.1: Debounced Search",
     completed: false,
   },
+   {id: "debouncedSearchEnhanced", name: "Task 12.2: Enhanced Debounced Search", completed: false },
   {
     id: "windowSizeTracker",
     name: "Task 13: Window Size Tracker",
     completed: false,
   },
-  { id: "dataFetching", name: "Task 14: Data Fetching", completed: false },
+  { id: "dataFetching", name: "Task 14.1: Data Fetching", completed: false },
+  { id: "dataFetchingEnhanced", name: "Task 14.2: Enhanced Data Fetching", completed: false },
   {
     id: "customFetchHook",
     name: "Task 15: Custom useFetch Hook",
@@ -163,8 +165,8 @@ const tasks: TaskData[] = [
 export const taskCategories: TaskCategory[] = [
   { name: "Basic Components", tasks: tasks.slice(0, 5) },
   { name: "State Management", tasks: tasks.slice(5, 10) },
-  { name: "Effects & Lifecycle", tasks: tasks.slice(10, 15) },
-  { name: "Advanced Patterns", tasks: tasks.slice(15, 20) },
+  { name: "Effects & Lifecycle", tasks: tasks.slice(10, 16) },
+  { name: "Advanced Patterns", tasks: tasks.slice(16, 20) },
   { name: "Performance", tasks: tasks.slice(20, 25) },
   { name: "UI Patterns", tasks: tasks.slice(25, 30) },
   { name: "Forms & Validation", tasks: tasks.slice(30, 35) },

@@ -1,59 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { USER_DATA, type UserType } from "../../shared/utils/tasksData";
+import type { ApiReturnMode } from "./useSimulatedFetch";
+import useSimulatedFetch from "./useSimulatedFetch";
 
 const DELAY_FETCHING = 1000
 
-type ApiReturnMode = "success" | "error";
-
-type ApiReturnType = {
-  data: UserType[];
-};
-
-const fetchUsersApi = (returnType: ApiReturnMode): ApiReturnType => {
-  if (returnType === "error") {
+const fetchUsersApi = (mode: ApiReturnMode):UserType[]  => {
+  if (mode === "error") {
     throw new Error("Error while fetching users! SORRY :)");
   }
-  return { data: USER_DATA };
+  return  USER_DATA ;
 };
 
-const simulateFetch = (mode: ApiReturnMode): Promise<ApiReturnType> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      try {
-        const response = fetchUsersApi(mode);
-        resolve(response);
-      } catch (err) {
-        reject(err);
-      }
-    }, DELAY_FETCHING);
-  });
-};
-
-function DataFetchingSimulation() {
-  const [fetchedUsers, setFetchedUsers] = useState<UserType[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+function DataFetchingSimulationEnhanced() {
   const [fetchMode, setFetchMode] = useState<ApiReturnMode>("success");
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    simulateFetch(fetchMode)
-      .then((res) => setFetchedUsers(res.data))
-      .catch((e) => {
-        const error = e as Error;
-        setError(error.message);
-      })
-      .finally(() => setLoading(false));
-
-    return () => {
-    };
-  }, [fetchMode]);
+  const {data,loading,error} = useSimulatedFetch({fetchMode, delay:DELAY_FETCHING,fn:fetchUsersApi})
 
   return (
     <div className="task-container">
-      <h2>Task 14.1: Data Fetching Simulation</h2>
+      <h2>Task 14.2: Enhanced Data Fetching Simulation</h2>
 
       <div className="task-description">
         <h3>Requirements:</h3>
@@ -84,7 +50,7 @@ function DataFetchingSimulation() {
           ) : error ? (
             <p>Error: {error}</p>
           ) : (
-            fetchedUsers.map((user) => (
+            data && Array.isArray(data) && data.length>0 && data.map((user) => (
               <div key={user.id} className="flex gap-3 border rounded-md p-3">
                 <p>{user.name}</p>
                 <p>{user.avatar}</p>
@@ -105,4 +71,4 @@ function DataFetchingSimulation() {
   );
 }
 
-export default DataFetchingSimulation;
+export default DataFetchingSimulationEnhanced;
