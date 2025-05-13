@@ -23,6 +23,7 @@ import {
 import DataFetchingSimulation from "../../tasks/Task14_DataFetching/DataFetching";
 import DebouncedSearch from "../../tasks/Task12_DebouncedSearch/DebouncedSearch";
 import DataFetchingSimulationEnhanced from "../../tasks/Task14_DataFetching/DataFetchingEnhanced";
+import CustomUseFetchHook from "../../tasks/Task15_CustomFetchHook/CustomFetchHook";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -65,7 +66,8 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     debouncedSearchEnhanced: <DebouncedSearchEnhanced />,
     windowSizeTracker: <WindowSizeTracker />,
     dataFetching:<DataFetchingSimulation/>,
-    dataFetchingEnhanced: <DataFetchingSimulationEnhanced/>
+    dataFetchingEnhanced: <DataFetchingSimulationEnhanced/>,
+    customFetchHook: <CustomUseFetchHook/>
     // Add more task components as you implement them
   };
 
@@ -77,12 +79,6 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
       </div>
     );
   }
-
-   console.log("task renderer - taskComponents ",{taskComponents})
-    console.log("task r - currentTask ",currentTask)
-    console.log("task r - taskComponents[currentTask] ",
-      taskComponents[currentTask]
-    )
 
   // If the task is selected but not in our components map
   if (!taskComponents[currentTask]) {

@@ -34,24 +34,24 @@ const tasks: TaskData[] = [
   },
 
   // Effects & Lifecycle
-  { id: "timer", name: "Task 11: Timer/Stopwatch", completed: false },
+  { id: "timer", name: "Task 11: Timer/Stopwatch", completed: true },
   {
     id: "debouncedSearch",
     name: "Task 12.1: Debounced Search",
-    completed: false,
+    completed: true,
   },
-   {id: "debouncedSearchEnhanced", name: "Task 12.2: Enhanced Debounced Search", completed: false },
+   {id: "debouncedSearchEnhanced", name: "Task 12.2: Enhanced Debounced Search", completed: true },
   {
     id: "windowSizeTracker",
     name: "Task 13: Window Size Tracker",
-    completed: false,
+    completed: true,
   },
-  { id: "dataFetching", name: "Task 14.1: Data Fetching", completed: false },
-  { id: "dataFetchingEnhanced", name: "Task 14.2: Enhanced Data Fetching", completed: false },
+  { id: "dataFetching", name: "Task 14.1: Data Fetching", completed: true },
+  { id: "dataFetchingEnhanced", name: "Task 14.2: Enhanced Data Fetching", completed: true },
   {
     id: "customFetchHook",
     name: "Task 15: Custom useFetch Hook",
-    completed: false,
+    completed: true,
   },
 
   // Advanced Component Patterns
@@ -165,8 +165,8 @@ const tasks: TaskData[] = [
 export const taskCategories: TaskCategory[] = [
   { name: "Basic Components", tasks: tasks.slice(0, 5) },
   { name: "State Management", tasks: tasks.slice(5, 10) },
-  { name: "Effects & Lifecycle", tasks: tasks.slice(10, 16) },
-  { name: "Advanced Patterns", tasks: tasks.slice(16, 20) },
+  { name: "Effects & Lifecycle", tasks: tasks.slice(10, 17) },
+  { name: "Advanced Patterns", tasks: tasks.slice(17, 20) },
   { name: "Performance", tasks: tasks.slice(20, 25) },
   { name: "UI Patterns", tasks: tasks.slice(25, 30) },
   { name: "Forms & Validation", tasks: tasks.slice(30, 35) },
