@@ -97,10 +97,27 @@ function DataFetchingSimulation() {
       <div className="task-notes">
         <h3>Implementation Notes:</h3>
         <ul>
-          <li>Use `setTimeout` to simulate a network request</li>
-          <li>Use `useState` to manage loading, success, and error states</li>
+          <li>
+            A simulated fetch function (<code>simulateFetch</code>) is used to mimic an asynchronous API call. It introduces a delay using <code>setTimeout</code> and either resolves with mock user data or throws an error based on the selected mode ("success" or "error").
+          </li>
+          <li>
+            <code>useEffect</code> runs every time the <code>fetchMode</code> state changes. It triggers the data fetch process, resets error/loading states, and updates the component state with either the fetched data or the error message.
+          </li>
+          <li>
+            Three key state variables are used: <code>fetchedUsers</code> to store retrieved users, <code>loading</code> to indicate loading status, and <code>error</code> to hold any error message from a failed fetch.
+          </li>
+          <li>
+            A toggle switch (checkbox) allows switching between "success" and "error" fetch modes to test both flows. The label displays the current mode.
+          </li>
+          <li>
+            The UI conditionally renders content: a loading message during fetch, an error message if fetching fails, or a list of users if data is fetched successfully.
+          </li>
+          <li>
+            Type safety is ensured using TypeScript types: <code>UserType</code> for user objects, and <code>ApiReturnMode</code> and <code>ApiReturnType</code> for API response handling.
+          </li>
         </ul>
       </div>
+
     </div>
   );
 }

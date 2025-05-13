@@ -5,17 +5,17 @@ import useSimulatedFetch from "./useSimulatedFetch";
 
 const DELAY_FETCHING = 1000
 
-const fetchUsersApi = (mode: ApiReturnMode):UserType[]  => {
+const fetchUsersApi = (mode: ApiReturnMode): UserType[] => {
   if (mode === "error") {
     throw new Error("Error while fetching users! SORRY :)");
   }
-  return  USER_DATA ;
+  return USER_DATA;
 };
 
 function DataFetchingSimulationEnhanced() {
   const [fetchMode, setFetchMode] = useState<ApiReturnMode>("success");
 
-  const {data,loading,error} = useSimulatedFetch({fetchMode, delay:DELAY_FETCHING,fn:fetchUsersApi})
+  const { data, loading, error } = useSimulatedFetch({ fetchMode, delay: DELAY_FETCHING, fn: fetchUsersApi })
 
   return (
     <div className="task-container">
@@ -50,7 +50,7 @@ function DataFetchingSimulationEnhanced() {
           ) : error ? (
             <p>Error: {error}</p>
           ) : (
-            data && Array.isArray(data) && data.length>0 && data.map((user) => (
+            data && Array.isArray(data) && data.length > 0 && data.map((user) => (
               <div key={user.id} className="flex gap-3 border rounded-md p-3">
                 <p>{user.name}</p>
                 <p>{user.avatar}</p>
@@ -63,10 +63,27 @@ function DataFetchingSimulationEnhanced() {
       <div className="task-notes">
         <h3>Implementation Notes:</h3>
         <ul>
-          <li>Use `setTimeout` to simulate a network request</li>
-          <li>Use `useState` to manage loading, success, and error states</li>
+          <li>
+            A custom hook <code>useSimulatedFetch</code> is created to abstract the logic for data fetching, managing loading and error states internally. This improves code reusability and keeps the main component clean and focused.
+          </li>
+          <li>
+            The custom hook accepts three parameters via an object: <code>fetchMode</code> (to control success or error), <code>delay</code> (to simulate network latency), and <code>fn</code> (the actual fetch function).
+          </li>
+          <li>
+            Inside the hook, <code>useEffect</code> handles the lifecycle of the fetch operation whenever dependencies change. It triggers the simulated fetch with a delay and updates state based on the result or error.
+          </li>
+          <li>
+            The hook uses a generic type <code>&lt;T&gt;</code> to allow type-safe fetching of any data type, not just users. It returns an object with <code>data</code>, <code>loading</code>, and <code>error</code> values.
+          </li>
+          <li>
+            The main component uses the hook and destructures the response state. The UI conditionally renders based on loading/error/data states and includes a checkbox to toggle between success and error modes.
+          </li>
+          <li>
+            This approach promotes separation of concerns: the data-fetching logic lives inside the hook, while the component handles rendering and user interactions, making the code more maintainable and testable.
+          </li>
         </ul>
       </div>
+
     </div>
   );
 }

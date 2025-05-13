@@ -37,7 +37,7 @@ const useSimulatedFetch = <T>({ fetchMode, delay = 2000, fn }: FetchOptions<T>):
       })
     }
 
-    // initially before fetching the api set it with default values
+    // initially before fetching the api set it with default values but loading is true
     setState({
       data: null,
       loading: true,
@@ -46,18 +46,22 @@ const useSimulatedFetch = <T>({ fetchMode, delay = 2000, fn }: FetchOptions<T>):
 
     simulateFetch()
       .then((result)=>{
-        setState({
-          data: result,
-          loading: false,
-          error: null
-        })
+        if (isMounted) {
+          setState({
+            data: result,
+            loading: false,
+            error: null
+          })
+        }
       })
       .catch((err)=>{
-        setState({
-          data: null,
-          loading: false,
-          error: err.message || "Unknown error",
-        })
+        if (isMounted) {
+          setState({
+            data: null,
+            loading: false,
+            error: err.message || "Unknown error",
+          })
+        }
       })
 
     return ()=>{
