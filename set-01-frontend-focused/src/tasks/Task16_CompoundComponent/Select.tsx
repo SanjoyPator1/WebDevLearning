@@ -87,6 +87,8 @@ const Select = ({
   // handle outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      console.log("select useEffect - event.target : ",event.target)
+      console.log("select useEffect - selectRef.current: ",selectRef.current)
       if (isOpen) {
         if (
           selectRef.current &&
@@ -105,7 +107,7 @@ const Select = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isOpen, closeDropdown]);
 
   const contextValue: SelectContextType = {
     isOpen,
