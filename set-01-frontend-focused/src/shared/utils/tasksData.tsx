@@ -66,16 +66,16 @@ const tasks: TaskData[] = [
   {
     id: "compoundComponent",
     name: "Task 16: Compound Component",
-    completed: false,
+    completed: true,
   },
-  { id: "renderProps", name: "Task 17: Render Props", completed: false },
-  { id: "hoc", name: "Task 18: Higher Order Components", completed: false },
+  { id: "renderProps", name: "Task 17: Render Props", completed: true },
+  { id: "hoc", name: "Task 18: Higher Order Components", completed: true },
   {
     id: "localStorageHook",
     name: "Task 19: LocalStorage Hook",
-    completed: false,
+    completed: true,
   },
-  { id: "optimizedList", name: "Task 20: Optimized List", completed: false },
+  { id: "optimizedList", name: "Task 20: Optimized List", completed: true },
 
   // Performance Optimization
   { id: "memoization", name: "Task 21: Memoization", completed: false },
