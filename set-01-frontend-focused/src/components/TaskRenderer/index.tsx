@@ -26,6 +26,7 @@ import DataFetchingSimulationEnhanced from "../../tasks/Task14_DataFetching/Data
 import CustomUseFetchHook from "../../tasks/Task15_CustomFetchHook/CustomFetchHook";
 import CompoundComponentPattern from "../../tasks/Task16_CompoundComponent/CompoundComponent";
 import RenderPropsPattern from "../../tasks/Task17_RenderProps/RenderProps";
+import HigherOrderComponents from "../../tasks/Task18_HOC/HOC";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -71,7 +72,8 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     dataFetchingEnhanced: <DataFetchingSimulationEnhanced />,
     customFetchHook: <CustomUseFetchHook />,
     compoundComponent: <CompoundComponentPattern />,
-    renderProps:<RenderPropsPattern/>
+    renderProps: <RenderPropsPattern />,
+    hoc: <HigherOrderComponents />,
     // Add more task components as you implement them
   };
 
