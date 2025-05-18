@@ -1,8 +1,7 @@
 // OptimizedListRendering.tsx
-import React from "react";
-import FixedSizeListImplementation from "./FixedSizeListImplementation";
-import DynamicSizeListImplementation from "./DynamicSizeListImplementation";
 import ComplexListImplementation from "./ComplexListImplementation";
+import DynamicSizeListImplementation from "./DynamicSizeListImplementation";
+import FixedSizeListImplementation from "./FixedSizeListImplementation";
 
 function OptimizedListRendering() {
   return (
