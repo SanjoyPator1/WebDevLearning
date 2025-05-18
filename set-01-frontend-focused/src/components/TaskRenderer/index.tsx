@@ -25,6 +25,7 @@ import DebouncedSearch from "../../tasks/Task12_DebouncedSearch/DebouncedSearch"
 import DataFetchingSimulationEnhanced from "../../tasks/Task14_DataFetching/DataFetchingEnhanced";
 import CustomUseFetchHook from "../../tasks/Task15_CustomFetchHook/CustomFetchHook";
 import CompoundComponentPattern from "../../tasks/Task16_CompoundComponent/CompoundComponent";
+import RenderPropsPattern from "../../tasks/Task17_RenderProps/RenderProps";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -70,6 +71,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     dataFetchingEnhanced: <DataFetchingSimulationEnhanced />,
     customFetchHook: <CustomUseFetchHook />,
     compoundComponent: <CompoundComponentPattern />,
+    renderProps:<RenderPropsPattern/>
     // Add more task components as you implement them
   };
 
