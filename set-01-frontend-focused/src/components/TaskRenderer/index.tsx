@@ -27,6 +27,7 @@ import CustomUseFetchHook from "../../tasks/Task15_CustomFetchHook/CustomFetchHo
 import CompoundComponentPattern from "../../tasks/Task16_CompoundComponent/CompoundComponent";
 import RenderPropsPattern from "../../tasks/Task17_RenderProps/RenderProps";
 import HigherOrderComponents from "../../tasks/Task18_HOC/HOC";
+import CustomHookWithLocalStorage from "../../tasks/Task19_LocalStorageHook/LocalStorageHook";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -74,6 +75,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     compoundComponent: <CompoundComponentPattern />,
     renderProps: <RenderPropsPattern />,
     hoc: <HigherOrderComponents />,
+    localStorageHook: <CustomHookWithLocalStorage />,
     // Add more task components as you implement them
   };
 
