@@ -28,6 +28,7 @@ import CompoundComponentPattern from "../../tasks/Task16_CompoundComponent/Compo
 import RenderPropsPattern from "../../tasks/Task17_RenderProps/RenderProps";
 import HigherOrderComponents from "../../tasks/Task18_HOC/HOC";
 import CustomHookWithLocalStorage from "../../tasks/Task19_LocalStorageHook/LocalStorageHook";
+import OptimizedListRendering from "../../tasks/Task20_OptimizedList/OptimizedList";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -76,6 +77,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     renderProps: <RenderPropsPattern />,
     hoc: <HigherOrderComponents />,
     localStorageHook: <CustomHookWithLocalStorage />,
+    optimizedList: <OptimizedListRendering />,
     // Add more task components as you implement them
   };
 
