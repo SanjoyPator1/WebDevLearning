@@ -31,6 +31,7 @@ import CustomHookWithLocalStorage from "../../tasks/Task19_LocalStorageHook/Loca
 import OptimizedListRendering from "../../tasks/Task20_OptimizedList/OptimizedList";
 import MemoizationPractice from "../../tasks/Task21_Memoization/Memoization";
 import UseCallbackImplementation from "../../tasks/Task22_UseCallback/UseCallback";
+import ReactLazyAndCodeSplitting from "../../tasks/Task23_LazyLoading/LazyLoading";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -81,7 +82,8 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     localStorageHook: <CustomHookWithLocalStorage />,
     optimizedList: <OptimizedListRendering />,
     memoization: <MemoizationPractice />,
-    useCallback: <UseCallbackImplementation/>
+    useCallback: <UseCallbackImplementation/>,
+    lazyLoading: <ReactLazyAndCodeSplitting/>
     // Add more task components as you implement them
   };
 
