@@ -33,6 +33,7 @@ import MemoizationPractice from "../../tasks/Task21_Memoization/Memoization";
 import UseCallbackImplementation from "../../tasks/Task22_UseCallback/UseCallback";
 import ReactLazyAndCodeSplitting from "../../tasks/Task23_LazyLoading/LazyLoading";
 import AvoidingUnnecessaryRenders from "../../tasks/Task24_UnnecessaryRenders/UnnecessaryRenders";
+import CustomComparisonFunction from "../../tasks/Task25_CustomComparison/CustomComparison";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -85,7 +86,8 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     memoization: <MemoizationPractice />,
     useCallback: <UseCallbackImplementation/>,
     lazyLoading: <ReactLazyAndCodeSplitting/>,
-    unnecessaryRenders: <AvoidingUnnecessaryRenders/>
+    unnecessaryRenders: <AvoidingUnnecessaryRenders/>,
+    customComparison: <CustomComparisonFunction/>
     // Add more task components as you implement them
   };
 
