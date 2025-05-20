@@ -32,6 +32,7 @@ import OptimizedListRendering from "../../tasks/Task20_OptimizedList/OptimizedLi
 import MemoizationPractice from "../../tasks/Task21_Memoization/Memoization";
 import UseCallbackImplementation from "../../tasks/Task22_UseCallback/UseCallback";
 import ReactLazyAndCodeSplitting from "../../tasks/Task23_LazyLoading/LazyLoading";
+import AvoidingUnnecessaryRenders from "../../tasks/Task24_UnnecessaryRenders/UnnecessaryRenders";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -83,7 +84,8 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     optimizedList: <OptimizedListRendering />,
     memoization: <MemoizationPractice />,
     useCallback: <UseCallbackImplementation/>,
-    lazyLoading: <ReactLazyAndCodeSplitting/>
+    lazyLoading: <ReactLazyAndCodeSplitting/>,
+    unnecessaryRenders: <AvoidingUnnecessaryRenders/>
     // Add more task components as you implement them
   };
 
