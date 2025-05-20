@@ -175,11 +175,11 @@ export const taskCategories: TaskCategory[] = [
   { name: "State Management", tasks: tasks.slice(5, 10) },
   { name: "Effects & Lifecycle", tasks: tasks.slice(10, 17) },
   { name: "Advanced Patterns", tasks: tasks.slice(17, 22) },
-  { name: "Performance", tasks: tasks.slice(22, 25) },
-  { name: "UI Patterns", tasks: tasks.slice(25, 30) },
-  { name: "Forms & Validation", tasks: tasks.slice(30, 35) },
-  { name: "Animation & Styling", tasks: tasks.slice(35, 40) },
-  { name: "Accessibility", tasks: tasks.slice(40, 45) },
+  { name: "Performance", tasks: tasks.slice(22, 27) },
+  { name: "UI Patterns", tasks: tasks.slice(27, 32) },
+  { name: "Forms & Validation", tasks: tasks.slice(32, 37) },
+  { name: "Animation & Styling", tasks: tasks.slice(37, 42) },
+  { name: "Accessibility", tasks: tasks.slice(42, 47) },
 ];
 
 export default tasks;
