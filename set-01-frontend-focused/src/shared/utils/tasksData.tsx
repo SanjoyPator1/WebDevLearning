@@ -78,18 +78,18 @@ const tasks: TaskData[] = [
   { id: "optimizedList", name: "Task 20: Optimized List", completed: true },
 
   // Performance Optimization
-  { id: "memoization", name: "Task 21: Memoization", completed: false },
-  { id: "useCallback", name: "Task 22: useCallback", completed: false },
-  { id: "lazyLoading", name: "Task 23: Lazy Loading", completed: false },
+  { id: "memoization", name: "Task 21: Memoization", completed: true },
+  { id: "useCallback", name: "Task 22: useCallback", completed: true },
+  { id: "lazyLoading", name: "Task 23: Lazy Loading", completed: true },
   {
     id: "unnecessaryRenders",
     name: "Task 24: Avoid Unnecessary Renders",
-    completed: false,
+    completed: true,
   },
   {
     id: "customComparison",
     name: "Task 25: Custom Comparison",
-    completed: false,
+    completed: true,
   },
 
   // UI Patterns
