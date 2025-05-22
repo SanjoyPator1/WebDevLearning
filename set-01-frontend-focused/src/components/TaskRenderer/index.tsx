@@ -34,6 +34,7 @@ import UseCallbackImplementation from "../../tasks/Task22_UseCallback/UseCallbac
 import ReactLazyAndCodeSplitting from "../../tasks/Task23_LazyLoading/LazyLoading";
 import AvoidingUnnecessaryRenders from "../../tasks/Task24_UnnecessaryRenders/UnnecessaryRenders";
 import CustomComparisonFunction from "../../tasks/Task25_CustomComparison/CustomComparison";
+import ModalDialog from "../../tasks/Task26_Modal/Modal";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -87,7 +88,8 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     useCallback: <UseCallbackImplementation/>,
     lazyLoading: <ReactLazyAndCodeSplitting/>,
     unnecessaryRenders: <AvoidingUnnecessaryRenders/>,
-    customComparison: <CustomComparisonFunction/>
+    customComparison: <CustomComparisonFunction/>,
+    modal:<ModalDialog/>
     // Add more task components as you implement them
   };
 

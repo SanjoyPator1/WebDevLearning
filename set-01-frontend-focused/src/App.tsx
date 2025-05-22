@@ -69,6 +69,8 @@ function TaskRoute() {
           ) : (
             <TaskRenderer currentTask={currentTask} />
           )}
+          {/* div to have portal modal */}
+          <div id="modal-root"/>
         </main>
       </div>
 
