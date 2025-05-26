@@ -35,6 +35,7 @@ import ReactLazyAndCodeSplitting from "../../tasks/Task23_LazyLoading/LazyLoadin
 import AvoidingUnnecessaryRenders from "../../tasks/Task24_UnnecessaryRenders/UnnecessaryRenders";
 import CustomComparisonFunction from "../../tasks/Task25_CustomComparison/CustomComparison";
 import ModalDialog from "../../tasks/Task26_Modal/Modal";
+import AutoCompleteSearch from "../../tasks/Task27_Autocomplete/Autocomplete";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -89,7 +90,8 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     lazyLoading: <ReactLazyAndCodeSplitting/>,
     unnecessaryRenders: <AvoidingUnnecessaryRenders/>,
     customComparison: <CustomComparisonFunction/>,
-    modal:<ModalDialog/>
+    modal:<ModalDialog/>,
+    autocomplete: <AutoCompleteSearch/>,
     // Add more task components as you implement them
   };
 

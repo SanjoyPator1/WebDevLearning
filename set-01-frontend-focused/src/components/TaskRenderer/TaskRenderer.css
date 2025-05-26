@@ -62,7 +62,6 @@ textarea {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.9rem;
-  max-width: 300px;
 }
 
 input:focus,
