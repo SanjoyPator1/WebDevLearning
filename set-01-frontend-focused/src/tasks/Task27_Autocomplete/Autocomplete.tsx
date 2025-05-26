@@ -55,9 +55,9 @@ function AutoCompleteSearch() {
           value={input}
           onChange={(e) => handleUpdateInput(e.target.value)}
           onBlur={() => {
-            setTimeout(()=>{
+            setTimeout(() => {
               setShowSuggestions(false)
-            },500)
+            }, 500)
           }}
           className="w-full"
         />
@@ -91,8 +91,12 @@ function AutoCompleteSearch() {
       <div className="task-notes">
         <h3>Implementation Notes:</h3>
         <ul>
-          <li>Use mock data for suggestions</li>
-          <li>Filter suggestions based on user input</li>
+          <li>Used <code>useState</code> to manage the input value, filtered suggestions, and whether the suggestions dropdown is visible.</li>
+          <li>Filtered suggestions using <code>toLowerCase()</code> to make the search case-insensitive.</li>
+          <li>Set <code>showSuggestions</code> to <code>true</code> on every input change to ensure suggestions appear dynamically.</li>
+          <li>Used a <code>setTimeout</code> in <code>onBlur</code> to delay hiding the dropdown, allowing time for item selection with a mouse click.</li>
+          <li>Used semantic roles like <code>listbox</code> and <code>option</code> for basic accessibility support.</li>
+          <li>Displayed a <code>Check</code> icon next to the selected suggestion for visual feedback.</li>
         </ul>
       </div>
     </div>
