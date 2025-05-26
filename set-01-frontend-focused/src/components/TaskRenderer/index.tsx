@@ -36,6 +36,7 @@ import AvoidingUnnecessaryRenders from "../../tasks/Task24_UnnecessaryRenders/Un
 import CustomComparisonFunction from "../../tasks/Task25_CustomComparison/CustomComparison";
 import ModalDialog from "../../tasks/Task26_Modal/Modal";
 import AutoCompleteSearch from "../../tasks/Task27_Autocomplete/Autocomplete";
+import CarouselSlider from "../../tasks/Task28_Carousel/Carousel";
 
 // Welcome component with Tailwind CSS
 const Welcome = () => (
@@ -92,6 +93,7 @@ const TaskRenderer: React.FC<TaskRendererProps> = ({ currentTask }) => {
     customComparison: <CustomComparisonFunction/>,
     modal:<ModalDialog/>,
     autocomplete: <AutoCompleteSearch/>,
+    carousel: <CarouselSlider/>,
     // Add more task components as you implement them
   };
 
