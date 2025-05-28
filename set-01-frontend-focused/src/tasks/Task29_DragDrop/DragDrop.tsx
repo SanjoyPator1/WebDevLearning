@@ -1,3 +1,6 @@
+import BasicDragDrop from "./BasicDragDrop";
+import SortableList from "./SortableList";
+
 function DragAndDropSorting() {
   return (
     <div className="task-container">
@@ -11,7 +14,10 @@ function DragAndDropSorting() {
         </ul>
       </div>
 
-      <div className="implementation">{/* Implementation goes here */}</div>
+      <div className="space-y-6">
+        <BasicDragDrop/>
+        <SortableList/>
+      </div>
 
       <div className="task-notes">
         <h3>Implementation Notes:</h3>
