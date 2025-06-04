@@ -18,14 +18,6 @@ function DragAndDropSorting() {
         <BasicDragDrop/>
         <SortableList/>
       </div>
-
-      <div className="task-notes">
-        <h3>Implementation Notes:</h3>
-        <ul>
-          <li>Use the HTML5 Drag and Drop API</li>
-          <li>Update the list order in state after sorting</li>
-        </ul>
-      </div>
     </div>
   );
 }

@@ -65,7 +65,7 @@ const BasicDragDrop = () => {
   return (
     <div className='space-y-3'>
       <h4>Basic Drag and Drop</h4>
-      <div className='grid grid-cols-2 gap-6 h-[400px] overflow-y-auto'>
+      <div className='grid grid-cols-2 gap-6 h-[400px] overflow-y-auto p-4 border rounded-lg bg-gray-100'>
         {/* items container */}
         <div className='border rounded-md p-4 space-y-2'>
           <label>Draggable list</label>
@@ -102,7 +102,7 @@ const BasicDragDrop = () => {
               return (
                 <div
                   key={`${item} - ${index}`}
-                  className={`border rounded-md p-2 flex justify-between`}
+                  className={`border rounded-md p-2 flex justify-between items-center`}
                 >
                   {item}
                   <button
