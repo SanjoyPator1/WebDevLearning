@@ -93,11 +93,11 @@ const tasks: TaskData[] = [
   },
 
   // UI Patterns
-  { id: "modal", name: "Task 26: Modal Dialog", completed: false },
-  { id: "autocomplete", name: "Task 27: Autocomplete", completed: false },
-  { id: "carousel", name: "Task 28: Carousel", completed: false },
-  { id: "dragDrop", name: "Task 29: Drag and Drop", completed: false },
-  { id: "infiniteScroll", name: "Task 30: Infinite Scroll", completed: false },
+  { id: "modal", name: "Task 26: Modal Dialog", completed: true },
+  { id: "autocomplete", name: "Task 27: Autocomplete", completed: true },
+  { id: "carousel", name: "Task 28: Carousel", completed: true },
+  { id: "dragDrop", name: "Task 29: Drag and Drop", completed: true },
+  { id: "infiniteScroll", name: "Task 30: Infinite Scroll", completed: true },
 
   // Form & Validation
   {
