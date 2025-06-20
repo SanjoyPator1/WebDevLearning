@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Import the task router
+from app.routers import tasks
+
 # Create FastAPI instance
 app = FastAPI(
     title="Task Management API",
@@ -13,11 +16,14 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure this properly in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include the tasks router
+app.include_router(tasks.router)
 
 # Health check endpoint
 @app.get("/health")
