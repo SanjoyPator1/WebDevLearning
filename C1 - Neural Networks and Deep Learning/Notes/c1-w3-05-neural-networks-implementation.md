@@ -7,8 +7,6 @@
 
 ## Table of Contents
 
-## Table of Contents
-
 8. [Gradient Descent for Neural Networks](#8-gradient-descent-for-neural-networks---complete-guide)
 9. [Random Initialization](#9-random-initialization)
 10. [Complete Implementation Example](#10-complete-implementation-example)
