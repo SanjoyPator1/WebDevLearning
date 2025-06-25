@@ -161,3 +161,45 @@ class TaskUpdate(BaseModel):
                 "completed": true
             }
         }
+
+class TaskResponse(BaseModel):
+    """Schema for task responses with additional metadata"""
+    id: int
+    title: str
+    description: Optional[str]
+    priority: Literal["low", "medium", "high"]
+    due_date: Optional[datetime]
+    completed: bool
+    created_at: datetime
+    updated_at: datetime
+    
+    # Computed fields
+    @property
+    def is_overdue(self) -> bool:
+        """Check if task is overdue"""
+        if not self.due_date or self.completed:
+            return False
+        return self.due_date < datetime.now()
+    
+    @property
+    def days_until_due(self) -> Optional[int]:
+        """Calculate days until due date"""
+        if not self.due_date:
+            return None
+        delta = self.due_date - datetime.now()
+        return delta.days
+    
+    class Config:
+        from_attributes = True  # For compatibility with SQLAlchemy models later
+        schema_extra = {
+            "example": {
+                "id": 1,
+                "title": "Complete FastAPI tutorial",
+                "description": "Learn Pydantic models and validation",
+                "priority": "high",
+                "due_date": "2024-12-31T23:59:59",
+                "completed": false,
+                "created_at": "2024-01-01T10:00:00",
+                "updated_at": "2024-01-01T10:00:00"
+            }
+        }
