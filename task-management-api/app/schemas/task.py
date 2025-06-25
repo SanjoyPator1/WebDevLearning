@@ -203,3 +203,47 @@ class TaskResponse(BaseModel):
                 "updated_at": "2024-01-01T10:00:00"
             }
         }
+
+class TaskList(BaseModel):
+    """Schema for paginated task lists"""
+    tasks: List[TaskResponse]
+    total: int
+    page: int = 1
+    per_page: int = 10
+    has_next: bool
+    has_prev: bool
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "tasks": [],
+                "total": 25,
+                "page": 1,
+                "per_page": 10,
+                "has_next": true,
+                "has_prev": false
+            }
+        }
+
+class TaskSummary(BaseModel):
+    """Schema for task summary/statistics"""
+    total_tasks: int
+    completed_tasks: int
+    pending_tasks: int
+    overdue_tasks: int
+    high_priority_tasks: int
+    completion_rate: float
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "total_tasks": 10,
+                "completed_tasks": 6,
+                "pending_tasks": 4,
+                "overdue_tasks": 1,
+                "high_priority_tasks": 2,
+                "completion_rate": 0.6
+            }
+        }
+
+
