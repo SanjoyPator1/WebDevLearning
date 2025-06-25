@@ -81,3 +81,48 @@ class Task(BaseModel):
             }
         }
 
+class TaskCreate(BaseModel):
+    """Schema for creating a new task"""
+    title: str = Field(..., min_length=1, max_length=100)
+    description: Optional[str] = Field(None, max_length=500)
+    priority: Literal["low", "medium", "high"] = "medium"
+    due_date: Optional[datetime] = None
+    completed: bool = False
+
+    # Inherit validators from Task model using V2 syntax
+    @field_validator('title')
+    @classmethod
+    def validate_title(cls, v: str) -> str:
+        if not v or v.isspace():
+            raise ValueError('Title cannot be empty or just whitespace')
+        v = v.strip()
+        if any(char in v for char in ['<', '>', '&', '"']):
+            raise ValueError('Title contains forbidden characters')
+        return v
+    
+    @field_validator('description')
+    @classmethod
+    def validate_description(cls, v: Optional[str]) -> Optional[str]:
+        if v:
+            v = v.strip()
+            if len(v) == 0:
+                return None
+        return v
+    
+    @field_validator('due_date')
+    @classmethod
+    def validate_due_date(cls, v: Optional[datetime]) -> Optional[datetime]:
+        if v and v < datetime.now():
+            raise ValueError('Due date cannot be in the past')
+        return v
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "title": "New task",
+                "description": "Task description here",
+                "priority": "medium",
+                "due_date": "2024-12-31T23:59:59"
+            }
+        }
+
