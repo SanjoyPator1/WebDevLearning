@@ -126,3 +126,38 @@ class TaskCreate(BaseModel):
             }
         }
 
+class TaskUpdate(BaseModel):
+    """Schema for updating an existing task - all fields optional"""
+    title: Optional[str] = Field(None, min_length=1, max_length=100)
+    description: Optional[str] = Field(None, max_length=500)
+    priority: Optional[Literal["low", "medium", "high"]] = None
+    due_date: Optional[datetime] = None
+    completed: Optional[bool] = None
+    
+    @field_validator('title')
+    @classmethod
+    def validate_title(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            if not v or v.isspace():
+                raise ValueError('Title cannot be empty or just whitespace')
+            v = v.strip()
+            if any(char in v for char in ['<', '>', '&', '"']):
+                raise ValueError('Title contains forbidden characters')
+        return v
+    
+    @field_validator('description')
+    @classmethod
+    def validate_description(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if len(v) == 0:
+                return None
+        return v
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "title": "Updated task title",
+                "completed": true
+            }
+        }
