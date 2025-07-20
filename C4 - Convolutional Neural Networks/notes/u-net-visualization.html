@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>U-Net Architecture Interactive Visualization</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .layer-block {
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      .layer-block:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+      .skip-connection {
+        stroke: #10b981;
+        stroke-width: 4;
+        fill: none;
+        stroke-dasharray: 8, 4;
+        animation: flow 3s linear infinite;
+      }
+      @keyframes flow {
+        0% {
+          stroke-dashoffset: 0;
+        }
+        100% {
+          stroke-dashoffset: -24;
+        }
+      }
+      .data-flow-arrow {
+        stroke: #3b82f6;
+        stroke-width: 3;
+        fill: none;
+        marker-end: url(#arrowhead);
+        animation: pulse-flow 2s ease-in-out infinite;
+      }
+      @keyframes pulse-flow {
+        0%,
+        100% {
+          opacity: 0.7;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      .info-panel {
+        transition: all 0.4s ease;
+        max-height: 0;
+        overflow: hidden;
+      }
+      .info-panel.active {
+        max-height: 400px;
+      }
+      .architecture-step {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease;
+      }
+      .architecture-step.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .u-shape-highlight {
+        stroke: #f59e0b;
+        stroke-width: 6;
+        fill: none;
+        stroke-linecap: round;
+        stroke-dasharray: 10, 5;
+        animation: highlight-flow 4s ease-in-out infinite;
+      }
+      @keyframes highlight-flow {
+        0%,
+        100% {
+          stroke-dashoffset: 0;
+          opacity: 0.6;
+        }
+        50% {
+          stroke-dashoffset: -30;
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Header -->
+    <div class="container mx-auto px-4 py-8">
+      <div class="text-center mb-12">
+        <h1 class="text-5xl font-bold text-gray-800 mb-4">
+          🧠 U-Net Architecture
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Interactive visualization of the foundational semantic segmentation
+          network. Explore the encoder-decoder structure with skip connections
+          that enable precise pixel-level predictions.
+        </p>
+        <div class="mt-6 flex justify-center space-x-4">
+          <button
+            onclick="startAnimation()"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+          >
+            🎬 Animate Architecture
+          </button>
+          <button
+            onclick="highlightUShape()"
+            class="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+          >
+            📐 Show U-Shape
+          </button>
+          <button
+            onclick="showSkipConnections()"
+            class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+          >
+            🔗 Skip Connections
+          </button>
+          <button
+            onclick="resetVisualization()"
+            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+          >
+            🔄 Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Architecture Visualization -->
+      <div class="bg-white rounded-2xl shadow-2xl p-8 mb-12">
+        <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+          U-Net Architecture Diagram
+        </h2>
+
+        <!-- SVG Container -->
+        <div class="w-full overflow-x-auto">
+          <svg
+            viewBox="0 0 1400 800"
+            class="w-full h-auto min-h-96"
+            id="architecture-svg"
+          >
+            <!-- Definitions for arrows and patterns -->
+            <defs>
+              <marker
+                id="arrowhead"
+                markerWidth="10"
+                markerHeight="7"
+                refX="9"
+                refY="3.5"
+                orient="auto"
+              >
+                <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6" />
+              </marker>
+              <marker
+                id="skip-arrow"
+                markerWidth="10"
+                markerHeight="7"
+                refX="9"
+                refY="3.5"
+                orient="auto"
+              >
+                <polygon points="0 0, 10 3.5, 0 7" fill="#10b981" />
+              </marker>
+            </defs>
+
+            <!-- U-Shape Outline (hidden by default) -->
+            <path
+              id="u-shape"
+              class="u-shape-highlight"
+              style="opacity: 0"
+              d="M 100 100 L 100 200 L 100 300 L 100 400 L 100 500 L 100 600 L 200 700 L 400 700 L 600 700 L 800 700 L 1000 700 L 1200 700 L 1300 600 L 1300 500 L 1300 400 L 1300 300 L 1300 200 L 1300 100"
+            />
+
+            <!-- Encoder Path (Left Side) -->
+            <!-- Input Layer -->
+            <g
+              class="layer-block encoder-layer"
+              id="input-layer"
+              onclick="showLayerInfo('input')"
+            >
+              <rect
+                x="50"
+                y="80"
+                width="100"
+                height="60"
+                rx="10"
+                fill="#dbeafe"
+                stroke="#3b82f6"
+                stroke-width="2"
+              />
+              <text
+                x="100"
+                y="105"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                Input
+              </text>
+              <text x="100" y="120" text-anchor="middle" class="text-xs">
+                H×W×3
+              </text>
+            </g>
+
+            <!-- Encoder Level 1 -->
+            <g
+              class="layer-block encoder-layer"
+              id="enc1-layer"
+              onclick="showLayerInfo('enc1')"
+            >
+              <rect
+                x="50"
+                y="160"
+                width="100"
+                height="60"
+                rx="10"
+                fill="#bfdbfe"
+                stroke="#3b82f6"
+                stroke-width="2"
+              />
+              <text
+                x="100"
+                y="185"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                Conv Block 1
+              </text>
+              <text x="100" y="200" text-anchor="middle" class="text-xs">
+                H×W×64
+              </text>
+            </g>
+
+            <!-- MaxPool 1 -->
+            <g
+              class="layer-block encoder-layer"
+              id="pool1-layer"
+              onclick="showLayerInfo('pool1')"
+            >
+              <rect
+                x="50"
+                y="240"
+                width="100"
+                height="40"
+                rx="8"
+                fill="#93c5fd"
+                stroke="#2563eb"
+                stroke-width="2"
+              />
+              <text
+                x="100"
+                y="265"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                MaxPool
+              </text>
+            </g>
+
+            <!-- Encoder Level 2 -->
+            <g
+              class="layer-block encoder-layer"
+              id="enc2-layer"
+              onclick="showLayerInfo('enc2')"
+            >
+              <rect
+                x="50"
+                y="300"
+                width="100"
+                height="60"
+                rx="10"
+                fill="#bfdbfe"
+                stroke="#3b82f6"
+                stroke-width="2"
+              />
+              <text
+                x="100"
+                y="325"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                Conv Block 2
+              </text>
+              <text x="100" y="340" text-anchor="middle" class="text-xs">
+                H/2×W/2×128
+              </text>
+            </g>
+
+            <!-- MaxPool 2 -->
+            <g
+              class="layer-block encoder-layer"
+              id="pool2-layer"
+              onclick="showLayerInfo('pool2')"
+            >
+              <rect
+                x="50"
+                y="380"
+                width="100"
+                height="40"
+                rx="8"
+                fill="#93c5fd"
+                stroke="#2563eb"
+                stroke-width="2"
+              />
+              <text
+                x="100"
+                y="405"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                MaxPool
+              </text>
+            </g>
+
+            <!-- Encoder Level 3 -->
+            <g
+              class="layer-block encoder-layer"
+              id="enc3-layer"
+              onclick="showLayerInfo('enc3')"
+            >
+              <rect
+                x="50"
+                y="440"
+                width="100"
+                height="60"
+                rx="10"
+                fill="#bfdbfe"
+                stroke="#3b82f6"
+                stroke-width="2"
+              />
+              <text
+                x="100"
+                y="465"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                Conv Block 3
+              </text>
+              <text x="100" y="480" text-anchor="middle" class="text-xs">
+                H/4×W/4×256
+              </text>
+            </g>
+
+            <!-- MaxPool 3 -->
+            <g
+              class="layer-block encoder-layer"
+              id="pool3-layer"
+              onclick="showLayerInfo('pool3')"
+            >
+              <rect
+                x="50"
+                y="520"
+                width="100"
+                height="40"
+                rx="8"
+                fill="#93c5fd"
+                stroke="#2563eb"
+                stroke-width="2"
+              />
+              <text
+                x="100"
+                y="545"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                MaxPool
+              </text>
+            </g>
+
+            <!-- Encoder Level 4 -->
+            <g
+              class="layer-block encoder-layer"
+              id="enc4-layer"
+              onclick="showLayerInfo('enc4')"
+            >
+              <rect
+                x="50"
+                y="580"
+                width="100"
+                height="60"
+                rx="10"
+                fill="#bfdbfe"
+                stroke="#3b82f6"
+                stroke-width="2"
+              />
+              <text
+                x="100"
+                y="605"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                Conv Block 4
+              </text>
+              <text x="100" y="620" text-anchor="middle" class="text-xs">
+                H/8×W/8×512
+              </text>
+            </g>
+
+            <!-- Bottleneck -->
+            <g
+              class="layer-block bottleneck-layer"
+              id="bottleneck-layer"
+              onclick="showLayerInfo('bottleneck')"
+            >
+              <rect
+                x="250"
+                y="680"
+                width="120"
+                height="70"
+                rx="12"
+                fill="#fecaca"
+                stroke="#dc2626"
+                stroke-width="3"
+              />
+              <text
+                x="310"
+                y="710"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                Bottleneck
+              </text>
+              <text x="310" y="725" text-anchor="middle" class="text-xs">
+                H/16×W/16×1024
+              </text>
+            </g>
+
+            <!-- Decoder Path (Right Side) -->
+            <!-- Decoder Level 4 -->
+            <g
+              class="layer-block decoder-layer"
+              id="dec4-layer"
+              onclick="showLayerInfo('dec4')"
+            >
+              <rect
+                x="1250"
+                y="580"
+                width="100"
+                height="60"
+                rx="10"
+                fill="#dcfce7"
+                stroke="#16a34a"
+                stroke-width="2"
+              />
+              <text
+                x="1300"
+                y="605"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                UpConv 4
+              </text>
+              <text x="1300" y="620" text-anchor="middle" class="text-xs">
+                H/8×W/8×512
+              </text>
+            </g>
+
+            <!-- Decoder Level 3 -->
+            <g
+              class="layer-block decoder-layer"
+              id="dec3-layer"
+              onclick="showLayerInfo('dec3')"
+            >
+              <rect
+                x="1250"
+                y="440"
+                width="100"
+                height="60"
+                rx="10"
+                fill="#dcfce7"
+                stroke="#16a34a"
+                stroke-width="2"
+              />
+              <text
+                x="1300"
+                y="465"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                UpConv 3
+              </text>
+              <text x="1300" y="480" text-anchor="middle" class="text-xs">
+                H/4×W/4×256
+              </text>
+            </g>
+
+            <!-- Decoder Level 2 -->
+            <g
+              class="layer-block decoder-layer"
+              id="dec2-layer"
+              onclick="showLayerInfo('dec2')"
+            >
+              <rect
+                x="1250"
+                y="300"
+                width="100"
+                height="60"
+                rx="10"
+                fill="#dcfce7"
+                stroke="#16a34a"
+                stroke-width="2"
+              />
+              <text
+                x="1300"
+                y="325"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                UpConv 2
+              </text>
+              <text x="1300" y="340" text-anchor="middle" class="text-xs">
+                H/2×W/2×128
+              </text>
+            </g>
+
+            <!-- Decoder Level 1 -->
+            <g
+              class="layer-block decoder-layer"
+              id="dec1-layer"
+              onclick="showLayerInfo('dec1')"
+            >
+              <rect
+                x="1250"
+                y="160"
+                width="100"
+                height="60"
+                rx="10"
+                fill="#dcfce7"
+                stroke="#16a34a"
+                stroke-width="2"
+              />
+              <text
+                x="1300"
+                y="185"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                UpConv 1
+              </text>
+              <text x="1300" y="200" text-anchor="middle" class="text-xs">
+                H×W×64
+              </text>
+            </g>
+
+            <!-- Output Layer -->
+            <g
+              class="layer-block output-layer"
+              id="output-layer"
+              onclick="showLayerInfo('output')"
+            >
+              <rect
+                x="1250"
+                y="80"
+                width="100"
+                height="60"
+                rx="10"
+                fill="#fef3c7"
+                stroke="#f59e0b"
+                stroke-width="2"
+              />
+              <text
+                x="1300"
+                y="105"
+                text-anchor="middle"
+                class="text-sm font-semibold"
+              >
+                Output
+              </text>
+              <text x="1300" y="120" text-anchor="middle" class="text-xs">
+                H×W×classes
+              </text>
+            </g>
+
+            <!-- Data Flow Arrows (initially hidden) -->
+            <g id="data-flow-arrows" style="opacity: 0">
+              <!-- Encoder flow -->
+              <line
+                class="data-flow-arrow"
+                x1="100"
+                y1="140"
+                x2="100"
+                y2="160"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="100"
+                y1="220"
+                x2="100"
+                y2="240"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="100"
+                y1="280"
+                x2="100"
+                y2="300"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="100"
+                y1="360"
+                x2="100"
+                y2="380"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="100"
+                y1="420"
+                x2="100"
+                y2="440"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="100"
+                y1="500"
+                x2="100"
+                y2="520"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="100"
+                y1="560"
+                x2="100"
+                y2="580"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="150"
+                y1="610"
+                x2="250"
+                y2="695"
+              />
+
+              <!-- Decoder flow -->
+              <line
+                class="data-flow-arrow"
+                x1="370"
+                y1="695"
+                x2="1250"
+                y2="610"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="1300"
+                y1="580"
+                x2="1300"
+                y2="500"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="1300"
+                y1="440"
+                x2="1300"
+                y2="360"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="1300"
+                y1="300"
+                x2="1300"
+                y2="220"
+              />
+              <line
+                class="data-flow-arrow"
+                x1="1300"
+                y1="160"
+                x2="1300"
+                y2="140"
+              />
+            </g>
+
+            <!-- Skip Connections (initially hidden) -->
+            <g id="skip-connections" style="opacity: 0">
+              <path
+                class="skip-connection"
+                d="M 150 190 Q 700 150 1250 190"
+                marker-end="url(#skip-arrow)"
+              />
+              <path
+                class="skip-connection"
+                d="M 150 330 Q 700 290 1250 330"
+                marker-end="url(#skip-arrow)"
+              />
+              <path
+                class="skip-connection"
+                d="M 150 470 Q 700 430 1250 470"
+                marker-end="url(#skip-arrow)"
+              />
+              <path
+                class="skip-connection"
+                d="M 150 610 Q 700 570 1250 610"
+                marker-end="url(#skip-arrow)"
+              />
+            </g>
+
+            <!-- Labels -->
+            <text
+              x="100"
+              y="40"
+              text-anchor="middle"
+              class="text-lg font-bold text-blue-600"
+            >
+              Encoder (Contracting Path)
+            </text>
+            <text
+              x="700"
+              y="40"
+              text-anchor="middle"
+              class="text-lg font-bold text-gray-600"
+            >
+              Skip Connections
+            </text>
+            <text
+              x="1300"
+              y="40"
+              text-anchor="middle"
+              class="text-lg font-bold text-green-600"
+            >
+              Decoder (Expansive Path)
+            </text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Interactive Information Panel -->
+      <div class="bg-white rounded-2xl shadow-xl p-8 mb-12">
+        <h3 class="text-2xl font-bold mb-6 text-gray-800">Layer Information</h3>
+        <div id="layer-info" class="space-y-4">
+          <div class="bg-blue-50 p-6 rounded-lg">
+            <h4 class="text-lg font-semibold text-blue-800 mb-2">
+              🎯 Click on any layer to see detailed information
+            </h4>
+            <p class="text-blue-600">
+              Explore the encoder path, bottleneck, decoder path, and skip
+              connections to understand how U-Net processes images for semantic
+              segmentation.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Concepts -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <!-- Encoder Path -->
+        <div class="bg-white rounded-xl shadow-lg p-6 architecture-step">
+          <div
+            class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4"
+          >
+            <span class="text-2xl">📉</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-gray-800">Encoder Path</h3>
+          <p class="text-gray-600 mb-4">
+            Progressively reduces spatial dimensions while increasing feature
+            depth. Captures hierarchical features from low-level edges to
+            high-level semantic concepts.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>• Convolution + ReLU blocks</li>
+            <li>• Max pooling for downsampling</li>
+            <li>• Feature extraction and compression</li>
+          </ul>
+        </div>
+
+        <!-- Skip Connections -->
+        <div class="bg-white rounded-xl shadow-lg p-6 architecture-step">
+          <div
+            class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4"
+          >
+            <span class="text-2xl">🔗</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-gray-800">Skip Connections</h3>
+          <p class="text-gray-600 mb-4">
+            Bridge encoder and decoder layers at matching resolutions. Preserve
+            fine-grained spatial information lost during compression.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>• Direct feature copying</li>
+            <li>• Concatenation with decoder features</li>
+            <li>• Preserve spatial details</li>
+          </ul>
+        </div>
+
+        <!-- Decoder Path -->
+        <div class="bg-white rounded-xl shadow-lg p-6 architecture-step">
+          <div
+            class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4"
+          >
+            <span class="text-2xl">📈</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-gray-800">Decoder Path</h3>
+          <p class="text-gray-600 mb-4">
+            Progressively increases spatial dimensions using transpose
+            convolutions. Combines upsampled features with skip connections for
+            precise localization.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>• Transpose convolution (upsampling)</li>
+            <li>• Feature concatenation</li>
+            <li>• Spatial reconstruction</li>
+          </ul>
+        </div>
+
+        <!-- Bottleneck -->
+        <div class="bg-white rounded-xl shadow-lg p-6 architecture-step">
+          <div
+            class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4"
+          >
+            <span class="text-2xl">🎯</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-gray-800">Bottleneck</h3>
+          <p class="text-gray-600 mb-4">
+            Lowest spatial resolution, highest feature depth. Captures the most
+            abstract semantic representations of the input image.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>• Maximum compression point</li>
+            <li>• Rich semantic features</li>
+            <li>• Minimal spatial information</li>
+          </ul>
+        </div>
+
+        <!-- Output Layer -->
+        <div class="bg-white rounded-xl shadow-lg p-6 architecture-step">
+          <div
+            class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4"
+          >
+            <span class="text-2xl">🎨</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-gray-800">Output Layer</h3>
+          <p class="text-gray-600 mb-4">
+            1×1 convolution maps features to class probabilities. Each pixel
+            gets a probability vector for all possible classes.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>• Pixel-wise classification</li>
+            <li>• Class probability vectors</li>
+            <li>• Dense segmentation map</li>
+          </ul>
+        </div>
+
+        <!-- Applications -->
+        <div class="bg-white rounded-xl shadow-lg p-6 architecture-step">
+          <div
+            class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4"
+          >
+            <span class="text-2xl">🏥</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-gray-800">Applications</h3>
+          <p class="text-gray-600 mb-4">
+            Originally designed for biomedical image segmentation, now used
+            across many computer vision domains requiring precise pixel-level
+            predictions.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>• Medical image segmentation</li>
+            <li>• Autonomous driving</li>
+            <li>• Object detection boundaries</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Why Skip Connections Matter -->
+      <div
+        class="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 mb-12"
+      >
+        <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+          💡 Why Skip Connections Are Essential
+        </h2>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl font-bold mb-4 text-red-600">
+              ❌ Without Skip Connections
+            </h3>
+            <div class="space-y-3">
+              <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                <p class="text-gray-700">
+                  Fine spatial details are lost during compression and cannot be
+                  recovered
+                </p>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                <p class="text-gray-700">
+                  Decoder only has access to heavily compressed semantic
+                  features
+                </p>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                <p class="text-gray-700">
+                  Results in blurry, imprecise segmentation boundaries
+                </p>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                <p class="text-gray-700">
+                  Poor localization accuracy for object boundaries
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl font-bold mb-4 text-green-600">
+              ✅ With Skip Connections
+            </h3>
+            <div class="space-y-3">
+              <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                <p class="text-gray-700">
+                  High-resolution spatial information is preserved and directly
+                  passed to decoder
+                </p>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                <p class="text-gray-700">
+                  Decoder combines semantic context with fine-grained details
+                </p>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                <p class="text-gray-700">
+                  Produces sharp, accurate segmentation boundaries
+                </p>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                <p class="text-gray-700">
+                  Excellent pixel-wise classification accuracy
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code Example -->
+      <div class="bg-gray-900 rounded-2xl p-8 mb-12">
+        <h2 class="text-2xl font-bold text-white mb-6">
+          💻 U-Net Implementation Example
+        </h2>
+        <div class="bg-gray-800 rounded-lg p-6 overflow-x-auto">
+          <pre class="text-green-400 text-sm"><code id="code-example">
+def create_unet(input_shape, num_classes):
+    """Complete U-Net implementation"""
+    inputs = tf.keras.layers.Input(shape=input_shape)
+    
+    # Encoder path
+    e1 = conv_block(inputs, 64)
+    p1 = tf.keras.layers.MaxPooling2D(2)(e1)
+    
+    e2 = conv_block(p1, 128)
+    p2 = tf.keras.layers.MaxPooling2D(2)(e2)
+    
+    e3 = conv_block(p2, 256)
+    p3 = tf.keras.layers.MaxPooling2D(2)(e3)
+    
+    e4 = conv_block(p3, 512)
+    p4 = tf.keras.layers.MaxPooling2D(2)(e4)
+    
+    # Bottleneck
+    bottleneck = conv_block(p4, 1024)
+    
+    # Decoder path with skip connections
+    d4 = decoder_block(bottleneck, e4, 512)  # Skip connection from e4
+    d3 = decoder_block(d4, e3, 256)          # Skip connection from e3
+    d2 = decoder_block(d3, e2, 128)          # Skip connection from e2
+    d1 = decoder_block(d2, e1, 64)           # Skip connection from e1
+    
+    # Output layer
+    outputs = tf.keras.layers.Conv2D(num_classes, 1, activation='softmax')(d1)
+    
+    return tf.keras.Model(inputs, outputs, name="U-Net")
+
+def decoder_block(inputs, skip_features, num_filters):
+    """Decoder block with skip connection"""
+    # Upsample
+    x = tf.keras.layers.Conv2DTranspose(num_filters, 2, strides=2, padding='same')(inputs)
+    
+    # Concatenate with skip connection
+    x = tf.keras.layers.Concatenate()([x, skip_features])
+    
+    # Process combined features
+    x = conv_block(x, num_filters)
+    
+    return x
+                </code></pre>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Layer information data
+      const layerInfo = {
+        input: {
+          title: "🖼️ Input Layer",
+          description: "RGB image input to the network",
+          details: [
+            "Dimensions: H×W×3 (height × width × RGB channels)",
+            "Typical sizes: 256×256×3, 512×512×3",
+            "Data range: [0,1] normalized pixel values",
+            "Starting point for feature extraction",
+          ],
+          color: "blue",
+        },
+        enc1: {
+          title: "🔍 Encoder Block 1",
+          description: "First convolutional block in encoder path",
+          details: [
+            "Two 3×3 convolutions with 64 filters",
+            "ReLU activation after each convolution",
+            "Batch normalization for stable training",
+            "Maintains spatial dimensions H×W",
+            "Extracts low-level features (edges, textures)",
+          ],
+          color: "blue",
+        },
+        pool1: {
+          title: "🏊 Max Pool 1",
+          description: "First downsampling operation",
+          details: [
+            "2×2 max pooling with stride 2",
+            "Reduces spatial dimensions by half",
+            "From H×W to H/2×W/2",
+            "Retains most important features",
+            "Provides translation invariance",
+          ],
+          color: "blue",
+        },
+        enc2: {
+          title: "🔍 Encoder Block 2",
+          description: "Second convolutional block with increased channels",
+          details: [
+            "Two 3×3 convolutions with 128 filters",
+            "Doubles the number of feature channels",
+            "Works on H/2×W/2 spatial resolution",
+            "Extracts more complex feature patterns",
+            "Builds upon features from previous layer",
+          ],
+          color: "blue",
+        },
+        pool2: {
+          title: "🏊 Max Pool 2",
+          description: "Second downsampling operation",
+          details: [
+            "Further reduces spatial dimensions",
+            "From H/2×W/2 to H/4×W/4",
+            "Increases receptive field size",
+            "Enables detection of larger patterns",
+            "Continues feature abstraction process",
+          ],
+          color: "blue",
+        },
+        enc3: {
+          title: "🔍 Encoder Block 3",
+          description: "Third encoder level with 256 channels",
+          details: [
+            "Two 3×3 convolutions with 256 filters",
+            "Works on H/4×W/4 resolution",
+            "Captures mid-level semantic features",
+            "Balances spatial and semantic information",
+            "Critical layer for skip connections",
+          ],
+          color: "blue",
+        },
+        pool3: {
+          title: "🏊 Max Pool 3",
+          description: "Third downsampling operation",
+          details: [
+            "Reduces to H/8×W/8 resolution",
+            "Significant spatial compression",
+            "Focus shifts to semantic understanding",
+            "Prepares for high-level feature extraction",
+            "Last pooling before final encoder block",
+          ],
+          color: "blue",
+        },
+        enc4: {
+          title: "🔍 Encoder Block 4",
+          description: "Final encoder block before bottleneck",
+          details: [
+            "Two 3×3 convolutions with 512 filters",
+            "High-level semantic feature extraction",
+            "Works on H/8×W/8 resolution",
+            "Rich feature representation",
+            "Provides context for decoder",
+          ],
+          color: "blue",
+        },
+        bottleneck: {
+          title: "🎯 Bottleneck Layer",
+          description: "Deepest point with maximum compression",
+          details: [
+            "Convolution block with 1024 filters",
+            "Smallest spatial size: H/16×W/16",
+            "Highest feature depth in the network",
+            "Captures most abstract semantic concepts",
+            "Bridge between encoder and decoder",
+            "Critical for overall understanding",
+          ],
+          color: "red",
+        },
+        dec4: {
+          title: "⬆️ Decoder Block 4",
+          description: "First upsampling block with skip connection",
+          details: [
+            "Transpose convolution for upsampling",
+            "Increases resolution to H/8×W/8",
+            "Concatenates with encoder block 4 features",
+            "Combines semantic and spatial information",
+            "Reduces channels to 512",
+            "Begins spatial reconstruction process",
+          ],
+          color: "green",
+        },
+        dec3: {
+          title: "⬆️ Decoder Block 3",
+          description: "Second decoder level",
+          details: [
+            "Upsamples to H/4×W/4 resolution",
+            "Skip connection from encoder block 3",
+            "Feature concatenation and processing",
+            "Refines spatial details",
+            "256 output channels",
+            "Recovers mid-level spatial information",
+          ],
+          color: "green",
+        },
+        dec2: {
+          title: "⬆️ Decoder Block 2",
+          description: "Third decoder level",
+          details: [
+            "Upsamples to H/2×W/2 resolution",
+            "Skip connection from encoder block 2",
+            "Combines upsampled and encoder features",
+            "128 output channels",
+            "Restores fine spatial details",
+            "Enables precise boundary detection",
+          ],
+          color: "green",
+        },
+        dec1: {
+          title: "⬆️ Decoder Block 1",
+          description: "Final decoder block",
+          details: [
+            "Upsamples to original H×W resolution",
+            "Skip connection from encoder block 1",
+            "Finest level feature combination",
+            "64 output channels",
+            "Prepares for final classification",
+            "Maximum spatial precision",
+          ],
+          color: "green",
+        },
+        output: {
+          title: "🎨 Output Layer",
+          description: "Final pixel-wise classification",
+          details: [
+            "1×1 convolution for classification",
+            "Maps features to class probabilities",
+            "Output size: H×W×num_classes",
+            "Softmax activation for multi-class",
+            "Each pixel gets probability vector",
+            "Dense segmentation map generation",
+          ],
+          color: "yellow",
+        },
+      };
+
+      let animationActive = false;
+
+      function showLayerInfo(layerId) {
+        const info = layerInfo[layerId];
+        const infoContainer = document.getElementById("layer-info");
+
+        if (!info) return;
+
+        const colorClasses = {
+          blue: "bg-blue-50 border-blue-200 text-blue-800",
+          green: "bg-green-50 border-green-200 text-green-800",
+          red: "bg-red-50 border-red-200 text-red-800",
+          yellow: "bg-yellow-50 border-yellow-200 text-yellow-800",
+        };
+
+        infoContainer.innerHTML = `
+                <div class="border-2 ${
+                  colorClasses[info.color]
+                } p-6 rounded-lg">
+                    <h4 class="text-xl font-bold mb-3">${info.title}</h4>
+                    <p class="text-lg mb-4">${info.description}</p>
+                    <div class="space-y-2">
+                        ${info.details
+                          .map(
+                            (detail) => `
+                            <div class="flex items-start space-x-2">
+                                <div class="w-2 h-2 bg-current rounded-full mt-2 opacity-60"></div>
+                                <span>${detail}</span>
+                            </div>
+                        `
+                          )
+                          .join("")}
+                    </div>
+                </div>
+            `;
+      }
+
+      function startAnimation() {
+        if (animationActive) return;
+        animationActive = true;
+
+        // Reset everything first
+        resetVisualization();
+
+        // Show data flow arrows
+        setTimeout(() => {
+          document.getElementById("data-flow-arrows").style.opacity = "1";
+        }, 500);
+
+        // Show skip connections
+        setTimeout(() => {
+          document.getElementById("skip-connections").style.opacity = "1";
+        }, 1500);
+
+        // Animate architecture steps
+        setTimeout(() => {
+          const steps = document.querySelectorAll(".architecture-step");
+          steps.forEach((step, index) => {
+            setTimeout(() => {
+              step.classList.add("visible");
+            }, index * 200);
+          });
+        }, 2500);
+
+        // Show initial layer info
+        setTimeout(() => {
+          showLayerInfo("input");
+        }, 3000);
+
+        animationActive = false;
+      }
+
+      function highlightUShape() {
+        const uShape = document.getElementById("u-shape");
+        uShape.style.opacity = "1";
+
+        setTimeout(() => {
+          uShape.style.opacity = "0";
+        }, 5000);
+      }
+
+      function showSkipConnections() {
+        const skipConnections = document.getElementById("skip-connections");
+        const currentOpacity = skipConnections.style.opacity;
+
+        if (currentOpacity === "1" || currentOpacity === "") {
+          skipConnections.style.opacity = "0";
+        } else {
+          skipConnections.style.opacity = "1";
+        }
+      }
+
+      function resetVisualization() {
+        // Reset all animations and highlights
+        document.getElementById("data-flow-arrows").style.opacity = "0";
+        document.getElementById("skip-connections").style.opacity = "0";
+        document.getElementById("u-shape").style.opacity = "0";
+
+        // Reset architecture steps
+        const steps = document.querySelectorAll(".architecture-step");
+        steps.forEach((step) => {
+          step.classList.remove("visible");
+        });
+
+        // Reset layer info
+        const infoContainer = document.getElementById("layer-info");
+        infoContainer.innerHTML = `
+                <div class="bg-blue-50 p-6 rounded-lg">
+                    <h4 class="text-lg font-semibold text-blue-800 mb-2">🎯 Click on any layer to see detailed information</h4>
+                    <p class="text-blue-600">Explore the encoder path, bottleneck, decoder path, and skip connections to understand how U-Net processes images for semantic segmentation.</p>
+                </div>
+            `;
+      }
+
+      // Auto-show architecture steps on load
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          const steps = document.querySelectorAll(".architecture-step");
+          steps.forEach((step, index) => {
+            setTimeout(() => {
+              step.classList.add("visible");
+            }, index * 100);
+          });
+        }, 1000);
+      });
+
+      // Add hover effects to layers
+      document.addEventListener("DOMContentLoaded", () => {
+        const layers = document.querySelectorAll(".layer-block");
+        layers.forEach((layer) => {
+          layer.addEventListener("mouseenter", function () {
+            this.style.transform = "scale(1.1)";
+            this.style.zIndex = "10";
+          });
+
+          layer.addEventListener("mouseleave", function () {
+            this.style.transform = "scale(1)";
+            this.style.zIndex = "1";
+          });
+        });
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", (e) => {
+        switch (e.key) {
+          case "1":
+            startAnimation();
+            break;
+          case "2":
+            highlightUShape();
+            break;
+          case "3":
+            showSkipConnections();
+            break;
+          case "r":
+          case "R":
+            resetVisualization();
+            break;
+        }
+      });
+    </script>
+  </body>
+</html>

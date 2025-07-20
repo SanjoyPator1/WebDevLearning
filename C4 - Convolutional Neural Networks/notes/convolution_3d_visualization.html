@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Convolution Interactive Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .main-content {
+        padding: 40px;
+      }
+
+      .demo-section {
+        margin-bottom: 50px;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+        color: #4facfe;
+        margin-bottom: 30px;
+        text-align: center;
+        border-bottom: 3px solid #4facfe;
+        padding-bottom: 15px;
+      }
+
+      /* RGB Volume Visualization */
+      .rgb-demo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        margin: 40px 0;
+        flex-wrap: wrap;
+      }
+
+      .volume-3d {
+        position: relative;
+        margin: 30px;
+      }
+
+      .channel-layer {
+        width: 120px;
+        height: 120px;
+        position: absolute;
+        border: 2px solid #333;
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1px;
+        padding: 5px;
+      }
+
+      .red-layer {
+        background: rgba(255, 107, 107, 0.8);
+        z-index: 3;
+        transform: translateZ(20px) translateX(-10px) translateY(-10px);
+      }
+
+      .green-layer {
+        background: rgba(81, 207, 102, 0.8);
+        z-index: 2;
+        transform: translateZ(10px) translateX(-5px) translateY(-5px);
+      }
+
+      .blue-layer {
+        background: rgba(51, 154, 240, 0.8);
+        z-index: 1;
+        transform: translateZ(0px);
+      }
+
+      .pixel {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        font-weight: bold;
+        color: #333;
+        transition: all 0.3s ease;
+      }
+
+      .pixel.active-region {
+        background: #ffeb3b !important;
+        border: 2px solid #ff5722;
+        transform: scale(1.1);
+        z-index: 10;
+        position: relative;
+      }
+
+      .operation-symbol {
+        font-size: 3rem;
+        color: #4facfe;
+        font-weight: bold;
+      }
+
+      .filter-3d {
+        position: relative;
+        margin: 30px;
+      }
+
+      .filter-layer {
+        width: 90px;
+        height: 90px;
+        position: absolute;
+        border: 2px solid #333;
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        padding: 5px;
+      }
+
+      .filter-red {
+        background: rgba(255, 193, 7, 0.9);
+        z-index: 3;
+        transform: translateZ(15px) translateX(-7px) translateY(-7px);
+      }
+
+      .filter-green {
+        background: rgba(255, 193, 7, 0.9);
+        z-index: 2;
+        transform: translateZ(8px) translateX(-4px) translateY(-4px);
+      }
+
+      .filter-blue {
+        background: rgba(255, 193, 7, 0.9);
+        z-index: 1;
+        transform: translateZ(0px);
+      }
+
+      .filter-cell {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .output-volume {
+        position: relative;
+        margin: 30px;
+      }
+
+      .output-layer {
+        width: 100px;
+        height: 100px;
+        border: 2px solid #333;
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2px;
+        padding: 5px;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      }
+
+      .output-cell {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: bold;
+        color: #333;
+        transition: all 0.5s ease;
+      }
+
+      .output-cell.computed {
+        background: #4caf50 !important;
+        color: white;
+        transform: scale(1.1);
+      }
+
+      /* Controls */
+      .controls {
+        text-align: center;
+        margin: 40px 0;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin: 0 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+      }
+
+      .btn:active {
+        transform: translateY(-1px);
+      }
+
+      /* Step-by-step visualization */
+      .step-container {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 30px 0;
+        border-left: 5px solid #4facfe;
+      }
+
+      .step-title {
+        font-size: 1.3rem;
+        color: #4facfe;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      .calculation-display {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        border: 2px solid #e9ecef;
+        font-family: "Courier New", monospace;
+        line-height: 1.6;
+      }
+
+      /* Multiple filters demo - IMPROVED LAYOUT */
+      .multi-filter-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 30px 0;
+      }
+
+      .multi-demo-container {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+      }
+
+      .filter-demo-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .input-section,
+      .filter-section,
+      .output-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+      }
+
+      .filter-section {
+        flex: 0.8;
+      }
+
+      .demo-arrow {
+        font-size: 2rem;
+        color: #4facfe;
+        margin: 0 20px;
+      }
+
+      .filter-type-label {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        font-size: 14px;
+      }
+
+      .vertical-filter {
+        background: linear-gradient(135deg, #ffd43b 0%, #ffb347 100%);
+      }
+
+      .horizontal-filter {
+        background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%);
+      }
+
+      /* Separate 3D volumes for multiple filters */
+      .multi-volume-3d {
+        position: relative;
+        margin: 20px;
+        transform: scale(0.8);
+      }
+
+      .multi-filter-3d {
+        position: relative;
+        margin: 20px;
+        transform: scale(0.9);
+      }
+
+      .multi-output {
+        position: relative;
+        margin: 20px;
+      }
+
+      .multi-output-layer {
+        width: 80px;
+        height: 80px;
+        border: 2px solid #333;
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        padding: 4px;
+      }
+
+      .vertical-output {
+        background: linear-gradient(135deg, #ffd43b 0%, #ffb347 100%);
+      }
+
+      .horizontal-output {
+        background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%);
+      }
+
+      .multi-output-cell {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .dimension-label {
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        color: #4facfe;
+        margin-top: 10px;
+      }
+
+      .final-output-section {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 30px;
+        text-align: center;
+      }
+
+      .stacked-output {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .stack-layer {
+        position: relative;
+      }
+
+      .stack-layer:nth-child(2) {
+        margin-left: -10px;
+        margin-top: -5px;
+      }
+
+      .info-box {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 30px 0;
+        border-left: 5px solid #2196f3;
+      }
+
+      .info-box h3 {
+        color: #1976d2;
+        margin-bottom: 15px;
+      }
+
+      .info-box ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .info-box li {
+        margin: 8px 0;
+        padding-left: 20px;
+        position: relative;
+      }
+
+      .info-box li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #4caf50;
+        font-weight: bold;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4facfe;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Responsive design */
+      @media (max-width: 1200px) {
+        .filter-demo-row {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .demo-arrow {
+          transform: rotate(90deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .rgb-demo {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .operation-symbol {
+          font-size: 2rem;
+        }
+
+        .stacked-output {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🧠 3D Convolution Interactive Demo</h1>
+        <p>Understanding how CNNs process RGB images with multiple channels</p>
+      </div>
+
+      <div class="main-content">
+        <!-- Basic 3D Convolution -->
+        <div class="demo-section">
+          <h2 class="section-title">
+            Basic 3D Convolution: RGB Image Processing
+          </h2>
+
+          <div class="rgb-demo">
+            <div class="volume-3d">
+              <div class="channel-layer red-layer" id="red-channel"></div>
+              <div class="channel-layer green-layer" id="green-channel"></div>
+              <div class="channel-layer blue-layer" id="blue-channel"></div>
+              <div class="dimension-label">6×6×3<br />RGB Input</div>
+            </div>
+
+            <div class="operation-symbol">×</div>
+
+            <div class="filter-3d">
+              <div class="filter-layer filter-red" id="filter-red"></div>
+              <div class="filter-layer filter-green" id="filter-green"></div>
+              <div class="filter-layer filter-blue" id="filter-blue"></div>
+              <div class="dimension-label">3×3×3<br />Edge Filter</div>
+            </div>
+
+            <div class="operation-symbol">=</div>
+
+            <div class="output-volume">
+              <div class="output-layer" id="output-single"></div>
+              <div class="dimension-label">4×4×1<br />Feature Map</div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="btn" onclick="demonstrateBasic3D()">
+              <span id="basic-btn-text">▶️ Start Basic Demo</span>
+            </button>
+            <button class="btn" onclick="resetBasicDemo()">🔄 Reset</button>
+          </div>
+
+          <div class="step-container hidden" id="basic-calculation">
+            <div class="step-title">🧮 Step-by-Step Calculation</div>
+            <div class="calculation-display" id="basic-calc-content">
+              Ready to start calculation...
+            </div>
+          </div>
+        </div>
+
+        <!-- Multiple Filters Demo - IMPROVED -->
+        <div class="demo-section">
+          <h2 class="section-title">Multiple Filters: Creating Feature Maps</h2>
+
+          <div class="multi-filter-section">
+            <div class="multi-demo-container">
+              <!-- Vertical Filter Row -->
+              <div class="filter-demo-row">
+                <div class="input-section">
+                  <h4>Input: 6×6×3</h4>
+                  <div class="multi-volume-3d">
+                    <div class="channel-layer red-layer" id="multi-red-1"></div>
+                    <div
+                      class="channel-layer green-layer"
+                      id="multi-green-1"
+                    ></div>
+                    <div
+                      class="channel-layer blue-layer"
+                      id="multi-blue-1"
+                    ></div>
+                  </div>
+                  <div class="dimension-label">RGB Image</div>
+                </div>
+
+                <div class="demo-arrow">×</div>
+
+                <div class="filter-section">
+                  <div class="filter-type-label vertical-filter">
+                    Vertical Edge Filter
+                  </div>
+                  <div class="multi-filter-3d">
+                    <div
+                      class="filter-layer vertical-filter"
+                      id="vertical-filter-r"
+                    ></div>
+                    <div
+                      class="filter-layer vertical-filter"
+                      id="vertical-filter-g"
+                    ></div>
+                    <div
+                      class="filter-layer vertical-filter"
+                      id="vertical-filter-b"
+                    ></div>
+                  </div>
+                  <div class="dimension-label">3×3×3 Filter</div>
+                </div>
+
+                <div class="demo-arrow">=</div>
+
+                <div class="output-section">
+                  <h4>Vertical Features</h4>
+                  <div class="multi-output">
+                    <div
+                      class="multi-output-layer vertical-output"
+                      id="output-vertical"
+                    ></div>
+                  </div>
+                  <div class="dimension-label">4×4×1</div>
+                </div>
+              </div>
+
+              <!-- Horizontal Filter Row -->
+              <div class="filter-demo-row">
+                <div class="input-section">
+                  <h4>Same Input: 6×6×3</h4>
+                  <div class="multi-volume-3d">
+                    <div class="channel-layer red-layer" id="multi-red-2"></div>
+                    <div
+                      class="channel-layer green-layer"
+                      id="multi-green-2"
+                    ></div>
+                    <div
+                      class="channel-layer blue-layer"
+                      id="multi-blue-2"
+                    ></div>
+                  </div>
+                  <div class="dimension-label">RGB Image</div>
+                </div>
+
+                <div class="demo-arrow">×</div>
+
+                <div class="filter-section">
+                  <div class="filter-type-label horizontal-filter">
+                    Horizontal Edge Filter
+                  </div>
+                  <div class="multi-filter-3d">
+                    <div
+                      class="filter-layer horizontal-filter"
+                      id="horizontal-filter-r"
+                    ></div>
+                    <div
+                      class="filter-layer horizontal-filter"
+                      id="horizontal-filter-g"
+                    ></div>
+                    <div
+                      class="filter-layer horizontal-filter"
+                      id="horizontal-filter-b"
+                    ></div>
+                  </div>
+                  <div class="dimension-label">3×3×3 Filter</div>
+                </div>
+
+                <div class="demo-arrow">=</div>
+
+                <div class="output-section">
+                  <h4>Horizontal Features</h4>
+                  <div class="multi-output">
+                    <div
+                      class="multi-output-layer horizontal-output"
+                      id="output-horizontal"
+                    ></div>
+                  </div>
+                  <div class="dimension-label">4×4×1</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Final Combined Output -->
+            <div class="final-output-section">
+              <h3>🔗 Combined Output: Stack Feature Maps</h3>
+              <p>
+                Two filters create two feature maps that stack to form a 4×4×2
+                volume:
+              </p>
+
+              <div class="stacked-output">
+                <div class="stack-layer">
+                  <div class="multi-output">
+                    <div
+                      class="multi-output-layer vertical-output"
+                      id="stacked-vertical"
+                    ></div>
+                  </div>
+                  <div class="dimension-label">
+                    Vertical Features<br />(Channel 1)
+                  </div>
+                </div>
+
+                <div class="operation-symbol">+</div>
+
+                <div class="stack-layer">
+                  <div class="multi-output">
+                    <div
+                      class="multi-output-layer horizontal-output"
+                      id="stacked-horizontal"
+                    ></div>
+                  </div>
+                  <div class="dimension-label">
+                    Horizontal Features<br />(Channel 2)
+                  </div>
+                </div>
+
+                <div class="operation-symbol">=</div>
+
+                <div class="stack-layer">
+                  <div class="dimension-label" style="margin-bottom: 10px">
+                    <strong>Final Output</strong>
+                  </div>
+                  <div
+                    style="
+                      background: #4facfe;
+                      color: white;
+                      padding: 15px;
+                      border-radius: 10px;
+                      font-weight: bold;
+                    "
+                  >
+                    4×4×2<br />Feature Volume
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="controls">
+              <button class="btn" onclick="demonstrateMultipleFilters()">
+                <span id="multi-btn-text">▶️ Start Multiple Filters Demo</span>
+              </button>
+              <button class="btn" onclick="resetMultipleDemo()">
+                🔄 Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Information Box -->
+        <div class="info-box">
+          <h3>🔑 Key Concepts</h3>
+          <ul>
+            <li>
+              <strong>3D Convolution:</strong> Filter depth must match input
+              channels (3)
+            </li>
+            <li>
+              <strong>27 Operations:</strong> Each output pixel requires 3×3×3 =
+              27 multiplications
+            </li>
+            <li>
+              <strong>Single Output:</strong> All channels sum to create one
+              feature map
+            </li>
+            <li>
+              <strong>Multiple Filters:</strong> Different filters detect
+              different patterns
+            </li>
+            <li>
+              <strong>Volume Output:</strong> n filters create n feature maps →
+              n-channel output
+            </li>
+            <li>
+              <strong>Parallel Processing:</strong> Same input processed by
+              multiple filters simultaneously
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sample data
+      const rgbData = {
+        red: [
+          [3, 0, 1, 2, 7, 4],
+          [1, 5, 8, 9, 3, 1],
+          [4, 2, 1, 6, 2, 8],
+          [7, 3, 2, 1, 1, 3],
+          [2, 4, 5, 2, 3, 1],
+          [1, 0, 3, 4, 6, 2],
+        ],
+        green: [
+          [1, 5, 8, 9, 3, 1],
+          [4, 2, 1, 6, 2, 8],
+          [7, 3, 2, 1, 1, 3],
+          [2, 4, 5, 2, 3, 1],
+          [1, 0, 3, 4, 6, 2],
+          [5, 2, 1, 3, 4, 7],
+        ],
+        blue: [
+          [2, 1, 2, 0, 1, 3],
+          [0, 2, 2, 3, 4, 6],
+          [1, 1, 3, 1, 7, 8],
+          [3, 2, 4, 5, 1, 2],
+          [4, 3, 1, 2, 5, 6],
+          [2, 1, 0, 4, 3, 1],
+        ],
+      };
+
+      const filters = {
+        vertical: [
+          [1, 0, -1],
+          [1, 0, -1],
+          [1, 0, -1],
+        ],
+        horizontal: [
+          [1, 1, 1],
+          [0, 0, 0],
+          [-1, -1, -1],
+        ],
+      };
+
+      let isAnimating = false;
+
+      // Initialize the demo
+      function initializeDemo() {
+        // Basic demo
+        populateLayer("red-channel", rgbData.red);
+        populateLayer("green-channel", rgbData.green);
+        populateLayer("blue-channel", rgbData.blue);
+
+        populateFilter("filter-red", filters.vertical);
+        populateFilter("filter-green", filters.vertical);
+        populateFilter("filter-blue", filters.vertical);
+
+        // Multiple filters demo
+        populateLayer("multi-red-1", rgbData.red);
+        populateLayer("multi-green-1", rgbData.green);
+        populateLayer("multi-blue-1", rgbData.blue);
+
+        populateLayer("multi-red-2", rgbData.red);
+        populateLayer("multi-green-2", rgbData.green);
+        populateLayer("multi-blue-2", rgbData.blue);
+
+        populateFilter("vertical-filter-r", filters.vertical);
+        populateFilter("vertical-filter-g", filters.vertical);
+        populateFilter("vertical-filter-b", filters.vertical);
+
+        populateFilter("horizontal-filter-r", filters.horizontal);
+        populateFilter("horizontal-filter-g", filters.horizontal);
+        populateFilter("horizontal-filter-b", filters.horizontal);
+
+        resetOutputs();
+      }
+
+      function populateLayer(elementId, data) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        element.innerHTML = "";
+
+        for (let i = 0; i < 6; i++) {
+          for (let j = 0; j < 6; j++) {
+            const pixel = document.createElement("div");
+            pixel.className = "pixel";
+            pixel.textContent = data[i][j];
+            pixel.id = `${elementId}-${i}-${j}`;
+            element.appendChild(pixel);
+          }
+        }
+      }
+
+      function populateFilter(elementId, data) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        element.innerHTML = "";
+
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            const cell = document.createElement("div");
+            cell.className = "filter-cell";
+            cell.textContent = data[i][j];
+            element.appendChild(cell);
+          }
+        }
+      }
+
+      function resetOutputs() {
+        const outputs = [
+          "output-single",
+          "output-vertical",
+          "output-horizontal",
+          "stacked-vertical",
+          "stacked-horizontal",
+        ];
+        outputs.forEach((id) => {
+          const element = document.getElementById(id);
+          if (!element) return;
+
+          element.innerHTML = "";
+          const cellCount = 16; // All are 4x4
+          const cellClass =
+            id === "output-single" ? "output-cell" : "multi-output-cell";
+
+          for (let i = 0; i < cellCount; i++) {
+            const cell = document.createElement("div");
+            cell.className = cellClass;
+            cell.textContent = "?";
+            element.appendChild(cell);
+          }
+        });
+      }
+
+      function calculate3DConvolution(row, col, filter) {
+        let total = 0;
+        let details = [];
+
+        const channels = ["red", "green", "blue"];
+        let channelSums = { red: 0, green: 0, blue: 0 };
+
+        for (let c = 0; c < 3; c++) {
+          let channelSum = 0;
+          let channelDetail = `${channels[c].toUpperCase()}: `;
+
+          for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+              const inputVal = rgbData[channels[c]][row + i][col + j];
+              const filterVal = filter[i][j];
+              const product = inputVal * filterVal;
+              channelSum += product;
+              channelDetail += `(${inputVal}×${filterVal})`;
+              if (!(i === 2 && j === 2)) channelDetail += " + ";
+            }
+          }
+
+          channelSums[channels[c]] = channelSum;
+          details.push(`${channelDetail} = ${channelSum}`);
+        }
+
+        total = channelSums.red + channelSums.green + channelSums.blue;
+        details.push(
+          `TOTAL: ${channelSums.red} + ${channelSums.green} + ${channelSums.blue} = ${total}`
+        );
+
+        return { result: total, details: details };
+      }
+
+      async function demonstrateBasic3D() {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        document.getElementById("basic-btn-text").innerHTML =
+          '<span class="loading"></span> Computing...';
+        document.getElementById("basic-calculation").classList.remove("hidden");
+
+        const output = document.getElementById("output-single");
+        let position = 0;
+
+        for (let row = 0; row <= 3; row++) {
+          for (let col = 0; col <= 3; col++) {
+            // Highlight current region with border
+            highlightRegion(row, col, "basic");
+
+            // Calculate convolution
+            const calculation = calculate3DConvolution(
+              row,
+              col,
+              filters.vertical
+            );
+
+            // Show calculation
+            document.getElementById("basic-calc-content").innerHTML = `
+                        <strong>Position (${row}, ${col}) - Processing 3×3×3 region:</strong><br><br>
+                        ${calculation.details.join("<br>")}
+                    `;
+
+            // Update output with animation
+            output.children[position].textContent = calculation.result;
+            output.children[position].classList.add("computed");
+
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+
+            // Remove highlights
+            clearHighlights();
+            position++;
+          }
+        }
+
+        document.getElementById("basic-btn-text").textContent =
+          "✅ Demo Complete!";
+        setTimeout(() => {
+          document.getElementById("basic-btn-text").textContent =
+            "▶️ Start Basic Demo";
+          isAnimating = false;
+        }, 2000);
+      }
+
+      async function demonstrateMultipleFilters() {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        document.getElementById("multi-btn-text").innerHTML =
+          '<span class="loading"></span> Computing...';
+
+        // Calculate results for both filters
+        const verticalResults = [];
+        const horizontalResults = [];
+
+        for (let row = 0; row <= 3; row++) {
+          for (let col = 0; col <= 3; col++) {
+            const verticalCalc = calculate3DConvolution(
+              row,
+              col,
+              filters.vertical
+            );
+            const horizontalCalc = calculate3DConvolution(
+              row,
+              col,
+              filters.horizontal
+            );
+
+            verticalResults.push(verticalCalc.result);
+            horizontalResults.push(horizontalCalc.result);
+          }
+        }
+
+        // Animate vertical filter results
+        const verticalOutput = document.getElementById("output-vertical");
+        for (let i = 0; i < 16; i++) {
+          verticalOutput.children[i].textContent = verticalResults[i];
+          verticalOutput.children[i].style.background = "#4caf50";
+          verticalOutput.children[i].style.color = "white";
+          await new Promise((resolve) => setTimeout(resolve, 150));
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        // Animate horizontal filter results
+        const horizontalOutput = document.getElementById("output-horizontal");
+        for (let i = 0; i < 16; i++) {
+          horizontalOutput.children[i].textContent = horizontalResults[i];
+          horizontalOutput.children[i].style.background = "#ff5722";
+          horizontalOutput.children[i].style.color = "white";
+          await new Promise((resolve) => setTimeout(resolve, 150));
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        // Update stacked outputs
+        const stackedVertical = document.getElementById("stacked-vertical");
+        const stackedHorizontal = document.getElementById("stacked-horizontal");
+
+        for (let i = 0; i < 16; i++) {
+          stackedVertical.children[i].textContent = verticalResults[i];
+          stackedVertical.children[i].style.background = "#4caf50";
+          stackedVertical.children[i].style.color = "white";
+
+          stackedHorizontal.children[i].textContent = horizontalResults[i];
+          stackedHorizontal.children[i].style.background = "#ff5722";
+          stackedHorizontal.children[i].style.color = "white";
+        }
+
+        document.getElementById("multi-btn-text").textContent =
+          "✅ Demo Complete!";
+        setTimeout(() => {
+          document.getElementById("multi-btn-text").textContent =
+            "▶️ Start Multiple Filters Demo";
+          isAnimating = false;
+        }, 2000);
+      }
+
+      function highlightRegion(row, col, demo) {
+        const prefixes =
+          demo === "basic"
+            ? ["red-channel", "green-channel", "blue-channel"]
+            : ["multi-red-1", "multi-green-1", "multi-blue-1"];
+
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            prefixes.forEach((prefix) => {
+              const element = document.getElementById(
+                `${prefix}-${row + i}-${col + j}`
+              );
+              if (element) {
+                element.classList.add("active-region");
+              }
+            });
+          }
+        }
+      }
+
+      function clearHighlights() {
+        document.querySelectorAll(".active-region").forEach((el) => {
+          el.classList.remove("active-region");
+        });
+
+        document.querySelectorAll(".computed").forEach((el) => {
+          el.classList.remove("computed");
+        });
+      }
+
+      function resetBasicDemo() {
+        clearHighlights();
+        document.getElementById("basic-calculation").classList.add("hidden");
+        document.getElementById("basic-calc-content").textContent =
+          "Ready to start calculation...";
+        resetOutputs();
+        isAnimating = false;
+        document.getElementById("basic-btn-text").textContent =
+          "▶️ Start Basic Demo";
+      }
+
+      function resetMultipleDemo() {
+        clearHighlights();
+        resetOutputs();
+        isAnimating = false;
+        document.getElementById("multi-btn-text").textContent =
+          "▶️ Start Multiple Filters Demo";
+
+        // Reset styling
+        const outputs = [
+          "output-vertical",
+          "output-horizontal",
+          "stacked-vertical",
+          "stacked-horizontal",
+        ];
+        outputs.forEach((id) => {
+          const element = document.getElementById(id);
+          if (element) {
+            Array.from(element.children).forEach((child) => {
+              child.style.background = "";
+              child.style.color = "";
+            });
+          }
+        });
+      }
+
+      // Initialize when page loads
+      window.addEventListener("load", initializeDemo);
+    </script>
+  </body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Convolution Interactive Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .main-content {
+        padding: 40px;
+      }
+
+      .demo-section {
+        margin-bottom: 50px;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+        color: #4facfe;
+        margin-bottom: 30px;
+        text-align: center;
+        border-bottom: 3px solid #4facfe;
+        padding-bottom: 15px;
+      }
+
+      /* RGB Volume Visualization */
+      .rgb-demo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        margin: 40px 0;
+        flex-wrap: wrap;
+      }
+
+      .volume-3d {
+        position: relative;
+        margin: 30px;
+      }
+
+      .channel-layer {
+        width: 120px;
+        height: 120px;
+        position: absolute;
+        border: 2px solid #333;
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1px;
+        padding: 5px;
+      }
+
+      .red-layer {
+        background: rgba(255, 107, 107, 0.8);
+        z-index: 3;
+        transform: translateZ(20px) translateX(-10px) translateY(-10px);
+      }
+
+      .green-layer {
+        background: rgba(81, 207, 102, 0.8);
+        z-index: 2;
+        transform: translateZ(10px) translateX(-5px) translateY(-5px);
+      }
+
+      .blue-layer {
+        background: rgba(51, 154, 240, 0.8);
+        z-index: 1;
+        transform: translateZ(0px);
+      }
+
+      .pixel {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .operation-symbol {
+        font-size: 3rem;
+        color: #4facfe;
+        font-weight: bold;
+      }
+
+      .filter-3d {
+        position: relative;
+        margin: 30px;
+      }
+
+      .filter-layer {
+        width: 90px;
+        height: 90px;
+        position: absolute;
+        border: 2px solid #333;
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        padding: 5px;
+      }
+
+      .filter-red {
+        background: rgba(255, 193, 7, 0.9);
+        z-index: 3;
+        transform: translateZ(15px) translateX(-7px) translateY(-7px);
+      }
+
+      .filter-green {
+        background: rgba(255, 193, 7, 0.9);
+        z-index: 2;
+        transform: translateZ(8px) translateX(-4px) translateY(-4px);
+      }
+
+      .filter-blue {
+        background: rgba(255, 193, 7, 0.9);
+        z-index: 1;
+        transform: translateZ(0px);
+      }
+
+      .filter-cell {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .output-volume {
+        position: relative;
+        margin: 30px;
+      }
+
+      .output-layer {
+        width: 100px;
+        height: 100px;
+        border: 2px solid #333;
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2px;
+        padding: 5px;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      }
+
+      .output-cell {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      /* Controls */
+      .controls {
+        text-align: center;
+        margin: 40px 0;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin: 0 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+      }
+
+      .btn:active {
+        transform: translateY(-1px);
+      }
+
+      /* Step-by-step visualization */
+      .step-container {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 30px 0;
+        border-left: 5px solid #4facfe;
+      }
+
+      .step-title {
+        font-size: 1.3rem;
+        color: #4facfe;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      .calculation-display {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        border: 2px solid #e9ecef;
+        font-family: "Courier New", monospace;
+        line-height: 1.6;
+      }
+
+      .highlight-region {
+        animation: glow 2s infinite;
+      }
+
+      @keyframes glow {
+        0%,
+        100% {
+          box-shadow: 0 0 5px #4facfe;
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 20px #4facfe, 0 0 30px #4facfe;
+          transform: scale(1.02);
+        }
+      }
+
+      /* Multiple filters demo */
+      .multi-filter-demo {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr auto 1fr;
+        align-items: center;
+        gap: 20px;
+        margin: 40px 0;
+        justify-items: center;
+      }
+
+      .filter-vertical {
+        background: linear-gradient(135deg, #ffd43b 0%, #ffb347 100%);
+      }
+
+      .filter-horizontal {
+        background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%);
+      }
+
+      .output-vertical {
+        background: linear-gradient(135deg, #ffd43b 0%, #ffb347 100%);
+      }
+
+      .output-horizontal {
+        background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%);
+      }
+
+      .dimension-label {
+        text-align: center;
+        font-size: 14px;
+        font-weight: bold;
+        color: #4facfe;
+        margin-top: 10px;
+      }
+
+      .info-box {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 30px 0;
+        border-left: 5px solid #2196f3;
+      }
+
+      .info-box h3 {
+        color: #1976d2;
+        margin-bottom: 15px;
+      }
+
+      .info-box ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .info-box li {
+        margin: 8px 0;
+        padding-left: 20px;
+        position: relative;
+      }
+
+      .info-box li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #4caf50;
+        font-weight: bold;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4facfe;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
+        .rgb-demo {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .multi-filter-demo {
+          grid-template-columns: 1fr;
+          gap: 30px;
+        }
+
+        .operation-symbol {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🧠 3D Convolution Interactive Demo</h1>
+        <p>Understanding how CNNs process RGB images with multiple channels</p>
+      </div>
+
+      <div class="main-content">
+        <!-- Basic 3D Convolution -->
+        <div class="demo-section">
+          <h2 class="section-title">
+            Basic 3D Convolution: RGB Image Processing
+          </h2>
+
+          <div class="rgb-demo">
+            <div class="volume-3d">
+              <div class="channel-layer red-layer" id="red-channel"></div>
+              <div class="channel-layer green-layer" id="green-channel"></div>
+              <div class="channel-layer blue-layer" id="blue-channel"></div>
+              <div class="dimension-label">6×6×3<br />RGB Input</div>
+            </div>
+
+            <div class="operation-symbol">×</div>
+
+            <div class="filter-3d">
+              <div class="filter-layer filter-red" id="filter-red"></div>
+              <div class="filter-layer filter-green" id="filter-green"></div>
+              <div class="filter-layer filter-blue" id="filter-blue"></div>
+              <div class="dimension-label">3×3×3<br />Edge Filter</div>
+            </div>
+
+            <div class="operation-symbol">=</div>
+
+            <div class="output-volume">
+              <div class="output-layer" id="output-single"></div>
+              <div class="dimension-label">4×4×1<br />Feature Map</div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="btn" onclick="demonstrateBasic3D()">
+              <span id="basic-btn-text">▶️ Start Basic Demo</span>
+            </button>
+            <button class="btn" onclick="resetBasicDemo()">🔄 Reset</button>
+          </div>
+
+          <div class="step-container hidden" id="basic-calculation">
+            <div class="step-title">🧮 Step-by-Step Calculation</div>
+            <div class="calculation-display" id="basic-calc-content">
+              Ready to start calculation...
+            </div>
+          </div>
+        </div>
+
+        <!-- Multiple Filters Demo -->
+        <div class="demo-section">
+          <h2 class="section-title">Multiple Filters: Creating Feature Maps</h2>
+
+          <div class="multi-filter-demo">
+            <div class="volume-3d">
+              <div class="channel-layer red-layer" id="multi-red"></div>
+              <div class="channel-layer green-layer" id="multi-green"></div>
+              <div class="channel-layer blue-layer" id="multi-blue"></div>
+              <div class="dimension-label">6×6×3<br />Same Input</div>
+            </div>
+
+            <div class="operation-symbol">×</div>
+
+            <div>
+              <div
+                class="filter-3d filter-vertical"
+                style="margin-bottom: 30px"
+              >
+                <div class="filter-layer" id="vertical-filter-r"></div>
+                <div class="filter-layer" id="vertical-filter-g"></div>
+                <div class="filter-layer" id="vertical-filter-b"></div>
+                <div class="dimension-label">Vertical Filter</div>
+              </div>
+
+              <div class="filter-3d filter-horizontal">
+                <div class="filter-layer" id="horizontal-filter-r"></div>
+                <div class="filter-layer" id="horizontal-filter-g"></div>
+                <div class="filter-layer" id="horizontal-filter-b"></div>
+                <div class="dimension-label">Horizontal Filter</div>
+              </div>
+            </div>
+
+            <div class="operation-symbol">=</div>
+
+            <div>
+              <div
+                class="output-volume output-vertical"
+                style="margin-bottom: 30px"
+              >
+                <div class="output-layer" id="output-vertical"></div>
+                <div class="dimension-label">4×4 Vertical<br />Features</div>
+              </div>
+
+              <div class="output-volume output-horizontal">
+                <div class="output-layer" id="output-horizontal"></div>
+                <div class="dimension-label">4×4 Horizontal<br />Features</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="btn" onclick="demonstrateMultipleFilters()">
+              <span id="multi-btn-text">▶️ Start Multiple Filters Demo</span>
+            </button>
+            <button class="btn" onclick="resetMultipleDemo()">🔄 Reset</button>
+          </div>
+        </div>
+
+        <!-- Information Box -->
+        <div class="info-box">
+          <h3>🔑 Key Concepts</h3>
+          <ul>
+            <li>
+              <strong>3D Convolution:</strong> Filter depth must match input
+              channels (3)
+            </li>
+            <li>
+              <strong>27 Operations:</strong> Each output pixel requires 3×3×3 =
+              27 multiplications
+            </li>
+            <li>
+              <strong>Single Output:</strong> All channels sum to create one
+              feature map
+            </li>
+            <li>
+              <strong>Multiple Filters:</strong> Different filters detect
+              different patterns
+            </li>
+            <li>
+              <strong>Volume Output:</strong> n filters create n×1 feature maps
+              → n-channel output
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sample data
+      const rgbData = {
+        red: [
+          [3, 0, 1, 2, 7, 4],
+          [1, 5, 8, 9, 3, 1],
+          [4, 2, 1, 6, 2, 8],
+          [7, 3, 2, 1, 1, 3],
+          [2, 4, 5, 2, 3, 1],
+          [1, 0, 3, 4, 6, 2],
+        ],
+        green: [
+          [1, 5, 8, 9, 3, 1],
+          [4, 2, 1, 6, 2, 8],
+          [7, 3, 2, 1, 1, 3],
+          [2, 4, 5, 2, 3, 1],
+          [1, 0, 3, 4, 6, 2],
+          [5, 2, 1, 3, 4, 7],
+        ],
+        blue: [
+          [2, 1, 2, 0, 1, 3],
+          [0, 2, 2, 3, 4, 6],
+          [1, 1, 3, 1, 7, 8],
+          [3, 2, 4, 5, 1, 2],
+          [4, 3, 1, 2, 5, 6],
+          [2, 1, 0, 4, 3, 1],
+        ],
+      };
+
+      const filters = {
+        vertical: [
+          [1, 0, -1],
+          [1, 0, -1],
+          [1, 0, -1],
+        ],
+        horizontal: [
+          [1, 1, 1],
+          [0, 0, 0],
+          [-1, -1, -1],
+        ],
+      };
+
+      let isAnimating = false;
+
+      // Initialize the demo
+      function initializeDemo() {
+        populateLayer("red-channel", rgbData.red);
+        populateLayer("green-channel", rgbData.green);
+        populateLayer("blue-channel", rgbData.blue);
+
+        populateFilter("filter-red", filters.vertical);
+        populateFilter("filter-green", filters.vertical);
+        populateFilter("filter-blue", filters.vertical);
+
+        // Multiple filters demo
+        populateLayer("multi-red", rgbData.red);
+        populateLayer("multi-green", rgbData.green);
+        populateLayer("multi-blue", rgbData.blue);
+
+        populateFilter("vertical-filter-r", filters.vertical);
+        populateFilter("vertical-filter-g", filters.vertical);
+        populateFilter("vertical-filter-b", filters.vertical);
+
+        populateFilter("horizontal-filter-r", filters.horizontal);
+        populateFilter("horizontal-filter-g", filters.horizontal);
+        populateFilter("horizontal-filter-b", filters.horizontal);
+
+        resetOutputs();
+      }
+
+      function populateLayer(elementId, data) {
+        const element = document.getElementById(elementId);
+        element.innerHTML = "";
+
+        for (let i = 0; i < 6; i++) {
+          for (let j = 0; j < 6; j++) {
+            const pixel = document.createElement("div");
+            pixel.className = "pixel";
+            pixel.textContent = data[i][j];
+            pixel.id = `${elementId}-${i}-${j}`;
+            element.appendChild(pixel);
+          }
+        }
+      }
+
+      function populateFilter(elementId, data) {
+        const element = document.getElementById(elementId);
+        element.innerHTML = "";
+
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            const cell = document.createElement("div");
+            cell.className = "filter-cell";
+            cell.textContent = data[i][j];
+            element.appendChild(cell);
+          }
+        }
+      }
+
+      function resetOutputs() {
+        const outputs = [
+          "output-single",
+          "output-vertical",
+          "output-horizontal",
+        ];
+        outputs.forEach((id) => {
+          const element = document.getElementById(id);
+          element.innerHTML = "";
+          for (let i = 0; i < 16; i++) {
+            const cell = document.createElement("div");
+            cell.className = "output-cell";
+            cell.textContent = "?";
+            element.appendChild(cell);
+          }
+        });
+      }
+
+      function calculate3DConvolution(row, col, filter) {
+        let total = 0;
+        let details = [];
+
+        const channels = ["red", "green", "blue"];
+        let channelSums = { red: 0, green: 0, blue: 0 };
+
+        for (let c = 0; c < 3; c++) {
+          let channelSum = 0;
+          let channelDetail = `${channels[c].toUpperCase()}: `;
+
+          for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+              const inputVal = rgbData[channels[c]][row + i][col + j];
+              const filterVal = filter[i][j];
+              const product = inputVal * filterVal;
+              channelSum += product;
+              channelDetail += `(${inputVal}×${filterVal})`;
+              if (i < 2 || j < 2) channelDetail += " + ";
+            }
+          }
+
+          channelSums[channels[c]] = channelSum;
+          details.push(`${channelDetail} = ${channelSum}`);
+        }
+
+        total = channelSums.red + channelSums.green + channelSums.blue;
+        details.push(
+          `TOTAL: ${channelSums.red} + ${channelSums.green} + ${channelSums.blue} = ${total}`
+        );
+
+        return { result: total, details: details };
+      }
+
+      async function demonstrateBasic3D() {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        document.getElementById("basic-btn-text").innerHTML =
+          '<span class="loading"></span> Computing...';
+        document.getElementById("basic-calculation").classList.remove("hidden");
+
+        const output = document.getElementById("output-single");
+        let position = 0;
+
+        for (let row = 0; row <= 3; row++) {
+          for (let col = 0; col <= 3; col++) {
+            // Highlight current region
+            highlightRegion(row, col, "basic");
+
+            // Calculate convolution
+            const calculation = calculate3DConvolution(
+              row,
+              col,
+              filters.vertical
+            );
+
+            // Show calculation
+            document.getElementById("basic-calc-content").innerHTML = `
+                        <strong>Position (${row}, ${col}):</strong><br>
+                        ${calculation.details.join("<br>")}
+                    `;
+
+            // Update output
+            output.children[position].textContent = calculation.result;
+            output.children[position].classList.add("highlight-region");
+
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+
+            // Remove highlights
+            clearHighlights();
+            position++;
+          }
+        }
+
+        document.getElementById("basic-btn-text").textContent =
+          "✅ Demo Complete!";
+        setTimeout(() => {
+          document.getElementById("basic-btn-text").textContent =
+            "▶️ Start Basic Demo";
+          isAnimating = false;
+        }, 2000);
+      }
+
+      async function demonstrateMultipleFilters() {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        document.getElementById("multi-btn-text").innerHTML =
+          '<span class="loading"></span> Computing...';
+
+        // Calculate vertical filter results
+        const verticalResults = [];
+        const horizontalResults = [];
+
+        for (let row = 0; row <= 3; row++) {
+          for (let col = 0; col <= 3; col++) {
+            const verticalCalc = calculate3DConvolution(
+              row,
+              col,
+              filters.vertical
+            );
+            const horizontalCalc = calculate3DConvolution(
+              row,
+              col,
+              filters.horizontal
+            );
+
+            verticalResults.push(verticalCalc.result);
+            horizontalResults.push(horizontalCalc.result);
+          }
+        }
+
+        // Animate results
+        const verticalOutput = document.getElementById("output-vertical");
+        const horizontalOutput = document.getElementById("output-horizontal");
+
+        // Show vertical results
+        for (let i = 0; i < 16; i++) {
+          verticalOutput.children[i].textContent = verticalResults[i];
+          verticalOutput.children[i].classList.add("highlight-region");
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        // Show horizontal results
+        for (let i = 0; i < 16; i++) {
+          horizontalOutput.children[i].textContent = horizontalResults[i];
+          horizontalOutput.children[i].classList.add("highlight-region");
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+
+        document.getElementById("multi-btn-text").textContent =
+          "✅ Demo Complete!";
+        setTimeout(() => {
+          document.getElementById("multi-btn-text").textContent =
+            "▶️ Start Multiple Filters Demo";
+          isAnimating = false;
+        }, 2000);
+      }
+
+      function highlightRegion(row, col, demo) {
+        const prefixes =
+          demo === "basic"
+            ? ["red-channel", "green-channel", "blue-channel"]
+            : ["multi-red", "multi-green", "multi-blue"];
+
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            prefixes.forEach((prefix) => {
+              const element = document.getElementById(
+                `${prefix}-${row + i}-${col + j}`
+              );
+              if (element) {
+                element.classList.add("highlight-region");
+              }
+            });
+          }
+        }
+      }
+
+      function clearHighlights() {
+        document.querySelectorAll(".highlight-region").forEach((el) => {
+          el.classList.remove("highlight-region");
+        });
+      }
+
+      function resetBasicDemo() {
+        clearHighlights();
+        document.getElementById("basic-calculation").classList.add("hidden");
+        document.getElementById("basic-calc-content").textContent =
+          "Ready to start calculation...";
+        resetOutputs();
+        isAnimating = false;
+        document.getElementById("basic-btn-text").textContent =
+          "▶️ Start Basic Demo";
+      }
+
+      function resetMultipleDemo() {
+        clearHighlights();
+        resetOutputs();
+        isAnimating = false;
+        document.getElementById("multi-btn-text").textContent =
+          "▶️ Start Multiple Filters Demo";
+      }
+
+      // Initialize when page loads
+      window.addEventListener("load", initializeDemo);
+    </script>
+  </body>
+</html>
