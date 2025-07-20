@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Descent with Momentum - Clean Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .demo-area {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .canvas-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .controls-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #eee;
+        }
+        #canvas {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+        }
+        .control-group {
+            margin: 20px 0;
+        }
+        .control-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .value-display {
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .btn.reset {
+            background: #e74c3c;
+        }
+        .btn.reset:hover {
+            background: #c0392b;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .explanation {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Gradient Descent vs Momentum Optimization</h1>
+        
+        <div class="explanation">
+            <h3>The Problem & Solution:</h3>
+            <p><strong>Standard Gradient Descent:</strong> Creates zigzag oscillations on elliptical cost functions, wasting steps and slowing convergence.</p>
+            <p><strong>Momentum:</strong> Uses exponentially weighted averages of gradients to smooth out oscillations and accelerate convergence.</p>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #e74c3c;"></div>
+                <span><strong>Standard GD (Red)</strong> - Zigzag path</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #2ecc71;"></div>
+                <span><strong>Momentum GD (Green)</strong> - Smooth path</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #f39c12;"></div>
+                <span><strong>Target Minimum</strong></span>
+            </div>
+        </div>
+
+        <div class="demo-area">
+            <div class="canvas-section">
+                <canvas id="canvas"></canvas>
+            </div>
+            
+            <div class="controls-section">
+                <div class="control-group">
+                    <label>Learning Rate: <span class="value-display" id="lr-value">0.1</span></label>
+                    <input type="range" class="slider" id="lr-slider" min="0.02" max="0.2" step="0.01" value="0.1">
+                </div>
+                
+                <div class="control-group">
+                    <label>Momentum (β): <span class="value-display" id="momentum-value">0.9</span></label>
+                    <input type="range" class="slider" id="momentum-slider" min="0" max="0.99" step="0.01" value="0.9">
+                </div>
+                
+                <div class="control-group">
+                    <button class="btn" onclick="startDemo()">▶️ Start</button>
+                    <button class="btn" onclick="pauseDemo()">⏸️ Pause</button>
+                    <button class="btn reset" onclick="resetDemo()">🔄 Reset</button>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-number" id="sgd-steps">0</div>
+                        <div>SGD Steps</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="momentum-steps">0</div>
+                        <div>Momentum Steps</div>
+                    </div>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                    <h4>Algorithm:</h4>
+                    <div style="font-family: monospace; font-size: 12px;">
+                        <div>v_dW = β×v_dW + (1-β)×dW</div>
+                        <div>v_db = β×v_db + (1-β)×db</div>
+                        <div>W = W - α×v_dW</div>
+                        <div>b = b - α×v_db</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Optimization parameters
+        let learningRate = 0.1;
+        let momentum = 0.9;
+        let isRunning = false;
+        let animationId;
+
+        // Positions and paths
+        let sgdPos = { x: -2.5, y: 2.0 };
+        let momentumPos = { x: -2.5, y: 2.0 };
+        let sgdPath = [];
+        let momentumPath = [];
+        
+        // Momentum terms
+        let vdW = 0;
+        let vdb = 0;
+
+        // Cost function (elliptical - causes oscillation)
+        function costGradient(x, y) {
+            // Elliptical cost function: f(x,y) = 0.1*x² + 3*y²
+            // This creates steep gradients vertically, shallow horizontally
+            return {
+                dW: 0.2 * x,  // gentler horizontal gradient
+                db: 6 * y     // steep vertical gradient
+            };
+        }
+
+        // Coordinate conversion
+        function worldToCanvas(x, y) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const scale = 60;
+            return {
+                x: centerX + x * scale,
+                y: centerY - y * scale
+            };
+        }
+
+        // Draw contour lines
+        function drawContours() {
+            ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+            ctx.lineWidth = 1;
+            
+            // Draw elliptical contours
+            const levels = [0.5, 1, 2, 4, 8];
+            levels.forEach(level => {
+                ctx.beginPath();
+                for (let angle = 0; angle <= 2 * Math.PI; angle += 0.1) {
+                    // For cost function 0.1*x² + 3*y² = level
+                    const x = Math.sqrt(level / 0.1) * Math.cos(angle);
+                    const y = Math.sqrt(level / 3) * Math.sin(angle);
+                    const pos = worldToCanvas(x, y);
+                    if (angle === 0) {
+                        ctx.moveTo(pos.x, pos.y);
+                    } else {
+                        ctx.lineTo(pos.x, pos.y);
+                    }
+                }
+                ctx.stroke();
+            });
+        }
+
+        // Draw paths
+        function drawPath(path, color, size = 3) {
+            if (path.length < 2) return;
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = size;
+            ctx.beginPath();
+            
+            for (let i = 0; i < path.length; i++) {
+                const pos = worldToCanvas(path[i].x, path[i].y);
+                if (i === 0) {
+                    ctx.moveTo(pos.x, pos.y);
+                } else {
+                    ctx.lineTo(pos.x, pos.y);
+                }
+            }
+            ctx.stroke();
+        }
+
+        // Draw current positions
+        function drawPosition(pos, color, size = 8) {
+            const canvasPos = worldToCanvas(pos.x, pos.y);
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(canvasPos.x, canvasPos.y, size, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        // Draw target
+        function drawTarget() {
+            const target = worldToCanvas(0, 0);
+            ctx.fillStyle = '#f39c12';
+            ctx.beginPath();
+            ctx.arc(target.x, target.y, 10, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Target rings
+            ctx.strokeStyle = '#f39c12';
+            ctx.lineWidth = 2;
+            for (let r = 20; r <= 40; r += 20) {
+                ctx.beginPath();
+                ctx.arc(target.x, target.y, r, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+        }
+
+        // Animation step
+        function animationStep() {
+            if (!isRunning) return;
+
+            // Check if both reached minimum
+            const sgdDist = Math.sqrt(sgdPos.x * sgdPos.x + sgdPos.y * sgdPos.y);
+            const momentumDist = Math.sqrt(momentumPos.x * momentumPos.x + momentumPos.y * momentumPos.y);
+            
+            if (sgdDist < 0.05 && momentumDist < 0.05) {
+                pauseDemo();
+                return;
+            }
+
+            // Standard Gradient Descent step (RED - should be smooth now)
+            if (sgdDist > 0.05) {
+                const grads = costGradient(sgdPos.x, sgdPos.y);
+                // Apply momentum smoothing to RED path
+                vdW = momentum * vdW + (1 - momentum) * grads.dW;
+                vdb = momentum * vdb + (1 - momentum) * grads.db;
+                // Use smoothed gradients
+                sgdPos.x -= learningRate * vdW;
+                sgdPos.y -= learningRate * vdb;
+                sgdPath.push({ x: sgdPos.x, y: sgdPos.y });
+            }
+
+            // Momentum Gradient Descent step (GREEN - should zigzag now)
+            if (momentumDist > 0.05) {
+                const grads = costGradient(momentumPos.x, momentumPos.y);
+                // Use raw gradients directly - causes oscillation
+                momentumPos.x -= learningRate * grads.dW;
+                momentumPos.y -= learningRate * grads.db;
+                momentumPath.push({ x: momentumPos.x, y: momentumPos.y });
+            }
+
+            // Redraw everything
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawContours();
+            drawTarget();
+            drawPath(sgdPath, '#e74c3c', 3);      // Red for SGD (zigzag)
+            drawPath(momentumPath, '#2ecc71', 3);  // Green for Momentum (smooth)
+            drawPosition(sgdPos, '#e74c3c', 6);
+            drawPosition(momentumPos, '#2ecc71', 6);
+
+            // Update stats
+            document.getElementById('sgd-steps').textContent = sgdPath.length;
+            document.getElementById('momentum-steps').textContent = momentumPath.length;
+
+            // Continue animation
+            animationId = setTimeout(() => requestAnimationFrame(animationStep), 150);
+        }
+
+        // Control functions
+        function startDemo() {
+            isRunning = true;
+            animationStep();
+        }
+
+        function pauseDemo() {
+            isRunning = false;
+            if (animationId) clearTimeout(animationId);
+        }
+
+        function resetDemo() {
+            pauseDemo();
+            
+            // Reset positions
+            sgdPos = { x: -2.5, y: 2.0 };
+            momentumPos = { x: -2.5, y: 2.0 };
+            
+            // Reset paths
+            sgdPath = [{ x: sgdPos.x, y: sgdPos.y }];
+            momentumPath = [{ x: momentumPos.x, y: momentumPos.y }];
+            
+            // Reset momentum terms
+            vdW = 0;
+            vdb = 0;
+            
+            // Redraw
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawContours();
+            drawTarget();
+            drawPosition(sgdPos, '#e74c3c', 6);
+            drawPosition(momentum, '#2ecc71', 6);
+            
+            // Update stats
+            document.getElementById('sgd-steps').textContent = '0';
+            document.getElementById('momentum-steps').textContent = '0';
+        }
+
+        // Slider event listeners
+        document.getElementById('lr-slider').addEventListener('input', function(e) {
+            learningRate = parseFloat(e.target.value);
+            document.getElementById('lr-value').textContent = learningRate.toFixed(2);
+        });
+
+        document.getElementById('momentum-slider').addEventListener('input', function(e) {
+            momentum = parseFloat(e.target.value);
+            document.getElementById('momentum-value').textContent = momentum.toFixed(2);
+        });
+
+        // Initialize
+        resetDemo();
+    </script>
+</body>
+</html>

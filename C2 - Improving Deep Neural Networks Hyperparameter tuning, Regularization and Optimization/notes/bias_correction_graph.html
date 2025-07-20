@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bias Correction in Exponentially Weighted Averages</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .formula-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .formula {
+            text-align: center;
+            font-size: 1.3em;
+            color: #2196F3;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .bias-info {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .info-card {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            margin: 5px;
+            flex: 1;
+            min-width: 250px;
+        }
+        .uncorrected { border-left-color: #9c27b0; }
+        .corrected { border-left-color: #44ff44; }
+        .chart-container {
+            position: relative;
+            height: 500px;
+            margin: 30px 0;
+        }
+        .insight-box {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .key-formula {
+            text-align: center;
+            font-size: 1.3em;
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .problem-highlight {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bias Correction in Exponentially Weighted Averages</h1>
+        
+        <div class="formula-section">
+            <div class="formula">
+                V<sub>t</sub> = β × V<sub>t-1</sub> + (1-β) × θ<sub>t</sub>
+            </div>
+            <div class="formula" style="color: #ff9800;">
+                V<sub>corrected</sub> = V<sub>t</sub> / (1 - β<sup>t</sup>)
+            </div>
+        </div>
+        
+        <div class="problem-highlight">
+            <strong>⚠️ Andrew's Key Insight:</strong> "If you implement the formula as written, you won't actually get the green curve when Beta equals 0.98, you actually get the purple curve that starts off really low."
+        </div>
+        
+        <div class="bias-info">
+            <div class="info-card uncorrected">
+                <strong>Uncorrected EWA (Purple Line)</strong><br>
+                Standard formula with V₀ = 0<br>
+                Shows bias - starts really low<br>
+                The problem Andrew identified!
+            </div>
+            <div class="info-card corrected">
+                <strong>Bias Corrected EWA (Green Line)</strong><br>
+                Divides by (1 - β^t)<br>
+                Removes initialization bias<br>
+                Accurate estimates from day 1
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        
+        <div class="key-formula">
+            <strong>Bias Correction Factor:</strong> (1 - β<sup>t</sup>) → As t increases, this approaches 1, so correction becomes minimal
+        </div>
+        
+        <div class="insight-box">
+            <h3>📊 What This Graph Shows:</h3>
+            <ul>
+                <li><strong>Blue dots:</strong> Raw, noisy temperature data starting around day 1</li>
+                <li><strong>🟣 Purple line:</strong> Standard EWA (β=0.98) - starts very low due to V₀ = 0 initialization</li>
+                <li><strong>🟢 Green line:</strong> Bias-corrected EWA - accurate estimates from day 1</li>
+                <li><strong>Key observation:</strong> Purple curve starts "really low" - exactly what Andrew discovered!</li>
+            </ul>
+            <p><strong>Why it matters:</strong> In machine learning, we want good estimates from the beginning, especially for momentum in gradient descent or Adam optimizer.</p>
+        </div>
+        
+        <div class="insight-box" style="background: #f3e5f5; border-left-color: #9c27b0;">
+            <h3>🎯 Real-World Application:</h3>
+            <p>This bias correction is crucial in:</p>
+            <ul>
+                <li><strong>Adam Optimizer:</strong> Both momentum and RMSprop terms use bias correction</li>
+                <li><strong>Financial Analysis:</strong> Getting accurate moving averages from day 1</li>
+                <li><strong>Signal Processing:</strong> Avoiding initialization artifacts</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Generate noisy temperature data (simulating London weather)
+        const days = [];
+        const rawTemperature = [];
+        const numDays = 100; // Focus on first 100 days to see bias correction effect
+        
+        for (let i = 1; i <= numDays; i++) {
+            days.push(i);
+            // Simulate temperature around 60°F with seasonal variation and noise
+            const seasonal = 60 + 15 * Math.sin((i - 20) * 2 * Math.PI / 365);
+            const noise = (Math.random() - 0.5) * 16; // Random noise
+            rawTemperature.push(seasonal + noise);
+        }
+        
+        // Calculate standard exponentially weighted average
+        function calculateEWA(data, beta) {
+            const result = [];
+            let v = 0; // Initialize to 0 (this causes the bias!)
+            
+            for (let i = 0; i < data.length; i++) {
+                v = beta * v + (1 - beta) * data[i];
+                result.push(v);
+            }
+            return result;
+        }
+        
+        // Calculate bias-corrected exponentially weighted average
+        function calculateBiasCorrectedEWA(data, beta) {
+            const result = [];
+            let v = 0;
+            
+            for (let i = 0; i < data.length; i++) {
+                v = beta * v + (1 - beta) * data[i];
+                // Apply bias correction: divide by (1 - beta^t)
+                // Note: t starts from 1, so we use (i + 1)
+                const biasCorrection = 1 - Math.pow(beta, i + 1);
+                const correctedV = v / biasCorrection;
+                result.push(correctedV);
+            }
+            return result;
+        }
+        
+        // Using beta = 0.98 to make the bias more visible
+        const beta = 0.98;
+        const ewaStandard = calculateEWA(rawTemperature, beta);
+        const ewaBiasCorrected = calculateBiasCorrectedEWA(rawTemperature, beta);
+        
+        // Create the chart
+        const ctx = document.getElementById('temperatureChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: days,
+                datasets: [
+                    {
+                        label: 'Raw Temperature Data',
+                        data: rawTemperature,
+                        backgroundColor: 'rgba(63, 81, 181, 0.6)',
+                        borderColor: 'rgba(63, 81, 181, 0.8)',
+                        borderWidth: 0,
+                        pointRadius: 2,
+                        pointBackgroundColor: 'rgba(63, 81, 181, 0.8)',
+                        showLine: false
+                    },
+                    {
+                        label: 'Standard EWA (β=0.98) - Biased',
+                        data: ewaStandard,
+                        borderColor: '#9c27b0',
+                        backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Bias Corrected EWA (β=0.98)',
+                        data: ewaBiasCorrected,
+                        borderColor: '#44ff44',
+                        backgroundColor: 'rgba(68, 255, 68, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Temperature Data: Standard vs Bias-Corrected EWA',
+                        font: { size: 16, weight: 'bold' }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Days',
+                            font: { size: 14, weight: 'bold' }
+                        },
+                        grid: {
+                            display: true,
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Temperature (°F)',
+                            font: { size: 14, weight: 'bold' }
+                        },
+                        grid: {
+                            display: true,
+                            color: 'rgba(0,0,0,0.1)'
+                        },
+                        min: 30,
+                        max: 90
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    </script>
+</body>
+</html>
