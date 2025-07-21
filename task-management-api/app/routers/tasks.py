@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query, Path, Body, Header,  File, UploadFile, Form, Depends
+from fastapi import APIRouter, HTTPException, Query, Path, Header, File, UploadFile, Form, Depends
 from datetime import datetime, date
 from typing import Optional, List
 import os
@@ -7,15 +7,18 @@ import uuid
 # Import schemas
 from app.schemas.task import Task, TaskResponse, TaskUpdate, TaskList, TaskPriority, TaskSortBy, TaskSortOrder
 
-# Import all dependencies
+# Import database and storage
 from app.dependencies.database import get_database, DatabaseSession
-from app.dependencies.auth import get_current_user, get_optional_user, CurrentUser
-from app.dependencies.permissions import (
-    require_user_or_admin, require_admin, check_file_upload_permission
-)
+from app.database.storage import tasks_db, task_id_counter
+
+# OAuth2 Authentication imports
+from app.database.users import User
+from app.dependencies.oauth2 import get_current_user, get_optional_user
+from app.dependencies.permissions import require_user_or_admin, require_admin, RoleChecker
+
+# Other dependencies
 from app.dependencies.pagination import get_pagination_params, PaginationParams
 from app.dependencies.cache import get_task_statistics, invalidate_task_cache
-from app.database.storage import tasks_db, task_id_counter
 
 # Create router instance
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -24,59 +27,62 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# Router to get all the tasks
+# Create specific permission checkers for tasks
+require_task_access = RoleChecker(["user", "admin"])
+require_file_upload = RoleChecker(["user", "admin"])
+
 @router.get("/", response_model=TaskList)
 async def get_tasks(
-    # PAGINATION DEPENDENCY
+    # Pagination dependency
     pagination: PaginationParams = Depends(get_pagination_params),
-
-     # DATABASE DEPENDENCY
+    # Database dependency
     db: DatabaseSession = Depends(get_database),
-
-    # AUTH DEPENDENCY - Optional 
-    current_user: Optional[CurrentUser] = Depends(get_optional_user),
-
+    # Optional OAuth2 authentication
+    current_user: Optional[User] = Depends(get_optional_user),
     # Filtering parameters
     priority: Optional[TaskPriority] = Query(None, description="Filter by priority"),
     completed: Optional[bool] = Query(None, description="Filter by completion status"),
     due_before: Optional[date] = Query(None, description="Filter tasks due before this date"),
     due_after: Optional[date] = Query(None, description="Filter tasks due after this date"),
-    
     # Sorting parameters
     sort_by: TaskSortBy = Query(TaskSortBy.CREATED_AT, description="Field to sort by"),
     sort_order: TaskSortOrder = Query(TaskSortOrder.DESC, description="Sort order"),
-    
     # Header parameters for versioning
     api_version: Optional[str] = Header(None, alias="X-API-Version", description="API Version"),
     user_agent: Optional[str] = Header(None, alias="User-Agent", description="Client information")
 ):
     """
-    Get all tasks with filtering, pagination, sorting, header parameter support and dependency injection
+    Get all tasks with optional OAuth2 authentication
+    
+    OAuth2 Scopes: Works without authentication, enhanced with user context when authenticated
+    - Unauthenticated: See all public tasks
+    - User role: See only own tasks
+    - Admin role: See all tasks
     """
     
-    # Check API version if provided
+    # API version validation
     if api_version and api_version not in ["v1", "v1.0"]:
         raise HTTPException(
             status_code=400, 
             detail=f"Unsupported API version: {api_version}. Supported versions: v1, v1.0"
         )
     
-    
-    # Log user agent for analytics (in real app, you'd use proper logging)
     if user_agent:
         print(f"Request from: {user_agent}")
 
-    # GET DATA USING DATABASE DEPENDENCY
+    # Get all tasks from database
     all_tasks = db.get_all_tasks()
 
-    # Log current user if authenticated
+    # Apply user-based filtering
     if current_user:
-        print(f"Authenticated request from user: {current_user.username}")
+        print(f"Authenticated request from user: {current_user.username} (role: {current_user.role})")
+        # Non-admin users only see their own tasks
+        if current_user.role != "admin":
+            all_tasks = [t for t in all_tasks if t.get("owner_id") == current_user.id or t.get("created_by") == current_user.id]
     
-    # Start with all tasks
+    # Apply query parameter filters
     filtered_tasks = all_tasks.copy()
     
-    # Apply filters
     if priority is not None:
         filtered_tasks = [t for t in filtered_tasks if t.get("priority") == priority.value]
     
@@ -101,14 +107,12 @@ async def get_tasks(
     if sort_by == TaskSortBy.TITLE:
         filtered_tasks.sort(key=lambda x: x.get("title", "").lower(), reverse=reverse_order)
     elif sort_by == TaskSortBy.PRIORITY:
-        # Custom priority sorting: high > medium > low
         priority_order = {"high": 3, "medium": 2, "low": 1}
         filtered_tasks.sort(
             key=lambda x: priority_order.get(x.get("priority", "medium"), 2), 
             reverse=reverse_order
         )
     elif sort_by == TaskSortBy.DUE_DATE:
-        # Sort by due_date, putting None values at the end
         filtered_tasks.sort(
             key=lambda x: x.get("due_date") or datetime.max, 
             reverse=reverse_order
@@ -124,7 +128,7 @@ async def get_tasks(
             reverse=reverse_order
         )
     
-    # APPLY PAGINATION USING DEPENDENCY
+    # Apply pagination
     paginated_result = pagination.paginate_list(filtered_tasks)
     
     # Convert to response models
@@ -135,50 +139,50 @@ async def get_tasks(
         total=paginated_result["pagination"]["total"]
     )
 
-# Router to create a task by task_data
 @router.post("/", response_model=TaskResponse)
-# task_data: Task = automatically validates incoming JSON against our Task model
 async def create_task(
     task_data: Task,
-    # dependencies
     db: DatabaseSession = Depends(get_database),
-    current_user: CurrentUser = Depends(require_user_or_admin)  # Requires authentication
+    # Requires OAuth2 Bearer token with user or admin role
+    current_user: User = Depends(require_task_access)
 ):
-    """Create a new task (requires user or admin role)"""
+    """
+    Create a new task (OAuth2 authentication required)
+    
+    Required OAuth2 Scopes: user or admin role
+    Authorization: Bearer <access_token>
+    """
 
-    # Create task with user info and timestamps
     now = datetime.now()
     new_task_dict = {
         **task_data.model_dump(),
         "created_at": now,
         "updated_at": now,
-        "attachments": [],  # Initialize empty attachments
-        "created_by": current_user.id  # Track who created the task
+        "attachments": [],
+        "created_by": current_user.id,
+        "owner_id": current_user.id  # Set ownership for access control
     }
     
-    # Use database dependency to create task
     created_task = db.create_task(new_task_dict)
-    
-    # Invalidate cache since we added a new task
     invalidate_task_cache()
     
     print(f"Task created by user {current_user.username} (ID: {current_user.id})")
     
     return TaskResponse(**created_task)
 
-# Router to get a task by task_id
-# response_model=TaskResponse ensures consistent response format
-# Convert found task dict to TaskResponse object
 @router.get("/{task_id}", response_model=TaskResponse)
 async def get_task(
     task_id: int = Path(..., gt=0, description="Task ID must be positive"),
-    #  DEPENDENCIES
     db: DatabaseSession = Depends(get_database),
-    current_user: Optional[CurrentUser] = Depends(get_optional_user)  # Optional auth
+    # Optional OAuth2 authentication
+    current_user: Optional[User] = Depends(get_optional_user)
 ):
-    """Get a specific task by ID with optional authentication"""
+    """
+    Get a specific task by ID (OAuth2 optional authentication)
     
-    # Use database dependency
+    OAuth2 Scopes: Works without authentication, access control applies when authenticated
+    """
+    
     task = db.get_task_by_id(task_id)
     
     if not task:
@@ -187,24 +191,36 @@ async def get_task(
             detail=f"Task with ID {task_id} not found"
         )
     
-    # Log if authenticated user is accessing
+    # Access control: non-admin users can only see their own tasks
+    if current_user and current_user.role != "admin":
+        task_owner_id = task.get("owner_id") or task.get("created_by")
+        if current_user.id != task_owner_id:
+            raise HTTPException(
+                status_code=403,
+                detail="You can only view your own tasks unless you're an admin",
+                headers={"WWW-Authenticate": "Bearer realm=\"Task Management API\", error=\"insufficient_scope\""}
+            )
+    
     if current_user:
         print(f"Task {task_id} accessed by user {current_user.username}")
     
     return TaskResponse(**task)
 
-# Router to update a task by task_id and task_data
 @router.put("/{task_id}", response_model=TaskResponse)
 async def update_task(
     task_data: TaskUpdate,
     task_id: int = Path(..., gt=0, description="Task ID must be positive"),
-    # DEPENDENCIES
     db: DatabaseSession = Depends(get_database),
-    current_user: CurrentUser = Depends(require_user_or_admin)  # Requires authentication
+    # Requires OAuth2 Bearer token
+    current_user: User = Depends(require_task_access)
 ):
-    """Update a task (requires user or admin role)"""
+    """
+    Update a task (OAuth2 authentication + ownership check)
     
-    # Check if task exists using database dependency
+    Required OAuth2 Scopes: user or admin role
+    Access Control: Users can only update their own tasks, admins can update any task
+    """
+    
     existing_task = db.get_task_by_id(task_id)
     if not existing_task:
         raise HTTPException(
@@ -212,32 +228,40 @@ async def update_task(
             detail=f"Task with ID {task_id} not found"
         )
     
+    # Ownership-based access control
+    task_owner_id = existing_task.get("owner_id") or existing_task.get("created_by")
+    if current_user.role != "admin" and current_user.id != task_owner_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Access denied. You can only update your own tasks unless you're an admin",
+            headers={"WWW-Authenticate": "Bearer realm=\"Task Management API\", error=\"insufficient_scope\""}
+        )
+    
     # Prepare update data
     update_data = task_data.model_dump(exclude_unset=True)
     update_data["updated_at"] = datetime.now()
-    update_data["updated_by"] = current_user.id  # Track who updated
+    update_data["updated_by"] = current_user.id
     
-    # Use database dependency to update
     updated_task = db.update_task(task_id, update_data)
-    
-    # Invalidate cache since we updated a task
     invalidate_task_cache()
     
     print(f"Task {task_id} updated by user {current_user.username}")
     
     return TaskResponse(**updated_task)
 
-# Router to delete a task by task_id
 @router.delete("/{task_id}")
 async def delete_task(
     task_id: int = Path(..., gt=0, description="Task ID must be positive"),
-    # DEPENDENCIES
     db: DatabaseSession = Depends(get_database),
-    current_user: CurrentUser = Depends(require_admin)  # Only admins can delete
+    # Admin-only access
+    current_user: User = Depends(require_admin)
 ):
-    """Delete a task (admin only)"""
+    """
+    Delete a task (OAuth2 admin authentication required)
     
-    # Use database dependency to delete
+    Required OAuth2 Scopes: admin role only
+    """
+    
     deleted_task = db.delete_task(task_id)
     
     if not deleted_task:
@@ -246,9 +270,7 @@ async def delete_task(
             detail=f"Task with ID {task_id} not found"
         )
     
-    # Invalidate cache since we deleted a task
     invalidate_task_cache()
-    
     print(f"Task {task_id} deleted by admin {current_user.username}")
     
     return {
@@ -258,35 +280,46 @@ async def delete_task(
 
 @router.get("/statistics")
 async def get_task_statistics_endpoint(
-    # === CACHED DEPENDENCY (from Task 2.2) ===
     stats = Depends(get_task_statistics),
-    current_user: CurrentUser = Depends(require_user_or_admin)
+    current_user: User = Depends(require_task_access)
 ):
-    """Get task statistics (cached for performance)"""
+    """
+    Get task statistics (OAuth2 authentication required)
+    
+    Required OAuth2 Scopes: user or admin role
+    """
     print(f"Statistics accessed by user {current_user.username}")
     return stats
 
-# task attachments routes
 @router.post("/{task_id}/attachments")
 async def upload_task_attachment(
     task_id: int = Path(..., gt=0, description="Task ID"),
     file: UploadFile = File(..., description="File to attach to the task"),
-    description: Optional[str] = Form(None, description="Optional description for the file"),
-    # DEPENDENCIES
+    description: Optional[str] = Form(None, description="Optional description"),
     db: DatabaseSession = Depends(get_database),
-    current_user: CurrentUser = Depends(check_file_upload_permission)  # Permission check
+    current_user: User = Depends(require_file_upload)
 ):
-    """Upload a file attachment to a task (requires upload permission)"""
+    """
+    Upload file attachment (OAuth2 authentication + ownership check)
     
-    # Check if task exists using database dependency
+    Required OAuth2 Scopes: user or admin role
+    Access Control: Users can only upload to their own tasks, admins can upload to any task
+    """
+    
     task = db.get_task_by_id(task_id)
     if not task:
+        raise HTTPException(status_code=404, detail=f"Task with ID {task_id} not found")
+    
+    # Ownership check
+    task_owner_id = task.get("owner_id") or task.get("created_by")
+    if current_user.role != "admin" and current_user.id != task_owner_id:
         raise HTTPException(
-            status_code=404,
-            detail=f"Task with ID {task_id} not found"
+            status_code=403,
+            detail="You can only upload files to your own tasks unless you're an admin",
+            headers={"WWW-Authenticate": "Bearer realm=\"Task Management API\", error=\"insufficient_scope\""}
         )
     
-    # Validate file type
+    # File validation
     allowed_types = ["image/jpeg", "image/png", "text/plain", "application/pdf"]
     if file.content_type not in allowed_types:
         raise HTTPException(
@@ -294,20 +327,15 @@ async def upload_task_attachment(
             detail=f"File type {file.content_type} not allowed. Allowed types: {allowed_types}"
         )
     
-    # Validate file size (5MB limit)
     file_content = await file.read()
-    if len(file_content) > 5 * 1024 * 1024:
-        raise HTTPException(
-            status_code=400,
-            detail="File size too large. Maximum size is 5MB"
-        )
+    if len(file_content) > 5 * 1024 * 1024:  # 5MB limit
+        raise HTTPException(status_code=400, detail="File size too large. Maximum size is 5MB")
     
-    # Generate unique filename
+    # Save file
     file_extension = file.filename.split('.')[-1] if '.' in file.filename else ''
     unique_filename = f"{uuid.uuid4()}.{file_extension}"
     file_path = os.path.join(UPLOAD_DIR, unique_filename)
     
-    # Save file
     with open(file_path, "wb") as f:
         f.write(file_content)
     
@@ -323,12 +351,11 @@ async def upload_task_attachment(
         "size": len(file_content),
         "description": description,
         "uploaded_at": datetime.now(),
-        "uploaded_by": current_user.id  # Track who uploaded
+        "uploaded_by": current_user.id
     }
     
     task["attachments"].append(attachment)
     
-    # Update task using database dependency
     update_data = {
         "attachments": task["attachments"],
         "updated_at": datetime.now()
@@ -345,19 +372,24 @@ async def upload_task_attachment(
 @router.get("/{task_id}/attachments")
 async def get_task_attachments(
     task_id: int = Path(..., gt=0, description="Task ID"),
-    # DEPENDENCIES
     db: DatabaseSession = Depends(get_database),
-    current_user: Optional[CurrentUser] = Depends(get_optional_user)  # Optional auth
+    current_user: Optional[User] = Depends(get_optional_user)
 ):
-    """Get all attachments for a task"""
+    """Get all attachments for a task (OAuth2 optional authentication)"""
     
-    # Use database dependency
     task = db.get_task_by_id(task_id)
     if not task:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Task with ID {task_id} not found"
-        )
+        raise HTTPException(status_code=404, detail=f"Task with ID {task_id} not found")
+    
+    # Access control for attachments
+    if current_user and current_user.role != "admin":
+        task_owner_id = task.get("owner_id") or task.get("created_by")
+        if current_user.id != task_owner_id:
+            raise HTTPException(
+                status_code=403,
+                detail="You can only view attachments for your own tasks unless you're an admin",
+                headers={"WWW-Authenticate": "Bearer"}
+            )
     
     attachments = task.get("attachments", [])
     
@@ -374,18 +406,22 @@ async def get_task_attachments(
 async def delete_task_attachment(
     task_id: int = Path(..., gt=0, description="Task ID"),
     attachment_id: int = Path(..., gt=0, description="Attachment ID"),
-    # DEPENDENCIES
     db: DatabaseSession = Depends(get_database),
-    current_user: CurrentUser = Depends(require_user_or_admin)  # Requires authentication
+    current_user: User = Depends(require_task_access)
 ):
-    """Delete a specific attachment from a task (requires user or admin role)"""
+    """Delete attachment (OAuth2 authentication + ownership check)"""
     
-    # Find task using database dependency
     task = db.get_task_by_id(task_id)
     if not task:
+        raise HTTPException(status_code=404, detail=f"Task with ID {task_id} not found")
+    
+    # Ownership check
+    task_owner_id = task.get("owner_id") or task.get("created_by")
+    if current_user.role != "admin" and current_user.id != task_owner_id:
         raise HTTPException(
-            status_code=404,
-            detail=f"Task with ID {task_id} not found"
+            status_code=403,
+            detail="You can only delete attachments from your own tasks unless you're an admin",
+            headers={"WWW-Authenticate": "Bearer realm=\"Task Management API\", error=\"insufficient_scope\""}
         )
     
     # Find attachment
@@ -410,13 +446,10 @@ async def delete_task_attachment(
     if os.path.exists(file_path):
         os.remove(file_path)
         print(f"File {attachment['stored_filename']} deleted from disk")
-    else:
-        print(f"Warning: File {attachment['stored_filename']} not found on disk")
     
     # Remove attachment from task
     task["attachments"].pop(attachment_index)
     
-    # Update task using database dependency
     update_data = {
         "attachments": task["attachments"],
         "updated_at": datetime.now(),
