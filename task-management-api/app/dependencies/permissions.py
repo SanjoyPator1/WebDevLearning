@@ -1,66 +1,56 @@
 from fastapi import Depends, HTTPException, status
-from typing import List
-from app.dependencies.auth import CurrentUser, get_current_user
+from typing import List, Callable
+from app.dependencies.oauth2 import get_current_user
+from app.database.users import User
 
-class PermissionChecker:
-    """Permission checking utilities using callable class pattern"""
+class RoleChecker:
+    """Role-based access control checker"""
     
-    def __init__(self, required_roles: List[str]):
-        self.required_roles = required_roles
+    def __init__(self, allowed_roles: List[str]):
+        self.allowed_roles = allowed_roles
     
-    def __call__(self, current_user: CurrentUser = Depends(get_current_user)) -> CurrentUser:
+    def __call__(self, current_user: User = Depends(get_current_user)) -> User:
         """
-        The __call__ method makes this class instance callable like a function
+        Check if current user has required role
         
-        When you create: require_admin = PermissionChecker(["admin"])
-        You can then use: require_admin() just like a function
-        
-        This is Python's "callable object" pattern - any object with __call__ can be used like a function
+        Role hierarchy (each level includes permissions of lower levels):
+        - guest: basic read access
+        - user: read + write own resources
+        - admin: full access to all resources
         """
-        if current_user.role not in self.required_roles:
+        if current_user.role not in self.allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Access denied. Required roles: {', '.join(self.required_roles)}"
+                detail=f"Access denied. Required roles: {', '.join(self.allowed_roles)}. Your role: {current_user.role}"
             )
         return current_user
 
-# How the callable pattern works:
-# 1. require_admin = PermissionChecker(["admin"])  <- Creates instance with roles
-# 2. In endpoint: Depends(require_admin)  <- FastAPI calls require_admin() which triggers __call__
-# 3. The __call__ method receives current_user and checks permissions
+# Pre-defined role checkers
+require_admin = RoleChecker(["admin"])
+require_user_or_admin = RoleChecker(["user", "admin"])  
+require_any_role = RoleChecker(["guest", "user", "admin"])
 
-# Pre-defined permission dependencies
-require_admin = PermissionChecker(["admin"])
-require_user_or_admin = PermissionChecker(["user", "admin"])
-require_any_authenticated = PermissionChecker(["guest", "user", "admin"])
-
-def check_task_owner_or_admin(
-    task_id: int,
-    current_user: CurrentUser = Depends(get_current_user)
-) -> CurrentUser:
+def check_resource_owner_or_admin(
+    resource_owner_id: int,
+    current_user: User = Depends(get_current_user)
+) -> User:
     """
-    Check if user can access/modify a specific task
-    Admins can access any task, users can only access their own
+    Check if user owns resource or is admin
+    Useful for endpoints where users can only access their own data
     """
-    # In a real app, you'd check task ownership from database
-    # For learning purposes, we'll allow all authenticated users
-    if current_user.is_admin():
+    if current_user.role == "admin" or current_user.id == resource_owner_id:
         return current_user
     
-    # In real implementation:
-    # task = get_task_from_db(task_id)
-    # if task.owner_id != current_user.id:
-    #     raise HTTPException(status_code=403, detail="Not authorized to access this task")
-    
-    return current_user
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Access denied. You can only access your own resources."
+    )
 
-def check_file_upload_permission(
-    current_user: CurrentUser = Depends(get_current_user)
-) -> CurrentUser:
-    """Check if user can upload files"""
-    if current_user.role == "guest":
+def admin_only(current_user: User = Depends(get_current_user)) -> User:
+    """Strict admin-only access"""
+    if current_user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Guests cannot upload files"
+            detail="Admin access required"
         )
     return current_user
