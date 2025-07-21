@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import the task router
-from app.routers import tasks
+from app.routers import tasks, auth
 
 # Create FastAPI instance
 app = FastAPI(
@@ -24,6 +24,7 @@ app.add_middleware(
 
 # Include the tasks router
 app.include_router(tasks.router)
+app.include_router(auth.router)
 
 # Health check endpoint
 @app.get("/health")
