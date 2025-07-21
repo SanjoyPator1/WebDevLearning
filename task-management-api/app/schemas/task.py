@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Optional, Literal, List
 from datetime import datetime
+from enum import Enum
+
 
 class Task(BaseModel):
     """Main Task model with validation"""
@@ -73,6 +75,30 @@ class Task(BaseModel):
             }
         }
 
+class AttachmentInfo(BaseModel):
+    """Model for file attachment information"""
+    id: int
+    filename: str
+    stored_filename: str
+    content_type: str
+    size: int
+    description: Optional[str]
+    uploaded_at: datetime
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id": 1,
+                "filename": "document.pdf",
+                "stored_filename": "uuid-123.pdf",
+                "content_type": "application/pdf",
+                "size": 1024000,
+                "description": "Task requirements",
+                "uploaded_at": "2024-01-01T10:00:00"
+            }
+        }
+
+
 class TaskResponse(BaseModel):
     """Response model for returning task data with ID and timestamps"""
     id: int
@@ -83,6 +109,7 @@ class TaskResponse(BaseModel):
     completed: bool
     created_at: datetime
     updated_at: datetime
+    attachments: List[AttachmentInfo] = []
 
     class Config:
         # This allows creating from SQLAlchemy models later
@@ -96,7 +123,8 @@ class TaskResponse(BaseModel):
                 "due_date": "2024-12-31T23:59:59",
                 "completed": False,
                 "created_at": "2024-01-01T10:00:00",
-                "updated_at": "2024-01-01T10:00:00"
+                "updated_at": "2024-01-01T10:00:00",
+                "attachments": []
             }
         }
 
@@ -142,3 +170,29 @@ class TaskList(BaseModel):
                 "total": 5
             }
         }
+
+class TaskPriority(str, Enum):
+    """
+        Enum for task priorities - useful for filtering
+    """
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+class TaskSortBy(str, Enum):
+    """
+        Enum for sorting options
+    """ 
+    TITLE = "title"
+    PRIORITY = "priority"
+    DUE_DATE = "due_date"
+    CREATED_AT = "created_at"
+    UPDATED_AT = "updated_at"
+
+class TaskSortOrder(str, Enum):
+    """
+        Enum for sort order
+    """
+    ASC = "asc"
+    DESC = "desc"
+
