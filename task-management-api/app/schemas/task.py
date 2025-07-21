@@ -246,4 +246,92 @@ class TaskSummary(BaseModel):
             }
         }
 
-
+class TaskAdvanced(BaseModel):
+    """Advanced Task model with extensive validation"""
+    title: str = Field(..., min_length=1, max_length=100)
+    description: Optional[str] = Field(None, max_length=500)
+    priority: Literal["low", "medium", "high"] = "medium"
+    due_date: Optional[datetime] = None
+    completed: bool = False
+    tags: Optional[List[str]] = Field(default_factory=list, max_length=5)
+    estimated_hours: Optional[float] = Field(None, gt=0, le=40)
+    
+    @field_validator('title', mode='before')
+    @classmethod
+    def title_must_be_string(cls, v):
+        """Pre-validator to ensure title is string"""
+        if not isinstance(v, str):
+            raise ValueError('Title must be a string')
+        return v
+    
+    @field_validator('tags')
+    @classmethod
+    def validate_tags(cls, v: Optional[List[str]]) -> List[str]:
+        """Validate tags list"""
+        if v:
+            # Remove duplicates while preserving order
+            seen = set()
+            unique_tags = []
+            for tag in v:
+                if isinstance(tag, str):
+                    tag = tag.strip().lower()
+                    if tag and tag not in seen:
+                        seen.add(tag)
+                        unique_tags.append(tag)
+                else:
+                    raise ValueError('All tags must be strings')
+            
+            # Check for forbidden tag names
+            forbidden_tags = ['spam', 'test', 'delete']
+            for tag in unique_tags:
+                if tag in forbidden_tags:
+                    raise ValueError(f'Tag "{tag}" is not allowed')
+            
+            return unique_tags
+        return []
+    
+    @field_validator('estimated_hours')
+    @classmethod
+    def validate_estimated_hours(cls, v: Optional[float]) -> Optional[float]:
+        """Validate estimated hours"""
+        if v is not None:
+            if v <= 0:
+                raise ValueError('Estimated hours must be positive')
+            if v > 40:
+                raise ValueError('Estimated hours cannot exceed 40 per task')
+            # Round to 2 decimal places
+            return round(v, 2)
+        return v
+    
+    @model_validator(mode='after')
+    def validate_task_logic(self):
+        """Complex business logic validation"""
+        # High priority tasks should have due dates
+        if self.priority == 'high' and not self.due_date:
+            raise ValueError('High priority tasks must have a due date')
+        
+        # Tasks with long estimated hours should not have short deadlines
+        if self.estimated_hours and self.estimated_hours > 8 and self.due_date:
+            time_until_due = self.due_date - datetime.now()
+            if time_until_due.days < 1:
+                raise ValueError('Tasks requiring >8 hours need at least 1 day to complete')
+        
+        # Emergency tasks (title contains 'urgent') must be high priority
+        if 'urgent' in self.title.lower() and self.priority != 'high':
+            self.priority = 'high'  # Auto-correct priority
+        
+        return self
+    
+    class Config:
+        validate_assignment = True
+        anystr_strip_whitespace = True  # Automatically strip whitespace
+        schema_extra = {
+            "example": {
+                "title": "Urgent: Fix production bug",
+                "description": "Critical bug affecting users",
+                "priority": "high",
+                "due_date": "2024-01-02T09:00:00",
+                "tags": ["bug", "production", "critical"],
+                "estimated_hours": 4.5
+            }
+        }
