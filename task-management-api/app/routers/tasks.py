@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from typing import List, Dict, Any
+from datetime import datetime
+from app.schemas.task import Task, TaskResponse, TaskUpdate, TaskList
 
 # Create router instance
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -9,38 +10,48 @@ tasks_db = []
 task_id_counter = 1
 
 # Router to get all the tasks
-@router.get("/")
+@router.get("/", response_model=TaskList)
 async def get_tasks():
     """Get all tasks"""
-    return {
-        "tasks" : tasks_db,
-        "total" : len(tasks_db)
-    }
+    # Convert dict to TaskResponse objects
+    task_responses = []
+    for task_dict in tasks_db:
+        task_responses.append(TaskResponse(**task_dict))
+
+    return TaskList(
+        tasks=task_responses,
+        total=len(tasks_db)
+    )
 
 # Router to create a task by task_data
-@router.post("/")
-async def create_task(task_data: dict):
+@router.post("/", response_model=TaskResponse)
+# task_data: Task = automatically validates incoming JSON against our Task model
+async def create_task(task_data: Task):
     """Create a new task"""
     global task_id_counter
 
-    # Create simple task with basic fields
+    # Create task dict with timestamps
+    now = datetime.now()
     new_task = {
         "id": task_id_counter,
-        "title": task_data.get("title", ""),
-        "description": task_data.get("description", ""),
-        "completed": task_data.get("completed", False)
+        "title": task_data.title,
+        "description": task_data.description,
+        "priority": task_data.priority,
+        "due_date": task_data.due_date,
+        "completed": task_data.completed,
+        "created_at": now,
+        "updated_at": now
     }
 
     tasks_db.append(new_task)
-    task_id_counter += 1
+    task_id_counter+=1
 
-    return {
-        "message": "Task created successfully",
-        "task": new_task
-    }
+    return TaskResponse(**new_task)
 
 # Router to get a task by task_id
-@router.get("/{task_id}")
+# response_model=TaskResponse ensures consistent response format
+# Convert found task dict to TaskResponse object
+@router.get("/{task_id}", response_model=TaskResponse)
 async def get_task(task_id: int):
     """Get a specific task by ID"""
     # Find task by ID
@@ -53,11 +64,11 @@ async def get_task(task_id: int):
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     
-    return {"task" : task}
+    return TaskResponse(**task)
 
 # Router to update a task by task_id and task_data
-@router.put("/{task_id}")
-async def update_task(task_id: int, task_data: dict):
+@router.put("/{task_id}", response_model=TaskResponse)
+async def update_task(task_id: int, task_data: TaskUpdate):
     """Update a specific task by ID"""
     # Find task by ID
     task = None
@@ -73,19 +84,15 @@ async def update_task(task_id: int, task_data: dict):
         raise HTTPException(status_code=404, detail="Task not found")
     
     # Update task fields
-    if "title" in task_data:
-        task["title"] = task_data["title"]
-    if "description" in task_data:
-        task["description"] = task_data["description"]
-    if "completed" in task_data:
-        task["completed"] = task_data["completed"]
+    update_data = task_data.model_dump(exclude_unset=True)
+    for field,value in update_data.items():
+        task[field] = value
 
+    # Update timestamp
+    task["updated_at"] = datetime.now()
     tasks_db[task_index] = task
 
-    return {
-        "message" : "Task updated successfully",
-        "task" : task
-    }
+    return TaskResponse(**task)
 
 # Router to delete a task by task_id
 @router.delete("/{task_id}")
@@ -108,5 +115,5 @@ async def delete_task(task_id: int):
 
     return {
         "message" : "Task deleted successfully", 
-        "deleted_task" : deleted_task
+        "deleted_task" : TaskResponse(**deleted_task)
     }
