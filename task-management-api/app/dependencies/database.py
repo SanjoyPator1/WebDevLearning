@@ -1,5 +1,5 @@
 from typing import Dict, List, Any
-from app.routers.tasks import tasks_db, task_id_counter
+from app.database.storage import tasks_db, task_id_counter
 
 class DatabaseSession:
     """Mock database session for learning purposes"""

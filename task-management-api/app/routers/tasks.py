@@ -15,7 +15,7 @@ from app.dependencies.permissions import (
 )
 from app.dependencies.pagination import get_pagination_params, PaginationParams
 from app.dependencies.cache import get_task_statistics, invalidate_task_cache
-
+from app.database.storage import tasks_db, task_id_counter
 
 # Create router instance
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -23,11 +23,6 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 # Create uploads directory if it doesn't exist
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-
-# Simple in-memory storage (just a list of dictionaries)
-tasks_db = []
-task_id_counter = 1
 
 # Router to get all the tasks
 @router.get("/", response_model=TaskList)
