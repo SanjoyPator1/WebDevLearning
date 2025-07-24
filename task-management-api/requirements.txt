@@ -50,3 +50,16 @@ python-multipart
 pydantic-settings
 bcrypt==4.0.1
 pydantic[email]
+
+# Background Tasks & Email
+aiofiles
+aiosmtplib
+jinja2
+
+# File Processing
+Pillow
+PyMuPDF
+
+# Optional: Advanced background processing (for future)
+celery[redis]
+redis

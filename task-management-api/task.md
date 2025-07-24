@@ -268,3 +268,6 @@ This project will teach you:
 - Complete documentation with examples
 
 Start with Phase 1 and build one feature at a time. Each phase builds upon the previous one, ensuring you understand each concept before moving to the next!
+
+## Extra
+use https://dramatiq.io/ for background task

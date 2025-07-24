@@ -37,3 +37,31 @@ htmlcov/
 # Uploads
 static/uploads/*
 !static/uploads/.gitkeep
+
+# Generated files and test data
+test_*.png
+test_*.jpg
+test_*.pdf
+test_*.txt
+test_*.csv
+test_*.json
+
+# Uploads and processed files
+uploads/
+!uploads/.gitkeep
+static/uploads/
+!static/uploads/.gitkeep
+
+# Generated reports
+reports/
+!reports/.gitkeep
+
+# Background task generated content
+processed/
+thumbnails/
+attachments/
+
+# Email templates (if generated)
+email_templates/generated/
+
+test-curl-files

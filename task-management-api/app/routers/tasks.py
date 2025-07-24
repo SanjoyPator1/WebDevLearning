@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query, Path, Header, File, UploadFile, Form, Depends
+from fastapi import APIRouter, HTTPException, Query, Path, Header, File, UploadFile, Form, Depends, BackgroundTasks
 from datetime import datetime, date
 from typing import Optional, List
 import os
@@ -19,6 +19,8 @@ from app.dependencies.permissions import require_user_or_admin, require_admin, R
 # Other dependencies
 from app.dependencies.pagination import get_pagination_params, PaginationParams
 from app.dependencies.cache import get_task_statistics, invalidate_task_cache
+
+from app.services.file_service import file_service
 
 # Create router instance
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -293,17 +295,23 @@ async def get_task_statistics_endpoint(
 
 @router.post("/{task_id}/attachments")
 async def upload_task_attachment(
+    background_tasks: BackgroundTasks, 
     task_id: int = Path(..., gt=0, description="Task ID"),
     file: UploadFile = File(..., description="File to attach to the task"),
     description: Optional[str] = Form(None, description="Optional description"),
     db: DatabaseSession = Depends(get_database),
-    current_user: User = Depends(require_file_upload)
+    current_user: User = Depends(require_file_upload),
 ):
     """
-    Upload file attachment (OAuth2 authentication + ownership check)
+    Upload file attachment (OAuth2 authentication + ownership check) with background processing
     
     Required OAuth2 Scopes: user or admin role
     Access Control: Users can only upload to their own tasks, admins can upload to any task
+
+    File is saved immediately, then processed in background:
+    - Images: Generate thumbnails and optimization
+    - PDFs: Create previews and extract text
+    - Text: Perform analysis and keyword extraction
     """
     
     task = db.get_task_by_id(task_id)
@@ -364,9 +372,27 @@ async def upload_task_attachment(
     
     print(f"File uploaded to task {task_id} by user {current_user.username}")
     
+    # After successful file save, add background processing
+    background_tasks.add_task(
+        file_service.process_uploaded_file,
+        attachment,  # The attachment dict you created
+        current_user,
+        task_id
+    )
+
     return {
-        "message": "File uploaded successfully",
-        "attachment": attachment
+        "message": "File uploaded successfully and queued for processing",
+        "attachment": attachment,
+        "background_processing": {
+            "status": "queued",
+            "estimated_completion": "1-3 minutes",
+            "notification": f"Email will be sent to {current_user.email} when processing completes",
+            "features": {
+                "image/*": ["Thumbnail generation", "Format optimization", "Metadata extraction"],
+                "application/pdf": ["Preview images", "Text extraction", "Document analysis"],
+                "text/plain": ["Content analysis", "Keyword extraction", "Readability metrics"]
+            }.get(file.content_type.split('/')[0] + '/*', ["Basic file processing"])
+        }
     }
 
 @router.get("/{task_id}/attachments")
