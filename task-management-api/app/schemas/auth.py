@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, Literal
 from datetime import datetime
+from uuid import UUID
 
 class UserRegistration(BaseModel):
     """Schema for user registration"""
@@ -51,7 +52,7 @@ class Token(BaseModel):
 
 class UserProfile(BaseModel):
     """User profile schema (public information)"""
-    id: int
+    id: str  # Changed from int to str to support UUIDs
     username: str
     email: EmailStr
     role: Literal["admin", "user", "guest"]
@@ -63,7 +64,7 @@ class UserProfile(BaseModel):
         from_attributes = True
         json_schema_extra = {
             "example": {
-                "id": 1,
+                "id": "c84ff13c-5aac-484f-bad5-ed6ca9d8d2fe",
                 "username": "testuser",
                 "email": "user@example.com",
                 "role": "user",

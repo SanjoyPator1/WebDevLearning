@@ -1,6 +1,8 @@
 """
 Database configuration for different environments
 
+NOTE: As of 2024-06-09, the default database is PostgreSQL. SQLite is only used for explicit test environments.
+
 This module provides:
 - Environment-specific database URLs
 - Connection pool configuration

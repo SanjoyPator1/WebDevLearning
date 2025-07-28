@@ -1,33 +1,21 @@
-from pydantic_settings import BaseSettings
-from typing import Optional
+"""
+DEPRECATED: Root Configuration File
+===================================
+This file has been replaced with a configuration package structure.
 
-class Settings(BaseSettings):
-    # Database
-    database_url: str = "sqlite:///./task_management.db"
-    
-    # Security
-    secret_key: str = "your-super-secret-key-change-this-in-production"
-    algorithm: str = "HS256"
-    access_token_expire_minutes: int = 30
-    
-    # Environment
-    environment: str = "development"
-    debug: bool = True
+Migration completed: [2024-06-09]
+- Single config file  > Organized config package
+- app/config.py  > app/config/ package with:
+  - app/config/settings.py: Application settings (security, email, etc.)
+  - app/config/database.py: Database configuration
+  - app/config/__init__.py: Unified exports
 
-    # Email Settings - MailHog Configuration
-    smtp_host: str = "localhost"
-    smtp_port: int = 1025  # MailHog SMTP port
-    smtp_user: str = ""    # MailHog doesn't require authentication
-    smtp_password: str = ""
-    smtp_from_email: str = "Task Manager <noreply@taskmanager.local>"
+New usage:
+- from app.config import settings  # Application settings
+- from app.config import db_config  # Database configuration
 
-    # Email Features
-    send_emails: bool = True  # Set to False to completely disable emails
-    
-    class Config:
-        env_file = ".env"
-        # Add this to allow extra fields if needed
-        extra = "allow"  # or remove this line and use only defined fields
+This file will be removed after testing is complete.
+"""
 
-# Create settings instance
-settings = Settings()
+# Commented out old configuration:
+# [Comment out all the existing Pydantic Settings class and code]

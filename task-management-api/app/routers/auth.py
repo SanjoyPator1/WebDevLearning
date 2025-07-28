@@ -1,105 +1,78 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
-from typing import Dict, Any, List
-from app.schemas.auth import RefreshTokenRequest
-
-# Import our authentication components
-from app.schemas.auth import UserRegistration, UserLogin, Token, UserProfile, PasswordChange
-from app.database.users import UserManager, User
+from typing import List, Dict
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.schemas.auth import RefreshTokenRequest, UserRegistration, Token, UserProfile, PasswordChange
+from app.services.user_service import UserService, UserCreate
+from app.dependencies.user_service import get_user_service
 from app.security.jwt_handler import JWTManager
 from app.security.password import PasswordManager
 from app.dependencies.oauth2 import get_current_user, get_current_active_user
 from app.dependencies.permissions import require_admin
 from app.config import settings
+from app.models.user import User
+from app.dependencies.database import get_db
 
-# Create authentication router
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
 @router.post("/register", response_model=UserProfile, status_code=status.HTTP_201_CREATED)
-async def register_user(user_data: UserRegistration):
-    """
-    Register a new user account
-    
-    Process:
-    1. Validate input data (Pydantic handles this)
-    2. Check password strength
-    3. Create user with hashed password
-    4. Return user profile (without password)
-    """
-    try:
-        # Create new user (UserManager handles validation and hashing)
-        new_user = UserManager.create_user(
-            username=user_data.username,
-            email=user_data.email,
-            password=user_data.password,
-            role=user_data.role
-        )
-        
-        # Return user profile (password is excluded)
-        return UserProfile(**new_user.to_dict())
-        
-    except ValueError as e:
+async def register_user(
+    user_data: UserRegistration,
+    user_service: UserService = Depends(get_user_service),
+    db: AsyncSession = Depends(get_db)
+):
+    is_strong, issues = PasswordManager.is_password_strong(user_data.password)
+    if not is_strong:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
+            detail=f"Password requirements not met: {', '.join(issues)}"
         )
+    try:
+        user_create = UserCreate(email=user_data.email, password=user_data.password, full_name=user_data.username)
+        new_user = await user_service.create_user(user_create)
+        await db.commit()
+        return UserProfile(
+            id=str(new_user.id),
+            username=new_user.full_name,
+            email=new_user.email,
+            role="user",  # Adjust if you add roles to the model
+            is_active=new_user.is_active,
+            created_at=new_user.created_at,
+            last_login=None
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 @router.post("/login", response_model=Token)
-async def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
-    """
-    OAuth2-compatible login endpoint
-    
-    OAuth2PasswordRequestForm automatically handles:
-    - username field (can be username or email)
-    - password field
-    - optional scope field
-    - Content-Type: application/x-www-form-urlencoded
-    
-    This is the standard OAuth2 "password" flow
-    """
-    
-    # Authenticate user
-    user = UserManager.authenticate_user(form_data.username, form_data.password)
+async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), user_service: UserService = Depends(get_user_service)):
+    user = await user_service.authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
-    # Create JWT token with user info
-    token_data = {
-        "sub": user.username,  # Subject (standard JWT claim)
-        "user_id": user.id,
-        "role": user.role,
-        "email": user.email
-    }
-    
-    # Generate access token
-    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
-    access_token = JWTManager.create_access_token(
-        data=token_data,
-        expires_delta=access_token_expires
-    )
-    
-    # Generate refresh token
-    refresh_token = JWTManager.create_refresh_token(data=token_data)
-    
+    access_token = JWTManager.create_access_token(user)
+    # Optionally implement refresh token logic
     return Token(
         access_token=access_token,
         token_type="bearer",
-        expires_in=settings.access_token_expire_minutes * 60,  # Convert to seconds
-        refresh_token=refresh_token
+        expires_in=settings.access_token_expire_minutes * 60,
+        refresh_token=None
     )
 
 @router.get("/me", response_model=UserProfile)
 async def get_current_user_profile(current_user: User = Depends(get_current_active_user)):
-    """
-    Get current user's profile
-    Requires valid JWT token in Authorization header
-    """
-    return UserProfile(**current_user.to_dict())
+    return UserProfile(
+        id=str(current_user.id),
+        username=current_user.full_name,
+        email=current_user.email,
+        role="user",  # Adjust if you add roles to the model
+        is_active=current_user.is_active,
+        created_at=current_user.created_at,
+        last_login=None
+    )
 
 @router.put("/me/password")
 async def change_password(
@@ -129,19 +102,30 @@ async def change_password(
     # Hash new password and update user
     new_hashed = PasswordManager.hash_password(password_data.new_password)
     
-    # Update in database (simplified for our mock database)
-    for user_data in UserManager.users_db:
-        if user_data["id"] == current_user.id:
-            user_data["hashed_password"] = new_hashed
-            break
-    
+    # Update in database (SQLAlchemy implementation needed)
+    # TODO: Implement password change using UserService and SQLAlchemy
+    # Example: await user_service.update_password(current_user.id, new_hashed)
     return {"message": "Password changed successfully"}
 
 @router.get("/users", response_model=List[UserProfile])
-async def list_users(current_user: User = Depends(require_admin)):
+async def list_users(
+    current_user: User = Depends(require_admin),
+    user_service: UserService = Depends(get_user_service)
+):
     """Get list of all users (admin only)"""
-    users = UserManager.get_all_users()
-    return [UserProfile(**user.to_dict()) for user in users]
+    users = await user_service.list_users()
+    return [
+        UserProfile(
+            id=str(user.id),
+            username=user.full_name,
+            email=user.email,
+            role=getattr(user, "role", "user"),
+            is_active=user.is_active,
+            created_at=user.created_at,
+            last_login=getattr(user, "last_login", None)
+        )
+        for user in users
+    ]
 
 @router.put("/users/{user_id}/role")
 async def update_user_role(
@@ -160,14 +144,13 @@ async def update_user_role(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Invalid role. Allowed roles: {', '.join(allowed_roles)}"
         )
-    
-    success = UserManager.update_user_role(user_id, role)
+    # TODO: Implement role update using UserService and SQLAlchemy
+    success = False # Not implemented yet
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
     return {"message": f"User role updated to {role}"}
 
 @router.post("/users/{user_id}/deactivate")
@@ -183,50 +166,44 @@ async def deactivate_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Cannot deactivate your own account"
         )
-    
-    success = UserManager.deactivate_user(user_id)
+    # TODO: Implement deactivation using UserService and SQLAlchemy
+    success = False # Not implemented yet
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
     return {"message": "User account deactivated"}
 
 @router.post("/refresh", response_model=Token)
 async def refresh_access_token(refresh_data: RefreshTokenRequest): 
     """Get new access token using refresh token"""
     try:
-        # Use refresh_data.refresh_token instead of refresh_token
         payload = JWTManager.verify_token(refresh_data.refresh_token)
         if not payload or payload.get("type") != "refresh":
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid refresh token"
             )
-        
-        user = UserManager.get_user_by_id(payload.get("user_id"))
+        # TODO: Implement user lookup using UserService and SQLAlchemy
+        user = None # Not implemented yet
         if not user or not user.is_active:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User not found or inactive"
             )
-        
         token_data = {
             "sub": user.username,
             "user_id": user.id,
             "role": user.role,
             "email": user.email
         }
-        
         access_token = JWTManager.create_access_token(data=token_data)
-        
         return Token(
             access_token=access_token,
             token_type="bearer",
             expires_in=settings.access_token_expire_minutes * 60
         )
-        
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

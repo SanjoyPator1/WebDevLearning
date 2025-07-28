@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional, Dict, Any
 from jose import JWTError, jwt
 from app.config import settings
+from app.models.user import User
 
 # JWT Configuration
 SECRET_KEY = settings.secret_key  # Should be a long, random string
@@ -12,7 +13,7 @@ class JWTManager:
     """JWT token creation and validation"""
     
     @staticmethod
-    def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
+    def create_access_token(user: User, expires_delta: int = None) -> str:
         """
         Create a JWT access token
         
@@ -23,19 +24,14 @@ class JWTManager:
         
         The token looks like: xxxxx.yyyyy.zzzzz (header.payload.signature)
         """
-        to_encode = data.copy()
-        
-        # Set expiration time
-        if expires_delta:
-            expire = datetime.now(timezone.utc) + expires_delta
-        else:
-            expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        
-        # Add expiration to payload
-        to_encode.update({"exp": expire})
+        to_encode = {
+            "sub": str(user.id),
+            "email": user.email,
+            "exp": datetime.utcnow() + timedelta(seconds=expires_delta or settings.access_token_expire_minutes * 60)
+        }
         
         # Create and sign the token
-        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
         return encoded_jwt
     
     @staticmethod

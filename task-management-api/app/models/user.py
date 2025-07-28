@@ -61,7 +61,14 @@ class User(BaseModel):
         nullable=False,
         comment="Whether user has verified their email"
     )
-    
+
+    role: Mapped[str] = mapped_column(
+        String(32),
+        default="user",
+        nullable=False,
+        comment="Role of the user (admin, user, guest, etc.)"
+    )
+
     is_active: Mapped[bool] = mapped_column(
         Boolean,
         default=True,

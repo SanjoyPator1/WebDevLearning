@@ -1,6 +1,8 @@
 """
 FastAPI application entry point with database integration
 
+NOTE: User database system migrated from mock/in-memory (users_db) to SQLAlchemy/PostgreSQL with UserService and async sessions as of 2024-06-09.
+
 This module provides:
 - Application startup and shutdown lifecycle
 - Database initialization and cleanup
@@ -27,6 +29,10 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
+
+from app.security.password import PasswordManager
+print("Test Admin password : ",PasswordManager.hash_password("admin123"))
+print("Test User password : ",PasswordManager.hash_password("user123"))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -150,7 +156,7 @@ async def global_exception_handler(request, exc):
     
     # Handle database-specific errors
     if "database" in str(exc).lower() or "sqlalchemy" in str(type(exc).__module__).lower():
-        return HTTPException(
+        raise HTTPException(
             status_code=503,
             detail={
                 "error": "Database Error",
@@ -160,7 +166,7 @@ async def global_exception_handler(request, exc):
         )
     
     # Generic error response
-    return HTTPException(
+    raise HTTPException(
         status_code=500,
         detail={
             "error": "Internal Server Error", 

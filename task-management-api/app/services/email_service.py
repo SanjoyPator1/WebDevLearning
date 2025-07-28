@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import re
 
 from app.config import settings
-from app.database.users import User
+from app.models.user import User
 
 class EmailService:
     """

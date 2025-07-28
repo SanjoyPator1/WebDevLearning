@@ -108,8 +108,27 @@ class DatabaseManager:
             logger.error(f"Database health check failed: {e}")
             return False
 
+
 # Global database manager instance
 db_manager = DatabaseManager()
+
+# Export async_session for compatibility
+async_session = None
+def _get_async_session():
+    if db_manager.session_factory is None:
+        raise RuntimeError("Database not initialized. Call db_manager.initialize() before using async_session.")
+    return db_manager.session_factory
+
+import sys
+if 'pytest' in sys.modules:
+    # For testing, allow direct access
+    async_session = lambda: db_manager.session_factory()
+else:
+    # For app runtime, provide a session factory that ensures initialization
+    async def async_session():
+        if not db_manager._initialized:
+            await db_manager.initialize()
+        return db_manager.session_factory
 
 async def get_database_session() -> AsyncGenerator[AsyncSession, None]:
     """

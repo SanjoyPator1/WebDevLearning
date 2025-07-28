@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException, status
 from typing import List, Callable
 from app.dependencies.oauth2 import get_current_user
-from app.database.users import User
+from app.models.user import User
 
 class RoleChecker:
     """Role-based access control checker"""

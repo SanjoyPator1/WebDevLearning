@@ -2,7 +2,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from typing import Dict, Any, Optional
 from datetime import datetime
 
-from app.database.users import User
+from app.models.user import User
 from app.dependencies.oauth2 import get_current_user
 from app.dependencies.permissions import require_admin, require_user_or_admin
 from app.services.email_service import email_service

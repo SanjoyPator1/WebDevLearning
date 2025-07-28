@@ -3,8 +3,9 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Any
 import logging
 
-from app.database.users import UserManager, User
-from app.database.storage import tasks_db
+from app.models.user import User
+from app.services.user_service import UserService
+
 from app.services.email_service import email_service
 
 # Set up logging for reminder system
@@ -204,52 +205,10 @@ class ReminderService:
                 - Includes small delays between emails to avoid server overload
                 - Continues processing even if individual emails fail
         """
-        now = datetime.now()
-        tomorrow = now + timedelta(days=1)
-
-        # Find tasks due in next 24 hours
-        due_soon_tasks = []
-        for task in tasks_db:
-            due_date = task.get('due_date')
-            if (due_date and
-                not task.get('completed') and
-                now <= due_date <= tomorrow and
-                not task.get('due_reminder_sent')):  # Avoid duplicate reminders
-                due_soon_tasks.append(task)
-
-        if not due_soon_tasks:
-            logger.info("📋 No tasks due in next 24 hours")
-            return
-
-        logger.info(f"⏰ Found {len(due_soon_tasks)} tasks due in next 24 hours")
-
-        # Group tasks by owner
-        tasks_by_user = {}
-        for task in due_soon_tasks:
-            owner_id = task.get('owner_id') or task.get('created_by')
-            if owner_id:
-                if owner_id not in tasks_by_user:
-                    tasks_by_user[owner_id] = []
-                tasks_by_user[owner_id].append(task)
-
-        # Send individual task reminders
-        for user_id, user_tasks in tasks_by_user.items():
-            user = UserManager.get_user_by_id(user_id)
-            if user and user.is_active:
-                for task in user_tasks:
-                    try:
-                        await email_service.send_task_due_notification(user, task)
-
-                        # Mark as reminded to avoid duplicates
-                        task['due_reminder_sent'] = True
-
-                        logger.info(f"✅ Due task reminder sent to {user.username} for task: {task.get('title', 'Untitled')}")
-
-                        # Small delay to avoid overwhelming email server
-                        await asyncio.sleep(1)
-
-                    except Exception as e:
-                        logger.error(f"❌ Failed to send due task reminder to {user.username}: {e}")
+        # TODO: Replace with real DB query to find tasks due in next 24 hours
+        # Example: Query tasks where due_date between now and tomorrow, not completed, and not reminded
+        logger.info("📋 [TODO] Implement DB logic for due soon task reminders")
+        pass
 
     async def _check_daily_summaries(self):
         """
@@ -281,47 +240,9 @@ class ReminderService:
                 - Only sends if user has tasks (avoids empty emails)
                 - Respects user notification preferences
         """
-        now = datetime.now()
-
-        # Only send daily summaries at 9 AM (adjust as needed)
-        if now.hour != 9 or now.minute > 30:  # 30-minute window
-            return
-
-        logger.info("📋 Time for daily task summaries (9:00 AM)")
-
-        # Get all active users
-        active_users = [
-            User(user_data) for user_data in UserManager.users_db
-            if user_data.get('is_active')
-        ]
-
-        summary_count = 0
-
-        for user in active_users:
-            try:
-                # Get user's pending tasks
-                user_tasks = [
-                    task for task in tasks_db
-                    if ((task.get('owner_id') == user.id or task.get('created_by') == user.id)
-                        and not task.get('completed'))
-                ]
-
-                # Only send summary if user has tasks
-                if user_tasks:
-                    await email_service.send_daily_task_summary(user, user_tasks)
-                    summary_count += 1
-                    logger.info(f"✅ Daily summary sent to {user.username} ({len(user_tasks)} pending tasks)")
-
-                # Small delay between emails
-                await asyncio.sleep(2)
-
-            except Exception as e:
-                logger.error(f"❌ Failed to send daily summary to {user.username}: {e}")
-
-        if summary_count > 0:
-            logger.info(f"📬 Daily summaries sent to {summary_count} users")
-        else:
-            logger.info("📭 No daily summaries sent (no users with pending tasks)")
+        # TODO: Replace with real DB query to get users and their tasks
+        logger.info("📋 [TODO] Implement DB logic for daily summaries")
+        pass
 
     async def _check_overdue_notifications(self):
         """
@@ -352,47 +273,9 @@ class ReminderService:
                 - Urgent: 3-7 days overdue (yellow indicators)
                 - Recent: 1-3 days overdue (standard indicators)
         """
-        now = datetime.now()
-
-        # Find overdue tasks that haven't been notified yet
-        overdue_tasks = []
-        for task in tasks_db:
-            due_date = task.get('due_date')
-            if (due_date and
-                due_date < now and
-                not task.get('completed') and
-                not task.get('overdue_notification_sent')):  # Not notified yet
-                overdue_tasks.append(task)
-
-        if not overdue_tasks:
-            return
-
-        logger.info(f"⚠️ Found {len(overdue_tasks)} newly overdue tasks")
-
-        # Group by user
-        tasks_by_user = {}
-        for task in overdue_tasks:
-            owner_id = task.get('owner_id') or task.get('created_by')
-            if owner_id:
-                if owner_id not in tasks_by_user:
-                    tasks_by_user[owner_id] = []
-                tasks_by_user[owner_id].append(task)
-
-        for user_id, user_tasks in tasks_by_user.items():
-            user = UserManager.get_user_by_id(user_id)
-            if user and user.is_active:
-                try:
-                    # Send overdue notification
-                    await self._send_overdue_notification(user, user_tasks)
-
-                    # Mark tasks as notified
-                    for task in user_tasks:
-                        task['overdue_notification_sent'] = True
-
-                    logger.info(f"⚠️ Overdue notification sent to {user.username} for {len(user_tasks)} tasks")
-
-                except Exception as e:
-                    logger.error(f"❌ Failed to send overdue notification to {user.username}: {e}")
+        # TODO: Replace with real DB query to find overdue tasks and notify users
+        logger.info("⚠️ [TODO] Implement DB logic for overdue notifications")
+        pass
 
     async def _send_overdue_notification(self, user: User, overdue_tasks: List[Dict[str, Any]]):
         """
@@ -630,25 +513,9 @@ class ReminderService:
                 5. Send notification using email service
                 6. Return success status
         """
-
-        # Find the specific task
-        task = None
-        for t in tasks_db:
-            if t.get('id') == task_id:
-                task = t
-                break
-
-        if not task:
-            raise ValueError(f"Task with ID {task_id} not found")
-
-        # Check task ownership
-        if task.get('owner_id') != user.id and task.get('created_by') != user.id:
-            raise ValueError("User does not own this task")
-
-        logger.info(f"📧 Sending immediate reminder for task {task_id} to {user.username}")
-
-        await email_service.send_task_due_notification(user, task)
-        return True
+        # TODO: Replace with real DB query to find task by ID and send reminder
+        logger.info(f"📧 [TODO] Implement DB logic for immediate reminder for task {task_id} to {user.username}")
+        pass
 
 # Create global reminder service instance
 reminder_service = ReminderService()

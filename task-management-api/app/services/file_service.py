@@ -9,7 +9,7 @@ import fitz  # PyMuPDF for PDF processing
 import logging
 from datetime import datetime
 
-from app.database.users import User
+from app.models.user import User
 from app.services.email_service import email_service
 
 logger = logging.getLogger(__name__)
