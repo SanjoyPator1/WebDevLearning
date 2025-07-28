@@ -93,29 +93,54 @@ Build a Personal Task Management API that allows users to manage their tasks, pr
 - [ ] Implement task reminder system
 - [ ] Handle file processing asynchronously
 
-### Phase 3: Database Integration (Weeks 5-6)
+### Phase 3: Database Integration
 
 #### Task 3.1: SQL Database with SQLAlchemy
 
 **Topics Covered:** SQL Databases with SQLAlchemy
 
-- [ ] Set up PostgreSQL with SQLAlchemy
-- [ ] Create database models:
-  - Users, Tasks, Projects, Teams
-  - Establish relationships between models
-- [ ] Implement full CRUD operations
-- [ ] Set up Alembic for migrations
-- [ ] Add transaction management
+- [ ] Set up PostgreSQL with Docker and environment configuration
+- [ ] Install and configure SQLAlchemy 2.0 with async support
+- [ ] Create database models with proper relationships:
+  - Base model with common fields (id, created_at, updated_at)
+  - User model with authentication fields
+  - Task model with foreign key relationships
+  - Project model with team associations
+  - Team model with user memberships
+  - TaskAttachment model for file handling
+  - Establish foreign key relationships and indexes
+- [ ] Implement async database session management
+- [ ] Set up Alembic for database migrations
+- [ ] Create initial migration and seed data
+- [ ] Add database health checks and monitoring
+- [ ] Implement transaction management with rollback support
 
 #### Task 3.2: Advanced Database Patterns
 
 **Topics Covered:** Advanced Database Patterns
 
-- [ ] Implement Repository pattern for data access
-- [ ] Add Unit of Work pattern for transactions
-- [ ] Create DAO pattern for complex queries
-- [ ] Optimize database queries
-- [ ] Implement connection pooling
+- [ ] Implement Repository pattern for data access:
+  - Create abstract base repository with generic CRUD operations
+  - Implement specific repositories (UserRepository, TaskRepository, etc.)
+  - Add query builder methods for complex filtering
+- [ ] Add Unit of Work pattern for transaction management:
+  - Implement UoW class to manage multiple repositories
+  - Add transaction boundaries for business operations
+  - Handle rollback scenarios and error recovery
+- [ ] Create DAO pattern for complex queries:
+  - Implement read-only data access objects
+  - Add analytical queries and reporting functions
+  - Create optimized queries for dashboard data
+- [ ] Optimize database queries and performance:
+  - Add proper database indexes for common queries
+  - Implement query result caching
+  - Add database query logging and analysis
+  - Optimize N+1 query problems with proper loading strategies
+- [ ] Implement connection pooling and production optimizations:
+  - Configure SQLAlchemy connection pool settings
+  - Add connection health checks and retry logic
+  - Implement database connection monitoring
+  - Add database backup and recovery procedures
 
 ### Phase 4: Testing and Documentation (Week 7)
 
@@ -270,4 +295,5 @@ This project will teach you:
 Start with Phase 1 and build one feature at a time. Each phase builds upon the previous one, ensuring you understand each concept before moving to the next!
 
 ## Extra
+
 use https://dramatiq.io/ for background task
