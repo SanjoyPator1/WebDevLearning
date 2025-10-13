@@ -4,3 +4,10 @@ venv
 rough.md
 
 horse-or-human
+
+data
+
+# Ignore large model/data files
+*.zip
+*.keras
+*.h5
