@@ -1,0 +1,15 @@
+[project]
+name = "todo-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11.8"
+dependencies = [
+    "alembic>=1.17.1",
+    "asyncpg>=0.30.0",
+    "fastapi>=0.121.1",
+    "pydantic>=2.12.4",
+    "python-dotenv>=1.2.1",
+    "sqlalchemy[asyncio]>=2.0.44",
+    "uvicorn[standard]>=0.38.0",
+]
