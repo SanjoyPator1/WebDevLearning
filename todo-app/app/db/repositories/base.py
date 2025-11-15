@@ -66,6 +66,22 @@ class BaseRepository(Generic[ModelType]):
         query = query.offset(skip).limit(limit)
         result = await self.db.execute(query)
         return list(result.scalars().all())
+
+    async def create(self, obj_in: dict[str, Any]) -> ModelType:
+        """
+        Create a new record.
+
+        Args:
+            obj_in: Dictionary with data for new record
+
+        Returns:
+            Created model instance
+        """
+        db_obj = self.model(**obj_in)
+        self.db.add(db_obj)
+        await self.db.commit()
+        await self.db.refresh(db_obj)
+        return db_obj
     
     async def update(self, db_obj: ModelType, obj_in: dict[str, Any]) -> ModelType:
         """

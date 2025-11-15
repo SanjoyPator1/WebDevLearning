@@ -513,7 +513,169 @@ users = await user_repo.get_multi(
 
 ---
 
-### Method 3: `update()` - Update Existing Record
+### Method 3: `create()` – Create a New Record
+
+```python
+async def create(self, obj_in: dict[str, Any]) -> ModelType:
+    """
+    Create a new record.
+
+    Args:
+        obj_in: Dictionary with data for new record
+
+    Returns:
+        Created model instance
+    """
+    db_obj = self.model(**obj_in)
+    self.db.add(db_obj)
+    await self.db.commit()
+    await self.db.refresh(db_obj)
+    return db_obj
+
+```
+
+**Purpose:**  
+Create and store a new database record using the provided data.
+
+---
+
+**Step-by-step:**
+
+**Step 1: Convert input data into a database model instance**
+
+```python
+db_obj = self.model(**obj_in)
+#        ↑
+# Create a new SQLAlchemy model object using keyword arguments
+
+```
+
+- `self.model` → SQLAlchemy model class (e.g., `User`, `Todo`)
+- `obj_in` → dictionary of fields and values  
+  (`{"title": "Buy milk", "priority": "HIGH"}`)
+
+This line transforms raw dict data into a proper ORM object ready to be inserted.
+
+---
+
+**Step 2: Add the object to the database session**
+
+```python
+self.db.add(db_obj)
+#        ↑
+# Stage the object for insertion, but NOT saved yet
+
+```
+
+`add()` tells SQLAlchemy: “This object should be inserted in the next commit.”
+
+---
+
+**Step 3: Commit the transaction**
+
+```python
+await self.db.commit()
+#     ↑
+# Executes the INSERT operation in the database
+
+```
+
+Actual SQL `INSERT` happens at this step.
+
+---
+
+### **Step 4: Refresh the object with database-generated values**
+
+```python
+await self.db.refresh(db_obj)
+#     ↑
+# Reload object from DB to populate fields like id, timestamps, etc.
+
+```
+
+Why needed?
+
+- Auto-generated fields (like `id`, `created_at`) won’t be available until `refresh()` loads them from DB.
+
+---
+
+**Step 5: Return the created object**
+
+```python
+return db_obj
+# Return populated model instance
+
+```
+
+Caller receives the full model object, NOT raw dictionary.
+
+---
+
+**Database operations:**
+
+Here’s what SQLAlchemy generates internally:
+
+```sql
+INSERT INTO todos (title, description, priority, user_id)
+VALUES ('Buy milk', 'Buy dairy milk', 'HIGH', 1)
+RETURNING id, created_at, updated_at;
+
+```
+
+After `refresh()`, the model instance includes:
+
+```python
+Todo(
+    id=42,
+    title="Buy milk",
+    priority="HIGH",
+    created_at=datetime(...),
+    updated_at=datetime(...)
+)
+
+```
+
+---
+
+**Usage example:**
+
+```python
+new_todo = await todo_repo.create({
+    "title": "Study FastAPI",
+    "description": "Learn repository pattern",
+    "priority": "MEDIUM",
+    "user_id": 1
+})
+
+print(new_todo.id)         # e.g., 17
+print(new_todo.created_at) # auto-filled
+
+```
+
+---
+
+**Why accept a dictionary instead of a Pydantic model?**
+
+Flexibility:
+
+```python
+# Convert Pydantic → dict automatically
+todo_data = todo_in.dict()
+await todo_repo.create(todo_data)
+
+```
+
+This makes the repository layer independent of FastAPI/Pydantic.
+
+---
+
+**When to use `create()`?**
+
+- Signup new user
+- Create new todo
+- Save any entity into DB for the first time
+
+### Method 4: `update()` - Update Existing Record
 
 ```python
 async def update(self, db_obj: ModelType, obj_in: dict[str, Any]) -> ModelType:
@@ -664,7 +826,7 @@ print(updated.updated_at) # "2024-01-01 11:30:00" (refreshed from DB)
 
 ---
 
-### Method 4: `delete()` - Delete Record by ID
+### Method 5: `delete()` - Delete Record by ID
 
 ```python
 async def delete(self, id: int) -> bool:
@@ -752,7 +914,7 @@ if not await repo.delete(id):
 
 ---
 
-### Method 5: `count()` - Count Records with Filters
+### Method 6: `count()` - Count Records with Filters
 
 ```python
 async def count(self, **filters: Any) -> int:
