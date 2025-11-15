@@ -999,3 +999,270 @@ Routes query data using sessions
 - Create repository layer for data access
 - Add service layer for business logic
 - Create API endpoints for CRUD operations
+
+## 5. Security Setup - `app/core/security.py`
+
+### 5.1 Purpose
+
+Provides essential security utilities for:
+
+- **Password Hashing** - Securely hash and verify passwords using bcrypt
+- **JWT Tokens** - Create and validate JSON Web Tokens for authentication
+- **Token Management** - Handle access tokens (short-lived) and refresh tokens (long-lived)
+
+---
+
+### 5.2 Install Dependencies
+
+```bash
+uv add passlib[bcrypt]  # Password hashing
+uv add python-jose[cryptography]  # JWT token handling
+```
+
+---
+
+### 5.3 Create `app/core/security.py`
+
+```python
+"""
+Security utilities for password hashing and JWT token management.
+"""
+from datetime import datetime, timedelta
+from typing import Any
+
+from jose import jwt
+from passlib.context import CryptContext
+
+from app.config import settings
+
+# Password hashing context using bcrypt
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify a plain password against a hashed password."""
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    """Hash a password using bcrypt."""
+    return pwd_context.hash(password)
+
+
+def create_access_token(subject: str | Any, expires_delta: timedelta | None = None) -> str:
+    """Create a JWT access token (short-lived, typically 30 minutes)."""
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    to_encode = {"exp": expire, "sub": str(subject)}
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return encoded_jwt
+
+
+def create_refresh_token(subject: str | Any) -> str:
+    """Create a JWT refresh token (long-lived, typically 7 days)."""
+    expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    to_encode = {"exp": expire, "sub": str(subject), "type": "refresh"}
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return encoded_jwt
+
+
+def decode_token(token: str) -> dict[str, Any]:
+    """Decode and verify a JWT token."""
+    return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+```
+
+---
+
+### 5.4 Update Configuration
+
+Add security settings to `app/config.py`:
+
+```python
+class Settings(BaseSettings):
+    # ... existing settings ...
+
+    # Security
+    SECRET_KEY: str  # Generate with: openssl rand -hex 32
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+```
+
+Update `.env` file:
+
+```env
+# Security
+SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
+```
+
+**Generate a secure SECRET_KEY:**
+
+```bash
+openssl rand -hex 32
+```
+
+---
+
+### 5.5 Function Overview
+
+| Function                 | Purpose                      | Usage                          |
+| ------------------------ | ---------------------------- | ------------------------------ |
+| `get_password_hash()`    | Hash passwords for storage   | User registration              |
+| `verify_password()`      | Verify password during login | Authentication                 |
+| `create_access_token()`  | Create short-lived JWT       | After login, expires in 30 min |
+| `create_refresh_token()` | Create long-lived JWT        | After login, expires in 7 days |
+| `decode_token()`         | Verify and decode JWT        | Protected endpoints            |
+
+---
+
+### 5.6 Key Concepts
+
+**Password Hashing (bcrypt):**
+
+- ✅ One-way encryption - cannot reverse hash to get password
+- ✅ Each hash is unique (even for same password) due to random salt
+- ✅ Slow by design - prevents brute-force attacks
+- ✅ Never store plain-text passwords
+
+**JWT Tokens:**
+
+- ✅ Stateless - no database lookup needed for verification
+- ✅ Self-contained - includes user ID and expiration
+- ✅ Tamper-proof - signature prevents modification
+- ✅ Two types:
+  - **Access Token** (30 min) - Used for API calls
+  - **Refresh Token** (7 days) - Used to get new access tokens
+
+**Token Flow:**
+
+```
+Login → Get access + refresh token
+  ↓
+Make API calls with access token (30 min)
+  ↓
+Access token expires
+  ↓
+Use refresh token to get new access token
+  ↓
+Repeat for 7 days
+  ↓
+Refresh token expires → Must login again
+```
+
+---
+
+### 5.7 Usage Examples
+
+**Registration:**
+
+```python
+# Hash password before storing
+hashed_password = get_password_hash(user_input.password)
+user = User(username=..., hashed_password=hashed_password)
+```
+
+**Login:**
+
+```python
+# Verify password
+if verify_password(form_data.password, user.hashed_password):
+    # Create tokens
+    access_token = create_access_token(subject=user.id)
+    refresh_token = create_refresh_token(subject=user.id)
+    return {"access_token": access_token, "refresh_token": refresh_token}
+```
+
+**Protected Endpoint:**
+
+```python
+# Decode token to get user
+payload = decode_token(token)
+user_id = payload.get("sub")
+user = await get_user_by_id(int(user_id))
+```
+
+**Refresh Token:**
+
+```python
+# Get new access token
+payload = decode_token(refresh_token)
+if payload.get("type") == "refresh":
+    new_access_token = create_access_token(subject=payload["sub"])
+```
+
+---
+
+### 5.8 Security Best Practices
+
+✅ **DO:**
+
+- Always hash passwords before storing
+- Use HTTPS in production
+- Keep SECRET_KEY secret and unique per environment
+- Use short expiration for access tokens
+- Store refresh tokens securely (httpOnly cookies)
+
+❌ **DON'T:**
+
+- Store plain-text passwords
+- Share SECRET_KEY between environments
+- Make tokens too long-lived
+- Store JWTs in localStorage (XSS vulnerable)
+- Include sensitive data in JWT payload
+
+---
+
+### 5.9 Testing Security Functions
+
+Create a test script:
+
+```python
+# test_security.py
+from app.core.security import (
+    get_password_hash,
+    verify_password,
+    create_access_token,
+    decode_token
+)
+
+# Test password hashing
+password = "SecurePass123!"
+hashed = get_password_hash(password)
+print(f"Hashed: {hashed}")
+
+# Test password verification
+is_valid = verify_password(password, hashed)
+print(f"Password valid: {is_valid}")  # True
+
+# Test wrong password
+is_valid = verify_password("WrongPass", hashed)
+print(f"Wrong password: {is_valid}")  # False
+
+# Test JWT token
+token = create_access_token(subject=42)
+print(f"Token: {token}")
+
+# Decode token
+payload = decode_token(token)
+print(f"User ID: {payload.get('sub')}")  # "42"
+```
+
+---
+
+### 5.10 Next Steps
+
+With security utilities in place, you can now build:
+
+1. **Repository Layer** - Data access for users
+2. **Auth Service** - Business logic for registration/login
+3. **Auth Endpoints** - API routes for authentication
+
+The security module will be used throughout these layers for password hashing and JWT token management.
+
+---
