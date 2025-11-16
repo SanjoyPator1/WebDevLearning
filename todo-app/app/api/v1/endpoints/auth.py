@@ -1,41 +1,25 @@
 """
 Authentication endpoints.
 """
-
 from typing import Annotated
-from datetime import datetime
 
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from jose import jwt
 
-
+from app.api.dependencies import UserServiceDep
+from app.core.security import create_access_token, create_refresh_token, decode_token
+from app.schemas.token import RefreshTokenRequest, Token
 from app.schemas.user import User, UserCreate
-from app.schemas.token import Token, RefreshTokenRequest
-
 
 router = APIRouter()
 
-dummy_user: User = {
-    "id": 1,
-    "email": "john.doe@example.com",
-    "username": "johndoe",
-    "full_name": "John Doe",
-    "is_active": True,
-    "is_superuser": False,
-    "created_at": datetime.now(),
-    "updated_at": datetime.now(),
-}
 
-dummy_token : Token = {
-    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.fake_access_token",
-    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.fake_refresh_token",
-    "token_type": "bearer",
-}
-
-@router.post("/register",response_model=User, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
 async def register(
-    user_in: UserCreate
-):
+    user_in: UserCreate,
+    user_service: UserServiceDep,
+) -> User:
     """
     Register a new user.
 
@@ -49,12 +33,13 @@ async def register(
     Raises:
         HTTPException: If email or username already exists
     """
+    return await user_service.create_user(user_in)
 
-    return dummy_user
 
 @router.post("/login", response_model=Token)
 async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    user_service: UserServiceDep,
 ) -> Token:
     """
     Login with username/email and password.
@@ -69,12 +54,30 @@ async def login(
     Raises:
         HTTPException: If credentials are invalid
     """
+    user = await user_service.authenticate(form_data.username, form_data.password)
 
-    return dummy_token
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
-@router.post("refresh", response_model=Token)
-async def refresh(
+    # Create tokens
+    access_token = create_access_token(subject=str(user.id))
+    refresh_token = create_refresh_token(subject=str(user.id))
+
+    return Token(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        token_type="bearer",
+    )
+
+
+@router.post("/refresh", response_model=Token)
+async def refresh_token(
     refresh_request: RefreshTokenRequest,
+    user_service: UserServiceDep,
 ) -> Token:
     """
     Refresh access token using refresh token.
@@ -89,8 +92,63 @@ async def refresh(
     Raises:
         HTTPException: If refresh token is invalid
     """
+    try:
+        payload = decode_token(refresh_request.refresh_token)
 
-    return dummy_token
+        # Verify it's a refresh token
+        if payload.get("type") != "refresh":
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token type",
+            )
 
-    
+        user_id = payload.get("sub")
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token",
+            )
 
+        # Verify user still exists and is active
+        user = await user_service.get_user(int(user_id))
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User is inactive",
+            )
+
+        # Create new tokens
+        access_token = create_access_token(subject=str(user.id))
+        new_refresh_token = create_refresh_token(subject=str(user.id))
+
+        return Token(
+            access_token=access_token,
+            refresh_token=new_refresh_token,
+            token_type="bearer",
+        )
+
+    # except Exception as e:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Invalid or expired refresh token",
+    #     )
+
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token has expired"
+        )
+    except jwt.JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token"
+        )
+    except HTTPException:
+        raise  # Re-raise our own exceptions
+    except Exception as e:
+        # Log unexpected errors
+        print(f"Unexpected error in refresh: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred"
+        )
