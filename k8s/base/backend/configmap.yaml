@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: todo-app
+data:
+  DATABASE_URL: "postgresql+asyncpg://postgres:postgres@postgres:5432/todo_app"
+  DATABASE_URL_SYNC: "postgresql://postgres:postgres@postgres:5432/todo_app"
+  ALGORITHM: "HS256"
+  ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+  DEBUG: "False"

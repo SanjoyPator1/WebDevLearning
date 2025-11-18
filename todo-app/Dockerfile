@@ -1,63 +1,105 @@
-# Multi-stage build for smaller final image
-FROM python:3.11-slim as builder
+# syntax=docker/dockerfile:1
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+# ==============================================================================
+# Base image with uv
+# ==============================================================================
+FROM python:3.11-slim AS base
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    postgresql-client \
+    libpq-dev \
     gcc \
-    postgresql-client \
+    curl \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Create and activate virtual environment
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 WORKDIR /app
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Final stage
-FROM python:3.11-slim
-
-# Set environment variables
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PATH="/opt/venv/bin:$PATH"
+    PYTHONDONTWRITEBYTECODE=1
 
-# Install runtime dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
+# ==============================================================================
+# Builder stage - install dependencies ONLY
+# ==============================================================================
+FROM base AS builder
+
+# Copy dependency files
+COPY pyproject.toml README.md ./
+COPY uv.lock ./
+
+# Install Python dependencies (no dev dependencies for production)
+RUN uv sync --frozen --no-dev --no-cache
+
+# ==============================================================================
+# Development stage
+# ==============================================================================
+FROM base AS development
+
+WORKDIR /app
 
 # Copy virtual environment from builder
-COPY --from=builder /opt/venv /opt/venv
+COPY --from=builder /app/.venv /app/.venv
+
+# Copy application code
+COPY app /app/app
+COPY alembic /app/alembic
+COPY alembic.ini /app/alembic.ini
+
+# Add venv to PATH
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && \
-    mkdir -p /app && \
     chown -R appuser:appuser /app
 
-# Set working directory
-WORKDIR /app
-
-# Copy application code
-COPY --chown=appuser:appuser . .
-
-# Switch to non-root user
 USER appuser
 
-# Expose port
 EXPOSE 8000
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')"
+    CMD curl -f http://localhost:8000/health || exit 1
 
-# Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+# ==============================================================================
+# Production stage
+# ==============================================================================
+FROM python:3.11-slim AS production
+
+# Install only runtime dependencies (no build tools)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    postgresql-client \
+    libpq5 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy virtual environment from builder
+COPY --from=builder /app/.venv /app/.venv
+
+# Copy application code and alembic for migrations
+COPY app /app/app
+COPY alembic /app/alembic
+COPY alembic.ini /app/alembic.ini
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Create non-root user
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
+
+USER appuser
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]

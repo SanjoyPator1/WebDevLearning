@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: todo-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: postgres:15-alpine
+          command:
+            [
+              "sh",
+              "-c",
+              "until pg_isready -h postgres -U postgres; do echo waiting for database; sleep 2; done;",
+            ]
+        - name: run-migrations
+          image: todo-app-backend:latest
+          imagePullPolicy: Never # For KIND local images
+          command: ["alembic", "upgrade", "head"]
+          envFrom:
+            - configMapRef:
+                name: backend-config
+            - secretRef:
+                name: backend-secret
+      containers:
+        - name: backend
+          image: todo-app-backend:latest
+          imagePullPolicy: Never # For KIND local images
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: backend-config
+            - secretRef:
+                name: backend-secret
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5

@@ -1,0 +1,39 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: todo_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      NODE_ENV: production
+    restart: unless-stopped
+    networks:
+      - todo_network
+
+  # Development version with hot reload
+  frontend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: todo_frontend_dev
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    restart: unless-stopped
+    networks:
+      - todo_network
+    profiles:
+      - dev
+
+networks:
+  todo_network:
+    external: true  # Use the same network as backend
