@@ -274,9 +274,9 @@ _... (Continue for all 13 weeks)_
 
 ```
 notes/
-├── 01-container-fundamentals.md     ← Day 1 theory ✅
-├── 02-kubernetes-architecture.md    ← Day 4 theory ✅
-├── 03-first-deployment.md           ← Day 5 theory (need to create)
+├── 01-container-fundamentals.md     ← Day 1 theory
+├── 02-kubernetes-architecture.md    ← Day 4 theory
+├── 03-first-deployment.md           ← Day 5 theory
 ├── 04-pods-basics.md                ← Later
 ├── 05-deployments-basics.md         ← Later
 └── ... (up to 90)
@@ -470,8 +470,8 @@ practice/
 ```
 resources/
 ├── cheatsheets/
-│   ├── kubectl-cheatsheet.md   ← Already created ✅
-│   ├── yaml-syntax.md          ← Already created ✅
+│   ├── kubectl-cheatsheet.md   ← Already created
+│   ├── yaml-syntax.md          ← Already created
 │   ├── docker-cheatsheet.md    ← You can add
 │   └── helm-cheatsheet.md      ← Later
 ├── diagrams/
