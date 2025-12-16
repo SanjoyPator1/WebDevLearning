@@ -67,6 +67,60 @@ Each learning module follows a consistent structure:
 | ----------------------- | -------------- | ---------------- | ---------- | ------------- |
 | **Kubernetes Learning** | 🔄 In Progress | 16 December 2025 | -          | -             |
 
+## Colors we will use for notes
+
+A **clean, high-contrast, dark-mode-safe** color set that works well with **white text in VS Code**:
+
+- Red → `#BD6464`
+- Green → `#31705F`
+- Blue → `#3A6EA5`
+- Purple → `#6B5CA5`
+- Orange → `#C97A3D`
+- Amber → `#9E7C2F`
+- Cyan → `#2F7F8B`
+- Teal → `#2E6F6A`
+- Pink → `#A35D79`
+- Gray → `#5F6A72`
+
+### Colors in action - mermaid diagram
+
+```mermaid
+flowchart TB
+    Red["Red<br/>#BD6464"]
+    Green["Green<br/>#31705F"]
+    Blue["Blue<br/>#3A6EA5"]
+    Purple["Purple<br/>#6B5CA5"]
+    Orange["Orange<br/>#C97A3D"]
+    Amber["Amber<br/>#9E7C2F"]
+    Cyan["Cyan<br/>#2F7F8B"]
+    Teal["Teal<br/>#2E6F6A"]
+    Pink["Pink<br/>#A35D79"]
+    Gray["Gray<br/>#5F6A72"]
+
+    classDef red fill:#BD6464,color:#FFFFFF,stroke:#000000
+    classDef green fill:#31705F,color:#FFFFFF,stroke:#000000
+    classDef blue fill:#3A6EA5,color:#FFFFFF,stroke:#000000
+    classDef purple fill:#6B5CA5,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#C97A3D,color:#FFFFFF,stroke:#000000
+    classDef amber fill:#9E7C2F,color:#FFFFFF,stroke:#000000
+    classDef cyan fill:#2F7F8B,color:#FFFFFF,stroke:#000000
+    classDef teal fill:#2E6F6A,color:#FFFFFF,stroke:#000000
+    classDef pink fill:#A35D79,color:#FFFFFF,stroke:#000000
+    classDef gray fill:#5F6A72,color:#FFFFFF,stroke:#000000
+
+    class Red red
+    class Green green
+    class Blue blue
+    class Purple purple
+    class Orange orange
+    class Amber amber
+    class Cyan cyan
+    class Teal teal
+    class Pink pink
+    class Gray gray
+
+```
+
 ## 🤝 About This Repository
 
 This is a personal learning repository tracking my journey in web development and cloud-native technologies. The goal is to:
