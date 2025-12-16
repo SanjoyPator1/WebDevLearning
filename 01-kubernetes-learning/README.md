@@ -264,6 +264,303 @@ _... (Continue for all 13 weeks)_
 - [ ] Week 13: Final capstone completed 🎉
 - [ ] Certification exam scheduled 📜
 
+---
+
+## 📂 Folder Structure & Usage
+
+### **1. `notes/` Folder (90 numbered markdown files)**
+
+**Purpose:** Your learning notes - theory, concepts, references
+
+```
+notes/
+├── 01-container-fundamentals.md     ← Day 1 theory ✅
+├── 02-kubernetes-architecture.md    ← Day 4 theory ✅
+├── 03-first-deployment.md           ← Day 5 theory (need to create)
+├── 04-pods-basics.md                ← Later
+├── 05-deployments-basics.md         ← Later
+└── ... (up to 90)
+
+```
+
+**What goes here:**
+
+- Theory summaries
+- Architecture diagrams
+- Command references
+- Your understanding of concepts
+- Links to resources
+
+**When to use:**
+
+- Create/update while studying theory
+- Reference later when you forget something
+
+---
+
+### **2. `week-XX/day-XX/` Folders**
+
+**Purpose:** Your actual work - practice files, YAML files, scripts you create during hands-on
+
+```
+week-01/
+├── day-01/              ← Day 1 hands-on work
+│   ├── nginx-test.sh    ← Script you write
+│   ├── docker-commands.txt  ← Commands you tried
+│   └── notes.txt        ← Quick observations
+├── day-02/              ← Day 2 hands-on work
+│   ├── Dockerfile       ← Dockerfile you create
+│   ├── app.py           ← Python app
+│   └── test-commands.sh
+├── day-03/
+├── day-04/              ← Day 4 hands-on work
+│   ├── kind-config.yaml
+│   ├── first-pod.yaml
+│   └── kubectl-commands.txt
+└── day-05/
+    ├── deployment.yaml
+    ├── service.yaml
+    └── testing-notes.txt
+
+```
+
+**What goes here:**
+
+- YAML files you create
+- Scripts you write
+- Application code for testing
+- Quick notes during hands-on
+- Screenshots of errors/successes
+
+**When to use:**
+
+- During hands-on practice EVERY day
+- This is your "scratch pad" for each day
+
+---
+
+### **3. `projects/` Folder**
+
+**Purpose:** Complete projects (weekend projects from roadmap)
+
+```
+projects/
+├── project-01-wordpress-blog/        ← Week 1 weekend (Day 6-7)
+│   ├── manifests/
+│   │   ├── mysql-pod.yaml
+│   │   ├── wordpress-pod.yaml
+│   │   └── services.yaml
+│   ├── docs/
+│   │   ├── README.md
+│   │   └── architecture.md
+│   └── screenshots/
+│       └── running-wordpress.png
+│
+├── project-02-todo-app/              ← Week 2 weekend
+│   ├── frontend/
+│   ├── backend/
+│   ├── database/
+│   └── manifests/
+│
+└── project-03-stateful-blog/        ← Week 3 weekend
+    └── ...
+
+```
+
+**What goes here:**
+
+- Complete project code
+- All K8s manifests for the project
+- Documentation (README, architecture)
+- Screenshots/demos
+- Everything related to that specific project
+
+**When to use:**
+
+- Weekend projects (Days 6-7 of each week)
+- Or multi-day projects
+
+---
+
+### **4. `manifests/` Folder**
+
+**Purpose:** Reusable, well-organized YAML templates
+
+```
+manifests/
+├── basics/
+│   ├── simple-pod.yaml           ← Generic pod template
+│   ├── pod-with-volume.yaml
+│   └── multi-container-pod.yaml
+├── deployments/
+│   ├── nginx-deployment.yaml
+│   ├── python-app-deployment.yaml
+│   └── rolling-update-deployment.yaml
+├── services/
+│   ├── clusterip-service.yaml
+│   ├── nodeport-service.yaml
+│   └── loadbalancer-service.yaml
+└── storage/
+    ├── pv-example.yaml
+    └── pvc-example.yaml
+
+```
+
+**What goes here:**
+
+- Clean, reusable YAML templates
+- Well-commented examples
+- Best practice implementations
+- Things you'll reference later
+
+**When to use:**
+
+- After you've tested something in `week-XX/day-XX/`
+- Move working examples here
+- Clean them up and add comments
+- Create your own library of templates
+
+**Workflow:**
+
+```
+1. Practice in week-01/day-03/ → Create deployment.yaml (messy)
+2. Test and fix
+3. Once working → Copy to manifests/deployments/ (clean version)
+4. Add comments and documentation
+5. Now you have reusable template!
+
+```
+
+---
+
+### **5. `practice/` Folder**
+
+**Purpose:** Quick experiments, one-off tests, code snippets
+
+```
+practice/
+└── exercises/
+    ├── test-nginx.yaml         ← Quick test
+    ├── experiment-volumes.yaml ← Testing something
+    ├── debug-network.sh        ← Debug script
+    └── random-tests/           ← Mess around here
+
+```
+
+**What goes here:**
+
+- Quick tests
+- Experiments
+- "Let me try something" files
+- Stuff that doesn't belong in projects or week folders
+
+**When to use:**
+
+- Quick experiments
+- Testing concepts
+- Debugging issues
+- Throwaway code
+
+---
+
+### **6. `resources/` Folder**
+
+**Purpose:** Reference materials, cheatsheets, diagrams
+
+```
+resources/
+├── cheatsheets/
+│   ├── kubectl-cheatsheet.md   ← Already created ✅
+│   ├── yaml-syntax.md          ← Already created ✅
+│   ├── docker-cheatsheet.md    ← You can add
+│   └── helm-cheatsheet.md      ← Later
+├── diagrams/
+│   ├── k8s-architecture.png    ← Save diagrams here
+│   ├── networking-flow.png
+│   └── my-architecture.drawio  ← Your own diagrams
+└── references/
+    ├── useful-links.md         ← Bookmark collection
+    └── troubleshooting.md      ← Common issues you solved
+
+```
+
+**What goes here:**
+
+- Cheatsheets you create or find
+- Architecture diagrams
+- Links to useful resources
+- Reference materials
+
+**When to use:**
+
+- Throughout your learning
+- When you find something useful
+- Create your own quick references
+
+---
+
+### **7. `scripts/` Folder**
+
+**Purpose:** Automation and utility scripts
+
+```
+scripts/
+├── setup/
+│   ├── install-kubectl.sh      ← Installation scripts
+│   ├── setup-kind.sh
+│   └── configure-env.sh
+├── cleanup/
+│   ├── delete-all-pods.sh      ← Cleanup utilities
+│   ├── prune-images.sh
+│   └── reset-cluster.sh
+└── utilities/
+    ├── deploy-helper.sh         ← Helper scripts
+    ├── logs-viewer.sh
+    └── port-forward-all.sh
+
+```
+
+**What goes here:**
+
+- Bash scripts for automation
+- Setup scripts
+- Cleanup scripts
+- Utility scripts
+
+**When to use:**
+
+- When you find yourself repeating commands
+- Create scripts to automate
+- Build your own tooling
+
+---
+
+### **8. `helm-charts/` Folder**
+
+**Purpose:** Custom Helm charts (later in Week 6-7)
+
+```
+helm-charts/
+└── my-charts/
+    └── fastapi-app/         ← Your custom chart (Week 6-7)
+        ├── Chart.yaml
+        ├── values.yaml
+        └── templates/
+
+```
+
+**What goes here:**
+
+- Custom Helm charts you create
+- Only use in Week 6+ when you learn Helm
+
+**When to use:**
+
+- Week 6-7 onwards
+- Don't worry about this for now
+
+---
+
 ## 🤝 Contributing to My Learning
 
 This is a personal learning repository, but I'm open to:
