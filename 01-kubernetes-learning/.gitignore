@@ -1,0 +1,46 @@
+# Kubernetes
+*.swp
+*.swo
+*~
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Secrets (never commit)
+*secret*.yaml
+*-secret.yaml
+secrets/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+
+# Kubeconfig (never commit)
+kubeconfig
+*.kubeconfig
+config
+
+# Helm
+charts/*.tgz
+.helm/
+
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Build artifacts
+target/
+build/
+dist/
