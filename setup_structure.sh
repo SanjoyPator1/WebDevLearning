@@ -124,34 +124,42 @@ for project in "${projects[@]}"; do
     create_file "projects/$project/.gitignore"
 done
 
-# Exercises structure
+# Exercises structure with numerical prefixes
 echo ""
 echo "Creating exercises structure..."
-create_dir "exercises"
-create_dir "exercises/python-fundamentals"
-create_dir "exercises/python-fundamentals/decorators"
-create_dir "exercises/python-fundamentals/decorators/solutions"
-create_dir "exercises/python-fundamentals/context-managers"
-create_dir "exercises/python-fundamentals/context-managers/solutions"
-create_dir "exercises/python-fundamentals/generators"
-create_dir "exercises/python-fundamentals/generators/solutions"
-create_dir "exercises/python-fundamentals/async"
-create_dir "exercises/python-fundamentals/async/solutions"
-create_dir "exercises/python-fundamentals/type-hints"
-create_dir "exercises/python-fundamentals/type-hints/solutions"
 
-create_dir "exercises/fastapi"
-create_dir "exercises/fastapi/basic-routes"
-create_dir "exercises/fastapi/dependency-injection"
-create_dir "exercises/fastapi/authentication"
-create_dir "exercises/fastapi/testing"
+# 01-python-fundamentals
+create_dir "exercises/01-python-fundamentals"
+create_dir "exercises/01-python-fundamentals/01-decorators"
+create_dir "exercises/01-python-fundamentals/01-decorators/solutions"
+create_dir "exercises/01-python-fundamentals/02-context-managers"
+create_dir "exercises/01-python-fundamentals/02-context-managers/solutions"
+create_dir "exercises/01-python-fundamentals/03-generators"
+create_dir "exercises/01-python-fundamentals/03-generators/solutions"
+create_dir "exercises/01-python-fundamentals/04-async"
+create_dir "exercises/01-python-fundamentals/04-async/solutions"
+create_dir "exercises/01-python-fundamentals/05-type-hints"
+create_dir "exercises/01-python-fundamentals/05-type-hints/solutions"
 
-create_dir "exercises/database"
-create_dir "exercises/database/sql-queries"
-create_dir "exercises/database/sqlalchemy"
-create_dir "exercises/database/optimization"
+# 02-fastapi
+create_dir "exercises/02-fastapi"
+create_dir "exercises/02-fastapi/01-basic-routes"
+create_dir "exercises/02-fastapi/02-dependency-injection"
+create_dir "exercises/02-fastapi/03-authentication"
+create_dir "exercises/02-fastapi/04-testing"
 
-create_dir "exercises/system-design"
+# 03-database
+create_dir "exercises/03-database"
+create_dir "exercises/03-database/01-sql-queries"
+create_dir "exercises/03-database/02-sqlalchemy"
+create_dir "exercises/03-database/03-optimization"
+
+# 04-system-design
+create_dir "exercises/04-system-design"
+create_dir "exercises/04-system-design/01-url-shortener"
+create_dir "exercises/04-system-design/02-rate-limiter"
+create_dir "exercises/04-system-design/03-cache"
+
 
 # System Design structure
 echo ""
