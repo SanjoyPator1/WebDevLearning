@@ -114,9 +114,155 @@ print(result)
 ```
 
 **Key points**:
+
 - Use `*args` and `**kwargs` to accept any arguments
 - Pass them to the original function
 - Return the result from the original function
+
+### \*args and \*\*kwargs in Python (with Decorators)
+
+#### What are \*args and \*\*kwargs
+
+In Python, `*args` and `**kwargs` are used to pass a variable number of arguments to a function.
+
+- `*args` collects extra positional arguments into a tuple
+- `**kwargs` collects extra keyword arguments into a dictionary
+
+They are commonly used in decorators so the decorator can work with any function signature.
+
+---
+
+#### \*args (Positional Arguments)
+
+`*args` allows a function to accept any number of positional arguments.
+
+```python
+def example(*args):
+    print(args)
+
+example(1, 2, 3)
+```
+
+Output:
+
+```
+(1, 2, 3)
+```
+
+Here, `args` is a tuple containing all positional arguments.
+
+---
+
+#### \*\*kwargs (Keyword Arguments)
+
+`**kwargs` allows a function to accept any number of named arguments.
+
+```python
+def example(**kwargs):
+    print(kwargs)
+
+example(a=1, b=2)
+```
+
+Output:
+
+```
+{'a': 1, 'b': 2}
+```
+
+Here, `kwargs` is a dictionary mapping argument names to values.
+
+---
+
+#### Using \*args and \*\*kwargs Together
+
+Both can be used in the same function.
+
+```python
+def example(*args, **kwargs):
+    print(args)
+    print(kwargs)
+
+example(1, 2, x=10, y=20)
+```
+
+- Positional values go into `args`
+- Named values go into `kwargs`
+
+---
+
+#### Why Decorators Use \*args and \*\*kwargs
+
+Decorators wrap functions, but wrapped functions may take different arguments.
+Using `*args` and `**kwargs` makes the decorator reusable.
+
+Without them, the decorator would only work for functions with a fixed signature.
+
+---
+
+#### Decorator Example with \*args and \*\*kwargs
+
+```python
+def my_decorator(func):
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__}")
+        result = func(*args, **kwargs)
+        print(f"Finished {func.__name__}")
+        return result
+    return wrapper
+```
+
+```python
+@my_decorator
+def add(a, b):
+    return a + b
+```
+
+```python
+result = add(5, 3)
+print(result)
+```
+
+---
+
+#### What Happens Internally
+
+Calling:
+
+```python
+add(5, 3)
+```
+
+Is equivalent to:
+
+```python
+wrapper(5, 3)
+```
+
+Inside `wrapper`:
+
+- `args` becomes `(5, 3)`
+- `kwargs` becomes `{}`
+
+The original function is called as:
+
+```python
+func(*args, **kwargs)
+```
+
+---
+
+#### Important Rules
+
+- `*args` must come before `**kwargs`
+- Names `args` and `kwargs` are conventions, not keywords
+- Use unpacking (`*` and `**`) when passing them to another function
+
+---
+
+#### One-Line Summary
+
+`*args` handles extra positional arguments, and `**kwargs` handles extra keyword arguments, allowing decorators and functions to work with any input signature.
 
 ---
 
@@ -167,6 +313,23 @@ print(greet.__doc__)   # Output: Greets a person by name.
 
 ### 1. Timing Functions
 
+One of the most common and practical uses of decorators is **measuring how long a function takes to execute**.  
+This is especially useful for performance monitoring, debugging slow code, and profiling critical sections of an application.
+
+Instead of adding timing logic inside every function, a decorator allows this behavior to be **reused across multiple functions** without modifying their core logic.
+
+In this example:
+
+- The decorator records the time just before the function starts executing
+- It runs the original function
+- It records the time again after execution finishes
+- It prints the total execution time
+- Finally, it returns the original function’s result
+
+The `@wraps` decorator is used to preserve the original function’s metadata such as its name and docstring.
+
+This approach keeps timing logic **separate from business logic**, making the code cleaner and easier to maintain.
+
 ```python
 import time
 from functools import wraps
@@ -191,6 +354,26 @@ slow_function()
 
 ### 2. Logging
 
+Logging is another widely used application of decorators.  
+A logging decorator allows you to automatically record information about function calls without adding logging code inside the function itself.
+
+In this example:
+
+- The decorator logs the function name before execution
+- It logs the positional and keyword arguments passed to the function
+- It executes the original function
+- It logs the returned value after execution
+- Finally, it returns the result unchanged
+
+This pattern is useful for:
+
+- debugging
+- tracing program flow
+- monitoring function behavior in production
+- understanding how functions are being called
+
+By using a decorator, logging becomes reusable and can be easily applied to any function with a single line, keeping business logic clean and focused.
+
 ```python
 from functools import wraps
 
@@ -212,6 +395,24 @@ add(5, 3)
 
 ### 3. Input Validation
 
+Decorators are often used to enforce input validation rules in a consistent and reusable way.  
+Instead of repeating validation logic inside every function, a decorator allows you to define the rule once and apply it wherever needed.
+
+In this example:
+
+- The decorator checks whether the input value is positive
+- If the validation fails, it raises an appropriate error
+- If the validation passes, it calls the original function
+- The original function remains focused only on its core logic
+
+This approach is useful when:
+
+- the same validation logic applies to multiple functions
+- input rules must be enforced consistently
+- separating validation from business logic improves readability
+
+Using decorators for validation helps keep functions clean, predictable, and easier to maintain.
+
 ```python
 from functools import wraps
 
@@ -232,6 +433,25 @@ print(square_root(-4))  # Raises ValueError
 ```
 
 ### 4. Caching/Memoization
+
+Caching, also known as memoization, is a common optimization technique used to store the results of expensive function calls and reuse them when the same inputs occur again.
+
+Decorators provide a clean way to add caching behavior without modifying the function’s implementation.
+
+In this example:
+
+- A dictionary is used to store previously computed results
+- The function arguments are used as the cache key
+- If the result is already cached, it is returned immediately
+- If not, the function is executed and the result is stored for future calls
+
+This approach is especially effective for:
+
+- recursive functions
+- functions with repeated inputs
+- computationally expensive operations
+
+By separating caching logic from the function itself, decorators make performance optimizations easy to apply and maintain.
 
 ```python
 from functools import wraps
@@ -261,6 +481,15 @@ print(fibonacci(10))  # Much faster with caching
 
 ## Multiple Decorators
 
+Python allows multiple decorators to be applied to a single function.  
+This is known as _stacking decorators_ and is commonly used when a function needs to be enhanced with multiple independent behaviors.
+
+When multiple decorators are applied:
+
+- Each decorator wraps the function returned by the decorator below it
+- The decorators are applied **from bottom to top**
+- The final function is a nested chain of wrappers
+
 You can stack multiple decorators:
 
 ```python
@@ -269,10 +498,24 @@ You can stack multiple decorators:
 @decorator3
 def my_function():
     pass
+```
 
-# Equivalent to:
+
+#### Is equivalent to:
+```python
 my_function = decorator1(decorator2(decorator3(my_function)))
 ```
+
+Because of this nesting, the order of decorators matters.
+Changing the order can change the behavior and the final output.
+
+In the example below:
+
+- The innermost decorator (italic) runs first
+- Its result is then passed to the outer decorator (bold)
+- This produces nested HTML-style formatting
+
+Understanding decorator order is important when combining features such as logging, authentication, validation, and caching in real applications.
 
 **Order matters!** Decorators are applied from bottom to top.
 
@@ -301,7 +544,7 @@ print(greet())  # Output: <b><i>Hello</i></b>
 
 1. **Decorators wrap functions** to add functionality without modifying their code
 2. **Use `@decorator` syntax** for clean, readable code
-3. **Accept `*args, **kwargs`** in the wrapper to handle any function signature
+3. **Accept `\*args, **kwargs`\*\* in the wrapper to handle any function signature
 4. **Always use `@wraps(func)`** to preserve function metadata
 5. **Decorators are powerful** for cross-cutting concerns like logging, timing, caching, validation
 6. **Multiple decorators** can be stacked, applied bottom to top
@@ -325,7 +568,7 @@ All runnable code examples are in: `code-examples/01_decorators_basic.py`
 ## Common Mistakes to Avoid
 
 1. **Forgetting to return the result** from the wrapper function
-2. **Not using `*args, **kwargs`** when the function takes arguments
+2. **Not using `\*args, **kwargs`\*\* when the function takes arguments
 3. **Forgetting `@wraps(func)`** and losing function metadata
 4. **Not returning the wrapper function** from the decorator
 
