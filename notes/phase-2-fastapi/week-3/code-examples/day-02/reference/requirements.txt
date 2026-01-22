@@ -1,0 +1,17 @@
+# FastAPI Day 2 - Requirements
+# Install: pip install -r requirements.txt
+
+# Core FastAPI
+fastapi==0.115.12
+uvicorn[standard]==0.34.0
+
+# Required for Pydantic email validation
+pydantic[email]==2.10.5
+
+# Required for form data and file uploads
+python-multipart==0.0.20
+
+# Optional but recommended for development
+# httpx==0.28.1           # For testing with TestClient
+# pytest==8.3.5           # For unit tests
+# python-dotenv==1.0.1    # For environment variables

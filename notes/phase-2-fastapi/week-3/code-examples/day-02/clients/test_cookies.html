@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Testing Client</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.secondary {
+            background: #95a5a6;
+        }
+        
+        button.secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        button.danger {
+            background: #e74c3c;
+        }
+        
+        button.danger:hover {
+            background: #c0392b;
+        }
+        
+        button.success {
+            background: #27ae60;
+        }
+        
+        button.success:hover {
+            background: #229954;
+        }
+        
+        .output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 100px;
+        }
+        
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .info-box h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+        }
+        
+        .info-box li {
+            margin: 5px 0;
+        }
+        
+        .cookie-viewer {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .cookie-item {
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .timestamp {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍪 Cookie Testing Client</h1>
+        <p class="subtitle">Test FastAPI cookie handling, scope, and authentication</p>
+        
+        <!-- Basic Cookie Operations -->
+        <div class="section">
+            <h2>Basic Cookie Operations</h2>
+            <div class="button-group">
+                <button onclick="login()">Login (Set Cookie)</button>
+                <button onclick="checkCookie()" class="secondary">Read Cookie</button>
+                <button onclick="getDashboard()" class="success">Access Protected Route</button>
+                <button onclick="logout()" class="danger">Logout (Clear Cookie)</button>
+            </div>
+            <div class="info-box">
+                <h3>What's happening:</h3>
+                <ul>
+                    <li><strong>Login:</strong> Server sets session_id cookie with HttpOnly flag</li>
+                    <li><strong>Read Cookie:</strong> Check if browser has the cookie</li>
+                    <li><strong>Protected Route:</strong> Server validates session cookie</li>
+                    <li><strong>Logout:</strong> Server clears the cookie (max_age=0)</li>
+                </ul>
+            </div>
+            <div class="output" id="basicOutput">Click buttons above to test cookie operations</div>
+        </div>
+        
+        <!-- Authentication Flow -->
+        <div class="section">
+            <h2>Complete Authentication Flow</h2>
+            <div class="button-group">
+                <button onclick="authLogin()">1. Login</button>
+                <button onclick="getCurrentUser()" class="secondary">2. Get Current User</button>
+                <button onclick="authLogout()" class="danger">3. Logout</button>
+            </div>
+            <div class="info-box">
+                <h3>Real-world authentication pattern:</h3>
+                <ul>
+                    <li>User submits credentials</li>
+                    <li>Server validates and creates session</li>
+                    <li>Server sets HttpOnly session cookie</li>
+                    <li>Browser automatically sends cookie on future requests</li>
+                    <li>Server validates cookie against session storage</li>
+                </ul>
+            </div>
+            <div class="output" id="authOutput">Follow the numbered steps to see authentication flow</div>
+        </div>
+        
+        <!-- Cookie Scope Testing -->
+        <div class="section">
+            <h2>Cookie Scope Testing</h2>
+            <div class="button-group">
+                <button onclick="setScopedCookie()">Set Scoped Cookie (path=/login)</button>
+                <button onclick="testScopeMatch()" class="success">Test Matching Path (/login/verify)</button>
+                <button onclick="testScopeMismatch()" class="danger">Test Non-Matching Path (/dashboard)</button>
+            </div>
+            <div class="info-box">
+                <h3>Understanding Cookie Scope:</h3>
+                <ul>
+                    <li><strong>Domain:</strong> Which sites can receive this cookie</li>
+                    <li><strong>Path:</strong> Which URLs can use this cookie</li>
+                    <li><strong>Rule:</strong> Cookie sent ONLY if both domain AND path match</li>
+                    <li><strong>Common Bug:</strong> Cookie exists but isn't sent due to path mismatch</li>
+                </ul>
+            </div>
+            <div class="output" id="scopeOutput">Test cookie scope behavior</div>
+        </div>
+        
+        <!-- Debug Tools -->
+        <div class="section">
+            <h2>Debug Tools</h2>
+            <div class="button-group">
+                <button onclick="debugCookies()" class="secondary">Debug Cookie Status</button>
+                <button onclick="viewBrowserCookies()" class="secondary">View Browser Cookies</button>
+                <button onclick="clearAllCookies()" class="danger">Clear All Cookies</button>
+            </div>
+            <div class="info-box">
+                <h3>Debug Checklist:</h3>
+                <ul>
+                    <li>☐ Is domain correct?</li>
+                    <li>☐ Is path set to "/" (or matching)?</li>
+                    <li>☐ Is Secure flag compatible with HTTP/HTTPS?</li>
+                    <li>☐ Is SameSite policy compatible?</li>
+                    <li>☐ Has cookie expired?</li>
+                    <li>☐ Check DevTools → Application → Cookies</li>
+                </ul>
+            </div>
+            <div class="output" id="debugOutput">Debug information will appear here</div>
+        </div>
+        
+        <!-- Cookie Viewer -->
+        <div class="section">
+            <h2>Live Cookie Viewer</h2>
+            <div class="cookie-viewer" id="cookieViewer">
+                <p><strong>Note:</strong> HttpOnly cookies are not accessible via JavaScript (by design for security).</p>
+                <p>To view HttpOnly cookies:</p>
+                <ol>
+                    <li>Open DevTools (F12)</li>
+                    <li>Go to Application tab</li>
+                    <li>Expand Cookies in left sidebar</li>
+                    <li>Click on http://localhost:8000</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- How to Test -->
+        <div class="section">
+            <h2>How to Test with DevTools</h2>
+            <div class="info-box">
+                <h3>Step-by-step testing:</h3>
+                <ol>
+                    <li>Open browser DevTools (F12)</li>
+                    <li>Go to <strong>Application</strong> tab</li>
+                    <li>Find <strong>Cookies</strong> in left sidebar</li>
+                    <li>Click on <strong>http://localhost:8000</strong></li>
+                    <li>Click "Login" button above</li>
+                    <li>Watch new cookie appear in DevTools</li>
+                    <li>Check the flags: HttpOnly, Secure, SameSite, Path</li>
+                    <li>Switch to <strong>Network</strong> tab</li>
+                    <li>Click "Access Protected Route" button</li>
+                    <li>Click on the request in Network tab</li>
+                    <li>Check <strong>Request Headers</strong> → see Cookie being sent</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        
+        // Helper to display output
+        function showOutput(elementId, data, status = 'info') {
+            const output = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            
+            let statusClass = status;
+            let statusText = status.toUpperCase();
+            
+            output.innerHTML = `
+                <span class="status ${statusClass}">${statusText}</span>
+                <span class="timestamp">${timestamp}</span>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+        
+        // Helper to make requests
+        async function makeRequest(url, method = 'GET', body = null) {
+            try {
+                const options = {
+                    method: method,
+                    credentials: 'include',  // CRITICAL: Include cookies
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+                
+                const response = await fetch(url, options);
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    return { error: error, status: response.status };
+                }
+                
+                const data = await response.json();
+                return { data: data, status: response.status };
+            } catch (error) {
+                return { error: error.message, status: 'network_error' };
+            }
+        }
+        
+        // Basic Cookie Operations
+        async function login() {
+            const result = await makeRequest(`${API_BASE}/login`, 'POST');
+            if (result.error) {
+                showOutput('basicOutput', result, 'error');
+            } else {
+                showOutput('basicOutput', {
+                    ...result.data,
+                    note: 'Cookie set! Check DevTools → Application → Cookies'
+                }, 'success');
+            }
+        }
+        
+        async function checkCookie() {
+            const result = await makeRequest(`${API_BASE}/cookies/basic`);
+            if (result.error) {
+                showOutput('basicOutput', result, 'error');
+            } else {
+                showOutput('basicOutput', result.data, 'success');
+            }
+        }
+        
+        async function getDashboard() {
+            const result = await makeRequest(`${API_BASE}/dashboard`);
+            if (result.error) {
+                showOutput('basicOutput', {
+                    ...result,
+                    hint: 'Call /login first to set a session cookie'
+                }, 'error');
+            } else {
+                showOutput('basicOutput', result.data, 'success');
+            }
+        }
+        
+        async function logout() {
+            const result = await makeRequest(`${API_BASE}/logout`, 'POST');
+            if (result.error) {
+                showOutput('basicOutput', result, 'error');
+            } else {
+                showOutput('basicOutput', {
+                    ...result.data,
+                    note: 'Cookie cleared! Verify in DevTools'
+                }, 'success');
+            }
+        }
+        
+        // Authentication Flow
+        async function authLogin() {
+            const result = await makeRequest(`${API_BASE}/auth/login`, 'POST', {
+                username: 'alice',
+                password: 'secret'
+            });
+            
+            if (result.error) {
+                showOutput('authOutput', result, 'error');
+            } else {
+                showOutput('authOutput', {
+                    ...result.data,
+                    credentials_used: { username: 'alice', password: 'secret' }
+                }, 'success');
+            }
+        }
+        
+        async function getCurrentUser() {
+            const result = await makeRequest(`${API_BASE}/auth/me`);
+            if (result.error) {
+                showOutput('authOutput', {
+                    ...result,
+                    hint: 'Login first!'
+                }, 'error');
+            } else {
+                showOutput('authOutput', result.data, 'success');
+            }
+        }
+        
+        async function authLogout() {
+            const result = await makeRequest(`${API_BASE}/auth/logout`, 'POST');
+            if (result.error) {
+                showOutput('authOutput', result, 'error');
+            } else {
+                showOutput('authOutput', result.data, 'success');
+            }
+        }
+        
+        // Cookie Scope Testing
+        async function setScopedCookie() {
+            const result = await makeRequest(`${API_BASE}/login/scoped`, 'POST');
+            if (result.error) {
+                showOutput('scopeOutput', result, 'error');
+            } else {
+                showOutput('scopeOutput', {
+                    ...result.data,
+                    explanation: 'Cookie path=/login means it will ONLY be sent to /login/* URLs'
+                }, 'info');
+            }
+        }
+        
+        async function testScopeMatch() {
+            const result = await makeRequest(`${API_BASE}/login/verify`);
+            if (result.error) {
+                showOutput('scopeOutput', {
+                    ...result,
+                    explanation: 'This should fail if scoped cookie not set'
+                }, 'error');
+            } else {
+                showOutput('scopeOutput', {
+                    ...result.data,
+                    explanation: '✓ Cookie sent because path matches /login/*'
+                }, 'success');
+            }
+        }
+        
+        async function testScopeMismatch() {
+            const result = await makeRequest(`${API_BASE}/dashboard`);
+            if (result.error) {
+                showOutput('scopeOutput', {
+                    ...result,
+                    explanation: '✗ Cookie NOT sent because path /dashboard does not start with /login',
+                    lesson: 'This is the most common cookie bug in real applications!'
+                }, 'error');
+            } else {
+                showOutput('scopeOutput', result.data, 'info');
+            }
+        }
+        
+        // Debug Tools
+        async function debugCookies() {
+            const result = await makeRequest(`${API_BASE}/debug/cookies`);
+            if (result.error) {
+                showOutput('debugOutput', result, 'error');
+            } else {
+                showOutput('debugOutput', result.data, 'info');
+            }
+        }
+        
+        function viewBrowserCookies() {
+            const cookies = document.cookie;
+            showOutput('debugOutput', {
+                note: 'These are only NON-HttpOnly cookies',
+                visible_cookies: cookies || '(none)',
+                httponly_cookies: 'Cannot be accessed via JavaScript (check DevTools)',
+                instructions: [
+                    'Open DevTools (F12)',
+                    'Go to Application tab',
+                    'Click Cookies → http://localhost:8000',
+                    'See all cookies including HttpOnly ones'
+                ]
+            }, 'info');
+        }
+        
+        function clearAllCookies() {
+            // This only clears non-HttpOnly cookies
+            document.cookie.split(";").forEach(cookie => {
+                const name = cookie.split("=")[0].trim();
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+            });
+            
+            showOutput('debugOutput', {
+                message: 'Non-HttpOnly cookies cleared from JavaScript',
+                note: 'HttpOnly cookies must be cleared by the server',
+                action: 'Call /logout to clear HttpOnly session cookies'
+            }, 'success');
+        }
+    </script>
+</body>
+</html>
