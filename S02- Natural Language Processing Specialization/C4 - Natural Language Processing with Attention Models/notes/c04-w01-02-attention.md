@@ -156,14 +156,22 @@ $$p(y_t|y_1, ..., y_{t-1}, x) = \text{softmax}(W_s s_t)$$
 **The Breakthrough**: Dynamic context vector $c_t$ for each target word $y_t$.
 
 **Step 1: Bidirectional Encoder**
-$$\overrightarrow{h_i} = \text{RNN}(x_i, \overrightarrow{h_{i-1}})$$ (forward)
-$$\overleftarrow{h_i} = \text{RNN}(x_i, \overleftarrow{h_{i+1}})$$ (backward)
-$$h_i = [\overrightarrow{h_i}; \overleftarrow{h_i}]$$ (concatenation)
+
+Forward:
+$$\overrightarrow{h_i} = \text{RNN}(x_i, \overrightarrow{h_{i-1}})$$
+
+Backward:
+$$\overleftarrow{h_i} = \text{RNN}(x_i, \overleftarrow{h_{i+1}})$$
+
+Concatenation:
+$$h_i = [\overrightarrow{h_i}; \overleftarrow{h_i}]$$
 
 **Step 2: Attention Score Computation**
+
 $$e_{t,i} = a(s_{t-1}, h_i)$$
 
 Where $a$ is a **feedforward neural network**:
+
 $$a(s_{t-1}, h_i) = v_a^T \tanh(W_a s_{t-1} + U_a h_i)$$
 
 **Step 3: Attention Weight Normalization**
@@ -181,9 +189,9 @@ $$s_t = g(y_{t-1}, s_{t-1}, c_t)$$
 %%{init: {"theme": "default", "themeVariables": {"primaryColor": "#1f2937", "edgeLabelBackground":"#f9fafb", "primaryTextColor":"#000000"}}}%%
 graph TD
     subgraph "Source Sentence"
-        X1[x₁: "The"]
-        X2[x₂: "cat"]
-        X3[x₃: "sat"]
+        X1["x₁: The"]
+        X2["x₂: cat"]
+        X3["x₃: sat"]
     end
 
     subgraph "Bidirectional Encoder"
@@ -213,7 +221,7 @@ graph TD
 
     subgraph "Decoder"
         S1[s₁]
-        Y1[y₁: "Le"]
+        Y1["y₁: Le"]
 
         C1 --> S1
         S1 --> Y1
