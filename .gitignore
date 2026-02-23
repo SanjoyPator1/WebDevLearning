@@ -11,3 +11,9 @@ data
 *.zip
 *.keras
 *.h5
+
+rough.py
+
+coursera_assignment/
+
+books
