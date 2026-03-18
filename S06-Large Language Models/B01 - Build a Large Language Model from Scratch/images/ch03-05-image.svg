@@ -1,0 +1,129 @@
+<svg viewBox="0 0 600 620" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+
+  <defs>
+    <marker id="arr-g" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#4a5568"/>
+    </marker>
+    <marker id="arr-y2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f6e05e"/>
+    </marker>
+    <marker id="arr-p" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#b794f4"/>
+    </marker>
+  </defs>
+
+  <rect width="600" height="620" fill="#0f1117" rx="12"/>
+  <text x="300" y="28" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="bold">Transformer Block — Two Shortcut Connections</text>
+
+  <!-- ── shape annotation helper ── -->
+  <!-- shape pill style: fill=#1a202c stroke=#2d3748 -->
+
+  <!-- ══════════════════════════════
+       MAIN COLUMN: cx=300
+  ══════════════════════════════ -->
+
+  <!-- INPUT -->
+  <rect x="210" y="44" width="180" height="30" rx="8" fill="#2d3748" stroke="#68d391" stroke-width="1.5"/>
+  <text x="300" y="63" text-anchor="middle" fill="#68d391" font-size="12" font-weight="bold">Input x</text>
+  <text x="460" y="63" fill="#718096" font-size="9">(batch, seq, 768)</text>
+
+  <!-- ── SHORTCUT 1 tap point ── -->
+  <!-- dot on main line after Input -->
+  <line x1="300" y1="74" x2="300" y2="98" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-g)"/>
+  <!-- shortcut_1 label -->
+  <circle cx="300" cy="88" r="5" fill="#f6e05e"/>
+  <text x="315" y="91" fill="#f6e05e" font-size="9" font-weight="bold">shortcut_1 saved here</text>
+
+  <!-- LAYERNORM 1 -->
+  <rect x="210" y="100" width="180" height="30" rx="6" fill="#1a1a2e" stroke="#b794f4" stroke-width="1.5"/>
+  <text x="300" y="119" text-anchor="middle" fill="#d6bcfa" font-size="11">LayerNorm 1</text>
+
+  <line x1="300" y1="130" x2="300" y2="148" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+  <!-- MULTIHEAD ATTENTION -->
+  <rect x="188" y="150" width="224" height="36" rx="6" fill="#1a2a4a" stroke="#63b3ed" stroke-width="1.5"/>
+  <text x="300" y="166" text-anchor="middle" fill="#90cdf4" font-size="11" font-weight="bold">Multi-Head Attention</text>
+  <text x="300" y="179" text-anchor="middle" fill="#718096" font-size="9">12 heads · head_dim=64 · causal mask</text>
+
+  <line x1="300" y1="186" x2="300" y2="204" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+  <!-- DROPOUT 1 -->
+  <rect x="230" y="206" width="140" height="26" rx="6" fill="#2d2418" stroke="#ed8936" stroke-width="1.2"/>
+  <text x="300" y="222" text-anchor="middle" fill="#fbd38d" font-size="10">Dropout (p=0.1)</text>
+
+  <line x1="300" y1="232" x2="300" y2="250" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+  <!-- ADD shortcut_1 -->
+  <circle cx="300" cy="262" r="14" fill="#2a2a00" stroke="#f6e05e" stroke-width="2"/>
+  <text x="300" y="267" text-anchor="middle" fill="#f6e05e" font-size="14" font-weight="bold">+</text>
+  <text x="322" y="266" fill="#f6e05e" font-size="9">add shortcut_1</text>
+
+  <!-- SHORTCUT 1 bypass arrow (left side) -->
+  <path d="M210,74 Q120,74 120,160 Q120,262 286,262"
+        fill="none" stroke="#f6e05e" stroke-width="2" stroke-dasharray="6,3"
+        marker-end="url(#arr-y2)"/>
+  <text x="86" y="175" text-anchor="middle" fill="#f6e05e" font-size="9" transform="rotate(-90,86,175)">shortcut 1</text>
+
+  <line x1="300" y1="276" x2="300" y2="294" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+  <!-- ── SHORTCUT 2 tap point ── -->
+  <circle cx="300" cy="288" r="5" fill="#68d391"/>
+  <text x="315" y="291" fill="#68d391" font-size="9" font-weight="bold">shortcut_2 saved here</text>
+
+  <!-- LAYERNORM 2 -->
+  <rect x="210" y="296" width="180" height="30" rx="6" fill="#1a1a2e" stroke="#b794f4" stroke-width="1.5"/>
+  <text x="300" y="315" text-anchor="middle" fill="#d6bcfa" font-size="11">LayerNorm 2</text>
+
+  <line x1="300" y1="326" x2="300" y2="344" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+  <!-- FEEDFORWARD -->
+  <rect x="210" y="346" width="180" height="50" rx="6" fill="#1a3322" stroke="#68d391" stroke-width="1.5"/>
+  <text x="300" y="364" text-anchor="middle" fill="#9ae6b4" font-size="11" font-weight="bold">FeedForward</text>
+  <text x="300" y="378" text-anchor="middle" fill="#718096" font-size="9">768 → 3072 → 768</text>
+  <text x="300" y="390" text-anchor="middle" fill="#718096" font-size="9">GELU inside · per-token</text>
+
+  <line x1="300" y1="396" x2="300" y2="414" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+  <!-- DROPOUT 2 -->
+  <rect x="230" y="416" width="140" height="26" rx="6" fill="#2d2418" stroke="#ed8936" stroke-width="1.2"/>
+  <text x="300" y="432" text-anchor="middle" fill="#fbd38d" font-size="10">Dropout (p=0.1)</text>
+
+  <line x1="300" y1="442" x2="300" y2="460" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+  <!-- ADD shortcut_2 -->
+  <circle cx="300" cy="472" r="14" fill="#002200" stroke="#68d391" stroke-width="2"/>
+  <text x="300" y="477" text-anchor="middle" fill="#68d391" font-size="14" font-weight="bold">+</text>
+  <text x="322" y="476" fill="#68d391" font-size="9">add shortcut_2</text>
+
+  <!-- SHORTCUT 2 bypass arrow (right side) -->
+  <path d="M390,288 Q490,288 490,385 Q490,472 314,472"
+        fill="none" stroke="#68d391" stroke-width="2" stroke-dasharray="6,3"
+        marker-end="url(#arr-p)"/>
+  <text x="512" y="385" text-anchor="middle" fill="#68d391" font-size="9" transform="rotate(90,512,385)">shortcut 2</text>
+
+  <line x1="300" y1="486" x2="300" y2="510" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+  <!-- OUTPUT -->
+  <rect x="210" y="512" width="180" height="30" rx="8" fill="#2d3748" stroke="#68d391" stroke-width="1.5"/>
+  <text x="300" y="531" text-anchor="middle" fill="#68d391" font-size="12" font-weight="bold">Output x</text>
+  <text x="460" y="531" fill="#718096" font-size="9">(batch, seq, 768)</text>
+
+  <!-- ── LEGEND ── -->
+  <rect x="20" y="556" width="560" height="52" rx="6" fill="#1a202c" stroke="#2d3748" stroke-width="1"/>
+  <text x="300" y="572" text-anchor="middle" fill="#a0aec0" font-size="9" font-weight="bold">LEGEND</text>
+  <!-- items -->
+  <line x1="35" y1="584" x2="60" y2="584" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-g)"/>
+  <text x="68" y="587" fill="#a0aec0" font-size="9">main data path</text>
+  <line x1="155" y1="584" x2="180" y2="584" stroke="#f6e05e" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="188" y="587" fill="#f6e05e" font-size="9">shortcut 1 (around attention)</text>
+  <line x1="360" y1="584" x2="385" y2="584" stroke="#68d391" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="393" y="587" fill="#68d391" font-size="9">shortcut 2 (around FF)</text>
+  <circle cx="38" cy="598" r="4" fill="#f6e05e"/>
+  <text x="48" y="601" fill="#f6e05e" font-size="9">tap point — shortcut saved here</text>
+  <circle cx="200" cy="598" r="4" fill="#68d391"/>
+  <text x="210" y="601" fill="#68d391" font-size="9">tap point — shortcut 2 saved</text>
+  <circle cx="370" cy="598" r="8" fill="#2a2a00" stroke="#f6e05e" stroke-width="1.2"/>
+  <text x="370" y="601" text-anchor="middle" fill="#f6e05e" font-size="9">+</text>
+  <text x="385" y="601" fill="#a0aec0" font-size="9">residual addition node</text>
+
+</svg>

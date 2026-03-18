@@ -1,0 +1,68 @@
+<svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+
+  <defs>
+    <marker id="a-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#63b3ed"/>
+    </marker>
+    <marker id="a-yellow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f6e05e"/>
+    </marker>
+    <marker id="a-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#68d391"/>
+    </marker>
+  </defs>
+
+  <rect width="680" height="300" fill="#0f1117" rx="12"/>
+  <text x="340" y="28" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="bold">Shortcut Connection — Gradient Math</text>
+
+  <!-- Input x node -->
+  <ellipse cx="80" cy="130" rx="34" ry="18" fill="#2d3748" stroke="#68d391" stroke-width="1.5"/>
+  <text x="80" y="134" text-anchor="middle" fill="#68d391" font-size="13" font-weight="bold">x</text>
+
+  <!-- PATH A: x → F(x) box → + node -->
+  <!-- arrow x → F(x) -->
+  <line x1="114" y1="130" x2="218" y2="130" stroke="#63b3ed" stroke-width="2" marker-end="url(#a-blue)"/>
+
+  <!-- F(x) box -->
+  <rect x="222" y="108" width="110" height="44" rx="8" fill="#1a2a4a" stroke="#63b3ed" stroke-width="2"/>
+  <text x="277" y="127" text-anchor="middle" fill="#90cdf4" font-size="13" font-weight="bold">F(x)</text>
+  <text x="277" y="143" text-anchor="middle" fill="#718096" font-size="9">sub-module</text>
+
+  <!-- arrow F(x) → + -->
+  <line x1="332" y1="130" x2="416" y2="130" stroke="#63b3ed" stroke-width="2" marker-end="url(#a-blue)"/>
+
+  <!-- PATH B: shortcut curved arrow x → + (bypassing F(x)) -->
+  <path d="M80,112 Q80,58 277,58 Q420,58 430,112" fill="none" stroke="#f6e05e" stroke-width="2.2" stroke-dasharray="6,3" marker-end="url(#a-yellow)"/>
+
+  <!-- + circle -->
+  <circle cx="430" cy="130" r="16" fill="#1a2a1a" stroke="#f6e05e" stroke-width="2"/>
+  <text x="430" y="135" text-anchor="middle" fill="#f6e05e" font-size="16" font-weight="bold">+</text>
+
+  <!-- arrow + → output -->
+  <line x1="446" y1="130" x2="565" y2="130" stroke="#68d391" stroke-width="2" marker-end="url(#a-green)"/>
+
+  <!-- Output y node -->
+  <ellipse cx="600" cy="130" rx="50" ry="18" fill="#1a3a1a" stroke="#68d391" stroke-width="1.5"/>
+  <text x="600" y="134" text-anchor="middle" fill="#9ae6b4" font-size="12">y = F(x)+x</text>
+
+  <!-- PATH A label -->
+  <rect x="205" y="160" width="148" height="18" rx="4" fill="#1a2a4a"/>
+  <text x="279" y="172" text-anchor="middle" fill="#63b3ed" font-size="9">Path A: sub-module path</text>
+  <rect x="205" y="178" width="148" height="15" rx="4" fill="#1a2a4a"/>
+  <text x="279" y="189" text-anchor="middle" fill="#fc8181" font-size="9">can shrink to near zero</text>
+
+  <!-- PATH B label -->
+  <rect x="155" y="40" width="156" height="15" rx="4" fill="#2a2200"/>
+  <text x="233" y="51" text-anchor="middle" fill="#f6e05e" font-size="9">Path B: shortcut path — always = 1</text>
+
+  <!-- Gradient equation box -->
+  <rect x="140" y="215" width="400" height="68" rx="8" fill="#1a1a2e" stroke="#553c9a" stroke-width="1.5"/>
+  <text x="340" y="237" text-anchor="middle" fill="#b794f4" font-size="12" font-weight="bold">Gradient (Chain Rule):</text>
+  <text x="340" y="258" text-anchor="middle" fill="#e2e8f0" font-size="13">dy/dx  =  dF(x)/dx  +  1</text>
+  <text x="270" y="275" text-anchor="middle" fill="#fc8181" font-size="10">can → 0</text>
+  <text x="412" y="275" text-anchor="middle" fill="#f6e05e" font-size="10">always 1 ✓</text>
+  <!-- underlines -->
+  <line x1="228" y1="262" x2="312" y2="262" stroke="#fc8181" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="378" y1="262" x2="440" y2="262" stroke="#f6e05e" stroke-width="1"/>
+
+</svg>

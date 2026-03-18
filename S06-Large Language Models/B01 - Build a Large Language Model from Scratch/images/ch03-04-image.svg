@@ -1,0 +1,198 @@
+<svg viewBox="0 0 820 520" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+
+  <!-- Background -->
+  <rect width="820" height="520" fill="#0f1117" rx="12"/>
+
+  <!-- ── TITLE ── -->
+  <text x="410" y="34" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="bold">Vanishing Gradients: Without vs With Shortcut Connections</text>
+
+  <!-- ═══════════════════════════════════════════════════
+       LEFT SIDE — WITHOUT SHORTCUTS
+  ═══════════════════════════════════════════════════ -->
+  <text x="200" y="60" text-anchor="middle" fill="#fc8181" font-size="13" font-weight="bold">WITHOUT Shortcuts</text>
+
+  <!-- gradient legend arrow (backward) -->
+  <text x="70" y="76" fill="#a0aec0" font-size="9">◀ gradient flows back</text>
+
+  <!-- Nodes: cx=200, y steps: Input=90, L1=160, L2=230, L3=300, L4=370, L5=440, Loss=490 -->
+
+  <!-- Input -->
+  <ellipse cx="200" cy="90" rx="38" ry="18" fill="#2d3748" stroke="#68d391" stroke-width="1.5"/>
+  <text x="200" y="94" text-anchor="middle" fill="#68d391" font-size="11">Input x</text>
+
+  <!-- vertical connector Input→L1 -->
+  <line x1="200" y1="108" x2="200" y2="142" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Layer 1 -->
+  <rect x="152" y="142" width="96" height="32" rx="6" fill="#2a4365" stroke="#63b3ed" stroke-width="1.5"/>
+  <text x="200" y="162" text-anchor="middle" fill="#90cdf4" font-size="11">Layer 1</text>
+  <!-- gradient badge -->
+  <rect x="110" y="148" width="36" height="18" rx="4" fill="#744210" stroke="#f6ad55" stroke-width="1"/>
+  <text x="128" y="160" text-anchor="middle" fill="#f6ad55" font-size="9">∇=1.0</text>
+
+  <line x1="200" y1="174" x2="200" y2="212" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Layer 2 -->
+  <rect x="152" y="212" width="96" height="32" rx="6" fill="#2a4365" stroke="#63b3ed" stroke-width="1.5"/>
+  <text x="200" y="232" text-anchor="middle" fill="#90cdf4" font-size="11">Layer 2</text>
+  <rect x="110" y="218" width="36" height="18" rx="4" fill="#744210" stroke="#f6ad55" stroke-width="1"/>
+  <text x="128" y="230" text-anchor="middle" fill="#f6ad55" font-size="9">∇=0.005</text>
+
+  <line x1="200" y1="244" x2="200" y2="282" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Layer 3 -->
+  <rect x="152" y="282" width="96" height="32" rx="6" fill="#2a4365" stroke="#63b3ed" stroke-width="1.5"/>
+  <text x="200" y="302" text-anchor="middle" fill="#90cdf4" font-size="11">Layer 3</text>
+  <rect x="104" y="288" width="42" height="18" rx="4" fill="#744210" stroke="#f6ad55" stroke-width="1"/>
+  <text x="125" y="300" text-anchor="middle" fill="#f6ad55" font-size="9">∇=0.0014</text>
+
+  <line x1="200" y1="314" x2="200" y2="352" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Layer 4 -->
+  <rect x="152" y="352" width="96" height="32" rx="6" fill="#2a4365" stroke="#63b3ed" stroke-width="1.5"/>
+  <text x="200" y="372" text-anchor="middle" fill="#90cdf4" font-size="11">Layer 4</text>
+  <rect x="104" y="358" width="42" height="18" rx="4" fill="#744210" stroke="#f6ad55" stroke-width="1"/>
+  <text x="125" y="370" text-anchor="middle" fill="#f6ad55" font-size="9">∇=0.0007</text>
+
+  <line x1="200" y1="384" x2="200" y2="422" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Layer 5 -->
+  <rect x="152" y="422" width="96" height="32" rx="6" fill="#2a4365" stroke="#63b3ed" stroke-width="1.5"/>
+  <text x="200" y="442" text-anchor="middle" fill="#90cdf4" font-size="11">Layer 5</text>
+  <rect x="104" y="428" width="42" height="18" rx="4" fill="#744210" stroke="#f6ad55" stroke-width="1"/>
+  <text x="125" y="440" text-anchor="middle" fill="#f6ad55" font-size="9">∇=0.0002</text>
+
+  <line x1="200" y1="454" x2="200" y2="478" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Loss -->
+  <ellipse cx="200" cy="490" rx="34" ry="14" fill="#742a2a" stroke="#fc8181" stroke-width="1.5"/>
+  <text x="200" y="494" text-anchor="middle" fill="#fc8181" font-size="11">Loss</text>
+  <!-- Loss gradient badge -->
+  <rect x="240" y="482" width="42" height="18" rx="4" fill="#744210" stroke="#f6ad55" stroke-width="1"/>
+  <text x="261" y="494" text-anchor="middle" fill="#f6ad55" font-size="9">∇=0.0001</text>
+
+  <!-- Warning label -->
+  <rect x="140" y="496" width="120" height="18" rx="4" fill="#1a0a0a"/>
+  <text x="200" y="508" text-anchor="middle" fill="#fc8181" font-size="9">⚠ Layer 1 barely learns</text>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       DIVIDER
+  ═══════════════════════════════════════════════════ -->
+  <line x1="410" y1="50" x2="410" y2="515" stroke="#2d3748" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       RIGHT SIDE — WITH SHORTCUTS
+  ═══════════════════════════════════════════════════ -->
+  <text x="615" y="60" text-anchor="middle" fill="#68d391" font-size="13" font-weight="bold">WITH Shortcuts</text>
+  <text x="680" y="76" fill="#a0aec0" font-size="9">gradient flows back ▶</text>
+
+  <!-- Input -->
+  <ellipse cx="600" cy="90" rx="38" ry="18" fill="#2d3748" stroke="#68d391" stroke-width="1.5"/>
+  <text x="600" y="94" text-anchor="middle" fill="#68d391" font-size="11">Input x</text>
+
+  <line x1="600" y1="108" x2="600" y2="142" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Layer 1 -->
+  <rect x="552" y="142" width="96" height="32" rx="6" fill="#1a3a1a" stroke="#68d391" stroke-width="1.5"/>
+  <text x="600" y="162" text-anchor="middle" fill="#9ae6b4" font-size="11">Layer 1</text>
+  <rect x="660" y="148" width="38" height="18" rx="4" fill="#1a3322" stroke="#68d391" stroke-width="1"/>
+  <text x="679" y="160" text-anchor="middle" fill="#68d391" font-size="9">∇=0.22</text>
+
+  <!-- Shortcut 1: bypass L1 to + node at y=195 -->
+  <!-- + circle at y=195 -->
+  <circle cx="600" cy="197" r="9" fill="#1a3a1a" stroke="#f6e05e" stroke-width="1.5"/>
+  <text x="600" y="201" text-anchor="middle" fill="#f6e05e" font-size="11" font-weight="bold">+</text>
+  <!-- main path L1 → + -->
+  <line x1="600" y1="174" x2="600" y2="188" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+  <!-- shortcut arrow: Input(y=108) → + (y=197), going right -->
+  <path d="M638,108 Q730,108 730,152 Q730,197 609,197" fill="none" stroke="#f6e05e" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr-yellow)"/>
+  <text x="745" y="155" text-anchor="middle" fill="#f6e05e" font-size="8">shortcut</text>
+
+  <line x1="600" y1="206" x2="600" y2="212" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Layer 2 -->
+  <rect x="552" y="212" width="96" height="32" rx="6" fill="#1a3a1a" stroke="#68d391" stroke-width="1.5"/>
+  <text x="600" y="232" text-anchor="middle" fill="#9ae6b4" font-size="11">Layer 2</text>
+  <rect x="660" y="218" width="38" height="18" rx="4" fill="#1a3322" stroke="#68d391" stroke-width="1"/>
+  <text x="679" y="230" text-anchor="middle" fill="#68d391" font-size="9">∇=0.21</text>
+
+  <!-- + node y=267 -->
+  <circle cx="600" cy="267" r="9" fill="#1a3a1a" stroke="#f6e05e" stroke-width="1.5"/>
+  <text x="600" y="271" text-anchor="middle" fill="#f6e05e" font-size="11" font-weight="bold">+</text>
+  <line x1="600" y1="244" x2="600" y2="258" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+  <path d="M638,206 Q725,206 725,236 Q725,267 609,267" fill="none" stroke="#f6e05e" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr-yellow)"/>
+
+  <line x1="600" y1="276" x2="600" y2="282" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Layer 3 -->
+  <rect x="552" y="282" width="96" height="32" rx="6" fill="#1a3a1a" stroke="#68d391" stroke-width="1.5"/>
+  <text x="600" y="302" text-anchor="middle" fill="#9ae6b4" font-size="11">Layer 3</text>
+  <rect x="660" y="288" width="38" height="18" rx="4" fill="#1a3322" stroke="#68d391" stroke-width="1"/>
+  <text x="679" y="300" text-anchor="middle" fill="#68d391" font-size="9">∇=0.33</text>
+
+  <!-- + node y=337 -->
+  <circle cx="600" cy="337" r="9" fill="#1a3a1a" stroke="#f6e05e" stroke-width="1.5"/>
+  <text x="600" y="341" text-anchor="middle" fill="#f6e05e" font-size="11" font-weight="bold">+</text>
+  <line x1="600" y1="314" x2="600" y2="328" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+  <path d="M638,276 Q725,276 725,306 Q725,337 609,337" fill="none" stroke="#f6e05e" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr-yellow)"/>
+
+  <line x1="600" y1="346" x2="600" y2="352" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Layer 4 -->
+  <rect x="552" y="352" width="96" height="32" rx="6" fill="#1a3a1a" stroke="#68d391" stroke-width="1.5"/>
+  <text x="600" y="372" text-anchor="middle" fill="#9ae6b4" font-size="11">Layer 4</text>
+  <rect x="660" y="358" width="38" height="18" rx="4" fill="#1a3322" stroke="#68d391" stroke-width="1"/>
+  <text x="679" y="370" text-anchor="middle" fill="#68d391" font-size="9">∇=0.27</text>
+
+  <!-- + node y=407 -->
+  <circle cx="600" cy="407" r="9" fill="#1a3a1a" stroke="#f6e05e" stroke-width="1.5"/>
+  <text x="600" y="411" text-anchor="middle" fill="#f6e05e" font-size="11" font-weight="bold">+</text>
+  <line x1="600" y1="384" x2="600" y2="398" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+  <path d="M638,346 Q725,346 725,376 Q725,407 609,407" fill="none" stroke="#f6e05e" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr-yellow)"/>
+
+  <line x1="600" y1="416" x2="600" y2="422" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Layer 5 -->
+  <rect x="552" y="422" width="96" height="32" rx="6" fill="#1a3a1a" stroke="#68d391" stroke-width="1.5"/>
+  <text x="600" y="442" text-anchor="middle" fill="#9ae6b4" font-size="11">Layer 5</text>
+  <rect x="660" y="428" width="38" height="18" rx="4" fill="#1a3322" stroke="#68d391" stroke-width="1"/>
+  <text x="679" y="440" text-anchor="middle" fill="#68d391" font-size="9">∇=1.32</text>
+
+  <line x1="600" y1="454" x2="600" y2="478" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Loss -->
+  <ellipse cx="600" cy="490" rx="34" ry="14" fill="#742a2a" stroke="#fc8181" stroke-width="1.5"/>
+  <text x="600" y="494" text-anchor="middle" fill="#fc8181" font-size="11">Loss</text>
+
+  <!-- Success label -->
+  <rect x="540" y="496" width="120" height="18" rx="4" fill="#0a1a0a"/>
+  <text x="600" y="508" text-anchor="middle" fill="#68d391" font-size="9">✓ All layers learn well</text>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       LEGEND
+  ═══════════════════════════════════════════════════ -->
+  <rect x="430" y="56" width="180" height="56" rx="6" fill="#1a202c" stroke="#2d3748" stroke-width="1"/>
+  <line x1="440" y1="72" x2="470" y2="72" stroke="#4a5568" stroke-width="1.5"/>
+  <text x="478" y="76" fill="#a0aec0" font-size="9">main data path</text>
+  <line x1="440" y1="87" x2="470" y2="87" stroke="#f6e05e" stroke-width="1.8" stroke-dasharray="5,3"/>
+  <text x="478" y="91" fill="#f6e05e" font-size="9">shortcut path</text>
+  <rect x="440" y="98" width="14" height="8" rx="2" fill="#744210" stroke="#f6ad55" stroke-width="1"/>
+  <text x="462" y="106" fill="#f6ad55" font-size="9">∇ = gradient value</text>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       ARROWHEAD MARKERS
+  ═══════════════════════════════════════════════════ -->
+  <defs>
+    <marker id="arr-gray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#4a5568"/>
+    </marker>
+    <marker id="arr-yellow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f6e05e"/>
+    </marker>
+  </defs>
+
+</svg>
