@@ -2,13 +2,13 @@
 
 ## Table of Contents
 
-1. [Coding an LLM architecture](#41-coding-an-llm-architecture)
-2. [Normalizing activations with layer normalization](#42-normalizing-activations-with-layer-normalization)
-3. [Implementing a feed forward network with GELU activations](#43-implementing-a-feed-forward-network-with-gelu-activations)
-4. [Adding shortcut connections](#44-adding-shortcut-connections)
-5. [Connecting attention and linear layers in a transformer block](#45-connecting-attention-and-linear-layers-in-a-transformer-block)
-6. [Coding the GPT model](#46-coding-the-gpt-model)
-7. [Generating text](#47-generating-text)
+1. [Coding an LLM Architecture](#1-coding-an-llm-architecture)
+2. [Normalizing Activations with Layer Normalization](#2-normalizing-activations-with-layer-normalization)
+3. [Implementing a Feed Forward Network with GELU Activations](#3-implementing-a-feed-forward-network-with-gelu-activations)
+4. [Adding Shortcut Connections](#4-adding-shortcut-connections)
+5. [Connecting Attention and Linear Layers in a Transformer Block](#5-connecting-attention-and-linear-layers-in-a-transformer-block)
+6. [Coding the GPT Model](#6-coding-the-gpt-model)
+7. [Generating Text](#7-generating-text)
 
 # 1: Coding an LLM Architecture
 
