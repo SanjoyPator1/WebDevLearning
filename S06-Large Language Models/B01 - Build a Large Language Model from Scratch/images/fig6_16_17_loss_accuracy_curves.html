@@ -1,0 +1,63 @@
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:4px 0">
+<div>
+<div style="display:flex;gap:16px;margin-bottom:8px;font-size:12px;color:var(--color-text-secondary)">
+<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:2px;background:#534AB7;display:inline-block"></span>train loss</span>
+<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:2px;background:#534AB7;border-top:2px dashed #534AB7;display:inline-block"></span>val loss</span>
+</div>
+<div style="position:relative;height:220px"><canvas id="lossChart"></canvas></div>
+</div>
+<div>
+<div style="display:flex;gap:16px;margin-bottom:8px;font-size:12px;color:var(--color-text-secondary)">
+<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:2px;background:#0F6E56;display:inline-block"></span>train acc</span>
+<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:2px;background:#0F6E56;border-top:2px dashed #0F6E56;display:inline-block"></span>val acc</span>
+</div>
+<div style="position:relative;height:220px"><canvas id="accChart"></canvas></div>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const epochs = [1,2,3,4,5];
+const trainLoss = [0.617, 0.490, 0.333, 0.153, 0.083];
+const valLoss   = [0.637, 0.397, 0.306, 0.132, 0.074];
+const trainAcc  = [0.7000, 0.8250, 0.9000, 1.000, 1.000];
+const valAcc    = [0.7250, 0.8500, 0.9000, 0.975, 0.975];
+
+new Chart(document.getElementById('lossChart'), {
+  type: 'line',
+  data: {
+    labels: epochs,
+    datasets: [
+      { label: 'train loss', data: trainLoss, borderColor: '#534AB7', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, tension: 0.3 },
+      { label: 'val loss',   data: valLoss,   borderColor: '#534AB7', backgroundColor: 'transparent', borderWidth: 2, borderDash: [5,3], pointRadius: 3, tension: 0.3 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { title: { display: true, text: 'epoch', font: { size: 11 } }, ticks: { font: { size: 11 } } },
+      y: { title: { display: true, text: 'loss', font: { size: 11 } }, ticks: { font: { size: 11 }, callback: v => v.toFixed(1) }, min: 0, max: 2.6 }
+    }
+  }
+});
+
+new Chart(document.getElementById('accChart'), {
+  type: 'line',
+  data: {
+    labels: epochs,
+    datasets: [
+      { label: 'train acc', data: trainAcc, borderColor: '#0F6E56', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, tension: 0.3 },
+      { label: 'val acc',   data: valAcc,   borderColor: '#0F6E56', backgroundColor: 'transparent', borderWidth: 2, borderDash: [5,3], pointRadius: 3, tension: 0.3 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { title: { display: true, text: 'epoch', font: { size: 11 } }, ticks: { font: { size: 11 } } },
+      y: { title: { display: true, text: 'accuracy', font: { size: 11 } }, ticks: { font: { size: 11 }, callback: v => (v*100).toFixed(0)+'%' }, min: 0.4, max: 1.05 }
+    }
+  }
+});
+</script>
