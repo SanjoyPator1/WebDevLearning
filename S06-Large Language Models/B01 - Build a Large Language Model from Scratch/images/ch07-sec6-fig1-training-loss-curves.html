@@ -1,0 +1,75 @@
+<div style="position:relative;width:100%;height:320px;">
+  <canvas id="lossChart"></canvas>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const steps = [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200,205,210,215,220,225,230];
+const trainLoss = [2.637,1.174,0.872,0.857,0.824,0.795,0.770,0.745,0.718,0.690,0.665,0.640,0.612,0.585,0.561,0.542,0.528,0.518,0.510,0.504,0.490,0.475,0.462,0.520,0.438,0.453,0.448,0.408,0.392,0.381,0.370,0.358,0.349,0.341,0.334,0.328,0.320,0.315,0.310,0.307,0.305,0.304,0.303,0.302,0.301,0.300,0.300];
+const valLoss =  [2.626,1.103,0.944,0.906,0.886,0.871,0.858,0.840,0.819,0.802,0.786,0.771,0.755,0.736,0.720,0.705,0.690,0.681,0.675,0.672,0.669,0.667,0.666,0.665,0.670,0.685,0.681,0.677,0.675,0.674,0.672,0.670,0.668,0.666,0.665,0.664,0.663,0.661,0.660,0.659,0.658,0.658,0.657,0.657,0.657,0.657,0.657];
+
+const ep1Idx = steps.indexOf(115);
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const gridC = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+const tickC = isDark ? '#9c9a92' : '#73726c';
+
+new Chart(document.getElementById('lossChart'), {
+  type: 'line',
+  data: {
+    labels: steps,
+    datasets: [
+      {
+        label: 'Training loss',
+        data: trainLoss,
+        borderColor: '#1D9E75',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3
+      },
+      {
+        label: 'Validation loss',
+        data: valLoss,
+        borderColor: '#7F77DD',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        borderDash: [6,4],
+        pointRadius: 0,
+        tension: 0.3
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      annotation: {}
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Training step', color: tickC, font: { size: 12 } },
+        ticks: { color: tickC, maxTicksLimit: 10, font: { size: 11 } },
+        grid: { color: gridC },
+        border: { color: gridC }
+      },
+      y: {
+        title: { display: true, text: 'Loss', color: tickC, font: { size: 12 } },
+        ticks: { color: tickC, font: { size: 11 } },
+        grid: { color: gridC },
+        border: { color: gridC },
+        min: 0,
+        max: 3
+      }
+    }
+  }
+});
+</script>
+<div style="display:flex;align-items:center;gap:20px;margin-top:10px;font-size:12px;color:var(--color-text-secondary);">
+  <span style="display:flex;align-items:center;gap:6px;">
+    <span style="width:24px;height:2px;background:#1D9E75;display:inline-block;border-radius:2px;"></span>Training loss
+  </span>
+  <span style="display:flex;align-items:center;gap:6px;">
+    <span style="width:24px;height:2px;background:#7F77DD;display:inline-block;border-radius:2px;border-top:2px dashed #7F77DD;"></span>Validation loss
+  </span>
+  <span style="margin-left:auto;">Epoch 1: steps 0–115  ·  Epoch 2: steps 120–230</span>
+</div>
