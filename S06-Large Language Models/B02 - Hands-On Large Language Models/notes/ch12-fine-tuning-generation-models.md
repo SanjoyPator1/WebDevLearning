@@ -9,21 +9,29 @@
 ## Table of Contents
 
 1. [The Three LLM Training Steps](#1-the-three-llm-training-steps)
-   - [1a. Step 1 — Pretraining: Learning the World](#1a-step-1--pretraining-learning-the-world)
-   - [1b. Step 2 — Supervised Fine-Tuning: Learning to Be Useful](#1b-step-2--supervised-fine-tuning-learning-to-be-useful)
-   - [1c. Step 3 — Preference Tuning: Learning to Be Good](#1c-step-3--preference-tuning-learning-to-be-good)
+   - [1a. Why Three Stages? The Doctor-in-Training Analogy](#1a-why-three-stages-the-doctor-in-training-analogy)
+   - [1b. Stage 1 — Pretraining: Reading Every Book in the Library](#1b-stage-1--pretraining-reading-every-book-in-the-library)
+   - [1c. The Pattern-Completion Problem — Why a Base Model Cannot Follow Instructions](#1c-the-pattern-completion-problem--why-a-base-model-cannot-follow-instructions)
+   - [1d. Stage 2 — Supervised Fine-Tuning: Learning the Q&A Format](#1d-stage-2--supervised-fine-tuning-learning-the-qa-format)
+   - [1e. Stage 3 — Preference Tuning: Learning Taste, Not Just Format](#1e-stage-3--preference-tuning-learning-taste-not-just-format)
+   - [1f. The Full Pipeline End-to-End](#1f-the-full-pipeline-end-to-end)
 2. [Supervised Fine-Tuning (SFT)](#2-supervised-fine-tuning-sft)
-   - [2a. Full Fine-Tuning — Updating Everything](#2a-full-fine-tuning--updating-everything)
-   - [2b. Parameter-Efficient Fine-Tuning and Adapters](#2b-parameter-efficient-fine-tuning-and-adapters)
-   - [2c. Low-Rank Adaptation (LoRA)](#2c-low-rank-adaptation-lora)
-   - [2d. Quantization and QLoRA](#2d-quantization-and-qlora)
+   - [2a. Full Fine-Tuning — The Direct Approach](#2a-full-fine-tuning--the-direct-approach)
+   - [2b. The Memory Wall — Why Full Fine-Tuning Does Not Scale](#2b-the-memory-wall--why-full-fine-tuning-does-not-scale)
+   - [2c. The Parameter-Efficient Idea — Why Tiny Updates Are Enough](#2c-the-parameter-efficient-idea--why-tiny-updates-are-enough)
+   - [2d. Adapters — Trainable Bottleneck Modules](#2d-adapters--trainable-bottleneck-modules)
+   - [2e. LoRA — Approximating the Update with Two Thin Matrices](#2e-lora--approximating-the-update-with-two-thin-matrices)
+   - [2f. LoRA Dry-Run and Parameter Count Comparison](#2f-lora-dry-run-and-parameter-count-comparison)
+   - [2g. Quantization — Compressing the Base Model's Weights](#2g-quantization--compressing-the-base-models-weights)
+   - [2h. QLoRA — Blockwise NF4 Quantization Combined with LoRA](#2h-qlora--blockwise-nf4-quantization-combined-with-lora)
 3. [Instruction Tuning with QLoRA — Practical Walkthrough](#3-instruction-tuning-with-qlora--practical-walkthrough)
-   - [3a. Dataset Preparation and Chat Templates](#3a-dataset-preparation-and-chat-templates)
-   - [3b. Model Quantization — The BitsAndBytes Config](#3b-model-quantization--the-bitsandbytes-config)
-   - [3c. LoRA Configuration — Every Parameter Explained](#3c-lora-configuration--every-parameter-explained)
-   - [3d. Training Arguments — What They Actually Do](#3d-training-arguments--what-they-actually-do)
-   - [3e. SFTTrainer and the Training Loop](#3e-sfttrainer-and-the-training-loop)
-   - [3f. Merging LoRA Weights for Inference](#3f-merging-lora-weights-for-inference)
+   - [3a. The Walkthrough Pipeline — What We're Building](#3a-the-walkthrough-pipeline--what-were-building)
+   - [3b. Dataset Preparation and Chat Templates](#3b-dataset-preparation-and-chat-templates)
+   - [3c. Model Quantization — The BitsAndBytes Config](#3c-model-quantization--the-bitsandbytes-config)
+   - [3d. LoRA Configuration — Every Parameter Explained](#3d-lora-configuration--every-parameter-explained)
+   - [3e. Training Arguments — What They Actually Do](#3e-training-arguments--what-they-actually-do)
+   - [3f. SFTTrainer and the Training Loop](#3f-sfttrainer-and-the-training-loop)
+   - [3g. Merging LoRA Weights for Inference](#3g-merging-lora-weights-for-inference)
 4. [Evaluating Generative Models](#4-evaluating-generative-models)
    - [4a. Word-Level Metrics — Perplexity, BLEU, ROUGE, BERTScore](#4a-word-level-metrics--perplexity-bleu-rouge-bertscore)
    - [4b. Benchmarks — The Public Leaderboards](#4b-benchmarks--the-public-leaderboards)
@@ -50,167 +58,398 @@
 
 ## 1. The Three LLM Training Steps
 
-Before a single line of fine-tuning code is written, it helps to understand the full journey a language model takes from random weights to a polished assistant. The journey has three distinct stages, and each stage solves a problem that the previous stage left unsolved. Understanding why each stage exists — not just what it does — is the key to understanding every technique in this chapter.
+Fine-tuning is the headline topic of this chapter, but you cannot understand fine-tuning without first understanding the larger pipeline it lives inside. Every modern LLM is trained in three distinct stages, and each fine-tuning technique we will meet is designed to do its job within one of those stages. We need a clear mental model of the full journey before we start engineering pieces of it.
 
-### 1a. Step 1 — Pretraining: Learning the World
+### 1a. Why Three Stages? The Doctor-in-Training Analogy
 
-The first stage is **pretraining**, and it is where the model learns almost everything it will ever know. The training data is enormous — hundreds of billions of tokens scraped from books, websites, code repositories, academic papers, Wikipedia, and countless other sources. The training objective is deceptively simple: given the previous words in a sentence, predict the next word. That is it. No labels, no human annotations, no structured questions and answers. Just next-token prediction repeated billions of times.
+Consider how a doctor becomes good at their job. They do not arrive at competence in a single stage. First they spend years in **medical school**, memorising every system of the body — anatomy, biochemistry, pharmacology. They absorb an enormous body of factual knowledge. But a fresh medical school graduate cannot run a clinic. They know what is in every textbook, but they have never actually structured a consultation, taken a patient history, or delivered a difficult diagnosis. So they enter **residency** — years of supervised practice where senior doctors teach them how to *apply* their knowledge: how to phrase a question, how to write a discharge summary, how to act in an emergency. After residency they can practise medicine. But there is still a third skill that separates good doctors from great ones: **bedside manner**. Two doctors with identical factual knowledge can deliver the same correct answer in very different ways — one is calm and concrete, the other is brusque and evasive. Patients can tell the difference, even when both are technically right.
 
-This simple objective forces the model to become extraordinarily good at language. To predict the next word well, you need to understand grammar, facts about the world, reasoning patterns, coding conventions, mathematical relationships, and much more. The model that emerges from pretraining is called a **base model** or **foundation model**. It has absorbed the structure and content of human language at a scale no human will ever read in a lifetime.
-
-But here is the critical problem with base models: they cannot follow instructions. If you type "What is reinforcement learning?" into a raw base model, it will not answer your question. Instead, it will continue the pattern of whatever text looks like it belongs after that question. It might output "What is recurrent neural network? What is residual connection?" — because the training data contained many lists of "What is X?" questions. The model is completing a text pattern, not responding to a query. Think of it like a student who has read every textbook in the library, but has never once been asked to answer an exam question. They have all the knowledge — but no practice converting that knowledge into a useful response.
+Large language models are trained almost identically, and for almost the same reasons. Each of the three LLM training stages fixes something the previous stage cannot. Skip any one and the resulting model will fail in a specific, predictable way.
 
 ```
-[Unlabeled Internet Text — billions of tokens]
-        │
-        ▼
-  [Pretraining: next-token prediction]
-        │
-        ▼
-  Base Model
-  ✓ Knows language deeply
-  ✓ Knows facts about the world
-  ✗ Will not follow instructions
-  ✗ Will complete patterns instead of answering
+The three LLM training stages mapped onto the doctor analogy:
+
+  Stage 1: Pretraining            ── Medical school   (learn everything)
+  Stage 2: Supervised Fine-Tuning ── Residency        (learn to apply it)
+  Stage 3: Preference Tuning      ── Bedside manner   (learn to do it well)
 ```
 
-### 1b. Step 2 — Supervised Fine-Tuning: Learning to Be Useful
+The next four subsections take each stage in turn, explaining *what* the training looks like, *why* it is needed, and *what is still broken* when that stage is complete.
 
-The second stage is **Supervised Fine-Tuning (SFT)**, sometimes called **instruction tuning**. The goal is to teach the model to respond to instructions rather than merely continue text. The training data is completely different: instead of raw internet text, we use a curated set of question–answer pairs, instruction–response pairs, and multi-turn conversations. The training objective is the same (predict the next token) but the context has fundamentally changed — the model now sees a user asking a question and must learn to generate the assistant's response.
+### 1b. Stage 1 — Pretraining: Reading Every Book in the Library
 
-The dataset is far smaller than pretraining data — perhaps a few thousand to a few hundred thousand examples, compared to billions of tokens. But the impact is dramatic. A model that was pattern-completing text becomes a model that actually answers questions, follows formatting instructions, summarises documents, and writes code. The result is an **instruction-tuned model**.
+The first stage is **pretraining**, and it is where the model acquires almost everything it will ever know. The training data is enormous — hundreds of billions of tokens scraped from books, websites, code repositories, academic papers, Wikipedia, and countless other sources. The model that emerges is called a **base model** or **foundation model**.
 
-### 1c. Step 3 — Preference Tuning: Learning to Be Good
+The training objective is deceptively simple: given a sequence of words, predict the next word. Then shift the sequence by one position and do it again. No human labels, no curated questions and answers — just raw text where the "label" for every position is whatever word actually came next. This is **next-token prediction**, and it is **self-supervised** because the labels come for free from the text itself.
 
-Even after instruction tuning, the model can still be unhelpful in subtle ways. It might give technically correct answers that are unnecessarily long, or give two answers to a question when one would do, or be evasive when the user wants directness. The model follows instructions but has no sense of *which* way of following them is better.
+Formally, we want to minimise the negative log-probability that the model assigns to the *actual* next token at every position:
 
-**Preference tuning** solves this. Also called **alignment** or — in its most famous form — **RLHF (Reinforcement Learning from Human Feedback)**, this third stage teaches the model to prefer certain kinds of responses over others. The training data is not instruction–response pairs but **preference pairs**: two responses to the same prompt, where one is labelled "chosen" (preferred) and one is labelled "rejected" (not preferred). The model learns to generate the kind of responses that humans prefer: helpful, honest, appropriately concise, and safe.
+$$\mathcal{L}_{\text{pretrain}} = - \sum_{t=1}^{T} \log P_\theta(x_t \mid x_1, x_2, \ldots, x_{t-1})$$
+
+| Symbol | Meaning |
+|--------|---------|
+| $x_t$ | the $t$-th token in the training sequence (the word at position $t$) |
+| $T$ | total number of tokens in the sequence |
+| $\theta$ | all parameters of the model — billions of weights being trained |
+| $P_\theta(x_t \mid x_1, \ldots, x_{t-1})$ | model's predicted probability for the true next token, given everything that came before |
+| $\mathcal{L}_{\text{pretrain}}$ | total loss — we want this small, which means the model is confident on the right token |
+
+**Tiny dry-run.** Suppose the model is shown the sentence "The car is red" tokenised as four tokens — "The", "car", "is", "red". The model walks left-to-right and at each position predicts a probability distribution over the entire vocabulary:
 
 ```
-[Unlabeled Internet Text]
-        │
-        ▼
-  [Pretraining] ─────────────────► Base Model
-  (billions of tokens, self-supervised) (knows language, won't follow instructions)
-        │
-        ▼
-  [Supervised Fine-Tuning] ──────► Instruction-Tuned Model
-  (instruction–response pairs)          (follows prompts)
-        │
-        ▼
-  [Preference Tuning] ───────────► Aligned Model
-  (chosen vs rejected pairs)            (helpful, honest, safe)
+Position 1: see "The"          → predict next → assigns probability to every word
+Position 2: see "The car"      → predict next → ideal: high probability on "is"
+Position 3: see "The car is"   → predict next → ideal: high probability on "red"
 ```
 
-This three-stage pipeline is how every major commercial LLM — ChatGPT, Claude, Gemini — is built. Pretraining provides the knowledge. SFT provides the interface. Preference tuning provides the character. The rest of this chapter teaches you to execute the last two stages yourself.
+Imagine at position 3 the model produces this distribution over a toy 4-word vocabulary:
+
+| Candidate next word | Predicted probability $P_\theta$ |
+|--------------------|----------------------------------|
+| red                | 0.55                             |
+| blue               | 0.20                             |
+| fast               | 0.15                             |
+| broken             | 0.10                             |
+
+The true next token is "red", so the loss contributed at this position is:
+
+$$-\log P_\theta(\text{red} \mid \text{"The car is"}) = -\log(0.55) \approx 0.598$$
+
+If the model had been completely certain — probability 1.0 on "red" — the loss would be $-\log(1.0) = 0$. If the model had thought "red" was nearly impossible — probability 0.01 — the loss would be $-\log(0.01) \approx 4.605$, a much larger penalty. The gradient of this loss flows backward through every layer, nudging the parameters so that next time "red" gets slightly more probability mass after "The car is".
+
+Repeat this trillions of times across the entire internet, and the model effectively absorbs the structure of language: grammar, factual knowledge, reasoning patterns, code conventions, mathematical relationships, conversational rhythms.
+
+```
+Pretraining in one picture:
+
+  [Unlabeled internet text]
+        │   (hundreds of billions of tokens)
+        ▼
+  [Next-token prediction × trillions of training steps]
+        │
+        ▼
+   Base Model
+     ✓ Vast factual knowledge
+     ✓ Grammar, syntax, reasoning patterns
+     ✗ Will not follow instructions  ← see 1c
+```
+
+The base model is impressive — but unusable as a chat assistant. The next subsection explains *why*.
+
+### 1c. The Pattern-Completion Problem — Why a Base Model Cannot Follow Instructions
+
+Here is the single most important fact about base models: **they do not answer questions, they complete patterns**. If you type a question into a raw base model, it will try to figure out what kind of text typically follows that question in the corpus it was trained on — and that is often *not* an answer.
+
+The book gives a perfect illustration. Type "What is 1+1?" into a base model and instead of seeing the answer "2", you might see a continuation like this:
+
+```
+Input :  What is 1+1?
+Output:  2.
+         What is 1+1+1?
+         3.
+         What is 1+1+1+1?
+         4.
+         What is 1+1+1+1+1?
+         ...
+```
+
+That "2." is not the answer to the arithmetic question. It is the *list-item number* of the next question in what the model has decided is a numbered list of practice problems. This is not stupidity — it is exactly what pretraining trained the model to do. The training data contained many textbook-style numbered problem sets, so when the model sees "What is 1+1?", the most statistically likely continuation in the corpus is **another question on the next line**, not an answer.
+
+```
+The mechanism, made explicit:
+
+  Training data contained many sequences like:
+     "1. What is X?
+      2. What is Y?
+      3. What is Z?"
+
+  At inference: model sees  "What is 1+1?"
+                model thinks: "This looks like the first item of a problem set."
+                model predicts: "2.\nWhat is 1+1+1?..."
+```
+
+The base model is being completely loyal to the distribution it learned. The fault is not in the model — the fault is in the mismatch between the training objective ("continue this text") and what we want at deployment time ("answer this question"). The model knows that 1+1 = 2. It just has no reason to think we want it to *tell us*.
+
+This is the **pattern-completion problem**, and it is what Stage 2 exists to solve. The fix is not to teach the model more facts — it already knows the answer. The fix is to teach it a new *behaviour*: when you see a question-shaped input, produce an answer-shaped output.
+
+### 1d. Stage 2 — Supervised Fine-Tuning: Learning the Q&A Format
+
+The second stage is **Supervised Fine-Tuning (SFT)**, also called **instruction tuning**. The training objective is identical to pretraining — predict the next token — but the *data* changes completely. Instead of raw internet text, we use a curated set of **instruction–response pairs**:
+
+```python
+# A single SFT training example
+{
+    "instruction": "Tell me something about reinforcement learning.",
+    "response":    "Reinforcement learning (RL) is a type of machine learning "
+                   "where an agent learns to make decisions by taking actions "
+                   "in an environment to maximize a reward signal."
+}
+```
+
+During training, the model is shown the full "instruction + response" sequence concatenated together and asked to predict each next token. But — and this is the critical detail — the **loss is computed only over the response tokens**. We do not want the model to learn to invent user questions; we want it to learn how to *produce answers given questions*.
+
+```
+SFT loss masking (X = loss computed at this position, _ = position is ignored):
+
+  Tokens:  [ Tell me something about reinforcement learning . | RL is a type of ML ... ]
+  Mask:    [  _   _      _       _         _              _  _ |  X  X  X  X  X  X  X  ]
+                            (instruction — ignored)              (response — supervised)
+```
+
+Why ignore the instruction tokens? Because the user wrote them — they are inputs, not things the model should generate. Computing loss over them would push the model toward producing more user-style inputs, which is the opposite of what we want. By masking them out we make the training signal sharp and unambiguous: "given this instruction, produce *exactly* this response."
+
+The SFT dataset is far smaller than the pretraining corpus — typically a few thousand to a few hundred thousand examples, against the trillions of tokens used in pretraining — but the behavioural change is dramatic. A model that was pattern-completing question lists becomes a model that actually answers questions, summarises documents, follows formatting constraints, and converses across multiple turns.
+
+```
+SFT in one picture:
+
+  [ Base Model ] ─── trained on instruction–response pairs ───► [ Instruction-Tuned Model ]
+        ▲                                                                  │
+        │                                                                  ▼
+  Pretrained knowledge                                          Knows when to stop pattern-
+   (entirely preserved)                                         completing and answer instead
+
+  Data scale:    thousands to hundreds of thousands of pairs
+  Loss target:   response tokens only
+  Compute cost:  hours to days on a few GPUs (vs months on thousands of GPUs for pretraining)
+```
+
+SFT can also be used for narrower tasks like classification or summarisation, but its iconic use case — and the one we will execute in Section 3 — is converting a base generative model into a chat-capable assistant.
+
+### 1e. Stage 3 — Preference Tuning: Learning Taste, Not Just Format
+
+After SFT the model can follow instructions. So what is still missing? *Taste*. The instruction-tuned model has no sense of *which way* of following an instruction is better. Asked to explain something, it might produce a correct but unnecessarily long answer, or give two parallel answers when one would do, or be evasive when the user wanted directness, or sound preachy when they wanted concision. It is doing what was asked — it is just not doing it *well*.
+
+This is precisely the gap that separates two equally knowledgeable doctors with different bedside manners. Both know the answer. One delivers it with calm and precision; the other rambles or hedges. SFT trains the model to *answer*; it does not train it to answer *well*.
+
+**Preference tuning** addresses this. Also called **alignment**, or in its most famous form **RLHF (Reinforcement Learning from Human Feedback)**, this stage uses a different kind of training data: **preference pairs**. For a single prompt, humans (or another model acting as judge) provide two candidate responses and label one as **chosen** (preferred) and the other as **rejected** (not preferred):
+
+```python
+# A single preference-tuning training example
+{
+    "prompt":   "Explain reinforcement learning in two sentences.",
+    "chosen":   "Reinforcement learning is a paradigm where an agent learns "
+                "by trial and error, receiving rewards for good actions and "
+                "penalties for bad ones. Over time it learns a policy that "
+                "maximises cumulative reward.",
+    "rejected": "Reinforcement learning is a complex subfield of machine "
+                "learning with many algorithms and applications. It is widely "
+                "studied. A complete explanation would require much more space."
+}
+```
+
+Both responses are technically valid English answers to the prompt. The chosen one is direct, concrete, and respects the two-sentence constraint. The rejected one is vague, evasive, and ignores the requested length. The training objective is to **increase the probability the model assigns to the chosen response** and **decrease the probability it assigns to the rejected response** — for this same prompt.
+
+The crucial thing to notice is that the model does not learn any new *facts* in this stage. It already knew what reinforcement learning is. What it learns is *preferences* about how to express what it already knows: how long to be, when to be direct, when to hedge, when to refuse, how concrete to make examples. The result is an **aligned model** (also called a **preference-tuned model**), and this is the kind of model you actually interact with when you use ChatGPT, Claude, or Gemini.
+
+We will see in Sections 5 and 6 that there are two main families of techniques for executing this stage: classical RLHF with a reward model and PPO (older, more complex), and Direct Preference Optimization or DPO (newer, simpler, now dominant in practice). Section 7 walks through a full DPO run.
+
+### 1f. The Full Pipeline End-to-End
+
+Putting the three stages together gives the complete training pipeline that every major commercial LLM follows:
+
+```
+                         The full LLM training pipeline:
+
+  ┌────────────────────────┐
+  │ Untrained LLM          │   random weights, knows nothing
+  └───────────┬────────────┘
+              │  Pretraining (next-token prediction on raw internet text)
+              │  Hundreds of billions of tokens, weeks–months on thousands of GPUs
+              ▼
+  ┌────────────────────────┐
+  │ Base / Foundation      │   knows language and facts, will not follow instructions
+  │ Model                  │
+  └───────────┬────────────┘
+              │  Supervised Fine-Tuning (instruction–response pairs)
+              │  Thousands to hundreds of thousands of examples, hours–days on a few GPUs
+              ▼
+  ┌────────────────────────┐
+  │ Instruction-Tuned      │   follows prompts, but lacks taste for quality
+  │ Model                  │
+  └───────────┬────────────┘
+              │  Preference Tuning (chosen vs rejected pairs)
+              │  Thousands of preference pairs, hours on a few GPUs
+              ▼
+  ┌────────────────────────┐
+  │ Aligned /              │   helpful, honest, appropriately concise — production-ready
+  │ Preference-Tuned LLM   │
+  └────────────────────────┘
+```
+
+Pretraining provides the **knowledge**. SFT provides the **interface**. Preference tuning provides the **character**. Each stage builds on the last, and each addresses a problem the previous stage cannot solve on its own.
+
+This chapter assumes pretraining is already done — we start from an open-source base model and execute the last two stages ourselves. Section 2 sets up the theoretical foundation for the techniques (full fine-tuning, adapters, LoRA, QLoRA) that make Stage 2 affordable on a single GPU; Section 3 turns that theory into a working instruction-tuning run.
 
 ---
 
 ## 2. Supervised Fine-Tuning (SFT)
 
-### 2a. Full Fine-Tuning — Updating Everything
+Stage 2 of the pipeline is where this chapter actually rolls up its sleeves. We have a base model that has read most of the internet, and a curated dataset of instruction–response pairs. How do we update the model? The naive answer — "update every parameter, exactly like pretraining did" — turns out to be impossible on any single GPU for any modern model. This section walks through the ladder of techniques the field developed to climb around that wall: from full fine-tuning at the top (best but unaffordable), down through adapters and LoRA, and finally to QLoRA at the bottom (drastically cheaper, almost as good).
 
-The most straightforward approach to fine-tuning is to do exactly what was done during pretraining: compute a loss, compute gradients, and update every single parameter in the model. This is called **full fine-tuning**. The only difference from pretraining is the data: instead of raw internet text, the training signal comes from labelled instruction–response pairs.
+### 2a. Full Fine-Tuning — The Direct Approach
 
-The instruction data has a simple structure. Each example contains an instruction (the user's request) and a response (the ideal assistant reply). During training, the model sees the instruction and must predict each token of the response one at a time. The loss is computed only over the response tokens — we are teaching the model to generate the answer, not to predict the question that was already given.
+Think of a base model as a fully printed and bound textbook — every page, every sentence, every figure already in place. **Full fine-tuning** is the equivalent of opening that textbook and editing every single page to specialise it for your domain. Nothing is off-limits; every word can be rewritten. It is the most thorough form of adaptation possible.
+
+Mechanically, full fine-tuning is identical to pretraining. The training loop, the optimizer, the gradient flow — all unchanged. The only thing that changes is the data: instead of raw internet text, we feed in labelled instruction–response pairs, and (as discussed in 1d) we mask the loss so only the response tokens contribute.
 
 ```python
-# A single instruction-tuning data point
+# A single full-fine-tuning training example
 {
     "instruction": "Explain what reinforcement learning is in two sentences.",
-    "response": "Reinforcement learning is a type of machine learning where "
-                "an agent learns by taking actions in an environment and "
-                "receiving rewards or penalties. Over time, the agent learns "
-                "a policy that maximises its cumulative reward."
+    "response":    "Reinforcement learning is a type of machine learning where "
+                   "an agent learns by taking actions in an environment and "
+                   "receiving rewards or penalties. Over time, the agent learns "
+                   "a policy that maximises its cumulative reward."
 }
 ```
 
-Full fine-tuning produces the best results — the model adapts completely to the target task. But it has a severe practical problem. To update every parameter, you need to store every parameter's gradient in memory alongside the parameter values themselves. For GPT-3 with 175 billion parameters stored in float32 (4 bytes each), the parameters alone consume 700 GB of memory. The gradients consume another 700 GB. Add the optimizer state (Adam stores two momentum terms per parameter) and you need roughly 2.1 terabytes of GPU memory. No single GPU, and very few clusters, can accommodate that.
+Full fine-tuning gives the highest performance ceiling — the model can adjust every single weight to the new task. If you have unlimited compute, this is what you would always choose. The catch is that the compute is *not* unlimited for anyone except a handful of well-funded labs, and the next subsection makes the size of that catch precise.
+
+### 2b. The Memory Wall — Why Full Fine-Tuning Does Not Scale
+
+When you fine-tune a model, the GPU has to hold four distinct things in memory simultaneously: the **parameters** (the weights themselves), the **gradients** (one floating-point value per parameter), the **optimizer state** (Adam stores two extra running averages per parameter), and the **activations** (intermediate hidden states needed for backpropagation). For float32 precision — the default during pretraining — that adds up to roughly **16 bytes per parameter** before counting activations.
+
+Why 16? Because each of the four items is the same size as the parameter tensor itself, and at float32 each entry of that tensor is 4 bytes. The parameters cost 4 bytes per entry; the gradients cost another 4; Adam's first moment $m$ another 4; Adam's second moment $v$ another 4. Sum: 16 bytes per parameter.
+
+For GPT-3, with its 175 billion parameters, the math is brutal:
+
+| Component | Per-parameter cost | Total (GPT-3, fp32) |
+|-----------|--------------------|---------------------|
+| Parameters | 4 bytes | $175\text{B} \times 4 = 700$ GB |
+| Gradients | 4 bytes | $175\text{B} \times 4 = 700$ GB |
+| Adam first moment ($m$) | 4 bytes | $175\text{B} \times 4 = 700$ GB |
+| Adam second moment ($v$) | 4 bytes | $175\text{B} \times 4 = 700$ GB |
+| **Total (before activations)** | **16 bytes** | **≈ 2,800 GB** |
 
 ```
-Full Fine-Tuning Memory Footprint (GPT-3, float32):
+GPT-3 full fine-tuning memory footprint (float32, before activations):
 
-  Parameters:          175B × 4 bytes  =   700 GB
-  Gradients:           175B × 4 bytes  =   700 GB
-  Optimizer state:     175B × 8 bytes  = 1,400 GB
-                                         ─────────
-  Total required:                        2,800 GB
+  Parameters       ████████████████  700 GB
+  Gradients        ████████████████  700 GB
+  Adam m           ████████████████  700 GB
+  Adam v           ████████████████  700 GB
+                   ────────────────  ──────────
+  Total                              ~2,800 GB
+
+A single high-end A100 GPU holds 80 GB.
+You would need 35 of them just to hold the training state for one model —
+and that is before activations, which add still more.
 ```
 
-This memory wall is why the field developed parameter-efficient alternatives.
+The problem does not disappear at smaller scales. A 7-billion-parameter model — which sounds modest by 2023 standards — needs $7\text{B} \times 16 = 112$ GB of training state, comfortably more than any consumer GPU can hold (RTX 4090: 24 GB; A100: 80 GB). The memory wall is real for almost every practitioner, and it is what motivated every technique in the rest of this section.
 
----
+### 2c. The Parameter-Efficient Idea — Why Tiny Updates Are Enough
 
-### 2b. Parameter-Efficient Fine-Tuning and Adapters
+Suppose you are a classically trained violinist who has spent twenty years mastering posture, intonation, bowing technique, and the entire Bach repertoire. Now someone asks you to play folk music at a friend's wedding. Do you have to rewire your understanding of music from scratch? Of course not. Almost everything you have learned transfers directly. What you need to absorb is a small *overlay*: a few new bowing patterns, a couple of rhythmic conventions, the feel of the genre. Ninety-nine percent of what makes you a violinist stays exactly the same; only a small folk-specific layer gets added on top.
 
-The key insight behind **Parameter-Efficient Fine-Tuning (PEFT)** is that you do not need to update all the parameters to make the model useful for a new task. Research by Houlsby et al. showed something surprising: fine-tuning only 3.6% of BERT's parameters on a target task achieved within 0.4% of the performance of full fine-tuning on the GLUE benchmark. Nearly all the task-specific information fits in a tiny fraction of the model's capacity.
+This is precisely the insight that drives **Parameter-Efficient Fine-Tuning (PEFT)**. A pretrained model already contains the vast majority of what it needs to perform a new task. The job of fine-tuning is not to teach it language from scratch — language is already there. The job is to nudge a small task-specific overlay into place. So why not train *just* that overlay and leave the rest frozen?
 
-Why does this work? Think about how you learn a new skill. When you learn to ride a bicycle, you do not rewire your entire brain. You build a small overlay of new coordination patterns on top of your existing motor system, vocabulary, and spatial reasoning. The vast majority of your neural infrastructure stays unchanged. Fine-tuning a transformer works the same way — the model's deep understanding of language is already encoded in the pretrained weights and largely does not need to change. Only a small task-specific component needs to be learned.
-
-**Adapters** were the first major PEFT approach. An adapter is a small, trainable module inserted inside each transformer block. The rest of the transformer — all the attention layers and feed-forward networks — remains completely frozen. Only the adapter modules are updated during training.
+The empirical evidence for this is striking. The Houlsby et al. paper that introduced adapters (2019) showed that fine-tuning only **3.6% of BERT's parameters** for a target task reached within **0.4% of the performance** of full fine-tuning on the GLUE benchmark. Nearly all the task-specific information that fine-tuning would learn fits in a tiny fraction of the model's capacity. The remaining 96.4% of the parameters can stay frozen with almost no measurable loss.
 
 ```
-A Transformer Block with Adapter Modules:
+PEFT in one picture:
+
+  ┌─────────────────────────────────────────────┐
+  │  Pretrained Model (96–99% of parameters)    │  ❄️ FROZEN
+  │   - language understanding                  │
+  │   - factual knowledge                       │
+  │   - reasoning patterns                      │
+  └─────────────────────────────────────────────┘
+                       +
+  ┌─────────────────────────────────────────────┐
+  │  Task-Specific Overlay (1–4% of parameters) │  🔥 TRAINABLE
+  │   - learns the new behaviour                │
+  └─────────────────────────────────────────────┘
+                       │
+                       ▼
+                 Fine-Tuned Model
+```
+
+The remaining question is *how to structure that small trainable overlay*. The next three subsections walk through the three answers the field has converged on: adapters, LoRA, and QLoRA.
+
+### 2d. Adapters — Trainable Bottleneck Modules
+
+**Adapters** were the first major PEFT approach, introduced in Houlsby et al.'s 2019 paper. The idea is structural: insert small trainable modules — **adapters** — at specific points inside each transformer block, and freeze everything else.
+
+Each adapter is a tiny feedforward network with a **bottleneck architecture**: it first projects the hidden state *down* to a very small dimension, applies a nonlinearity, then projects it *back up* to the original dimension. A residual connection adds the original hidden state back at the end, so a freshly initialised adapter does almost nothing — it passes the input through nearly unchanged, and only diverges from the identity as training fills in its weights.
+
+$$\text{Adapter}(h) = h + W_{\text{up}} \cdot \sigma(W_{\text{down}} \cdot h)$$
+
+| Symbol | Meaning | Shape |
+|--------|---------|-------|
+| $h$ | Hidden state entering the adapter | $d$ |
+| $W_{\text{down}}$ | Down-projection weight matrix | $m \times d$ with $m \ll d$ |
+| $\sigma$ | Nonlinearity (typically GELU or ReLU) | — |
+| $W_{\text{up}}$ | Up-projection weight matrix | $d \times m$ |
+| $m$ | Bottleneck dimension (e.g., 64 when $d = 768$) | — |
+
+The bottleneck is the entire reason this works. Forcing the adapter to compress the hidden state into $m$ dimensions before re-expanding it means the only thing it can learn is a *low-capacity, task-relevant* transformation. There simply are not enough parameters in $W_{\text{down}}$ and $W_{\text{up}}$ to memorise the training data — so the adapter is forced into learning a useful, compressed signal.
+
+The Houlsby architecture places one adapter after the multi-head attention block and another after the feed-forward network, in every transformer block:
+
+```
+A single transformer block with adapters:
 
   Input
     │
     ▼
-  [Multi-Head Attention]   ← FROZEN
+  [Multi-Head Attention]   ❄️ FROZEN
     │
     ▼
-  [Add & LayerNorm]        ← FROZEN
+  [Add & LayerNorm]        ❄️ FROZEN
     │
     ▼
-  [Adapter Module]         ← TRAINABLE (tiny bottleneck)
-    │   down-proj (d → small_dim)
-    │   nonlinearity
-    │   up-proj (small_dim → d)
-    ▼
-  [Feed-Forward Network]   ← FROZEN
+  [Adapter Module]         🔥 TRAINABLE — bottleneck (d → m → d) + residual
     │
     ▼
-  [Add & LayerNorm]        ← FROZEN
+  [Feed-Forward Network]   ❄️ FROZEN
     │
     ▼
-  [Adapter Module]         ← TRAINABLE (tiny bottleneck)
+  [Add & LayerNorm]        ❄️ FROZEN
+    │
+    ▼
+  [Adapter Module]         🔥 TRAINABLE
     │
     ▼
   Output
 ```
 
-Each adapter has a **bottleneck architecture**: it first projects the hidden representation down to a very small dimension (e.g., from 768 to 64), applies a nonlinearity, then projects back up to the original dimension. The down-projection and up-projection weights are the only trainable parameters. The bottleneck forces the adapter to learn a compressed, task-relevant transformation — it cannot simply memorise the training data because there are not enough parameters to do so.
+Because every transformer block contains the same two adapter slots, an "adapter" for the whole model is really a collection of small modules sprinkled across all the blocks. A 12-block transformer therefore has 24 adapter modules, all trained jointly.
 
-The **AdapterHub** framework emerged as a community hub where researchers could share adapter weights for different tasks and languages, all compatible with the same base model. You could download an adapter trained on medical text classification and plug it into a frozen BERT, without touching the base model weights at all. This composability is a major architectural advantage.
+One elegant consequence is **composability**. Because adapters are small and modular, you can train one set on (say) medical-text classification and another set on (say) French named-entity recognition, and you can swap them in and out of the same frozen base model at will. The community resource **AdapterHub** (https://adapterhub.ml) hosts thousands of pre-trained adapter modules that anyone can download and plug into a compatible base. The original adapters work was BERT-focused; later papers such as **LLaMA-Adapter** ported the same idea to decoder-only generation models like LLaMA.
 
----
+Adapters are a great PEFT starting point, but they have one structural drawback: at inference time, the adapter modules sit inline in the forward pass and add their own computation. The next technique — LoRA — is mathematically more clever and avoids that overhead entirely.
 
-### 2c. Low-Rank Adaptation (LoRA)
+### 2e. LoRA — Approximating the Update with Two Thin Matrices
 
-**Low-Rank Adaptation (LoRA)** is the technique that made fine-tuning accessible to everyone. It is now the dominant PEFT method used in practice, and understanding its mathematics will make every subsequent concept in this chapter click into place.
+**Low-Rank Adaptation (LoRA)**, introduced by Edward Hu et al. in 2021, is the technique that made fine-tuning genuinely accessible. It is now the dominant PEFT method in practice, and understanding its mathematics will make every subsequent concept in this chapter click.
 
-LoRA starts from a different observation than adapters. Rather than inserting new modules between frozen layers, LoRA asks: what if we directly model the *change* that fine-tuning would make to the weight matrices? If we understood the structure of that change, maybe we could represent it compactly.
+LoRA starts from a different question than adapters. Rather than asking "where should I insert a new module?", LoRA asks: "What if I directly model the *change* that fine-tuning would make to each existing weight matrix?" If we understood the structure of that change, perhaps we could represent it far more compactly than the change itself.
 
-The key insight is the concept of **intrinsic dimensionality**. When you fine-tune a large model on a specific task, the update to each weight matrix does not fill the entire high-dimensional space the matrix lives in. The meaningful changes cluster in a very small subspace. A weight matrix that has 12,288 × 12,288 = 150 million entries might only need to change in an 8-dimensional subspace to adapt to a new task. The rest of the change is effectively noise or redundancy.
+The justification comes from a 2020 paper titled *"Intrinsic Dimensionality Explains the Effectiveness of Language Model Fine-Tuning"* (Aghajanyan, Zettlemoyer, Gupta). The paper shows that when you fine-tune a large model on a specific task, the update $\Delta W$ to each weight matrix does not fill the full high-dimensional space the matrix lives in. The meaningful changes are concentrated in a very small subspace. A weight matrix with $d^2 \approx 150$ million entries might only need to change in an *8-dimensional* subspace to adapt to a new task. The rest of the change is effectively noise or redundancy.
 
-LoRA exploits this by representing the weight update $\Delta W$ as the product of two much smaller matrices:
+LoRA exploits this by representing the weight update as the product of two thin matrices:
 
 $$W' = W + \Delta W = W + \frac{\alpha}{r} \cdot A \cdot B$$
 
 | Symbol | Meaning | Typical Value |
 |--------|---------|---------------|
-| $W \in \mathbb{R}^{d \times d}$ | Original frozen weight matrix | 12,288 × 12,288 in GPT-3 |
-| $A \in \mathbb{R}^{d \times r}$ | Down-projection matrix, trainable | 12,288 × 8 |
-| $B \in \mathbb{R}^{r \times d}$ | Up-projection matrix, trainable, **initialized to zero** | 8 × 12,288 |
+| $W \in \mathbb{R}^{d \times d}$ | Original frozen weight matrix | $12{,}288 \times 12{,}288$ in GPT-3 |
+| $A \in \mathbb{R}^{d \times r}$ | Down-projection, **trainable** | $12{,}288 \times 8$ |
+| $B \in \mathbb{R}^{r \times d}$ | Up-projection, **trainable, initialised to zero** | $8 \times 12{,}288$ |
 | $r$ | Rank of the decomposition — controls capacity | 4 to 64 |
 | $\alpha$ | Scaling factor for the magnitude of the update | typically $2r$ |
 
-This says: instead of directly updating $W$, we learn two thin matrices $A$ and $B$ whose product approximates the weight update. The original $W$ is never touched. During the forward pass, the output is:
+Instead of directly updating $W$, we learn two thin matrices $A$ and $B$ whose product $AB$ approximates the weight update. The original $W$ is never touched. During the forward pass, the output of the layer is computed as:
 
 $$\text{output} = Wx + \frac{\alpha}{r} \cdot ABx = \left(W + \frac{\alpha}{r} AB\right)x$$
 
-Initialising $B$ to all zeros ensures that at the very start of training, $\Delta W = AB = 0$, so the LoRA model begins as an exact copy of the pretrained model. Training then gradually fills in the $A$ and $B$ matrices to encode the task-specific update.
+Two subtle design choices matter:
 
-The $\alpha/r$ scaling factor keeps the effective magnitude of the update stable as you change $r$. If you double the rank, you double the capacity of $A$ and $B$, but dividing by $r$ in the scale keeps the total contribution to $W'$ proportional. The rule of thumb is to set $\alpha = 2r$.
+**Why $B$ is initialised to zero.** If $B$ starts at all zeros, then $AB = 0$ at the very first training step, so $\Delta W = 0$ and the LoRA-augmented model behaves exactly like the unmodified base model. Training then gradually grows $B$ away from zero in whatever direction the gradient points, filling in the task-specific update. This guarantees a clean, stable starting point — a random initialisation of both $A$ and $B$ would inject random noise into the pretrained weights from step one.
+
+**Why the $\alpha / r$ scaling.** When you change the rank $r$, you change the capacity of $A$ and $B$. The $\alpha / r$ scaling keeps the *magnitude* of the effective update stable across rank choices: doubling $r$ doubles the available capacity but also halves the scaling, so the contribution to $W'$ stays in roughly the same range. The conventional rule of thumb is $\alpha = 2r$, but the two are tunable separately.
 
 ```
 LoRA inside a single linear layer:
@@ -220,10 +459,10 @@ LoRA inside a single linear layer:
     ┌────┴──────────────────────────────┐
     │                                   │
     ▼                                   ▼
-  [W]  ← FROZEN                      [A]  ← trainable  (d × r)
-    │    (d × d weight matrix)          │
+  [W]  ❄️ FROZEN                     [A]  🔥 trainable  (d × r)
+    │   (d × d weight matrix)           │
     │                                   ▼
-    │                                 [B]  ← trainable  (r × d)
+    │                                 [B]  🔥 trainable  (r × d, init = 0)
     │                                   │
     │                   (A·B = low-rank update ΔW, shape d × d)
     │                                   │
@@ -233,25 +472,34 @@ LoRA inside a single linear layer:
                 output = Wx + (α/r)·ABx
 ```
 
-**The parameter count difference is staggering.** For a single weight matrix in GPT-3 (d = 12,288) with rank r = 8:
+**Which layers does LoRA target?** A transformer block has many weight matrices: the query, key, value, and output projections inside multi-head attention (`q_proj`, `k_proj`, `v_proj`, `o_proj`) and the gate, up, and down projections inside the feed-forward network (`gate_proj`, `up_proj`, `down_proj`). Applying LoRA to *all* of them gives the highest performance. Applying it only to `q_proj` and `v_proj` (the most commonly tuned attention projections) is cheaper and often good enough for many tasks. We will see the practical configuration in Section 3.
+
+A second practical advantage of LoRA over adapters: once training is complete, the product $AB$ can be folded directly into $W$ (set $W \leftarrow W + (\alpha/r) AB$), producing a single weight matrix indistinguishable in shape from the original. This means **LoRA adds zero inference-time overhead** — unlike adapters, which sit in the forward pass forever.
+
+### 2f. LoRA Dry-Run and Parameter Count Comparison
+
+The parameter savings from LoRA are dramatic when you look at concrete numbers. The book uses a clean toy example to build intuition: a $10 \times 10$ weight matrix has $100$ entries. A rank-1 decomposition of it uses two thin matrices of shapes $10 \times 1$ and $1 \times 10$ — only $20$ entries total. A rank-2 decomposition uses $10 \times 2 + 2 \times 10 = 40$ entries. Even at rank 2, you have cut the parameter count by more than half.
+
+Scale this up to GPT-3 and the numbers become extraordinary:
 
 | Method | Parameters per weight matrix | Compression |
 |--------|------------------------------|-------------|
-| Full fine-tuning | 12,288 × 12,288 = 150,994,944 | 1× |
-| LoRA rank 8 | 12,288×8 + 8×12,288 = 196,608 | **768× fewer** |
+| Full fine-tuning | $12{,}288 \times 12{,}288 = 150{,}994{,}944$ | $1\times$ |
+| LoRA rank 8 | $12{,}288 \times 8 + 8 \times 12{,}288 = 196{,}608$ | **$768\times$ fewer** |
 
-**Dry-run — LoRA matrix decomposition with tiny numbers:**
+Multiply that $768\times$ saving across every weight matrix in all 96 transformer blocks of GPT-3 and you have shrunk the trainable parameter count from 175 billion to a few hundred million. The optimizer state and gradient memory shrink proportionally — precisely the wall we were trying to climb in 2b.
+
+**Dry-run with tiny numbers ($d = 4$, $r = 1$).** Let us watch the decomposition arithmetic step by step:
 
 ```
-Setup: d = 4 (toy model dimension), r = 1 (rank 1)
-
-Original weight matrix W (frozen, shape 4×4):
+Original frozen weight matrix W (shape 4×4):
   W = [[2, 0, 1, 0],
        [0, 3, 0, 1],
        [1, 0, 2, 0],
        [0, 1, 0, 3]]
 
-LoRA matrices (trainable):
+LoRA matrices (trainable; both shown populated for illustration —
+B would actually start at all zeros at the beginning of training):
   A = [[0.5],      ← shape 4×1  (d × r)
        [0.3],
        [0.7],
@@ -259,79 +507,87 @@ LoRA matrices (trainable):
 
   B = [[0.2, 0.4, 0.1, 0.3]]   ← shape 1×4  (r × d)
 
-Step 1: Compute ΔW = A × B
-  Each row of A multiplied by B:
-  Row 0: 0.5 × [0.2, 0.4, 0.1, 0.3] = [0.10, 0.20, 0.05, 0.15]
-  Row 1: 0.3 × [0.2, 0.4, 0.1, 0.3] = [0.06, 0.12, 0.03, 0.09]
-  Row 2: 0.7 × [0.2, 0.4, 0.1, 0.3] = [0.14, 0.28, 0.07, 0.21]
-  Row 3: 0.1 × [0.2, 0.4, 0.1, 0.3] = [0.02, 0.04, 0.01, 0.03]
+Step 1 — Compute ΔW = A × B
+  Each row of A multiplied by B gives one row of ΔW:
+  Row 0:  0.5 × [0.2, 0.4, 0.1, 0.3] = [0.10, 0.20, 0.05, 0.15]
+  Row 1:  0.3 × [0.2, 0.4, 0.1, 0.3] = [0.06, 0.12, 0.03, 0.09]
+  Row 2:  0.7 × [0.2, 0.4, 0.1, 0.3] = [0.14, 0.28, 0.07, 0.21]
+  Row 3:  0.1 × [0.2, 0.4, 0.1, 0.3] = [0.02, 0.04, 0.01, 0.03]
 
   ΔW = [[0.10, 0.20, 0.05, 0.15],
          [0.06, 0.12, 0.03, 0.09],
          [0.14, 0.28, 0.07, 0.21],
          [0.02, 0.04, 0.01, 0.03]]
 
-Step 2: Compute effective weight W' = W + ΔW
+Step 2 — Compute effective weight W' = W + ΔW  (using α/r = 1 for simplicity)
   W' = [[2.10, 0.20, 1.05, 0.15],
          [0.06, 3.12, 0.03, 1.09],
          [1.14, 0.28, 2.07, 0.21],
          [0.02, 1.04, 0.01, 3.03]]
 
-Parameter count comparison:
-  Full fine-tuning:  4 × 4 = 16 parameters to update
-  LoRA rank-1:       4 + 4 =  8 parameters to update   (50% saving at toy scale)
-  At d=12,288, r=8:  196,608 vs 150,994,944            (768× saving at real scale)
+Parameter count comparison at this toy scale:
+  Full fine-tuning:  4 × 4   = 16 parameters to update
+  LoRA rank-1:       4 + 4   =  8 parameters to update    (50% saving)
+  At d = 12,288, r = 8:  196,608 vs 150,994,944           (768× saving)
 ```
 
-**Which layers to target** is a practical decision. A transformer block contains several weight matrices: the query projection (`q_proj`), key projection (`k_proj`), value projection (`v_proj`), and output projection (`o_proj`) in multi-head attention, plus the feed-forward network's gate-projection (`gate_proj`), up-projection (`up_proj`), and down-projection (`down_proj`). Applying LoRA to all of them gives the best results. Applying it to only `q_proj` and `v_proj` is faster and often good enough for many tasks.
+Notice the structure of $\Delta W$ in the dry-run: every row is a *scaled copy of the single row of $B$*, weighted by the corresponding entry of $A$. This is what *rank 1* means in concrete terms — a single direction of update, broadcast across the matrix. At rank 8, you would have eight such directions added together. Eight directions is empirically enough to capture most of what task-specific fine-tuning needs to do.
 
----
+### 2g. Quantization — Compressing the Base Model's Weights
 
-### 2d. Quantization and QLoRA
+LoRA is brilliant at one thing: shrinking the count of *trainable* parameters. But it does not shrink the *base model itself*. A 7-billion-parameter model stored in float32 still occupies $7\text{B} \times 4 = 28$ GB of VRAM just to be loaded into memory, before any training begins. Consumer GPUs (RTX 3090, 4090) top out at 24 GB; entry-level training cards sit at 16 GB. We have closed the gradient-and-optimizer-state gap but not the gap of loading the model in the first place.
 
-LoRA dramatically reduces the number of *trainable* parameters, but it does not reduce the memory required to *load* the base model. A 7-billion-parameter model stored in float32 still requires 28 GB of VRAM just to hold the weights. Most consumer GPUs top out at 16–24 GB. The solution is **quantization** — compressing the model weights to a lower numerical precision before loading them.
-
-To understand quantization, you first need to understand how floating-point numbers are stored. A float32 number uses 32 bits: one bit for the sign ($\pm$), eight bits for the exponent (the scale), and twenty-three bits for the mantissa (the significant digits). This gives extraordinary precision — numbers as small as $10^{-38}$ and as large as $10^{38}$ with seven decimal digits of accuracy. Float16 halves this to 16 bits. A 4-bit integer gives only 16 possible values total.
+**Quantization** is the technique that closes that remaining gap. The core idea is to store the weights at lower numerical precision, so they take fewer bytes. Floating-point numbers are stored as three fields — a sign bit, exponent bits, and mantissa bits — and dropping bits from the mantissa or exponent shrinks the representation at the cost of precision:
 
 ```
-Floating-point bit layout:
+Floating-point bit layouts:
 
-  float32 (32 bits):
-  ┌─┬────────┬───────────────────────┐
-  │S│EEEEEEEE│MMMMMMMMMMMMMMMMMMMMMMM│
-  └─┴────────┴───────────────────────┘
-   1    8               23              → 7 decimal digits of precision
+  float32 (32 bits, ~7 decimal digits of precision):
+    ┌─┬────────┬───────────────────────┐
+    │S│EEEEEEEE│MMMMMMMMMMMMMMMMMMMMMMM│
+    └─┴────────┴───────────────────────┘
+     1    8               23
 
-  float16 (16 bits):
-  ┌─┬─────┬──────────┐
-  │S│EEEEE│MMMMMMMMMM│
-  └─┴─────┴──────────┘
-   1   5       10                    → 3-4 decimal digits of precision
+  float16 (16 bits, ~3–4 decimal digits of precision):
+    ┌─┬─────┬──────────┐
+    │S│EEEEE│MMMMMMMMMM│
+    └─┴─────┴──────────┘
+     1   5       10
 
-  4-bit NF4:
-  ┌────┐
-  │XXXX│   → 16 possible values (non-uniform, distribution-aware)
-  └────┘
+  NF4 (4 bits, only 16 possible values total — distribution-aware):
+    ┌────┐
+    │XXXX│
+    └────┘
 ```
 
-The idea behind quantization is that LLM weights do not need float32 precision to be useful. The model learned its knowledge from the *relative patterns* between weights, not from the precise seventh decimal digit of any single weight. If we can faithfully represent the *distribution* of weights with fewer bits, the model will behave nearly identically while consuming a fraction of the memory.
+The book illustrates the precision tradeoff vividly with the number $\pi$:
 
-**Linear quantization** maps a range of floating-point values to a grid of integer values:
+```
+π represented at different precisions:
+
+  float32:  3.1415927    ← ~7 digits of precision
+  float16:  3.141        ← ~3–4 digits of precision
+  4-bit:    one of 16 levels — only the rough magnitude survives
+```
+
+For most numerical computing applications, dropping from float32 to 4 bits would be catastrophic. Why does it not destroy the model? Because LLM weights do not encode information in their seventh decimal digit. The model's intelligence lives in the *relative patterns* between weights — which weight is bigger than which other, and by roughly how much. If we can faithfully preserve the *distribution* of weight magnitudes using fewer bits, the model will behave nearly identically while occupying a fraction of the memory.
+
+The simplest quantization scheme is **linear (uniform) quantization**: map the range $[x_{\min}, x_{\max}]$ to $2^b$ evenly spaced integer levels.
 
 $$q = \text{round}\!\left(\frac{x - x_{\min}}{x_{\max} - x_{\min}} \times (2^b - 1)\right)$$
 
 | Symbol | Meaning |
 |--------|---------|
 | $x$ | Original floating-point weight value |
-| $x_{\min},\, x_{\max}$ | Minimum and maximum of the weight block |
-| $b$ | Number of bits ($b=4$ gives $2^4 = 16$ levels) |
+| $x_{\min}, x_{\max}$ | Minimum and maximum of the weight block being quantized |
+| $b$ | Number of bits ($b = 4$ gives $2^4 = 16$ levels) |
 | $q$ | Quantized integer code |
 
 **Dry-run — quantizing four weights to 2 bits:**
 
 ```
-Original weights: [-1.2,  0.3,  0.7,  2.1]
-  x_min = -1.2,  x_max = 2.1,  range = 3.3
+Original weights:  [-1.2,  0.3,  0.7,  2.1]
+  x_min = -1.2,   x_max = 2.1,   range = 3.3
   2 bits → 2² = 4 levels: {0, 1, 2, 3}
 
   Formula:  q = round((x − (−1.2)) / 3.3 × 3)
@@ -341,139 +597,219 @@ Original weights: [-1.2,  0.3,  0.7,  2.1]
   x =  0.7:  round(( 1.9) / 3.3 × 3) = round(1.727) = 2
   x =  2.1:  round(( 3.3) / 3.3 × 3) = round(3.000) = 3
 
-  Quantized codes: [0, 1, 2, 3]   ← stored as 2-bit integers
+  Quantized codes: [0, 1, 2, 3]   ← each stored as 2 bits
 
-Reconstruction (dequantization):  x_hat = q/3 × 3.3 + (−1.2)
-  q=0 → −1.200  (exact)
-  q=1 → −0.100  (original was 0.3  → error = 0.4)
-  q=2 →  1.000  (original was 0.7  → error = 0.3)
-  q=3 →  2.100  (exact)
+Reconstruction (dequantization):  x̂ = q/3 × 3.3 + (−1.2)
+  q = 0 →  −1.200   (exact match)
+  q = 1 →  −0.100   (original was 0.3 → error = 0.4)
+  q = 2 →   1.000   (original was 0.7 → error = 0.3)
+  q = 3 →   2.100   (exact match)
 
-Some precision is lost for interior values, but the overall distribution is preserved.
+The two extreme values reconstruct exactly; interior values suffer some
+quantization error, but the overall distribution is preserved.
 ```
 
-**The outlier problem with naive quantization.** Imagine a weight matrix where 99% of weights cluster between −0.5 and +0.5, but one weight is +50.0. When we compute $x_{\min}$ and $x_{\max}$, that single outlier stretches the entire scale to cover [−0.5, 50.0]. All of the common weights near zero now get squeezed into the lowest two or three quantization bins, losing nearly all their precision. It is like designing a ruler to measure both a pencil and a flagpole — accurate for the flagpole and useless for the pencil.
+Linear quantization works in the textbook case where the input distribution is well-behaved. But real LLM weights are not well-behaved, and the next subsection shows why this scheme fails on them — and what QLoRA does to fix it.
 
-**Blockwise quantization** solves this by dividing the weight tensor into small independent blocks (typically 64 weights each) and computing separate quantization constants for each block. Each block now uses its full dynamic range for its own local distribution, preventing any single outlier from polluting the precision of distant weights.
+### 2h. QLoRA — Blockwise NF4 Quantization Combined with LoRA
 
-```
-Blockwise Quantization:
+Naive linear quantization breaks down for real LLM weights in two ways. The first failure is **outliers**.
 
-  Full weight tensor (many values, possible outliers):
-  ┌──────────────────────────────────────────────────────────┐
-  │  -0.3  +0.1  +0.4  -0.2  …  -0.5  +0.3  -0.1  +50.0   │
-  └──────────────────────────────────────────────────────────┘
-                          │
-              split into blocks of 64 weights each
-                          │
-  ┌───────────────┐  ┌───────────────┐  ┌──────────────────────┐
-  │ Block 1       │  │ Block 2       │  │ Block N              │
-  │ range: ±0.5   │  │ range: ±0.4   │  │ range: ±50.0         │
-  │ fine precision│  │ fine precision│  │ coarse (outlier only)│
-  └───────────────┘  └───────────────┘  └──────────────────────┘
-```
-
-**NormalFloat (NF4) quantization** goes one step further. Uniform quantization places bins at equal intervals across the range, but LLM weights are not uniformly distributed — they follow a roughly Normal (bell-curve) distribution, with most weights near zero and very few large-magnitude weights. NF4 uses **distribution-aware bins**: more quantization levels are placed near the center (where most weights are) and fewer levels are placed in the tails (where few weights are). This minimises the average quantization error across the actual distribution of weight values, squeezing more accuracy out of those 4 bits.
-
-**QLoRA = Quantization + LoRA**, combined into one system:
-
-1. Load the base model in **4-bit NF4 quantization** — read-only, frozen
-2. Add **LoRA adapters in float16** — trainable, tiny
-3. During the forward pass, **dequantize the 4-bit weights to float16 on the fly** for computation
-4. Compute gradients only through the LoRA parameters — the base model weights never receive updates
+Imagine a weight matrix where 99% of the weights cluster between $-0.5$ and $+0.5$, but one weight is $+50.0$. The quantization range $[x_{\min}, x_{\max}]$ now spans $[-0.5, 50.0]$. With only 16 levels available, almost all of those levels are spread across the empty region between $0.5$ and $50.0$, while *all* of the common near-zero weights get crushed into the first two or three levels. It is like designing a single ruler to measure both a pencil and a flagpole — accurate for the flagpole, useless for the pencil.
 
 ```
-QLoRA Memory Architecture:
+Naive linear quantization with one outlier (range -0.5 to +50.0):
+
+  Real weight distribution:
+    -0.5 ─────────────────────────────────────── +50.0
+     ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●     ●     ← almost everything is here,
+                                                         outlier is far right
+
+  Available 4-bit levels (16 of them, equally spaced):
+     ▲    ▲    ▲    ▲    ▲    ▲    ▲    ▲    ▲    ▲    ▲   ▲   ▲   ▲   ▲   ▲
+
+  Result: nearly all weights round into the leftmost 1–2 levels.
+          Precision in the near-zero region is destroyed.
+```
+
+The second failure is the **density mismatch**. Even without outliers, LLM weights are not uniformly distributed across their range — they follow a roughly Normal (bell-curve) distribution centred near zero. Uniform quantization places equal numbers of levels in dense regions (near zero) and in sparse regions (the tails), which is exactly the wrong allocation.
+
+**QLoRA**, introduced by Tim Dettmers and colleagues in 2023, fixes both problems and combines the result with LoRA. It has three key components.
+
+**Component 1 — Blockwise quantization.** Instead of computing $x_{\min}$ and $x_{\max}$ over the entire weight tensor, split the tensor into small independent blocks (typically 64 consecutive weights) and compute separate quantization constants per block. Each block now uses its 16 levels for its *own* local distribution, so a far-away outlier in some other block cannot pollute the precision here.
+
+```
+Blockwise quantization:
+
+  Full weight tensor (with one outlier far to the right):
+    [-0.3  +0.1  +0.4  -0.2  …  -0.5  +0.3  -0.1  +50.0]
+                           │
+              split into blocks of 64 weights
+                           │
+    ┌───────────────┐  ┌───────────────┐  ┌──────────────────────┐
+    │ Block 1       │  │ Block 2       │  │ Block N              │
+    │ range: ±0.5   │  │ range: ±0.4   │  │ range: ±50.0         │
+    │ fine precision│  │ fine precision│  │ coarse (outlier only)│
+    └───────────────┘  └───────────────┘  └──────────────────────┘
+```
+
+**Component 2 — NormalFloat 4-bit (NF4) quantization.** Uniform 16-level quantization wastes bins on rare extreme values. NF4 instead places its 16 levels with **distribution-aware spacing**: many levels packed near zero (where most weights are) and few levels spread into the tails (where weights are rare). The exact level positions are derived analytically from the assumption that weights follow a standard normal distribution. This squeezes the maximum information out of those 4 bits because every level is placed where it has the most weights to represent.
+
+```
+NF4 level placement vs uniform 4-bit:
+
+  Uniform 4-bit (16 equally spaced levels):
+    ▲      ▲      ▲      ▲      ▲      ▲      ▲      ▲
+    -1                   0                          +1
+
+  NF4 (16 levels, packed where the weight density is high):
+    ▲         ▲      ▲   ▲  ▲ ▲▲▲▲▲ ▲  ▲   ▲      ▲         ▲
+    -1                   0                          +1
+         ↑                  ↑                  ↑
+       few in tail    many near zero        few in tail
+```
+
+**Component 3 — LoRA on top of the quantized base.** The 4-bit-quantized base model is loaded as a *read-only* frozen object. On top of it, we attach the usual LoRA adapter matrices $A$ and $B$ in float16, exactly as in 2e. During the forward pass, the 4-bit base weights are dequantized to float16 on-the-fly for each layer's matrix multiply; gradients flow only through the LoRA matrices.
+
+```
+QLoRA memory architecture:
 
   ┌──────────────────────────────────────────────┐
-  │  Base Model Weights (4-bit NF4)              │  ← FROZEN, compressed
+  │  Base model weights (4-bit NF4, blockwise)   │  ❄️ FROZEN, compressed
   │  7B params × 0.5 bytes ≈ 3.5 GB              │
-  │  (vs 28 GB in float32 — an 8× reduction)     │
+  │  (vs 28 GB at float32 — an 8× reduction)     │
   └──────────────────────────────────────────────┘
-                      │
-           [Dequantize on-the-fly for each layer's forward pass]
-                      │
-                      ▼
+                       │
+        [dequantize on-the-fly to float16 for each forward pass]
+                       │
+                       ▼
   ┌──────────────────────────────────────────────┐
-  │  LoRA Adapters (float16)                     │  ← TRAINABLE
-  │  A and B matrices for each targeted layer    │
+  │  LoRA adapters (A and B, float16)            │  🔥 TRAINABLE
   │  ~10–50 MB for a 7B model with rank 16       │
   └──────────────────────────────────────────────┘
-                      │
-           [Gradients flow only through LoRA]
-                      │
-                      ▼
+                       │
+        [gradients flow only through the LoRA matrices]
+                       │
+                       ▼
               Optimizer updates only A and B
 ```
 
-The practical impact is transformative. Fine-tuning a 7B model without QLoRA requires approximately 28 GB of VRAM for the weights alone, plus gradients and optimizer state. With QLoRA, the entire fine-tuning process fits comfortably in 6–8 GB — a consumer-grade GPU. This is what democratised fine-tuning outside of large AI labs.
+The practical impact is transformative. Fine-tuning a 7B model with full fine-tuning needs roughly 112 GB of training state (parameters + gradients + Adam moments at float32) and is impossible on any consumer GPU. With QLoRA, the entire fine-tuning workflow fits comfortably in **6–8 GB** of VRAM — well within the budget of a single RTX 3090 or even an RTX 4060. This single shift — from "rent a multi-GPU cluster" to "use the laptop you already own" — is what democratised LLM fine-tuning outside the largest AI labs.
+
+With the theory of LoRA, quantization, and QLoRA in place, we are ready to actually fine-tune a model. Section 3 walks through a complete instruction-tuning run with TinyLlama, including every line of the `bitsandbytes` config, the LoRA config, the training arguments, and the `SFTTrainer` itself.
 
 ---
 
 ## 3. Instruction Tuning with QLoRA — Practical Walkthrough
 
-The book uses **TinyLlama-1.1B** as the base model for its practical examples. TinyLlama is a small but capable open-source model, making it fast to fine-tune and easy to experiment with on limited hardware. Despite its small size, the patterns established here apply identically to 7B, 13B, and even 70B models — you would simply adjust batch size and gradient accumulation to compensate for memory.
+Theory in hand, this section turns the QLoRA stack into a working instruction-tuning run on a real model. The book — and these notes — use **TinyLlama-1.1B** as the base. TinyLlama is small enough to fine-tune end-to-end on a single consumer GPU in well under an hour, but it shares the LLaMA architecture, so every line of code we write here applies identically to 7B, 13B, or 70B LLaMA-family models. The only adjustments at larger scale are `per_device_train_batch_size` and `gradient_accumulation_steps`, which we will meet shortly.
 
-### 3a. Dataset Preparation and Chat Templates
+### 3a. The Walkthrough Pipeline — What We're Building
 
-The training data for instruction tuning comes from the **UltraChat** dataset — a large collection of synthetic multi-turn conversations. The book uses a filtered subset of 3,000 conversations to keep training time manageable.
+Before we descend into individual config knobs, it helps to see the whole pipeline laid out. Instruction tuning a base model with QLoRA is a seven-step recipe, and the rest of Section 3 is one subsection per step. Each subsection adds one layer of capability to a model that starts out unable to follow instructions and ends up answering them coherently.
 
-Before the data reaches the model, it must be formatted using a **chat template**. Chat templates exist because instruction-tuned models are trained to recognise specific token patterns that separate the user's message from the assistant's response. If you fine-tune a model without applying the template it was trained on, the model will not know where the user message ends and where it should start generating its reply.
+```
+                  The QLoRA instruction-tuning pipeline:
 
-TinyLlama uses the following template format:
+  [1] Load UltraChat dataset                              (3b)
+          │   (3,000 multi-turn conversations from HuggingFaceH4/ultrachat_200k)
+          ▼
+  [2] Apply TinyLlama chat template                       (3b)
+          │   (wrap each turn in <|user|>, </s>, <|assistant|>)
+          ▼
+  [3] Load TinyLlama base in 4-bit NF4                    (3c)
+          │   (BitsAndBytesConfig — Q in QLoRA)
+          ▼
+  [4] Attach trainable LoRA adapters                      (3d)
+          │   (PEFT LoraConfig — the LoRA in QLoRA)
+          ▼
+  [5] Configure training hyperparameters                  (3e)
+          │   (TrainingArguments + paged AdamW optimizer)
+          ▼
+  [6] Train with SFTTrainer                               (3f)
+          │   (loss masking, batching, gradient updates on A and B only)
+          ▼
+  [7] Merge adapters and run inference                    (3g)
+          │   (W ← W + (α/r)·AB; deploy as a normal model)
+          ▼
+        Instruction-tuned TinyLlama
+```
+
+Each box is one design decision plus a few lines of code. The next seven subsections go through them in order.
+
+### 3b. Dataset Preparation and Chat Templates
+
+Think of a chat template like the stage directions in a play script. Without them, the actors would have no idea who is speaking which line — the script would read like an undifferentiated wall of text. Stage directions ("ALICE:", "BOB:") make every role unambiguous. A **chat template** does the same thing for an LLM: it inserts special tokens that explicitly mark which span of text is the user's message and which span is the assistant's response. Without these markers, the model would just see one long sequence and have no idea where it is supposed to start generating.
+
+TinyLlama's chat template uses three special tokens:
+
+| Token | Role |
+|-------|------|
+| `<|user|>` | Beginning of a user message |
+| `<|assistant|>` | Beginning of an assistant response |
+| `</s>` | End-of-sequence — closes each turn |
+
+A formatted single-turn conversation looks like this:
 
 ```
 <|user|>
-[user message here]</s>
+What is 1 + 1?</s>
 <|assistant|>
-[assistant response here]</s>
+The answer to 1 + 1 is 2!</s>
 ```
 
-The special tokens `<|user|>` and `<|assistant|>` are role markers. The `</s>` end-of-sequence token tells the model where each turn ends. Without these markers, the model cannot distinguish between reading a prompt and generating a response — it would just see an undifferentiated stream of tokens.
+The training data comes from **UltraChat** (Ning Ding et al., 2023, *"Enhancing chat language models by scaling high-quality instructional conversations"*), specifically the filtered subset hosted as `HuggingFaceH4/ultrachat_200k`. The full dataset has roughly 200,000 multi-turn conversations; the book selects 3,000 shuffled examples to keep training time manageable. Increase that number for better quality at the cost of training time.
 
 ```python
 from transformers import AutoTokenizer
 from datasets import load_dataset
 
-# Load TinyLlama's tokenizer — it carries the chat template
+# Load TinyLlama's chat tokenizer purely to borrow its chat template
 template_tokenizer = AutoTokenizer.from_pretrained(
     "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 )
 
 def format_prompt(example):
-    """Apply TinyLlama's chat template to a conversation example."""
+    """Wrap a multi-turn conversation in TinyLlama's chat template."""
     chat = example["messages"]
-    # apply_chat_template is just smart string formatting with special tokens
     prompt = template_tokenizer.apply_chat_template(chat, tokenize=False)
     return {"text": prompt}
 
-# Load 3,000 shuffled conversations from UltraChat
 dataset = (
-    load_dataset("HuggingFaceH4/ultrachat_200k", split="train_sft")
+    load_dataset("HuggingFaceH4/ultrachat_200k", split="test_sft")
     .shuffle(seed=42)
     .select(range(3_000))
 )
 dataset = dataset.map(format_prompt)
 ```
 
-After formatting, a training example looks like this:
+Notice a subtle point: we load the *chat* version of TinyLlama only to access its tokenizer (for the template), but we will fine-tune the *base* (non-chat) version. The base model has never seen the tokens `<|user|>`, `<|assistant|>`, or `</s>` in this structural role before — through SFT, we are teaching it to recognise these markers and respond appropriately when it sees them.
+
+After mapping, a real training example from UltraChat looks like:
 
 ```
 <|user|>
 Given the text: Knock, knock. Who's there? Hike.
-Can you continue the joke based on the given text material?</s>
+Can you continue the joke based on the given text material "Knock, knock.
+Who's there? Hike"?</s>
 <|assistant|>
-Of course! Knock, knock. Who's there? Hike. Hike who? Hike your way over
-here and let's go for a walk!</s>
+Sure! Knock, knock. Who's there? Hike. Hike who? Hike up your pants, it's cold
+outside!</s>
+<|user|>
+Can you tell me another knock-knock joke based on the same text material
+"Knock, knock. Who's there? Hike"?</s>
+<|assistant|>
+Of course! Knock, knock. Who's there? Hike. Hike who? Hike your way over here
+and let's go for a walk!</s>
 ```
 
-The model is trained to predict each token of the assistant's reply given the full preceding context. The loss is computed only on the assistant's tokens — we do not penalise the model for "predicting" the user message, since that is given context, not generated output.
+Two structural things to notice. First, this is a *multi-turn* conversation — the template can repeat user/assistant pairs as many times as needed. Second, every turn ends with `</s>`, including the assistant's; during training, the model learns to predict `</s>` when its response is done, which is how it knows to stop generating at inference time.
 
----
+The next subsection turns this formatted text into something a model can actually train on.
 
-### 3b. Model Quantization — The BitsAndBytes Config
+### 3c. Model Quantization — The BitsAndBytes Config
 
-With the data prepared, the next step is to load the base model in 4-bit quantized form using the `bitsandbytes` library. Every parameter in the `BitsAndBytesConfig` has a specific purpose:
+Think of quantization like shipping a piece of disassembled furniture. The flat-packed form is 8× smaller and fits in your car (4-bit storage on the GPU), but you cannot use it as furniture until you reassemble each piece at the destination (dequantize to float16 for each matrix multiply). The disassembled and assembled forms hold the same information; we only ever materialise the assembled form briefly, for as long as we need it.
 
 ```python
 import torch
@@ -483,7 +819,7 @@ model_name = "TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T"
 
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,                # ① Store weights as 4-bit integers
-    bnb_4bit_quant_type="nf4",        # ② Use NormalFloat quantization
+    bnb_4bit_quant_type="nf4",        # ② Use NormalFloat-4 (distribution-aware)
     bnb_4bit_compute_dtype="float16", # ③ Dequantize to float16 for computation
     bnb_4bit_use_double_quant=True,   # ④ Quantize the quantization constants too
 )
@@ -493,36 +829,77 @@ model = AutoModelForCausalLM.from_pretrained(
     quantization_config=bnb_config,
     device_map="auto",
 )
+model.config.use_cache = False        # ⑤ Disable KV cache (it's for inference)
+model.config.pretraining_tp = 1       # ⑥ No tensor parallelism on a single GPU
 
 tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-tokenizer.pad_token = "<PAD>"
-tokenizer.padding_side = "left"
+tokenizer.pad_token = "<PAD>"         # TinyLlama has no pad token by default
+tokenizer.padding_side = "left"       # Left-pad so generation continues from the right edge
 ```
 
-`load_in_4bit=True` stores all model weights as 4-bit NF4 integers on the GPU. For a 1.1B parameter model this reduces the weight memory from ~4.4 GB (float32) to ~0.55 GB — an 8× reduction.
+Now the *why* behind each setting.
 
-`bnb_4bit_quant_type="nf4"` selects NormalFloat-4 rather than plain 4-bit integer quantization. NF4's distribution-aware bins minimise error for the bell-curve-shaped weight distributions typical in LLMs.
+**① `load_in_4bit=True`.** Every weight matrix is stored as a 4-bit NF4 integer code on the GPU. The memory savings on TinyLlama are concrete:
 
-`bnb_4bit_compute_dtype="float16"` means that even though weights are stored as 4-bit, matrix multiplications cannot be performed in 4-bit. Just before each computation, the relevant weights are dequantized to float16. The computation happens in float16, the result is passed forward, and the weights snap back to 4-bit storage.
+| Precision | Bytes per param | TinyLlama-1.1B total |
+|-----------|-----------------|----------------------|
+| float32 | 4 bytes | $1.1\text{B} \times 4 = 4.4$ GB |
+| float16 | 2 bytes | $1.1\text{B} \times 2 = 2.2$ GB |
+| 4-bit NF4 | 0.5 bytes | $1.1\text{B} \times 0.5 = 0.55$ GB |
+| 4-bit NF4 + double-quant | ~0.52 bytes | ~0.57 GB |
 
-`bnb_4bit_use_double_quant=True` applies **double quantization** — a second level of compression. The quantization constants themselves (the per-block scale factors) are stored as float32 by default. Double quantization re-quantizes those constants to 8-bit integers. This saves approximately 0.37 bits per parameter — small per weight, but adds up to hundreds of megabytes for large models.
+The book reports ~1 GB total VRAM use after loading the quantized model — slightly above the 0.55 GB raw weight estimate because of embedding tables, layer norm parameters (kept at float32 for stability), and bookkeeping overhead.
 
----
+**② `bnb_4bit_quant_type="nf4"`.** Picks **NormalFloat-4** from 2h: 16 quantization levels positioned with distribution-aware spacing (dense near zero, sparse in the tails) rather than uniform spacing. The only other realistic choice is `"fp4"`, a standard 4-bit float; NF4 is empirically better for normally-distributed LLM weights.
 
-### 3c. LoRA Configuration — Every Parameter Explained
+**③ `bnb_4bit_compute_dtype="float16"`.** Modern GPU tensor cores cannot do matrix multiplications in 4-bit directly — they need at least float16. So just before each matrix multiply in the forward pass, `bitsandbytes` dequantizes the relevant block of weights to float16, runs the multiplication, and discards the float16 version. The 4-bit storage stays untouched. This is the "shipping/reassembly" cycle from the analogy.
 
-With the quantized model loaded, the LoRA adapters are configured using the `peft` library:
+**④ `bnb_4bit_use_double_quant=True`.** This is **double quantization**, an extra trick from the QLoRA paper that squeezes out the last bit of overhead. Recall that blockwise quantization stores one floating-point *scale factor* per block of 64 weights. Naively those scale factors are float32 (4 bytes each), and the total storage works out to:
+
+```
+Plain 4-bit blockwise quantization (block size = 64):
+  64 weights × 4 bits   =  32 bytes (the quantized weights)
+   1 scale × 32 bits    =   4 bytes (the float32 scale factor)
+                          ────────
+  Total                  =  36 bytes per 64 weights
+                          = 36 × 8 / 64
+                          = 4.5 bits per weight  ← not 4!
+```
+
+Double quantization re-quantizes those scale factors themselves into 8-bit integers (with one small float32 scale per *meta-block* of 256 inner scales). The new accounting:
+
+```
+4-bit + double quantization (block size = 64):
+  64 weights × 4 bits           =  32 bytes
+   1 quantized scale × 8 bits   =   1 byte
+   (shared meta-scale, amortised across 256 blocks ≈ 0.016 bytes)
+                                  ────────
+  Total                          ≈ 33 bytes per 64 weights
+                                  ≈ 4.13 bits per weight
+```
+
+The saving is about 0.37 bits per parameter. Negligible per weight, but on a 7B model it adds up to roughly 325 MB — enough to be worth turning on by default.
+
+**⑤ `model.config.use_cache = False`.** The KV-cache is a generation-time optimisation (cache past keys and values so each new token does not recompute them). It is irrelevant during training and consumes memory; switch it off.
+
+**⑥ `model.config.pretraining_tp = 1`.** Tensor-parallelism flag for splitting computations across multiple GPUs. We are on a single GPU, so set it to 1.
+
+The two final tokenizer lines deserve a brief note. TinyLlama's tokenizer ships without a pad token, so we add one (`<PAD>`); we set `padding_side="left"` because for causal LMs we want the real content sitting at the right edge of the context — generation always continues from the rightmost position.
+
+### 3d. LoRA Configuration — Every Parameter Explained
+
+Think of LoRA configuration like a film director planning targeted reshoots of a finished movie. You decide three things: *which scenes* to reshoot (`target_modules`), *how much creative latitude* the rewrite team has (`r`, the rank), and *how strongly* the reshoots should override the original takes (`lora_alpha`, the scaling factor).
 
 ```python
 from peft import LoraConfig, prepare_model_for_kbit_training, get_peft_model
 
 peft_config = LoraConfig(
-    lora_alpha=32,          # Scaling factor α
-    lora_dropout=0.1,       # Dropout on adapter activations
-    r=64,                   # Rank of the decomposition
-    bias="none",            # Do not train bias terms
-    task_type="CAUSAL_LM",  # Causal language modelling task
-    target_modules=[        # Which weight matrices to add LoRA to
+    lora_alpha=32,
+    lora_dropout=0.1,
+    r=64,
+    bias="none",
+    task_type="CAUSAL_LM",
+    target_modules=[
         "k_proj", "gate_proj", "v_proj", "up_proj",
         "q_proj", "o_proj", "down_proj"
     ]
@@ -532,19 +909,68 @@ model = prepare_model_for_kbit_training(model)
 model = get_peft_model(model, peft_config)
 ```
 
-| Parameter | What it controls | Guidance |
-|-----------|-----------------|---------|
-| `r` | Rank of A and B matrices | Higher → more capacity → more memory. Typical range: 4–64. Start at 16. |
-| `lora_alpha` | Scale of the weight update ($\alpha/r$ multiplier) | Set to `2r` as a rule of thumb. |
-| `lora_dropout` | Dropout probability on adapter activations | Regularisation; 0.05–0.1 typical. |
-| `target_modules` | Which projections receive LoRA adapters | All attention + FFN projections for maximum quality. |
-| `bias="none"` | Whether to train bias terms | Biases are tiny scalars — not worth training. |
+| Parameter | What it controls | This run's value |
+|-----------|------------------|------------------|
+| `r` | Rank of $A$ and $B$ — capacity of the update | 64 |
+| `lora_alpha` | Scaling factor $\alpha$ in $\Delta W = (\alpha/r) AB$ | 32 |
+| `lora_dropout` | Dropout on adapter activations during training | 0.1 |
+| `bias` | Whether to also train bias terms ("none" / "lora_only" / "all") | "none" |
+| `task_type` | Tells PEFT this is causal LM | "CAUSAL_LM" |
+| `target_modules` | List of weight matrices to wrap with LoRA | All 7 LLaMA projections |
 
-The `target_modules` list maps directly to the weight matrices inside each transformer block. `q_proj`, `k_proj`, `v_proj` are the Query, Key, and Value projections in multi-head attention. `o_proj` is the output projection that combines attention heads. `gate_proj`, `up_proj`, and `down_proj` are the three weight matrices inside the feed-forward network (TinyLlama uses a gated FFN architecture).
+`r=64` is unusually high — for larger models, rank 8–16 is the norm. The book uses 64 here precisely because TinyLlama is so small that the absolute trainable-parameter count of a rank-64 LoRA stays modest. The effective scaling is $\alpha / r = 32 / 64 = 0.5$, which means the LoRA update is *halved* before being added to the base weights — a deliberately conservative setting. (The conventional $\alpha = 2r$ rule from 2e would have given $\alpha = 128$ and a scaling of 2; the book chose to be gentler.)
 
----
+`target_modules` lists all seven trainable matrices inside each TinyLlama transformer block:
 
-### 3d. Training Arguments — What They Actually Do
+```
+Attention projections (4):    q_proj   k_proj   v_proj   o_proj
+Gated FFN projections (3):    gate_proj   up_proj   down_proj
+```
+
+Targeting all seven gives the highest fine-tuning quality. Targeting only a subset (e.g. just `q_proj` and `v_proj`) is faster but gives up some quality.
+
+**Concrete LoRA parameter count for this run.** TinyLlama has hidden dimension $d = 2048$, FFN intermediate dimension $d_{\text{ff}} = 5632$, and 22 transformer blocks. With $r = 64$:
+
+```
+Per transformer block:
+
+  Attention LoRAs (4 matrices, each d × d shape, rank r):
+    4 × (2048 × 64 + 64 × 2048)
+    = 4 × 262,144
+    = 1,048,576
+
+  FFN gate_proj + up_proj (2 matrices, each d_ff × d shape, rank r):
+    2 × (2048 × 64 + 64 × 5632)
+    = 2 × (131,072 + 360,448)
+    = 2 × 491,520
+    = 983,040
+
+  FFN down_proj (1 matrix, d × d_ff shape, rank r):
+    5632 × 64 + 64 × 2048
+    = 360,448 + 131,072
+    = 491,520
+
+  Block total:  1,048,576 + 983,040 + 491,520  =  2,523,136
+
+Across all 22 blocks:  22 × 2,523,136  ≈  55.5 M trainable LoRA params
+
+As a fraction of TinyLlama:  55.5 M / 1.1 B  ≈  5%
+```
+
+The 5% trainable-parameter ratio is a deliberate choice driven by the high rank — the empirical "1–4%" range from 2c assumes typical ranks of 8–16, not 64. For this small model the book trades some efficiency for stronger adaptation capacity.
+
+`prepare_model_for_kbit_training(model)` is more than a no-op despite its bland name. It performs four pieces of setup that make a quantized model trainable in the first place:
+
+1. Casts every **LayerNorm** to float32. Layer norms compute very small variances; in low precision those compute paths suffer from numerical instability.
+2. Casts the **LM head** to float32 for the same reason.
+3. Enables **gradient checkpointing** on the model.
+4. Sets `requires_grad` correctly across all modules (freezing the quantized base weights, allowing inputs to propagate gradients to the LoRA matrices that have not yet been added).
+
+`get_peft_model(model, peft_config)` then does the actual LoRA wrapping: it walks the model, finds every layer whose name matches a `target_modules` entry, and replaces it with a `LoraLayer` containing the original frozen $W$ plus newly initialised trainable $A$ (random) and $B$ (zero). The returned model is the full base model plus all the freshly attached LoRA modules, ready for training.
+
+### 3e. Training Arguments — What They Actually Do
+
+Think of `TrainingArguments` like the dial settings on a lab instrument. Each individual knob looks unassuming, but a wrong setting on any one of them can ruin the run.
 
 ```python
 from transformers import TrainingArguments
@@ -563,30 +989,63 @@ training_arguments = TrainingArguments(
 )
 ```
 
-`gradient_accumulation_steps=4` is a memory trick worth understanding deeply. Normally you update the weights after each batch of 2 examples. With accumulation steps of 4, you process 4 batches in sequence without updating weights, then apply one combined update using the sum of all 4 batches' gradients. This simulates a batch size of `2 × 4 = 8` while only holding 2 examples in GPU memory at once. Memory usage stays low; the effective learning signal per update step is richer.
+**`per_device_train_batch_size=2`.** Only two examples per forward pass, despite using small inputs. Why so tiny? Because each example is up to 512 tokens, and the activations for backprop at length 512 on a 1.1B model in fp16 already consume several gigabytes per example. Pushing the batch size higher is the fastest way to run out of VRAM.
 
-`lr_scheduler_type="cosine"` uses a cosine annealing schedule. The learning rate starts at `2e-4`, ramps up briefly during a warm-up period, then gradually decreases following a cosine curve until it reaches near zero by the end of training. The slow decay at the end allows the model to settle into a good minimum without overshooting.
+**`gradient_accumulation_steps=4`.** This is the crucial trick that recovers a useful *effective* batch size without paying the memory cost. The mechanism:
 
 ```
-Cosine LR Schedule:
+Without accumulation:
+  for batch in loader:           # batch size = 2
+      loss = model(batch).loss
+      loss.backward()
+      optimizer.step()           # update after every 2 examples
 
-  2e-4 ─┐
-         │╲
-         │  ╲
-         │    ╲
-         │      ╲______
-  ~0    ─┴──────────────►
-         0            end of training
-         (warm-up)
+With accumulation_steps = 4:
+  for i, batch in enumerate(loader):     # batch size = 2
+      loss = model(batch).loss / 4       # divide so summed grads average correctly
+      loss.backward()                    # ACCUMULATE gradient
+      if (i + 1) % 4 == 0:
+          optimizer.step()               # update once every 4 micro-batches
+          optimizer.zero_grad()
+
+Effective batch size: 2 × 4 = 8 examples per update step
+Peak memory:          still only 2 examples worth
 ```
 
-`gradient_checkpointing=True` is a memory-versus-compute trade-off. During the forward pass, all intermediate activations are normally stored so the backward pass can use them to compute gradients. For a long sequence, these stored activations consume enormous memory. Gradient checkpointing discards most of them during the forward pass and *recomputes* them on demand during the backward pass. Training takes roughly 30% longer but memory usage drops significantly — often enough to allow training that would otherwise run out of VRAM.
+The gradient signal is now averaged over 8 examples, which is more stable than over 2 alone, but the GPU only ever holds 2 examples worth of activations at a time. This is the workhorse memory-vs-compute trade that makes single-GPU fine-tuning viable.
 
-`fp16=True` enables **mixed-precision training**. The forward pass and gradient computation happen in float16, which is twice as fast on modern GPUs with hardware float16 support. The optimizer state (Adam's momentum and variance terms) is kept in float32 to prevent numerical instability during the weight update. The framework automatically handles conversions between precisions.
+**`optim="paged_adamw_32bit"`.** This is a special optimizer from the QLoRA paper. The "32bit" suffix means Adam's $m$ and $v$ moment buffers themselves are stored at full float32 precision (we do not quantize the optimizer state — only the base model weights). The "paged" prefix is what is interesting: during the optimizer step, Adam's buffers experience temporary memory spikes (it has to materialise several large intermediate tensors). Normally that spike could overshoot the GPU's memory limit and crash the run. Paged AdamW hooks into NVIDIA's unified memory: when the GPU is about to overflow, parts of the optimizer state are automatically paged out to CPU RAM, used, and paged back. Training continues without crashing.
 
----
+**`learning_rate=2e-4`.** $2 \times 10^{-4}$, which is roughly 10× higher than the typical `2e-5` used for full BERT fine-tuning in Chapter 11. The reason is that LoRA only trains a tiny fraction of parameters, so we need a faster per-step learning rate to make any meaningful progress in a single epoch. The QLoRA paper reports that even higher learning rates work better for >33B models.
 
-### 3e. SFTTrainer and the Training Loop
+**`lr_scheduler_type="cosine"`.** Cosine annealing schedule. Starts at $\sim 0$, ramps linearly up to `learning_rate` during a brief warm-up phase, then decays following a cosine curve to near zero by the end of training. The slow decay at the end lets the model settle into a good local minimum without overshooting.
+
+```
+Cosine learning rate schedule (with brief warmup):
+
+  learning rate
+       ▲
+   2e-4│         ╱╲                                ← peak after warmup
+       │        ╱   ╲╲
+       │      ╱        ╲╲
+       │    ╱              ╲╲                      ← cosine decay
+       │  ╱                    ╲╲___
+       │ ╱                          ╲___
+     0 └───────────────────────────────────►  training step
+       0   warmup                        end
+```
+
+**`num_train_epochs=1`.** Only one pass through the 3,000 examples. The book justifies this directly: more epochs of instruction tuning on a small dataset tends to degrade performance through overfitting. The model starts memorising specific responses instead of learning the general behaviour.
+
+**`logging_steps=10`.** Print the running loss every 10 update steps. With 3,000 examples, effective batch size 8, that is $3000/8 = 375$ total update steps, so logs print 37 times across the run.
+
+**`fp16=True`.** Mixed-precision training. The forward and backward passes run in float16 (roughly $2\times$ faster on modern GPUs with tensor cores); the optimizer state stays in float32 to prevent numerical instability during weight updates. The framework handles all conversions automatically.
+
+**`gradient_checkpointing=True`.** A memory-vs-compute trade. During the forward pass, intermediate activations are *not* stored. Instead, when the backward pass needs them, they are recomputed from saved checkpoints at layer boundaries. Training takes roughly 30% longer (because of the extra forward computation during backprop), but peak memory drops substantially — often the difference between fitting and not fitting.
+
+### 3f. SFTTrainer and the Training Loop
+
+With data, model, LoRA config, and training args all assembled, we are at the *mise en place* moment: everything is prepped, and we hand it off to the chef (`SFTTrainer`) to actually cook.
 
 ```python
 from trl import SFTTrainer
@@ -594,44 +1053,73 @@ from trl import SFTTrainer
 trainer = SFTTrainer(
     model=model,
     train_dataset=dataset,
-    dataset_text_field="text",
+    dataset_text_field="text",   # which column of `dataset` to train on
     tokenizer=tokenizer,
     args=training_arguments,
-    max_seq_length=512,
-    peft_config=peft_config,
+    max_seq_length=512,           # truncate any conversation longer than this
+    peft_config=peft_config,      # SFTTrainer can apply PEFT itself
 )
 
 trainer.train()
 
-# Save only the LoRA adapter weights — not the full model
 trainer.model.save_pretrained("TinyLlama-1.1B-qlora")
 ```
 
-The `SFTTrainer` from the `trl` library wraps the standard HuggingFace `Trainer` with instruction-tuning defaults. Most importantly, it handles **data collation** — padding sequences of different lengths to the same length within a batch, and masking the user-turn tokens so the loss is computed only on the assistant's response tokens.
+`SFTTrainer` from the `trl` library wraps the standard HuggingFace `Trainer` with everything specific to instruction tuning baked in. Conceptually, on every step it performs five things:
 
-When training is complete, `save_pretrained` saves only the LoRA adapter weights, not the base model. The adapter checkpoint for a 1.1B model with rank-64 LoRA is typically 20–50 MB. This is one of LoRA's practical advantages: you can share many different fine-tuned versions of a model by distributing only tiny adapter files, all loading on top of the same shared base model.
+1. **Tokenization.** Reads the formatted text from `dataset["text"]`, calls the tokenizer, truncates to `max_seq_length=512`.
+2. **Loss masking.** Sets the `labels` tensor so that the user-turn tokens are marked with `-100` (the PyTorch convention for "ignore in loss"). Only the assistant tokens contribute to the cross-entropy.
+3. **Batching and padding.** Collates `per_device_train_batch_size=2` examples into a single batch, pads them to a shared length, builds the attention mask.
+4. **Forward pass with QLoRA.** Runs the model; the base weights are dequantized on-the-fly per layer; the LoRA adapters $A$ and $B$ contribute their $\Delta W$ via the standard $Wx + (\alpha/r)ABx$ path.
+5. **Backward + optimizer step.** Computes gradients (which only flow into the LoRA matrices and any other unfrozen parameters like layer norms); the paged AdamW optimizer applies the update.
 
----
+`max_seq_length=512` is a hard truncation. TinyLlama's architectural maximum is 2048; you could push the limit higher at the cost of memory and per-step time.
 
-### 3f. Merging LoRA Weights for Inference
+`peft_config=peft_config` here is the same object we built in 3d. Passing it to `SFTTrainer` is a convenience — if you have already wrapped your model with `get_peft_model`, you can leave this out; if you have not, `SFTTrainer` will apply it for you.
 
-For inference, you have two options. You can load the base model and the adapter separately and let PEFT handle the $Wx + ABx$ computation at every layer — with a small overhead per layer. Or you can **merge** the adapter into the base model, computing $W' = W + \frac{\alpha}{r}AB$ once and storing the result permanently.
+When `trainer.train()` finishes, `save_pretrained` writes *only the LoRA adapter weights* to disk. For TinyLlama with rank-64 LoRA on all seven target modules, that checkpoint is ~50 MB. Compare that to saving a fully fine-tuned TinyLlama in fp16, which would be ~2.2 GB — about 40× larger. This is one of LoRA's biggest practical wins: you can ship many fine-tuned variants of the same base model by distributing only the tiny adapter files.
+
+Wall-clock time on the free Tesla T4 in Google Colab (the book's reference hardware) is roughly an hour. On the RTX A6000 (94 GB VRAM, 48 GB compute) it drops to roughly 10–15 minutes for the same 3,000-conversation run.
+
+### 3g. Merging LoRA Weights for Inference
+
+Once a LoRA model is trained, you have two ways to use it. Think of it like applying a watercolour wash over a pencil sketch: while the paint is still wet, you can still scrape it back to reveal the pencil (option A — keep adapters separate). Once it dries and the painting is framed, the two layers are inseparable and the picture is a single finished work (option B — merge).
+
+**Option A — Keep adapter separate.** Load the base model and the LoRA adapter as two distinct objects. At every targeted layer, compute $Wx + (\alpha/r) ABx$ as two matrix multiplies and add the results. There is a small per-layer overhead for the extra multiply, but you can hot-swap different adapters on top of the same base model without reloading the base. Useful for serving multiple specialised models from one shared base.
+
+**Option B — Merge.** Fold the LoRA contribution into the base weights: $W' = W + (\alpha/r) AB$, replace each $W$ with $W'$, and throw away $A$ and $B$. The merged model is now a standard transformer with no PEFT code path — inference speed is identical to a model that was never fine-tuned with LoRA. This is what we do for deployment.
 
 ```python
 from peft import AutoPeftModelForCausalLM
 from transformers import pipeline
 
-# Load the quantized base model with the saved LoRA adapter attached
+# IMPORTANT: reload in float16, NOT 4-bit, for a clean merge
 model = AutoPeftModelForCausalLM.from_pretrained(
     "TinyLlama-1.1B-qlora",
     low_cpu_mem_usage=True,
     device_map="auto",
 )
 
-# Fuse A·B into W for every targeted layer — no more separate adapter overhead
+# Fuse A·B into W for every targeted layer, then discard the adapters
 merged_model = model.merge_and_unload()
+```
 
-# Use the TinyLlama chat template for inference
+The book underlines a subtle but important point: **reload the model in 16-bit (not 4-bit) before merging**. Why? Because if $W$ is sitting in 4-bit storage at the moment of the merge, then $W + (\alpha/r) AB$ must be rounded back to the nearest 4-bit quantization grid point per block. Every weight you merge introduces a fresh rounding error against that grid. Done across millions of weights, those errors accumulate and the merged model degrades measurably. Merging into float16 is essentially lossless, and you can always re-quantize the merged model afterwards if you need to deploy in 4-bit.
+
+What `merge_and_unload()` does mechanically, layer by layer:
+
+```
+For each LoRA-wrapped layer:
+    compute  ΔW  ←  (α/r) · A · B          # shape d × d
+    update   W   ←  W + ΔW                  # the original matrix is overwritten
+    delete   A, B, scaling factor           # adapter object is unloaded
+
+After: the model is a plain transformer with W' = W + ΔW everywhere.
+```
+
+For inference, we must use the *same* chat template the model was trained with — otherwise the model has no idea it is expected to behave like an assistant.
+
+```python
 prompt = """<|user|>
 Tell me something about Large Language Models.</s>
 <|assistant|>
@@ -641,7 +1129,17 @@ pipe = pipeline(task="text-generation", model=merged_model, tokenizer=tokenizer)
 print(pipe(prompt, max_new_tokens=200)[0]["generated_text"])
 ```
 
-`merge_and_unload()` computes $W' = W + \frac{\alpha}{r} \cdot AB$ for every targeted weight matrix and replaces the original $W$ with the merged $W'$. The adapter objects are then discarded. The resulting model is a standard transformer with no PEFT overhead — inference speed is identical to a model that was never fine-tuned with LoRA.
+The book shows the resulting output:
+
+```
+Large Language Models (LLMs) are artificial intelligence (AI) models that
+learn language and understand what it means to say things in a particular
+language. They are trained on huge amounts of text…
+```
+
+Compare that to what the *unfine-tuned* base TinyLlama would have done with the same prompt: it would have continued the pattern of the formatted text — possibly generating more `<|user|>` blocks, or wandering into unrelated text — exactly the pattern-completion failure mode we diagnosed back in 1c. The instruction tuning has worked: the model now stops, recognises that `<|assistant|>` is its cue, generates a coherent answer, and emits `</s>` when done.
+
+We have a working instruction-tuned model. The natural next question is: *is it any good?* That turns out to be a much harder question than evaluating a classifier, and Section 4 explores the surprisingly thin set of tools available for answering it.
 
 ---
 
