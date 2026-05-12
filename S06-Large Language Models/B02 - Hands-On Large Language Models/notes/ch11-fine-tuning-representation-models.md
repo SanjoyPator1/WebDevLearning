@@ -90,6 +90,55 @@ tomatoes = load_dataset("rotten_tomatoes")
 train_data, test_data = tomatoes["train"], tomatoes["test"]
 ```
 
+**Full architecture — what we're building (Figure 11-3).**
+
+Before touching the code, here is the complete picture of a fine-tuned BERT classifier:
+
+```
+  Input: "What a horrible movie!"
+                   │
+           [AutoTokenizer]
+                   │
+  Tokens: [CLS]  what   a  horrible  movie  !  [SEP]
+            │      │    │      │       │    │    │
+            ▼      ▼    ▼      ▼       ▼    ▼    ▼
+          ┌────────────────────────────────────────┐
+          │        BERT — 12 Encoder Layers 🔥      │
+          │  Each token attends to every other      │
+          │  token (bidirectional self-attention)   │
+          └────────────────────────────────────────┘
+            │      │    │      │       │    │    │
+            ▼      ▼    ▼      ▼       ▼    ▼    ▼
+  Per-token [v0]  [v1] [v2]  [v3]   [v4] [v5] [v6]   ← 768-dim each
+  outputs:   │
+             │  Only v0 — the [CLS] vector — is used
+             │  for sequence-level classification
+             ▼
+          ┌─────────────────────────────────────────┐
+          │   Classification Head (FFN) 🔥            │
+          │   Linear layer: 768 dims → 2 logits       │
+          └─────────────────────────────────────────┘
+                   │
+               [Softmax]
+                   │
+        Positive: 25%  |  Negative: 75%
+```
+
+**The [CLS] token — BERT's sentence summary vector.** BERT outputs one 768-dimensional vector for *every* input token. But for sequence-level classification we need exactly *one* vector to represent the whole sentence. BERT was designed with this in mind: the special `[CLS]` ("classification") token is always prepended at position 0. Through 12 layers of bidirectional self-attention, its output vector learns to absorb context from every other token in the sequence. `AutoModelForSequenceClassification` extracts only this [CLS] output and feeds it to the linear classification head.
+
+```
+  [CLS]  what   a   horrible   movie   !   [SEP]
+    │     │     │       │        │     │     │
+    └─────┴─────┴───────┴────────┴─────┘     │
+          bidirectional self-attention         │
+    ↓                                        ↓
+  v_CLS ← aggregates full sentence meaning  v_SEP (ignored)
+  after 12 layers of attention
+    │
+    ↓
+  [Linear 768→2] → logits → [Softmax] → class probabilities
+```
+
 **Loading the model.** The key class is `AutoModelForSequenceClassification`. It does two things at once: loads the pretrained BERT backbone *and* automatically attaches a feedforward classification head on top. The `num_labels=2` argument tells it we want a 2-class head (positive / negative).
 
 ```python
@@ -176,7 +225,67 @@ trainer = Trainer(
 trainer.train()
 ```
 
-The `Trainer` automates the training loop: forward pass through BERT + head, compute cross-entropy loss, backpropagate gradients through the entire network, optimizer step. After one epoch, evaluating gives us **F1 = 0.85** — compared to 0.80 in Chapter 4's frozen approach. A 5-point jump, for just a few minutes of training. That is the power of joint fine-tuning.
+The `Trainer` automates the training loop: forward pass through BERT + head, compute cross-entropy loss, backpropagate gradients through the entire network, optimizer step.
+
+**Actual evaluation output (from the book):**
+
+```python
+trainer.evaluate()
+# {'eval_loss': 0.3663691282272339,
+#  'eval_f1': 0.8492366412213741,
+#  'eval_runtime': 4.5792,
+#  'eval_samples_per_second': 232.791,
+#  'eval_steps_per_second': 14.631,
+#  'epoch': 1.0}
+```
+
+**F1 = 0.85** — compared to 0.80 in Chapter 4's frozen approach. A 5-point jump from just one epoch of joint fine-tuning. The gradients flowing all the way back through BERT's 12 encoder layers is what makes the difference.
+
+**Dry run — step-by-step forward pass for one sentence:**
+
+```
+Input:  "What a horrible movie!"
+
+Step 1 — Tokenize:
+   [CLS]   what     a    horrible   movie    !   [SEP]
+    101   2,054   1,037   6,659    3,185   999    102
+                                            (WordPiece IDs)
+   Total: 7 tokens
+
+Step 2 — BERT forward pass (12 encoder layers, bidirectional):
+   Every token attends to every other token simultaneously.
+   Output: 7 vectors, each 768-dimensional.
+
+Step 3 — Extract [CLS] output vector (index 0):
+   v_cls = bert_output[0]   # shape: [768]
+   This single vector encodes the full sentence meaning
+   because [CLS] attended to all 6 other tokens across all 12 layers.
+
+Step 4 — Classification head (Linear 768 → 2):
+   logits = W · v_cls + b
+          = [−1.1,  +1.4]
+               ↑       ↑
+           Positive  Negative   (raw scores, not yet probabilities)
+
+Step 5 — Softmax → probabilities:
+   P(Positive) = exp(−1.1) / (exp(−1.1) + exp(1.4)) ≈ 0.25   (25%)
+   P(Negative) = exp(+1.4) / (exp(−1.1) + exp(1.4)) ≈ 0.75   (75%)
+   Prediction: argmax → index 1 → "Negative" ✓
+
+Step 6 — Loss (during training, true label = 1 = Negative):
+   loss = CrossEntropy(logits=[−1.1, +1.4], target=1)
+        = −log(P(Negative)) = −log(0.75) ≈ 0.29
+
+Step 7 — Backpropagation:
+   Gradients flow: loss → classifier weights → v_cls pooler
+                       → all 12 BERT encoder layers
+   Every BERT parameter gets a tiny nudge (scaled by lr=2e-5)
+   toward producing representations that make this prediction easier.
+   After 8,500 examples × 1 epoch, BERT has reshaped its internal
+   geometry toward sentiment-useful representations.
+```
+
+This is the full picture: the model you trained knows how to take a movie review, compress it into a 768-dim [CLS] vector via 12 layers of bidirectional attention, and map that vector to a sentiment label — all learned end-to-end from supervision.
 
 ### 1c. Freezing Layers
 
