@@ -33,26 +33,45 @@
    - [3f. SFTTrainer and the Training Loop](#3f-sfttrainer-and-the-training-loop)
    - [3g. Merging LoRA Weights for Inference](#3g-merging-lora-weights-for-inference)
 4. [Evaluating Generative Models](#4-evaluating-generative-models)
-   - [4a. Word-Level Metrics — Perplexity, BLEU, ROUGE, BERTScore](#4a-word-level-metrics--perplexity-bleu-rouge-bertscore)
-   - [4b. Benchmarks — The Public Leaderboards](#4b-benchmarks--the-public-leaderboards)
-   - [4c. Automated Evaluation — LLM-as-a-Judge](#4c-automated-evaluation--llm-as-a-judge)
-   - [4d. Human Evaluation and Chatbot Arena](#4d-human-evaluation-and-chatbot-arena)
+   - [4a. Why Evaluating Generative Models Is Genuinely Hard](#4a-why-evaluating-generative-models-is-genuinely-hard)
+   - [4b. Perplexity — How Surprised Was the Model?](#4b-perplexity--how-surprised-was-the-model)
+   - [4c. N-gram Overlap Metrics — BLEU, ROUGE, and Their Limits](#4c-n-gram-overlap-metrics--bleu-rouge-and-their-limits)
+   - [4d. BERTScore — Semantic Overlap via Embeddings](#4d-bertscore--semantic-overlap-via-embeddings)
+   - [4e. Public Benchmarks and the Overfitting Trap](#4e-public-benchmarks-and-the-overfitting-trap)
+   - [4f. LLM-as-a-Judge — Automated Pairwise Comparison](#4f-llm-as-a-judge--automated-pairwise-comparison)
+   - [4g. Human Evaluation and Chatbot Arena](#4g-human-evaluation-and-chatbot-arena)
 5. [Preference Tuning and RLHF](#5-preference-tuning-and-rlhf)
-   - [5a. Why Instruction Tuning Is Not Enough](#5a-why-instruction-tuning-is-not-enough)
-   - [5b. The Reward Model](#5b-the-reward-model)
-   - [5c. Proximal Policy Optimization (PPO)](#5c-proximal-policy-optimization-ppo)
+   - [5a. Why Instruction Tuning Is Not Enough — Taste vs Format](#5a-why-instruction-tuning-is-not-enough--taste-vs-format)
+   - [5b. The Preference Evaluator — From Human Rater to Automated Judge](#5b-the-preference-evaluator--from-human-rater-to-automated-judge)
+   - [5c. The Reward Model — Anatomy and Architecture](#5c-the-reward-model--anatomy-and-architecture)
+   - [5d. Building the Preference Dataset](#5d-building-the-preference-dataset)
+   - [5e. Training the Reward Model — The Bradley-Terry Loss](#5e-training-the-reward-model--the-bradley-terry-loss)
+   - [5f. Proximal Policy Optimization (PPO) — Optimising Against the Reward Signal](#5f-proximal-policy-optimization-ppo--optimising-against-the-reward-signal)
+   - [5g. The Three-Model Memory Problem — Why PPO Hurts](#5g-the-three-model-memory-problem--why-ppo-hurts)
 6. [Direct Preference Optimization (DPO)](#6-direct-preference-optimization-dpo)
-   - [6a. The Core Insight — No Reward Model Needed](#6a-the-core-insight--no-reward-model-needed)
-   - [6b. How DPO Works — The Four Players](#6b-how-dpo-works--the-four-players)
-   - [6c. The DPO Loss Function](#6c-the-dpo-loss-function)
-   - [6d. DPO vs PPO — Why DPO Won](#6d-dpo-vs-ppo--why-dpo-won)
-   - [6e. ORPO — Combining SFT and DPO in One Pass](#6e-orpo--combining-sft-and-dpo-in-one-pass)
+   - [6a. The Core Insight — Your LLM Is Already a Reward Model](#6a-the-core-insight--your-llm-is-already-a-reward-model)
+   - [6b. The Theoretical Bridge — How DPO Eliminates the Reward Model](#6b-the-theoretical-bridge--how-dpo-eliminates-the-reward-model)
+   - [6c. The Four Players in a DPO Step](#6c-the-four-players-in-a-dpo-step)
+   - [6d. Token-Level Scoring — How the Probabilities Are Computed](#6d-token-level-scoring--how-the-probabilities-are-computed)
+   - [6e. The DPO Loss Function with Dry-Run](#6e-the-dpo-loss-function-with-dry-run)
+   - [6f. DPO vs PPO — Why DPO Won](#6f-dpo-vs-ppo--why-dpo-won)
+   - [6g. ORPO — Combining SFT and DPO in One Pass](#6g-orpo--combining-sft-and-dpo-in-one-pass)
 7. [Preference Tuning with DPO — Practical Walkthrough](#7-preference-tuning-with-dpo--practical-walkthrough)
-   - [7a. DPO Dataset Format](#7a-dpo-dataset-format)
-   - [7b. DPO Training Configuration](#7b-dpo-training-configuration)
-   - [7c. DPOTrainer and the Beta Parameter](#7c-dpotrainer-and-the-beta-parameter)
-   - [7d. Stacking SFT and DPO Adapters](#7d-stacking-sft-and-dpo-adapters)
+   - [7a. The DPO Walkthrough Pipeline — Mirror of Section 3, with Preferences](#7a-the-dpo-walkthrough-pipeline--mirror-of-section-3-with-preferences)
+   - [7b. The Preference Dataset — distilabel-intel-orca-dpo-pairs](#7b-the-preference-dataset--distilabel-intel-orca-dpo-pairs)
+   - [7c. Loading the SFT-Merged Quantized Base Model](#7c-loading-the-sft-merged-quantized-base-model)
+   - [7d. LoRA Configuration for the DPO Stage](#7d-lora-configuration-for-the-dpo-stage)
+   - [7e. DPOConfig — Training Arguments for Preference Tuning](#7e-dpoconfig--training-arguments-for-preference-tuning)
+   - [7f. DPOTrainer and the Beta Parameter](#7f-dpotrainer-and-the-beta-parameter)
+   - [7g. Stacking SFT and DPO Adapters into a Final Aligned Model](#7g-stacking-sft-and-dpo-adapters-into-a-final-aligned-model)
 8. [Key Takeaways](#8-key-takeaways)
+   - [8a. The Three-Stage Pipeline — Three Problems, Three Stages](#8a-the-three-stage-pipeline--three-problems-three-stages)
+   - [8b. The Pattern-Completion Problem Is Why SFT Exists](#8b-the-pattern-completion-problem-is-why-sft-exists)
+   - [8c. PEFT and LoRA — Why 1% Is Enough](#8c-peft-and-lora--why-1-is-enough)
+   - [8d. QLoRA Democratised Fine-Tuning](#8d-qlora-democratised-fine-tuning)
+   - [8e. Evaluation Has No Silver Bullet](#8e-evaluation-has-no-silver-bullet)
+   - [8f. From PPO to DPO to ORPO — The Simplification Trajectory](#8f-from-ppo-to-dpo-to-orpo--the-simplification-trajectory)
+   - [8g. Decision Guide and Papers to Read](#8g-decision-guide-and-papers-to-read)
 
 ---
 
@@ -1145,21 +1164,54 @@ We have a working instruction-tuned model. The natural next question is: *is it 
 
 ## 4. Evaluating Generative Models
 
-Evaluating generative models is genuinely difficult. Unlike classification tasks where there is one correct label, a generative model can answer "What is gravity?" in thousands of ways, and many of them are valid. No single metric captures all the dimensions of quality we care about: factual accuracy, fluency, helpfulness, honesty, appropriate length, and safety. This section surveys the full evaluation toolkit and is honest about each tool's limitations.
+We have an instruction-tuned model. Is it any good? That sounds like a simple question, but for generative models it is one of the hardest open questions in the field. This section walks through every tool in the modern evaluation toolkit — from the cheap-and-shallow (perplexity) to the slow-and-gold-standard (human voting in Chatbot Arena) — and is honest about what each one can and cannot tell you.
 
-### 4a. Word-Level Metrics — Perplexity, BLEU, ROUGE, BERTScore
+### 4a. Why Evaluating Generative Models Is Genuinely Hard
 
-**Perplexity** measures how surprised the model is when it reads a piece of text. A model that assigns high probability to each word as it reads through a document has low perplexity — it is not surprised, because the text makes sense given what it has learned. A model that assigns low probability to the words it sees has high perplexity — it is consistently confused by the text.
+Imagine grading a math problem against grading a poem. The math problem has one correct answer; a quick comparison with the answer key gives an unambiguous right-or-wrong verdict. The poem is the opposite — thousands of equally good responses exist, and "good" is not even one dimension: it is a vector of fluency, originality, emotional resonance, technical craft, audience appropriateness, and many more. You cannot grade a poem by counting how many of its words match a reference poem.
 
-$$\text{PPL}(W) = \exp\!\left(-\frac{1}{N}\sum_{i=1}^{N} \log P(w_i \mid w_1, \ldots, w_{i-1})\right)$$
+Generative-model evaluation lives on the poem side. A classifier maps an input to one of $N$ labels, so accuracy and F1 are well-defined. A generative model maps an input to *arbitrary text*, and there is no single reference to compare against. Worse, the qualities we actually care about — **factual accuracy**, **fluency**, **helpfulness**, **honesty**, **appropriate length**, **tone**, **safety** — pull in different directions and resist measurement.
+
+No single metric captures all of these, which is why a real evaluation pipeline stacks several tools, each with a different tradeoff between speed and reliability:
+
+```
+                  The evaluation toolkit, fastest to most reliable:
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │  4b. Perplexity                  fast, automatic, shallow    │
+  │  4c. BLEU / ROUGE                fast, automatic, n-gram     │
+  │  4d. BERTScore                   automatic, embedding-based  │
+  │  4e. Benchmarks (MMLU, GSM8k …)  automatic, task-specific    │
+  │  4f. LLM-as-a-judge              automatic, flexible         │
+  │  4g. Human evaluation            slow, gold-standard         │
+  └──────────────────────────────────────────────────────────────┘
+        cheap, shallow                       expensive, deep
+```
+
+The rest of Section 4 walks down that pyramid. None of these tools is sufficient on its own; together they give you a multi-angle picture, much like a doctor ordering several different tests to triangulate a diagnosis.
+
+### 4b. Perplexity — How Surprised Was the Model?
+
+Picture yourself reading a book in a language you mostly understand. As you read each word, you subconsciously predict what is likely to come next. When the book uses common phrasings, the next word matches your prediction and you breeze through with no surprise. When the book uses unexpected word choices, you feel a small jolt — the word you saw was not one you were predicting. **Perplexity** measures exactly this jolt-density for a language model reading a text.
+
+A low-perplexity model assigns high probability to each next token as it reads — it is not surprised, because the text makes sense given what it has learned. A high-perplexity model assigns low probability to many of the tokens it sees — it is consistently confused. Formally:
+
+$$\text{PPL}(W) = \exp\!\left(-\frac{1}{N}\sum_{i=1}^{N} \log P_\theta(w_i \mid w_1, \ldots, w_{i-1})\right)$$
 
 | Symbol | Meaning |
 |--------|---------|
 | $W = (w_1, \ldots, w_N)$ | The sequence of $N$ tokens being evaluated |
-| $P(w_i \mid w_1, \ldots, w_{i-1})$ | Model's predicted probability for token $w_i$ given all prior tokens |
-| $\exp(\cdot)$ | Exponentiation to convert from log-space back to a natural scale |
+| $P_\theta(w_i \mid w_1, \ldots, w_{i-1})$ | Model's predicted probability for token $w_i$ given all prior tokens |
+| $\frac{1}{N} \sum_i \log P_\theta(\ldots)$ | Average log-probability across the sequence |
+| $\exp(\cdot)$ | Exponentiation, converting from log-space back to a natural scale |
 
-This says: compute the average log-probability the model assigns to each token, negate it (so higher probability → smaller value → better), and exponentiate. Lower perplexity means the model was more confident and more correct. A perplexity of 10 means the model behaved on average as if choosing uniformly among 10 equally likely options at each step.
+This says: compute the average log-probability the model assigns to each true token, negate it so that higher probability gives a smaller score, and exponentiate. **Lower perplexity is better.** A perplexity of $k$ means the model behaved as if choosing uniformly among $k$ equally likely tokens at each step. A perplexity of 1 means the model was completely certain at every step. A perplexity of 10 means it was, on average, hesitating among 10 options.
+
+There is a useful shortcut connecting perplexity to the training loss you stare at in console logs:
+
+$$\text{PPL} = \exp(\text{average cross-entropy loss})$$
+
+So a training loss of $1.5$ corresponds to perplexity $e^{1.5} \approx 4.5$. The two are the same quantity, viewed through different lenses — log-space for training stability, exponential-space for human interpretability.
 
 **Dry-run — perplexity on a 3-token sequence:**
 
@@ -1167,65 +1219,164 @@ This says: compute the average log-probability the model assigns to each token, 
 Sentence: "The cat sat"
 N = 3 tokens
 
-Model assigns:
-  P("The")               = 0.20
-  P("cat"  | "The")      = 0.15
-  P("sat"  | "The cat")  = 0.30
+Model assigns the following probabilities to each true next-token:
+  P("The")                = 0.20
+  P("cat"  | "The")       = 0.15
+  P("sat"  | "The cat")   = 0.30
 
-Step 1: Log probabilities
-  log(0.20) = −1.609
-  log(0.15) = −1.897
-  log(0.30) = −1.204
+Step 1 — log-probabilities of each true next token:
+  log(0.20)  = −1.609
+  log(0.15)  = −1.897
+  log(0.30)  = −1.204
 
-Step 2: Average negative log-probability
-  avg = −( (−1.609) + (−1.897) + (−1.204) ) / 3
-      = −(−4.710) / 3
-      = 1.570
+Step 2 — average negative log-probability (i.e., the cross-entropy loss):
+  L  =  −( (−1.609) + (−1.897) + (−1.204) ) / 3
+     =  −(−4.710) / 3
+     =   1.570
 
-Step 3: Exponentiate
-  PPL = exp(1.570) ≈ 4.81
+Step 3 — exponentiate to get perplexity:
+  PPL  =  exp(1.570)  ≈  4.81
 
-Interpretation: On average, the model behaves as if choosing among
+Interpretation: on average, the model behaved as if choosing among
 ~5 equally likely tokens at each step. Lower is better.
 ```
 
-**BLEU (Bilingual Evaluation Understudy)** was developed for machine translation. It measures the overlap of n-grams (sequences of n consecutive words) between a generated text and one or more reference texts. BLEU works when there is a clearly correct answer (as in translation) but fails badly for open-ended generation, where paraphrases score near zero despite being valid responses.
+The book illustrates perplexity with a memorable sentence (Figure 12-20): *"When a measure becomes a target, it ceases to be a good measure."* Given the context "When a measure becomes a", the model is asked how probable the next word *target* is — and a good language model should assign it high probability, given the famous Goodhart quote.
 
-**ROUGE (Recall-Oriented Understudy for Gisting Evaluation)** is the recall-focused counterpart to BLEU, widely used in summarisation evaluation. Where BLEU asks "how much of what was generated also appears in the reference?", ROUGE asks "how much of the reference appears in what was generated?"
+**What perplexity does not measure.** Perplexity only measures the model's *confidence* on a given reference text. It is silent on whether the model would be useful when actually generating. A model can have low perplexity on a held-out corpus while being completely wrong about facts, unable to follow instructions, or generating fluent nonsense. Perplexity is necessary but very far from sufficient for evaluating a generative model. (Citation: Jelinek et al., 1977.)
 
-**BERTScore** takes a more sophisticated approach. Rather than comparing exact word sequences, it embeds both the generated text and the reference using BERT and measures cosine similarity between their token representations. This allows BERTScore to recognise that "automobile" and "car" are equivalent, whereas BLEU would count them as completely different.
+### 4c. N-gram Overlap Metrics — BLEU, ROUGE, and Their Limits
 
-Despite their differences, all four metrics share a fundamental limitation expressed by **Goodhart's Law**: *when a measure becomes a target, it ceases to be a good measure.* A model can achieve high BLEU scores by copying chunks of the reference text verbatim — excellent BLEU, terrible model. A model with low perplexity might be confidently wrong. None of these metrics tell you whether the model actually solved the user's problem.
+Think of grading a translation by counting how many phrases the student used that appear in the teacher's reference translation. This works when there is a clearly correct answer — as in translation between two languages with stable conventions. It falls apart the moment the student's translation is equally valid but phrased differently. **BLEU** and **ROUGE** are exactly this kind of phrase-counting metric.
 
----
+**BLEU (Bilingual Evaluation Understudy)** — Papineni et al., 2002 — was designed for machine translation. It measures **precision** of n-grams: of all the n-grams in the generated text, how many also appear in the reference? Precision is computed separately for unigrams ($n = 1$), bigrams ($n = 2$), trigrams ($n = 3$), and 4-grams ($n = 4$), then combined into a single score:
 
-### 4b. Benchmarks — The Public Leaderboards
+$$\text{BLEU} = \text{BP} \cdot \exp\!\left(\sum_{n=1}^{4} w_n \log p_n\right)$$
 
-Benchmarks try to go beyond word-level metrics by testing the model on tasks that require real understanding. The most widely used benchmarks for generative models are:
+| Symbol | Meaning |
+|--------|---------|
+| $p_n$ | Precision of n-grams (fraction of generated n-grams that appear in the reference) |
+| $w_n$ | Weight for n-gram order $n$ (typically uniform, $w_n = 1/4$) |
+| $\text{BP}$ | Brevity penalty — discourages very short generations that game precision |
 
-| Benchmark | What It Tests | Format |
-|-----------|--------------|--------|
-| **MMLU** (Massive Multitask Language Understanding) | 57 academic subjects: law, medicine, history, physics, coding, and more | 4-choice multiple choice |
-| **GLUE** | General language understanding: sentence similarity, entailment, grammaticality | Classification tasks |
-| **TruthfulQA** | Whether the model answers truthfully on topics where humans commonly hold false beliefs | 817 questions |
-| **GSM8k** | Grade-school math word problems requiring multi-step arithmetic reasoning | 8,500 open-answer problems |
-| **HellaSwag** | Common-sense inference — which of four sentence completions is plausible? | 4-choice multiple choice |
-| **HumanEval** | Code generation: write a Python function from its docstring | 164 programming problems |
-
-The **Open LLM Leaderboard** aggregates several of these benchmarks and publicly ranks open-source models. A model that tops the leaderboard is generally considered the best open model at that time. However, there is a serious risk: **benchmark overfitting**. Since these benchmarks are public, model developers can — deliberately or accidentally — include benchmark test data in their training sets, or fine-tune specifically to perform well on benchmark tasks. A model can climb the leaderboard without actually becoming more useful in practice. This is Goodhart's Law applied at the benchmark level.
-
----
-
-### 4c. Automated Evaluation — LLM-as-a-Judge
-
-A more recent and increasingly popular approach is to use a powerful LLM as an automated evaluator. Rather than measuring n-gram overlap or benchmark accuracy, you ask GPT-4 or another frontier model to read a model's response and rate it on dimensions like helpfulness, accuracy, clarity, and safety.
-
-The **LLM-as-a-judge** methodology comes in two forms. In the first, the judge scores a single response on a scale (e.g., 1–10) against stated criteria. In the second — **pairwise comparison** — the judge sees two responses to the same prompt and must declare which is better. Pairwise comparison tends to produce more reliable judgements because relative comparisons are easier to make consistently than absolute ratings.
+**Tiny dry-run with unigram precision:**
 
 ```
-Pairwise Evaluation Example:
+Reference:  "the cat sat on the mat"          (6 unigrams)
+Generated:  "the cat sat on a mat"            (6 unigrams)
 
-  Prompt: "Explain gradient descent to a 10-year-old."
+For each generated unigram, does it appear in the reference?
+  "the"  → yes
+  "cat"  → yes
+  "sat"  → yes
+  "on"   → yes
+  "a"    → no
+  "mat"  → yes
+
+Unigram precision  p_1  =  5 / 6  ≈  0.833
+
+(Real BLEU uses clipped precision so a repeated word cannot be
+matched more times than it appears in the reference. The principle
+is the same.)
+```
+
+**ROUGE (Recall-Oriented Understudy for Gisting Evaluation)** — Lin, 2004 — is the recall-focused mirror image of BLEU, widely used in summarisation. Where BLEU asks "how much of what was generated appears in the reference?", ROUGE asks "how much of the reference appears in what was generated?" The arithmetic is symmetric; the philosophical difference is which side of the comparison is treated as ground truth.
+
+**Where both metrics fail: paraphrasing.** Consider two semantically identical responses that share no words:
+
+```
+Reference:  "The cat sat on the mat"
+Generated:  "A feline rested on the rug"
+
+Shared unigrams: zero.
+BLEU ≈ 0.   ROUGE ≈ 0.   Yet the meaning is essentially identical.
+```
+
+This is the fundamental limit of n-gram overlap: it counts surface-level word matches, not meaning. For machine translation between languages with stable conventions, this is acceptable. For open-ended chat generation, where the same idea can be expressed in dozens of valid ways, n-gram metrics consistently underestimate genuine quality. The next subsection introduces the metric that was designed to fix exactly this problem.
+
+### 4d. BERTScore — Semantic Overlap via Embeddings
+
+Imagine that instead of grading two essays by counting shared exact words, you ask a literature professor to read them and check whether they are talking about the same *concepts*. Two essays — one about "automobile manufacturing", one about "car production" — should score as highly similar even though they share no key words. **BERTScore** (Zhang et al., 2019) is the embedding-based metric that captures this intuition.
+
+The mechanism is direct:
+
+1. Tokenize the candidate text and the reference text.
+2. Run each through BERT (or any contextual embedding model) to get a vector for every token.
+3. For each candidate token, find the reference token with the highest cosine similarity to it.
+4. Average those maximum similarities — that average is the BERTScore.
+
+The precision-style version of the formula:
+
+$$\text{BERTScore}_P = \frac{1}{|\hat{x}|} \sum_{\hat{x}_i \in \hat{x}} \max_{x_j \in x} \cos(e_{\hat{x}_i},\; e_{x_j})$$
+
+| Symbol | Meaning |
+|--------|---------|
+| $\hat{x}$ | Set of tokens in the candidate (generated) text |
+| $x$ | Set of tokens in the reference text |
+| $e_t$ | BERT contextual embedding of token $t$ |
+| $\cos(\cdot, \cdot)$ | Cosine similarity between two embedding vectors |
+| $\max_{x_j}$ | For each candidate token, pick the closest reference token |
+
+**Dry-run on the paraphrased example from 4c:**
+
+```
+Candidate:  "A feline rested"     (3 tokens)
+Reference:  "The cat sat"         (3 tokens)
+
+For each candidate token, find max cosine similarity to any reference token.
+(Numbers below are illustrative — real BERT embeddings give close to these.)
+
+  candidate "A"        → max sim with "The"  → cos = 0.45
+  candidate "feline"   → max sim with "cat"  → cos = 0.85
+  candidate "rested"   → max sim with "sat"  → cos = 0.78
+
+  BERTScore_P  =  (0.45 + 0.85 + 0.78) / 3  ≈  0.69
+
+For comparison: BLEU on the same pair  ≈  0.
+
+BERTScore correctly recognises the semantic similarity that BLEU's
+exact-word matching completely misses.
+```
+
+**Limitations.** BERTScore is computationally heavier (you need a BERT forward pass on every text being scored). It inherits BERT's training-language biases — it works less reliably on languages BERT was not heavily trained on. And, like BLEU and ROUGE, it still requires a *reference text*; it cannot score fully open-ended generation where there is no canonical "correct" answer.
+
+### 4e. Public Benchmarks and the Overfitting Trap
+
+Public benchmarks are the LLM equivalent of standardised tests like the SAT or GRE. They give a fast, broad, comparable signal about general ability. But the same dynamic that warps standardised testing — high-priced test-prep that teaches you the test rather than the underlying competence — warps LLM benchmarks too. The book's table of the most-used benchmarks:
+
+| Benchmark | Full Name (and Paper) | What It Tests | Format |
+|-----------|----------------------|--------------|--------|
+| **MMLU** | Massive Multitask Language Understanding (Hendrycks et al., 2020) | 57 academic subjects — law, medicine, physics, history, … | 4-choice MCQ |
+| **GLUE** | General Language Understanding Evaluation (Wang et al., 2018) | Similarity, entailment, grammaticality | Classification |
+| **TruthfulQA** | (Lin, Hilton, Evans, 2021) | Whether the model parrots common human misconceptions | 817 questions |
+| **GSM8k** | Grade-School Math 8k (Cobbe et al., 2021) | Multi-step arithmetic word problems | Open-answer |
+| **HellaSwag** | (Zellers et al., 2019) | Common-sense plausibility of sentence completions | 4-choice MCQ |
+| **HumanEval** | (Chen et al., 2021) | Generating a Python function from its docstring | 164 programming problems |
+
+The **Open LLM Leaderboard** aggregates several of these benchmarks into a single composite ranking of open-source models. A model at the top is "generally considered the best open model at that time" — with one heavy caveat.
+
+**Benchmark overfitting.** Because the benchmark questions are public, model developers can — deliberately or accidentally — let benchmark questions leak into their training data, or fine-tune specifically on the benchmark's question format until the model learns the *test* rather than the underlying *skill*. The benchmark score climbs without genuine capability improvement. This is **Goodhart's Law** in action, summarised in a quote the book takes pains to call out:
+
+> "When a measure becomes a target, it ceases to be a good measure."  
+> — Strathern (1997), restating Goodhart
+
+A trivial extreme: a model fine-tuned to output only the single sentence "This is a sentence" would score perfectly on a grammar benchmark — and be useless for anything else. Less extreme but still real versions of this happen quietly all the time. The leaderboard is useful, but a leaderboard-topping model is not automatically the best model for *your* task.
+
+Two further practical downsides of public benchmarks. First, they are broad — they tell you nothing about how the model performs on the specific use case you actually care about. A model that aces MMLU may flop on your medical chatbot. Second, running a full benchmark suite can take many GPU-hours, making iteration slow during development.
+
+### 4f. LLM-as-a-Judge — Automated Pairwise Comparison
+
+Imagine grading a cooking competition by counting how many ingredients each dish shares with a reference recipe. The counting would miss everything that matters — texture, balance, surprise, technique. Now imagine instead bringing in an expert chef who tastes each dish and tells you which is better and why. The chef judges dimensions no n-gram counter ever could. **LLM-as-a-judge** is the equivalent: replace the n-gram counter with a powerful LLM that *reads* candidate responses and rates them.
+
+The methodology comes from Zheng et al. (2024), *"Judging LLM-as-a-judge with MT-Bench and Chatbot Arena"*. It has two flavours:
+
+1. **Single-response scoring.** The judge sees one prompt and one response, and rates the response on a fixed scale (e.g., 1–10) against stated criteria like helpfulness, accuracy, clarity.
+2. **Pairwise comparison.** The judge sees one prompt and *two* candidate responses, and must declare which response is better. Empirically more reliable, because relative judgements ("A is clearer than B") are easier and more consistent for humans and LLMs alike than absolute ratings ("A is a 7/10").
+
+```
+Pairwise evaluation example:
+
+  Prompt:  "Explain gradient descent to a 10-year-old."
 
   Response A (Model X):
     "Gradient descent is an optimisation algorithm that minimises a loss
@@ -1234,55 +1385,178 @@ Pairwise Evaluation Example:
 
   Response B (Model Y):
     "Imagine you're blindfolded on a hilly landscape and you want to find
-     the lowest valley. With each step, you feel which way the ground slopes
-     downward and take a small step in that direction. Gradient descent
-     works the same way!"
+     the lowest valley. With each step, you feel which way the ground
+     slopes downward and take a small step in that direction. Gradient
+     descent works the same way!"
 
-  Judge (GPT-4): "Response B is significantly better for the target audience.
-                  It uses a concrete, age-appropriate analogy, while Response A
-                  uses technical language inappropriate for a 10-year-old."
+  Judge (GPT-4):  "Response B is significantly better for the target
+                   audience. It uses a concrete, age-appropriate analogy,
+                   while Response A uses technical language inappropriate
+                   for a 10-year-old."
 
-  → Model Y wins this comparison
+  → Model Y wins this comparison.
 ```
 
-LLM-as-a-judge scales beautifully and improves automatically as evaluator models improve. The main limitation is that LLM judges have their own biases: they tend to prefer longer responses, responses that match their own style, and responses that appear first in the prompt (positional bias).
+**Strengths.** LLM-as-a-judge scales easily — automatable, no humans in the loop. It works on fully open-ended generation, where there is no reference. And critically, it *improves automatically over time*: as judge models get better at general reasoning, evaluation quality goes up without any change to your eval pipeline.
 
----
+**Biases to be aware of.** LLM judges have well-documented systematic biases that you must mitigate when designing an evaluation:
 
-### 4d. Human Evaluation and Chatbot Arena
+- **Length bias** — judges tend to prefer longer responses, all else equal.
+- **Style bias** — judges prefer responses that match their own training style (often verbose, hedging, polite).
+- **Position bias** — in pairwise comparison, the response listed first often wins regardless of content.
+- **Self-preference** — GPT-4 systematically prefers GPT-4 outputs over equally good outputs from other model families.
 
-Despite all automated approaches, the gold standard for evaluating generative models remains **human evaluation**. Humans can judge helpfulness, honesty, tone, creativity, and safety in ways that no automated metric currently replicates.
+Standard mitigations: shuffle response order across runs, average across multiple judges, use a different model family as judge than the one being evaluated.
 
-The most influential human evaluation platform is **Chatbot Arena** — a website where users submit any question to two anonymous chatbots simultaneously, receive both responses, and vote for the better one without knowing which models they are comparing. The anonymity eliminates branding bias. The variety of user-submitted questions covers a wider and more natural range than any curated benchmark.
+### 4g. Human Evaluation and Chatbot Arena
 
-Chatbot Arena uses the **Elo rating system**, originally designed for chess, to rank models from pairwise comparisons. In Elo, your rating increases when you beat a highly-rated opponent and barely moves when you beat a poorly-rated one. The system converges to a stable ranking that reflects true relative ability. With over 800,000 human votes collected, the statistical confidence of the Chatbot Arena rankings is very high.
+A movie's true rating is not the score from professional critics — it is whether real audiences enjoy it. Critics give one signal; audiences give the ground truth. **Human evaluation** is the audience-polling equivalent for LLMs, and it remains the gold standard despite being the slowest and most expensive tool in the toolkit.
 
-The honest conclusion is that there is no perfect evaluation method. Word-level metrics are fast but shallow. Benchmarks are comprehensive but gameable. LLM-as-a-judge scales but carries biases. Human evaluation is the ground truth but is slow and expensive. For your specific use case, the most valuable evaluation you can run is: take the real prompts your users will send, run them through the model, and judge the outputs yourself.
+The most influential platform is **Chatbot Arena** (Chiang et al., 2024). The design is elegant in its simplicity:
+
+```
+The Chatbot Arena protocol:
+
+  [User submits any prompt]
+            │
+            ▼
+  Two anonymous LLMs receive the prompt in parallel
+            │
+            ▼
+  User sees both responses (without model names)
+            │
+            ▼
+  User votes for the better response
+            │
+            ▼
+  Only after voting are the model names revealed
+            │
+            ▼
+  Vote is recorded; aggregated into Elo ratings
+```
+
+The anonymity is doing a lot of work. By hiding model names until after the vote, Chatbot Arena eliminates brand bias — a vote for the better answer cannot be subconsciously influenced by "well, this came from GPT-4, so it must be better." The prompt variety is also a strength: real users ask real questions across a much wider distribution than any curated benchmark.
+
+**The Elo rating system.** Originally designed for chess by Arpad Elo, Elo converts a sequence of pairwise wins and losses into a single rating per player (or, here, per model) that converges to reflect true relative skill. The update rule after one comparison between model $A$ and model $B$:
+
+$$R'_A \;=\; R_A + K \cdot (S_A - E_A), \qquad E_A \;=\; \frac{1}{1 + 10^{(R_B - R_A)/400}}$$
+
+| Symbol | Meaning |
+|--------|---------|
+| $R_A, R_B$ | Current Elo ratings of models $A$ and $B$ |
+| $S_A$ | Actual result for $A$: $1$ (win), $0$ (loss), $0.5$ (tie) |
+| $E_A$ | Expected probability that $A$ wins given the rating gap |
+| $K$ | Sensitivity constant — how much one game can move a rating; chess uses $K = 16$–$32$ |
+| $R'_A$ | New rating of $A$ after this comparison |
+
+The key insight is the expected-score term $E_A$. If you beat someone rated much higher than you, your expected score was tiny ($E_A$ near $0$), so $S_A - E_A$ is large and your rating jumps. If you beat someone rated much lower, your expected score was already nearly $1$, so $S_A - E_A$ is tiny and your rating barely moves. The system rewards genuine upsets and ignores expected outcomes.
+
+**Dry-run — one Elo update:**
+
+```
+Setup:
+  Model A rating: 1500
+  Model B rating: 1600   (B is rated 100 points higher than A)
+  K = 32
+
+Step 1 — expected probability that A wins:
+  E_A  =  1 / (1 + 10^((1600 - 1500) / 400))
+       =  1 / (1 + 10^0.25)
+       =  1 / (1 + 1.778)
+       =  1 / 2.778
+       ≈  0.36
+
+Step 2 — A actually wins the comparison: S_A = 1.
+
+Step 3 — apply the update:
+  R'_A  =  1500  +  32 × (1 - 0.36)
+        =  1500  +  32 × 0.64
+        =  1500  +  20.48
+        ≈  1520
+
+A gained ~20 points for beating a higher-rated opponent.
+Had B won, A would have lost about 12 points (32 × 0.36).
+```
+
+At the time the book was written, Chatbot Arena had aggregated more than **800,000 human votes**. With that many comparisons spread across many model pairings, the statistical confidence of the resulting Elo rankings is very high.
+
+**Limitations.** Votes accumulate slowly, so a brand-new model takes time to settle into a stable rating. Crowd preferences may not match your specific use case — Chatbot Arena's audience leans toward general chat, not specialised domains like medicine or law. And the anonymity, while eliminating brand bias, also makes it hard to evaluate aspects like privacy or licensing that the user might genuinely care about in deployment.
+
+**The honest conclusion** of all of Section 4 is that there is no perfect evaluation. Word-level metrics are fast but shallow. Embedding metrics catch paraphrases but still need a reference. Benchmarks are comprehensive but gameable. LLM-as-a-judge scales but carries biases. Human evaluation is the ground truth but is slow and expensive. The book's own punchline is direct: *"we believe that you are the best evaluator."* For your specific use case, the most valuable evaluation you can run is to take the real prompts your users will actually send, run them through the model, and read the outputs yourself. No benchmark replaces that.
+
+With evaluation tools in place, we can now meaningfully measure the gap between an instruction-tuned model and an aligned, preference-tuned model. Section 5 turns to closing that gap — preference tuning, the third and final stage of the LLM pipeline.
 
 ---
 
 ## 5. Preference Tuning and RLHF
 
-### 5a. Why Instruction Tuning Is Not Enough
+We left Section 4 with an evaluated instruction-tuned model: it follows instructions, but it has no taste. Section 5 covers the third and final stage of the LLM pipeline — **preference tuning** — using the classical implementation known as **RLHF (Reinforcement Learning from Human Feedback)**. RLHF is the path used by the original ChatGPT, and even though it has been partly displaced by DPO (Section 6), understanding its moving parts is non-negotiable: DPO is best understood as the answer to "what is painful about RLHF, and how could we get the same result without that pain?"
 
-After supervised fine-tuning, the model follows instructions. It will attempt to answer any question, complete any task, engage in any conversation. But following an instruction and giving a *good* answer are not the same thing. Consider two responses to the prompt "What are large language models?":
+### 5a. Why Instruction Tuning Is Not Enough — Taste vs Format
+
+Imagine two doctors with identical factual knowledge, both explaining the same diagnosis. The first says: *"You have hypercholesterolaemia; your low-density lipoprotein levels exceed clinical thresholds and we recommend pharmacological intervention with HMG-CoA reductase inhibitors."* The second says: *"Your cholesterol is high. We should start you on a medication called a statin — it's safe, well-studied, and should bring it down within a few months."* Both are correct. Both follow the instruction "explain the diagnosis." But the patient leaves the first consultation feeling dismissed and the second feeling informed. Same knowledge, very different **taste** in how to deliver it.
+
+After SFT, our model is the first doctor. It follows instructions and gives technically correct answers — but it has no sense of which way of being technically correct is *better*. Consider two responses to "What are large language models?":
 
 *Response A*: "They are large language models." *(Technically correct, completely useless.)*
 
 *Response B*: "Large language models are neural networks trained on vast amounts of text data to understand and generate human language. They learn statistical patterns across billions of words, enabling them to answer questions, write code, summarise documents, and engage in open-ended conversation."
 
-An instruction-tuned model could produce either response — both are valid next-token-prediction sequences. The model has no mechanism to prefer the informative answer over the tautological one.
+An instruction-tuned model could produce either response — both are valid next-token-prediction sequences. SFT gives the model no mechanism to prefer B over A.
 
-**Preference tuning** is where we teach the model to distinguish between these two responses and reliably generate the better one. It does not add new knowledge — the model already knows how to write both kinds of response. It teaches the model to *prefer* certain qualities: depth, accuracy, appropriate length, helpfulness, honesty, and safety. The key insight is that preference tuning is not about correct versus incorrect — it is about better versus worse among valid responses.
+**Preference tuning** closes this gap. It does not add new knowledge — the model already knows how to write both responses. It teaches the cluster of qualities we want: depth, accuracy, appropriate length, helpfulness, honesty, safety. Crucially, none of these qualities is ever defined as a hard rule. The training signal is not "this answer is right" but "this answer is *better than* that one." The model learns taste by example.
 
-### 5b. The Reward Model
+The next subsections walk through classical RLHF in order: who does the scoring (5b), what the scorer looks like architecturally (5c), where the training data comes from (5d), how the scorer is trained (5e), how the LLM is then optimised against the scorer (5f), and the practical cost of doing all this (5g, which sets up Section 6).
 
-The central tool in classical preference tuning is the **reward model** — a separate neural network trained to score the quality of a language model's output.
+### 5b. The Preference Evaluator — From Human Rater to Automated Judge
 
-The reward model is built from a copy of the instruction-tuned model with one critical architectural change: the language modelling head — the final layer that outputs a probability distribution over the entire vocabulary — is replaced with a **regression head** that outputs a single scalar quality score.
+Imagine training a junior writer. After each piece they produce, you read it and give it a score on a 1–10 scale. They use that score to revise: high score, do more of the same; low score, try a different approach. This is the basic loop of preference tuning, and the entity that produces the score is called the **preference evaluator** (book Figure 12-22).
 
 ```
-Standard Instruction-Tuned LLM:
+The preference evaluator loop:
+
+  [Input prompt]
+        │
+        ▼
+  [   LLM   ]  ──► [Generation A] ────┐
+                                       │
+                                       ▼
+                            ┌─────────────────────┐
+                            │ Preference Evaluator│
+                            │   (score: e.g. 4)   │
+                            └─────────────────────┘
+                                       │
+                                       ▼
+                Update the LLM based on this score:
+                   high score → do more of this
+                   low score  → do less of this
+```
+
+Now scale this up. Producing a useful training signal for a modern LLM requires *millions* of preference scores across the training run. You cannot have human raters score every example in every training step — it would take years and cost a fortune. So the field's pragmatic solution is **two-phase**: first humans label a relatively small set of preference pairs as ground truth; then we train a separate neural network — a **reward model** — to *imitate* the humans. From that point on, the reward model is the evaluator, scoring at GPU speed.
+
+```
+Two-phase scaling of the evaluator:
+
+  Phase 1 — slow, small, expensive:
+      Humans label ~10k–100k pairs of (prompt, response_A, response_B)
+      with which one is preferred. This is the preference dataset.
+
+  Phase 2 — fast, large, automatic:
+      Train a reward model to imitate human judgments on the preference
+      dataset. The reward model then provides scores at GPU speed for
+      the millions of training steps that preference tuning requires.
+```
+
+This two-phase architecture is the heart of classical RLHF: humans bootstrap the reward, a reward model amortises it across the rest of training. The next subsection looks at how that reward model is actually built.
+
+### 5c. The Reward Model — Anatomy and Architecture
+
+A sommelier and a wine critic both taste the same glass. The sommelier *describes* the wine — "Black currant, hints of leather, well-balanced tannins" — that is the LLM, producing free-form text. The critic *scores* the wine on a 100-point scale — that is the reward model. Both share the same trained palate; they only differ in what they *output*. A score, not a description.
+
+This is exactly how a reward model is built. Start with a copy of the instruction-tuned LLM. Remove the language modelling head — the linear layer that produces a probability distribution over the entire vocabulary. Replace it with a **regression head** (the book calls this a "quality classification head" in Figure 12-25): a single linear layer that outputs one scalar. Same transformer body, swapped terminal layer. The transformer's understanding of language is fully preserved; only the *output format* changes.
+
+```
+Standard instruction-tuned LLM:
 
   [Prompt + Response tokens]
          │
@@ -1290,258 +1564,500 @@ Standard Instruction-Tuned LLM:
   [Transformer Layers ×N]
          │
          ▼
-  [Language Model Head]      ← shape: (vocab_size,) e.g. 32,000 values
+  [Language Model Head]      ← shape: (vocab_size,), e.g. 32,000 logits
          │
          ▼
-  Probability distribution over next token
+  Probability distribution over the next token
 
-─────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────
 
-Reward Model (same transformer, different final layer):
+Reward Model (same transformer body, swapped terminal layer):
 
   [Prompt + Response tokens]
          │
          ▼
-  [Transformer Layers ×N]    ← identical to SFT model, weights initialised from SFT
+  [Transformer Layers ×N]    ← weights initialised from the SFT model
          │
          ▼
-  [Reward Head]              ← shape: (1,)  — single scalar output
+  [Reward Head]              ← shape: (1,), a single scalar
          │
          ▼
   Quality score, e.g. −5.0 (poor) to +5.0 (excellent)
 ```
 
-The reward model is trained on a **preference dataset**: a collection of triplets each containing a prompt, a chosen response, and a rejected response. The labels do not say "good" and "bad" absolutely — they say "chosen is better than rejected." Sometimes both responses are good; one is simply better.
+The reward model's input is the **prompt concatenated with a candidate response**. Its output is a single number indicating how good that response is for that prompt — higher means better. The score has no intrinsic unit; it is only meaningful by comparison. A score of +3 is "good" only because the reward model has learned to assign +3 to better-than-average responses and -3 to worse-than-average ones.
 
-The training objective uses the **Bradley-Terry model** for pairwise comparisons, which converts a score difference into a probability through the sigmoid function:
+**Multiple reward models in parallel.** A common pattern at scale (book Figure 12-31): Llama 2 trained **two** reward models — one tuned to score *helpfulness*, another tuned to score *safety*. The two scores were combined during preference tuning. Different axes of "good" can pull in different directions (a maximally helpful response on how to commit a crime is not maximally safe), and a single reward model often blurs them. Splitting the dimensions makes the trade-off explicit and tunable.
 
-$$\mathcal{L}_{RM} = -\log \sigma\!\left(r_\theta(\text{prompt},\, y_w) - r_\theta(\text{prompt},\, y_l)\right)$$
+### 5d. Building the Preference Dataset
+
+Before we can train the reward model, we need data. The preference dataset is the bottleneck of the entire RLHF pipeline — its quality is a hard ceiling on the quality of the aligned model that comes out the other end. Each training example is a triplet (prompt, chosen response, rejected response):
+
+```
+A single preference-dataset example:
+
+  prompt:   "Explain reinforcement learning in two sentences."
+  chosen:   "Reinforcement learning is a paradigm where an agent learns
+             by trial and error, receiving rewards for good actions and
+             penalties for bad ones. Over time it learns a policy that
+             maximises cumulative reward."
+  rejected: "Reinforcement learning is a complex subfield of machine
+             learning with many algorithms and applications. It is widely
+             studied. A complete explanation would require much more space."
+```
+
+A crucial nuance the book underlines: the labels do **not** mean "good" versus "bad" absolutely. Both responses can be perfectly good — the chosen one is simply *better* than the rejected one for this prompt. This relative framing is what makes preference data so much richer than absolute 1–10 ratings. Humans are bad at giving consistent absolute scores (one rater's "8" is another's "6") but very good at the relative judgement "A is better than B."
+
+**Where does the data come from?** The book's Figure 12-28 illustrates the standard pipeline:
+
+```
+How preference data is generated:
+
+  [Input prompt]
+         │
+         ▼
+  [   LLM   ]  ── generates two different responses ──┐
+                                                       │
+                       ┌───────────────────────────────┘
+                       ▼
+              [Generation A]  [Generation B]
+                       │
+                       ▼
+            Human labeller is shown both
+               and answers: "Which do you prefer?"
+
+  The pair  (prompt, preferred, not-preferred)  becomes one training row.
+```
+
+Practical realities at scale:
+
+- The two candidate generations typically come from the *same* model with different sampling temperatures or different random seeds — small variations are what make the pair informative.
+- Some preference datasets use **crowd workers** (Anthropic's HH-RLHF), others use **expert annotators** (OpenAI's earlier work), and a growing number use **LLM-as-a-judge** (from 4f) to auto-generate labels and then quality-check a sampled subset with humans.
+- A typical preference dataset has 10k–100k labelled pairs — much smaller than an SFT dataset, but proportionally more expensive per example because each example requires a comparative judgement.
+
+### 5e. Training the Reward Model — The Bradley-Terry Loss
+
+With the dataset assembled, we are ready to train the reward model. The objective uses the **Bradley-Terry model** for pairwise comparisons, originally developed in 1952 for sports rankings (and the same theoretical foundation underneath Elo from 4g). The core idea is to convert a *score difference* into a *probability* using the sigmoid function: if the chosen response really is better, the reward model should assign it a higher score than the rejected response, and the sigmoid of that gap should be close to 1. We minimise the negative log of that probability.
+
+$$\mathcal{L}_{\text{RM}} \;=\; -\log \sigma\!\left(r_\theta(\text{prompt},\, y_w) \;-\; r_\theta(\text{prompt},\, y_l)\right)$$
 
 | Symbol | Meaning |
 |--------|---------|
 | $r_\theta$ | Reward model with parameters $\theta$ |
 | $y_w$ | The winning (chosen) response |
 | $y_l$ | The losing (rejected) response |
-| $\sigma(x) = 1/(1+e^{-x})$ | Sigmoid function, maps any real number to (0, 1) |
+| $r_\theta(\text{prompt},\, y)$ | Reward model's scalar score for response $y$ given the prompt |
+| $\sigma(x) = 1 / (1 + e^{-x})$ | Sigmoid — squashes any real number into $(0, 1)$ |
+| $\mathcal{L}_{\text{RM}}$ | Loss to minimise — pushes the gap between $r(y_w)$ and $r(y_l)$ wider |
 
-Minimising this loss pushes the model to assign higher scores to chosen responses and lower scores to rejected ones.
+Minimising this loss pushes the model to assign higher scores to chosen responses and lower scores to rejected ones — automatically, with no hard ceiling, no fixed scale, no specific target value.
 
-**Dry-run — reward model training loss:**
+**Dry-run — reward model training loss in two regimes:**
 
 ```
-Example 1: Model clearly distinguishes good from bad
-  Prompt:   "What is an LLM?"
-  Chosen:   "A large language model is a neural network trained on vast text data..."
-  Rejected: "I don't know."
+Example 1 — Model already distinguishes good from bad clearly:
+  prompt:   "What is an LLM?"
+  chosen:   "A large language model is a neural network trained on vast text..."
+  rejected: "I don't know."
 
-  r(chosen)   = +5.2
-  r(rejected) = −3.1
+  r(chosen)    =  +5.2
+  r(rejected)  =  −3.1
 
-  diff = 5.2 − (−3.1) = 8.3
-  σ(8.3)     = 1 / (1 + e^{−8.3}) ≈ 0.9997
-  loss       = −log(0.9997) ≈ 0.0003   ← nearly zero; model got it right
+  diff    =  5.2 − (−3.1)        =   8.3
+  σ(8.3)  =  1 / (1 + e^(−8.3))   ≈   0.9997
+  loss    =  −log(0.9997)         ≈   0.0003   ← nearly zero; model is confident
 
-Example 2: Model barely distinguishes them
-  r(chosen)   = 0.1
-  r(rejected) = 0.0
+Example 2 — Model barely distinguishes the two:
+  r(chosen)    =  0.1
+  r(rejected)  =  0.0
 
-  diff = 0.1 − 0.0 = 0.1
-  σ(0.1)     = 1 / (1 + e^{−0.1}) ≈ 0.525
-  loss       = −log(0.525) ≈ 0.644   ← large; model cannot tell them apart
+  diff    =  0.1 − 0.0            =   0.1
+  σ(0.1)  =  1 / (1 + e^(−0.1))   ≈   0.525
+  loss    =  −log(0.525)          ≈   0.644    ← large; model uncertain
 
-Training will push r(chosen) higher and r(rejected) lower
-until the score gap is wide and the loss is small.
+Training keeps pushing r(chosen) higher and r(rejected) lower until
+the gap is wide and the loss is small.
 ```
 
-Once trained, the reward model acts as an automatic judge. Given any `[prompt, response]` pair, it outputs a quality score. This score is the training signal for the next stage.
+A subtle and important property of this loss: it does **not** care about either score's absolute value. Only the *gap* matters. A reward model that outputs $\{+1000, +990\}$ for chosen/rejected is just as happy as one that outputs $\{+5, -5\}$ — both have a wide gap. This is why reward-model scores have no intrinsic unit and are only comparison-meaningful.
 
----
+Once trained, the reward model becomes the **automated preference evaluator**: feed it any `(prompt, response)` pair and it returns a quality score. That score is the training signal for the next stage.
 
-### 5c. Proximal Policy Optimization (PPO)
+### 5f. Proximal Policy Optimization (PPO) — Optimising Against the Reward Signal
 
-With a reward model in hand, the instruction-tuned LLM can be further fine-tuned using **Proximal Policy Optimization (PPO)**, a reinforcement learning algorithm. PPO is how the original ChatGPT was trained, and it remains the "classical" RLHF algorithm.
+With a reward model in hand, the natural next step is: take our instruction-tuned LLM, generate responses to a stream of prompts, score each with the reward model, and update the LLM to produce higher-scoring responses. This is **reinforcement learning**, and the specific algorithm used in classical RLHF — the one that trained the original ChatGPT in November 2022 — is **Proximal Policy Optimization (PPO)** (Schulman et al., 2017).
 
-PPO casts language generation as a reinforcement learning problem. The LLM is the **policy** — an agent that generates tokens (actions) in response to prompts (states). After the full response is generated, the reward model assigns a scalar reward. The policy is then updated to make high-reward generations more likely.
+Think of PPO as coaching a comedian. You record each set, have an expert critic rate each joke on a 1–10 scale, and ask the comedian to deliver more of the high-rated jokes and fewer of the low-rated ones. With one important caveat: *do not change your style too radically in one rehearsal*. If some wild new style happens to fool the critic for one show, an unconstrained comedian would commit to it overnight. The "proximal" guardrail forces the style to evolve gradually, so the critic keeps catching obvious gaming and the underlying quality genuinely improves.
 
-The "proximal" constraint prevents the policy from changing too drastically in a single update. Without it, the LLM might discover token sequences that fool the reward model into giving high scores while generating nonsense — a phenomenon called **reward hacking**. The PPO clipping objective limits this:
+In RL vocabulary, the LLM is the **policy** $\pi$ — it maps a state (the conversation so far) to a distribution over actions (the next token). After the full response is generated, the reward model assigns a scalar reward. The policy is then updated to make high-reward responses more likely. The guardrail — the *"proximal"* in PPO — is a clipping mechanism on how much the policy is allowed to shift in one update step:
 
-$$\mathcal{L}^{\text{CLIP}} = \mathbb{E}\!\left[\min\!\left(r_t(\theta)\,\hat{A}_t,\;\;\text{clip}\!\left(r_t(\theta),\,1-\epsilon,\,1+\epsilon\right)\hat{A}_t\right)\right]$$
+$$\mathcal{L}^{\text{CLIP}}(\theta) \;=\; \mathbb{E}\!\left[\min\!\bigl(\,r_t(\theta)\,\hat{A}_t,\;\; \text{clip}\bigl(r_t(\theta),\, 1-\epsilon,\, 1+\epsilon\bigr)\,\hat{A}_t\,\bigr)\right]$$
 
 | Symbol | Meaning |
 |--------|---------|
-| $r_t(\theta) = \pi_\theta(a_t \mid s_t)\,/\,\pi_{\theta_\text{old}}(a_t \mid s_t)$ | Probability ratio of new policy vs old policy |
-| $\hat{A}_t$ | Advantage estimate — how much better this action was than expected |
-| $\text{clip}(r_t,\,1-\epsilon,\,1+\epsilon)$ | Caps the ratio; $\epsilon = 0.2$ is typical |
+| $\pi_\theta$ | Current (trainable) policy — the LLM being updated |
+| $\pi_{\theta_\text{old}}$ | Snapshot of the policy from before this update step |
+| $r_t(\theta) = \dfrac{\pi_\theta(a_t \mid s_t)}{\pi_{\theta_\text{old}}(a_t \mid s_t)}$ | Ratio of new policy probability to old policy probability for action $a_t$ at state $s_t$ |
+| $\hat{A}_t$ | Advantage estimate — how much better action $a_t$ turned out than the policy's average |
+| $\epsilon$ | Clipping range, typically $0.2$ |
+| $\text{clip}(r_t,\,1-\epsilon,\,1+\epsilon)$ | Cap the ratio between $1-\epsilon$ and $1+\epsilon$ |
 
-The clip says: if the policy ratio exceeds $1+\epsilon$ (new policy is pushing much harder on this token than the old policy), stop benefiting from further increases. This keeps updates moderate and prevents wild divergence.
+The intuition behind the clip: suppose the new policy is putting much more probability on a token than the old policy did ($r_t > 1 + \epsilon$) and the advantage on that token is positive (it was a good move). The unclipped loss would keep rewarding bigger pushes on that token indefinitely. The clipped version says "you have already moved enough on this token this step — take the gain, but no more rewards for further pushes until next update." This caps the per-step policy change.
 
-PPO requires three models in GPU memory simultaneously: the trainable policy (the LLM being updated), a frozen reference copy of the policy (to compute probability ratios), and the reward model. This three-model setup demands significant memory and engineering complexity, and training is sensitive to hyperparameters. These practical difficulties motivated the search for simpler alternatives — which led to DPO.
+**Why does the clip matter so much?** Without it, PPO is prone to a failure mode called **reward hacking**. The policy discovers token sequences that fool the reward model into very high scores while producing semantic nonsense — the LLM equivalent of a student who memorises the grading rubric and writes essays that score full marks while saying nothing. Reward models are imperfect approximations of human judgement; given freedom to wander far from sensible language, the policy will eventually find their blind spots. The clip is a guardrail that keeps the policy close to its previous self each step, preventing it from sprinting off into reward-hacked regions before the reward model can be retrained.
+
+### 5g. The Three-Model Memory Problem — Why PPO Hurts
+
+PPO works — well enough to ship the most consequential AI product of the decade — but it is expensive in a very specific way: it requires *three* large models to be in GPU memory simultaneously.
+
+```
+PPO's GPU memory footprint:
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │ ① Policy LLM (trainable)                                     │
+  │     - the model being preference-tuned                       │
+  │     - needs gradients + Adam state, just like in SFT         │
+  ├──────────────────────────────────────────────────────────────┤
+  │ ② Reference LLM (frozen)                                     │
+  │     - a snapshot of the policy from before this update       │
+  │     - needed to compute the probability ratio r_t(θ)         │
+  │     - same architecture and size as the trainable policy     │
+  ├──────────────────────────────────────────────────────────────┤
+  │ ③ Reward Model (frozen)                                      │
+  │     - scores every generated response                        │
+  │     - typically same architecture and size as the policy LLM │
+  └──────────────────────────────────────────────────────────────┘
+
+For a 7B-parameter LLM under PPO that is roughly
+   7B + 7B + 7B  =  21B parameters' worth of GPU memory,
+before counting gradients and Adam state on the trainable copy.
+```
+
+Memory is only half the story. PPO is also notoriously **hyperparameter-sensitive**: the clip range $\epsilon$, the KL penalty between policy and reference, the value function used for advantage estimation, the learning rate, the batch size, the rollout length — all need careful joint tuning, and a poor choice on any one of them can cause the policy to collapse, drift into nonsense, or stall. PPO-based RLHF is the kind of stack that demands a small team of experienced ML engineers to make work consistently.
+
+This combination — large memory footprint plus high tuning complexity plus a fundamentally clunky two-stage architecture (train a reward model, then optimise against it) — motivated a search for a simpler alternative. Could we somehow get the same alignment outcome **without** training a separate reward model, **without** reinforcement learning, and **without** holding three models in memory at once? Section 6 introduces the answer: **Direct Preference Optimization (DPO)**, an algorithm whose theoretical insight allows it to skip the reward model entirely while consuming roughly the same compute as a normal SFT run.
 
 ---
 
 ## 6. Direct Preference Optimization (DPO)
 
-### 6a. The Core Insight — No Reward Model Needed
+Section 5 left us with a working but expensive RLHF stack: train a reward model, then optimise the LLM against it with PPO, while juggling three large models in memory. **Direct Preference Optimization (DPO)** (Rafailov et al., 2023) is the algorithm that collapses that whole machinery into a single supervised-style loss. In under two years it went from a single paper to the default preference-tuning algorithm in nearly every open-source pipeline. This section explains why — first as an intuition, then as a short mathematical bridge from PPO, then as a concrete training step you could code by hand.
 
-**Direct Preference Optimization (DPO)** is one of the most elegant ideas in recent LLM research, introduced by Rafailov et al. in 2023. It asks: do we actually need to train a separate reward model and then use reinforcement learning to optimise the LLM against it? Can we somehow do the whole thing directly?
+### 6a. The Core Insight — Your LLM Is Already a Reward Model
 
-The theoretical breakthrough is the realisation that the optimal language model policy *implicitly defines* the reward function. The reward that PPO is trying to maximise can be expressed analytically in terms of the log-probabilities of the LLM being trained and a frozen reference LLM. This means that instead of training a reward model and then a policy, we can directly optimise the LLM on the preference data — no reward model, no reinforcement learning required.
+Imagine you have already trained a music critic to recognise good songs. Then someone says: "instead of using the critic as a separate judge whenever your composer writes something, what if the *composer's own preferences* — what they would naturally write — already encode the reward signal you need?" The composer's preferences, compared to a fixed snapshot of those preferences from before the latest round of training, *are* the reward. You don't need a separate critic at all.
 
-DPO is simpler, more stable, requires less memory, and achieves comparable or better results than PPO on most benchmarks. It has become the dominant approach for preference tuning in open-source pipelines.
+This is the core insight of DPO. The paper's evocative subtitle: *"Your language model is secretly a reward model."* DPO observes that under the standard RLHF framework, the optimal policy implicitly defines the reward function it is being optimised against. Crucially, that implicit reward can be expressed *analytically* in terms of two things you already have available without any extra training:
 
-### 6b. How DPO Works — The Four Players
+1. The log-probabilities of the LLM you are training, $\pi_\theta$.
+2. The log-probabilities of a frozen copy of that LLM from before training began, $\pi_\text{ref}$.
 
-Every DPO training step involves four components:
+If the reward is available in closed form, you do not need to train a separate reward model. And if you do not have a reward model, you do not need reinforcement learning to optimise against one. The whole RLHF pipeline collapses to **two models** and a **standard supervised-style loss**.
 
-1. **The prompt** — the question or instruction
-2. **The chosen response** — the preferred answer from the preference dataset
-3. **The rejected response** — the less preferred answer
-4. **The reference model** — a frozen copy of the instruction-tuned model, never updated
+Stripped to the punchline: PPO is what you get when you do not realise the LLM and the reward model can be the same object. DPO is what you get when you do.
+
+### 6b. The Theoretical Bridge — How DPO Eliminates the Reward Model
+
+How does DPO actually pull the reward model out of the loop? The bridge is short — three formal steps that go from "PPO's optimal solution" to "DPO's loss function." This subsection sketches the logic at the level you can follow without reading the full proof.
+
+**Step 1 — The optimal RLHF policy is known in closed form.** Classical RLHF maximises expected reward under a KL constraint that keeps the policy from drifting too far from the reference:
+
+$$\pi^*(y \mid x) \;=\; \arg\max_\pi \;\; \mathbb{E}\!\left[r(x, y)\right] \;-\; \beta \,\text{KL}\!\left[\pi(y \mid x) \,\|\, \pi_\text{ref}(y \mid x)\right]$$
+
+| Symbol | Meaning |
+|--------|---------|
+| $r(x, y)$ | Reward model's score for response $y$ to prompt $x$ |
+| $\pi(y \mid x)$ | Policy's probability of generating $y$ given $x$ |
+| $\pi_\text{ref}$ | Reference (frozen) policy — the SFT model |
+| $\beta$ | Temperature controlling how much $\pi$ may diverge from $\pi_\text{ref}$ |
+| $\text{KL}[\pi \,\|\, \pi_\text{ref}]$ | Kullback–Leibler divergence — penalises drift from $\pi_\text{ref}$ |
+
+This optimisation has a known closed-form solution:
+
+$$\pi^*(y \mid x) \;=\; \frac{1}{Z(x)} \, \pi_\text{ref}(y \mid x) \, \exp\!\left(\tfrac{1}{\beta}\, r(x, y)\right)$$
+
+where $Z(x)$ is a normalising constant (a "partition function") that makes $\pi^*$ sum to 1 over all possible responses $y$.
+
+**Step 2 — Invert the relationship.** Solving for $r(x, y)$ in the expression above:
+
+$$r(x, y) \;=\; \beta \,\log \frac{\pi^*(y \mid x)}{\pi_\text{ref}(y \mid x)} \;+\; \beta \,\log Z(x)$$
+
+The reward is now expressed entirely in terms of *probability ratios* between the optimal policy and the reference policy — no neural-network reward model needed anywhere on the right-hand side.
+
+**Step 3 — Substitute into the Bradley-Terry preference loss.** Recall from 5e that the reward model is trained on pairwise preferences using $\mathcal{L} = -\log \sigma\!\left(r(x, y_w) - r(x, y_l)\right)$. Substituting our analytical reward into that loss, and letting $\pi_\theta$ stand in for the (yet-unknown) optimal policy $\pi^*$ we are trying to learn:
+
+$$\mathcal{L}_{\text{DPO}} \;=\; -\log \sigma\!\left(\,\beta \,\log \frac{\pi_\theta(y_w \mid x)}{\pi_\text{ref}(y_w \mid x)} \;-\; \beta \,\log \frac{\pi_\theta(y_l \mid x)}{\pi_\text{ref}(y_l \mid x)}\,\right)$$
+
+The crucial cancellation: $\log Z(x)$ appears in both the chosen and the rejected terms with the same value, and the subtraction wipes it out. What remains depends only on the *trainable* policy $\pi_\theta$ and the *reference* policy $\pi_\text{ref}$. The reward model has vanished from the math.
 
 ```
-DPO Training Step:
+The trick in one picture:
 
-  Prompt: "What are LLMs?"
-  Chosen:   "Large language models are neural networks trained on vast text..."
-  Rejected: "They are large."
+  PPO path:   preferences ── train ──► reward model ── RL ──► aligned policy
+                                  ▲                       ▲
+                                reward                reward model
+                                model                 also held in GPU
+                                trained               memory + sampled
+
+  DPO path:   preferences ─────────── one loss ──────────► aligned policy
+                                   (no reward model trained,
+                                    no reward model held in
+                                    GPU memory, no RL rollouts)
+```
+
+This is the bridge. From here on out, DPO is just supervised learning with a slightly clever loss function. The next subsections walk through what that looks like step by step.
+
+### 6c. The Four Players in a DPO Step
+
+Every DPO training step involves four components — three pieces of data and one extra model:
+
+1. **The prompt** $x$ — the question or instruction (from the preference dataset).
+2. **The chosen response** $y_w$ — the preferred answer.
+3. **The rejected response** $y_l$ — the less preferred answer.
+4. **The reference model** $\pi_\text{ref}$ — a frozen copy of the SFT model, never updated during DPO training.
+
+Two LLMs are held in memory: the **trainable** model $\pi_\theta$ (with gradients and optimizer state) and the **frozen reference** $\pi_\text{ref}$ (no gradients). Both score the chosen response and the rejected response. The DPO loss then compares their scores:
+
+```
+A single DPO training step:
+
+  prompt:    "What are LLMs?"
+  chosen:    "Large language models are neural networks trained on vast text..."
+  rejected:  "They are large."
 
            ┌──────────────────────────────────┐
-           │   Reference Model (FROZEN)        │
-           │   (copy of SFT model)             │
+           │   Reference Model π_ref (FROZEN) │
+           │   (copy of the SFT model)        │
            └──────────────────────────────────┘
                           │
          ┌────────────────┴───────────────────┐
          ▼                                    ▼
-  log P_ref(chosen | prompt)      log P_ref(rejected | prompt)
-         │                                    │
-         └────────────────┬───────────────────┘
-                          │  (reference baseline)
+  log π_ref(chosen | prompt)         log π_ref(rejected | prompt)
+
            ┌──────────────────────────────────┐
-           │   Trainable Model                 │
+           │   Trainable Model π_θ             │
            │   (being preference-tuned)        │
            └──────────────────────────────────┘
                           │
          ┌────────────────┴───────────────────┐
          ▼                                    ▼
-  log P_train(chosen | prompt)    log P_train(rejected | prompt)
-         │                                    │
-         └────────────────┬───────────────────┘
-                          │
-                     DPO Loss:
-         Does trainable model prefer chosen MORE than
-         the reference model did?
+  log π_θ(chosen | prompt)            log π_θ(rejected | prompt)
 
                           │
                           ▼
-              Update trainable model only
+                     DPO Loss:
+       "Does π_θ prefer 'chosen' more, and 'rejected' less,
+        than π_ref did?"
+
+                          │
+                          ▼
+              Update π_θ only — π_ref stays frozen
 ```
 
-The reference model exists to prevent the trainable model from drifting too far from its original behaviour. Without it, the model could learn to assign absurdly high probabilities to the chosen responses by forgetting most of what it knew — collapsing its distribution to a narrow set of "preferred" patterns. The reference model acts as an anchor: updates are measured not in absolute terms, but relative to where the model started.
+**Why the reference model is required.** Without it as an anchor, the trainable model could maximise the chosen-response probability by *collapsing its entire distribution* onto a narrow handful of "preferred" patterns — forgetting most of what it learned during SFT. The reference is a stake in the ground: every update is measured *relative* to where the model started, not in absolute terms. The trainable model is allowed to drift, but only as much as $\beta$ (in the loss) allows.
 
-### 6c. The DPO Loss Function
+### 6d. Token-Level Scoring — How the Probabilities Are Computed
 
-$$\mathcal{L}_{\text{DPO}} = -\log \sigma\!\left(\beta \log \frac{\pi_\theta(y_w \mid x)}{\pi_\text{ref}(y_w \mid x)} - \beta \log \frac{\pi_\theta(y_l \mid x)}{\pi_\text{ref}(y_l \mid x)}\right)$$
+The DPO loss writes $\pi_\theta(y \mid x)$ — the probability of an *entire* response $y$ given the prompt $x$. But responses are often 100+ tokens long. How is "the probability of a whole response" actually computed in practice? The answer (book Figure 12-33) is the standard chain-rule factorisation used by every autoregressive language model: the joint probability across tokens is the product of the per-token conditional probabilities, which becomes a sum once we take logs.
+
+$$\log \pi(y \mid x) \;=\; \sum_{t=1}^{T} \log \pi(y_t \mid x,\, y_1,\, \ldots,\, y_{t-1})$$
 
 | Symbol | Meaning |
 |--------|---------|
-| $\pi_\theta(y \mid x)$ | Trainable model's probability of generating response $y$ given prompt $x$ |
-| $\pi_\text{ref}(y \mid x)$ | Reference model's probability (frozen) |
+| $y = (y_1, \ldots, y_T)$ | The response, tokenised into $T$ tokens |
+| $\pi(y_t \mid x, y_{<t})$ | Model's probability for token $y_t$ given the prompt and the response so far |
+| Sum over $t$ | Summing log-probs is the same as multiplying probabilities |
+
+**Concretely** — to score the candidate response "I have no idea !" against the prompt "What are LLMs?":
+
+```
+Token-by-token scoring with the trainable model π_θ:
+
+  Token 1: π_θ("I"     | "What are LLMs?")                 → log p_1
+  Token 2: π_θ("have"  | "What are LLMs? I")               → log p_2
+  Token 3: π_θ("no"    | "What are LLMs? I have")          → log p_3
+  Token 4: π_θ("idea"  | "What are LLMs? I have no")       → log p_4
+  Token 5: π_θ("!"     | "What are LLMs? I have no idea")  → log p_5
+
+  log π_θ(response | prompt)  =  log p_1 + log p_2 + log p_3 + log p_4 + log p_5
+```
+
+The same computation is performed once with $\pi_\theta$ and once with $\pi_\text{ref}$, for both the chosen and the rejected responses. That gives **four forward passes total per training example**:
+
+```
+  Forward pass 1:  π_θ   over chosen      →  Σ log π_θ(chosen)
+  Forward pass 2:  π_θ   over rejected    →  Σ log π_θ(rejected)
+  Forward pass 3:  π_ref over chosen      →  Σ log π_ref(chosen)
+  Forward pass 4:  π_ref over rejected    →  Σ log π_ref(rejected)
+```
+
+Those four scalars are then fed into the DPO loss in 6e — and that is the entirety of one training step.
+
+### 6e. The DPO Loss Function with Dry-Run
+
+Putting it all together, the DPO loss in its final form:
+
+$$\mathcal{L}_{\text{DPO}} \;=\; -\log \sigma\!\left(\beta \,\log \frac{\pi_\theta(y_w \mid x)}{\pi_\text{ref}(y_w \mid x)} \;-\; \beta \,\log \frac{\pi_\theta(y_l \mid x)}{\pi_\text{ref}(y_l \mid x)}\right)$$
+
+| Symbol | Meaning |
+|--------|---------|
+| $\pi_\theta(y \mid x)$ | Trainable model's probability of response $y$ given prompt $x$ |
+| $\pi_\text{ref}(y \mid x)$ | Reference model's (frozen) probability |
 | $y_w$ | The winning (chosen) response |
 | $y_l$ | The losing (rejected) response |
-| $\beta$ | Temperature — how much the trainable model may diverge from the reference. Typical: 0.1 |
+| $\beta$ | Temperature — controls how aggressively $\pi_\theta$ may diverge from $\pi_\text{ref}$. Typical: $0.1$ |
+| $\sigma(x) = 1/(1+e^{-x})$ | Sigmoid — squashes any real number into $(0, 1)$ |
 
-Reading from the inside out: the term $\log \pi_\theta(y_w \mid x) - \log \pi_\text{ref}(y_w \mid x)$ measures how much *more* the trainable model likes the chosen response compared to the reference model's baseline. If this is positive, the trainable model has already started preferring the chosen response relative to where it started. The term for the rejected response measures how much *less* the trainable model now likes the rejected response. The loss minimises when the trainable model simultaneously increases its relative preference for chosen *and* decreases its relative preference for rejected.
+Reading from the inside out: the term $\log\pi_\theta(y_w \mid x) - \log\pi_\text{ref}(y_w \mid x)$ measures how much *more* the trainable model now prefers the chosen response compared to where the reference started. The corresponding term for the rejected response measures how much *less* the trainable model now prefers the rejected response. The loss minimises when these two relative preferences move in opposite directions: chosen up, rejected down.
+
+**The role of $\beta$.** Beta acts as a temperature on the relative preference. A *small* $\beta$ (e.g. $0.1$) makes the loss insensitive to the size of the log-ratios — the trainable model is allowed to wander further from the reference. A *large* $\beta$ (e.g. $1.0$) makes the loss very sensitive — even small drifts from the reference incur a meaningful loss. In practice $\beta$ is the leash: too short and the model cannot move enough to learn the preferences; too long and the model drifts from its instruction-following ability into reward-hacked territory.
 
 **Dry-run — DPO loss with concrete log-probabilities:**
 
 ```
-Prompt:   "Explain gradient descent simply."
-Chosen:   "Imagine rolling a ball downhill — gradient descent always takes
-           a step in the direction the ground slopes downward."
-Rejected: "Gradient descent computes the gradient of the loss and updates
-           the parameters proportionally."
+Prompt:    "Explain gradient descent simply."
+Chosen:    "Imagine rolling a ball downhill — gradient descent always takes
+            a step in the direction the ground slopes downward."
+Rejected:  "Gradient descent computes the gradient of the loss and updates
+            the parameters proportionally."
 
-(Both valid — Chosen is better for a simple explanation due to the analogy)
+(Both are valid; chosen is better for a simple explanation due to the analogy.)
 
-Reference model log-probabilities:
-  log P_ref(chosen   | prompt) = −12.4
-  log P_ref(rejected | prompt) = −10.1   ← ref slightly prefers rejected (more textbook-like)
+Reference model log-probabilities (forward passes 3 and 4):
+  log π_ref(chosen   | prompt)  =  −12.4
+  log π_ref(rejected | prompt)  =  −10.1   ← reference slightly prefers rejected
+                                              (it sounds more textbook-like)
 
-Trainable model (after some DPO training):
-  log P_train(chosen   | prompt) = −10.0  ← model now prefers chosen more
-  log P_train(rejected | prompt) = −12.8  ← model now disfavours rejected
+Trainable model log-probabilities, after some DPO training (passes 1 and 2):
+  log π_θ(chosen   | prompt)    =  −10.0   ← trainable now prefers chosen more
+  log π_θ(rejected | prompt)    =  −12.8   ← trainable now disfavours rejected
 
-Ratio for chosen:
-  log P_train − log P_ref = −10.0 − (−12.4) = +2.4
-  (trainable model is 2.4 log-units more likely to generate chosen than reference was)
+Log-ratio for chosen:
+  log π_θ − log π_ref  =  −10.0 − (−12.4)  =  +2.4
+  (trainable is 2.4 log-units more likely to generate chosen than ref was)
 
-Ratio for rejected:
-  log P_train − log P_ref = −12.8 − (−10.1) = −2.7
-  (trainable model is 2.7 log-units less likely to generate rejected than reference was)
+Log-ratio for rejected:
+  log π_θ − log π_ref  =  −12.8 − (−10.1)  =  −2.7
+  (trainable is 2.7 log-units less likely to generate rejected than ref was)
 
 β = 0.1
 
-Inner value = β × (ratio_chosen − ratio_rejected)
-            = 0.1 × (2.4 − (−2.7))
-            = 0.1 × 5.1 = 0.51
+Inner value  =  β × (ratio_chosen − ratio_rejected)
+             =  0.1 × (2.4 − (−2.7))
+             =  0.1 × 5.1
+             =  0.51
 
-σ(0.51) = 1 / (1 + e^{−0.51}) ≈ 0.625
+σ(0.51)  =  1 / (1 + e^(−0.51))  ≈  0.625
 
-Loss = −log(0.625) ≈ 0.470
+Loss  =  −log(0.625)  ≈  0.470
 
 As training continues:
-  ratio_chosen rises (model prefers chosen more)
-  ratio_rejected falls (model prefers rejected less)
-  inner value grows → σ → 1.0 → loss → 0
+  ratio_chosen rises    (trainable prefers chosen more)
+  ratio_rejected falls  (trainable prefers rejected less)
+  inner value grows  →  σ → 1.0  →  loss → 0
 ```
 
----
+Notice that the shape of the dry-run is the *same* shape as the reward-model loss in 5e — sigmoid of a gap, then negative log of that. DPO inherits the comparative-judgement structure directly; the only difference is *what* is being compared. The reward model compared its own scalar outputs; DPO compares log-probability ratios between two LLMs.
 
-### 6d. DPO vs PPO — Why DPO Won
+### 6f. DPO vs PPO — Why DPO Won
+
+The empirical and practical results were decisive within about a year of DPO's publication. By 2024, almost every open-source preference-tuning recipe was DPO-based, with PPO retained mostly in well-resourced labs that already had the RL infrastructure built.
 
 | Dimension | PPO | DPO |
 |-----------|-----|-----|
-| Separate reward model required? | Yes | No |
-| Models in memory simultaneously | 3 (policy, reference, reward model) | 2 (trainable, reference) |
-| Training stability | Sensitive to hyperparameters, often unstable | Stable — behaves like supervised learning |
-| Implementation complexity | High — requires RL infrastructure | Low — standard gradient descent |
-| Memory requirements | High | Moderate |
-| Results quality | Baseline | Comparable or better |
+| Separate reward model required? | Yes — trained on preference data first | No — trained directly on preference data |
+| Models in GPU memory simultaneously | 3 (policy, reference, reward model) | 2 (trainable, reference) |
+| Training paradigm | Reinforcement learning with policy gradient | Supervised-style maximum likelihood |
+| Training stability | Sensitive to hyperparameters; can collapse | Stable — behaves like SFT |
+| Hyperparameters that actually matter | $\epsilon$ clip range, KL penalty, value function, LR, batch, rollout length | $\beta$, learning rate, batch size |
+| Implementation complexity | High — needs full RL infrastructure | Low — standard gradient descent |
+| Reward hacking risk | High — clip is the only guardrail | Low — anchored to reference at every step |
+| Results quality | Baseline (used to train original ChatGPT) | Comparable or better on most benchmarks |
 
-DPO simplifies the entire alignment pipeline to something that resembles supervised fine-tuning — which means it benefits from all the stability properties and existing tooling of that well-understood paradigm. The most significant practical advantage is that you do not need to separately train, validate, and tune a reward model before beginning preference tuning.
+The most consequential row is "training paradigm." DPO reduces preference tuning to *something that looks like SFT* — log-probability ratios, sigmoid, gradient descent, no on-policy sampling during training, no value functions, no rollouts. Anyone who can run an SFT loop can run a DPO loop. The whole field of preference tuning suddenly inherits the stability and tooling of supervised learning.
 
----
+DPO also benefits practically from QLoRA. Because the reference model is frozen (no gradients, no optimizer state) and the trainable LLM can be 4-bit-quantized with LoRA adapters on top (just like Section 3), the full DPO pipeline fits comfortably on a single consumer GPU. Section 7 will execute exactly this configuration end-to-end on TinyLlama.
 
-### 6e. ORPO — Combining SFT and DPO in One Pass
+### 6g. ORPO — Combining SFT and DPO in One Pass
 
-**Odds Ratio Preference Optimization (ORPO)**, introduced by Hong et al. (2024), is the most recent step in this sequence of simplifications. While DPO eliminated the separate reward model, it still requires a separately trained SFT model as its reference — meaning you must first do supervised fine-tuning, then do DPO on top of it. That is two training loops, two sets of hyperparameters to tune, and twice the engineering overhead.
+DPO is a substantial simplification of PPO. But it still requires *two sequential training loops*: first SFT (to produce $\pi_\text{ref}$, the reference model) and then DPO (to produce the aligned model). Two training loops, two sets of hyperparameters, double the engineering surface area. Could we go further and fuse the two stages into one?
 
-ORPO fuses both stages into a single training objective. It modifies the standard next-token-prediction loss used in SFT by adding a preference term that uses the **odds ratio** between the chosen and rejected responses:
+**Odds Ratio Preference Optimization (ORPO)**, introduced by Hong, Lee, and Thorne in 2024 — paper subtitle *"Monolithic Preference Optimization Without Reference Model"* — does exactly that. ORPO modifies the standard next-token-prediction SFT loss by adding a preference term based on the **odds ratio** between the chosen and rejected responses:
 
-$$\mathcal{L}_{\text{ORPO}} = \mathcal{L}_{\text{SFT}} + \lambda \cdot \mathcal{L}_{\text{OR}}$$
+$$\mathcal{L}_{\text{ORPO}} \;=\; \mathcal{L}_{\text{SFT}} \;+\; \lambda \cdot \mathcal{L}_{\text{OR}}$$
 
-The odds ratio term $\mathcal{L}_{\text{OR}}$ compares the model's odds of generating the chosen response versus the rejected response at each training step, and penalises the model for not preferring the chosen response strongly enough. Since the SFT loss and the odds ratio loss are optimised simultaneously, the model learns to follow instructions *and* to prefer better responses in a single pass through the data.
+| Symbol | Meaning |
+|--------|---------|
+| $\mathcal{L}_{\text{SFT}}$ | Standard SFT loss — cross-entropy on the chosen response |
+| $\mathcal{L}_{\text{OR}}$ | Odds-ratio term — penalises the model for not preferring chosen strongly enough |
+| $\lambda$ | Hyperparameter weighting the preference term against the SFT term |
 
-ORPO is fully compatible with QLoRA. You can run ORPO on a 4-bit quantized model with LoRA adapters, achieving the full preference-tuning pipeline — instruction following plus alignment — in a single training run on consumer hardware.
+The odds-ratio loss $\mathcal{L}_{\text{OR}}$ uses the *odds* of the model generating each response (the ratio $p/(1-p)$) and pushes the odds of the chosen response to be much higher than the odds of the rejected. Because the SFT loss and the odds-ratio loss are optimised together, the model learns to **follow instructions and prefer better responses simultaneously**, in one pass through one combined dataset.
+
+Two practical consequences:
+
+- **No reference model needed.** ORPO does not need a frozen reference because the SFT loss itself anchors the model to the supervised data. This drops the GPU footprint back down to *one* LLM (plus its gradients and optimizer state) — the cheapest setting of the three.
+- **Full compatibility with QLoRA.** Because ORPO is "just" a modified SFT loss, every QLoRA trick from Section 3 transfers directly. You can run the full pipeline — instruction following plus preference alignment — in one training run on a 4-bit-quantized model on consumer hardware.
+
+ORPO is newer than DPO, and at the time the book was written DPO remained the workhorse of open-source pipelines. But the trajectory is clear: each successive generation of preference-tuning algorithms strips away one more thing classical RLHF required — first the reward model (DPO), then the reference model and the two-loop structure (ORPO). The destination is single-loop, single-model preference tuning on the same hardware budget as ordinary SFT.
+
+Section 7 takes the dominant of these three algorithms — DPO — and walks through a complete end-to-end run on TinyLlama, including the dataset format, the `DPOConfig` arguments, and the `DPOTrainer`'s subtle handling of the $\beta$ parameter.
 
 ---
 
 ## 7. Preference Tuning with DPO — Practical Walkthrough
 
-### 7a. DPO Dataset Format
+Theory in hand, this section turns DPO into a working preference-tuning run on the same TinyLlama we instruction-tuned in Section 3. The structure deliberately mirrors that section: dataset → quantization → LoRA → training args → trainer → merge. Most of the moving parts are familiar; what is new is the *preference* nature of the data, the four-pass scoring loop from 6d running under the hood, and three small but important differences in the training configuration. Each subsection focuses on what differs from the SFT walkthrough rather than re-explaining the entire stack.
 
-DPO requires a preference dataset: examples with a prompt, a chosen response, and a rejected response. The book uses the `distilabel-intel-orca-dpo-pairs` dataset from Argilla, which contains instruction–response pairs where two responses have been generated and one has been labelled preferred by a scoring process.
+### 7a. The DPO Walkthrough Pipeline — Mirror of Section 3, with Preferences
+
+Section 3 was like teaching an apprentice chef *how to cook*. Section 7 is like teaching them to cook *food customers prefer*. The kitchen is the same, the tools are the same, and most of the recipes carry over — but the training signal is different (preferences, not reference outputs) and the dataset is different (chosen vs rejected pairs, not instruction–response pairs).
+
+The full DPO walkthrough has seven steps, and each step has a near-direct counterpart in Section 3:
+
+```
+              The DPO walkthrough pipeline:
+
+  [1] Load preference dataset                                  (7b)
+          │   (argilla/distilabel-intel-orca-dpo-pairs)
+          ▼
+  [2] Apply chat template + filter                             (7b)
+          │   (status != tie, chosen_score ≥ 8, GSM8k contam.)
+          ▼
+  [3] Load the SFT-merged TinyLlama in 4-bit NF4               (7c)
+          │   (BitsAndBytesConfig, exactly as in 3c)
+          ▼
+  [4] Attach a FRESH set of LoRA adapters                      (7d)
+          │   (same LoraConfig as 3d, but a new run from zero)
+          ▼
+  [5] Configure DPO training hyperparameters                   (7e)
+          │   (DPOConfig — like TrainingArguments, plus 2 new fields)
+          ▼
+  [6] Train with DPOTrainer                                    (7f)
+          │   (beta is the new knob; four forward passes per step)
+          ▼
+  [7] Stack and merge BOTH SFT and DPO adapters                (7g)
+          │
+          ▼
+       Aligned TinyLlama, ready to deploy
+```
+
+Below, each subsection focuses on what is *different* from the SFT walkthrough — there is no need to re-explain `BitsAndBytesConfig` or `LoraConfig` in detail.
+
+### 7b. The Preference Dataset — distilabel-intel-orca-dpo-pairs
+
+The training data comes from Argilla's `distilabel-intel-orca-dpo-pairs`. The base instruction set is Intel's Orca; Argilla regenerated responses with multiple models and used their `distilabel` LLM-as-judge pipeline to score and label which of each pair is preferred. Roughly 13,000 raw triplets, narrowed by filtering to roughly 6,000 high-confidence examples after preprocessing.
 
 ```python
 from datasets import load_dataset
 
 def format_prompt(example):
-    """Format a DPO example with system prompt and TinyLlama chat template."""
-    system = "[system]\n" + example["system"] + "\n"
-    prompt = "<|user|>\n" + example["input"] + "\n</s>\n<|assistant|>\n"
+    """Format a DPO example using the TinyLlama chat template with a system turn."""
+    system = "<|system|>\n" + example["system"] + "</s>\n"
+    prompt = "<|user|>\n"   + example["input"]  + "</s>\n<|assistant|>\n"
 
     chosen   = example["chosen"]   + "</s>\n"
-    rejected = example["rejected"] + "\n"
+    rejected = example["rejected"] + "</s>\n"
 
     return {
         "prompt":   system + prompt,
@@ -1555,9 +2071,9 @@ dpo_dataset = load_dataset(
 
 dpo_dataset = dpo_dataset.filter(
     lambda r: (
-        r["status"] != "tie"           # Remove examples where neither is better
-        and r["chosen_score"] != 0     # Remove zero-scored examples
-        and not r["in_gsm8k_train"]    # Remove examples overlapping GSM8k test set
+        r["status"] != "tie"            # remove tied judgements
+        and r["chosen_score"] >= 8      # keep only confidently-better chosens
+        and not r["in_gsm8k_train"]     # avoid GSM8k contamination
     )
 )
 
@@ -1566,13 +2082,101 @@ dpo_dataset = dpo_dataset.map(
 )
 ```
 
-The filtering step is important. **Ties** are removed because DPO requires one response to be strictly better — tie examples send a contradictory training signal. **Zero-scored examples** were likely labelled carelessly. The **GSM8k contamination filter** removes examples from the GSM8k math benchmark's training set to ensure that later evaluation on GSM8k measures genuine reasoning rather than memorisation.
+Two structural details deserve unpacking.
 
----
+**The chat template uses three roles, not two.** Compared to Section 3, the format adds a `<|system|>` block carrying a system-level instruction. The full per-example template looks like this:
 
-### 7b. DPO Training Configuration
+```
+<|system|>
+[system-level instruction]</s>
+<|user|>
+[user message]</s>
+<|assistant|>
+[chosen response]</s>
 
-DPO uses the same basic training infrastructure as SFT, with a few important differences:
+with the rejected response stored separately:
+[rejected response]</s>
+```
+
+`DPOTrainer` expects three explicit string fields — `prompt`, `chosen`, `rejected` — not one concatenated `"text"` field as `SFTTrainer` did. That is why `format_prompt` returns a dictionary with those three keys and `remove_columns=dpo_dataset.column_names` strips out everything else, leaving the dataset with exactly those three columns.
+
+**The filter step is doing real work.** Three filters, each addressing a real failure mode in raw preference data:
+
+- `status != "tie"` — if the labeller could not pick a winner, the example sends a contradictory training signal (neither is strictly preferred). Drop it.
+- `chosen_score >= 8` — keep only examples where the labeller was confident the chosen response was clearly better. Marginal preferences (chosen by a hair) are noisier and add little signal.
+- `not in_gsm8k_train` — drop examples that overlap with the **GSM8k** benchmark's training set. If we later evaluate on GSM8k, the test should measure genuine reasoning, not memorisation of GSM8k-flavoured items. This is the benchmark-hygiene principle from 4e applied in practice.
+
+After filtering, the book's run lands on roughly **6,000 examples** from an initial ~13,000 — about half the data deliberately thrown away in the name of quality.
+
+### 7c. Loading the SFT-Merged Quantized Base Model
+
+DPO starts from the SFT model we built in Section 3 — not from a fresh base TinyLlama. The book's pipeline reloads the SFT-adapted model, merges its LoRA into the weights, then prepares that merged model as the new "base" for the DPO stage.
+
+```python
+import torch
+from peft import AutoPeftModelForCausalLM
+from transformers import BitsAndBytesConfig, AutoTokenizer
+
+# 4-bit quantization — identical to Section 3
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype="float16",
+    bnb_4bit_use_double_quant=True,
+)
+
+# Load the SFT adapter ON TOP of the base, then merge it down
+model = AutoPeftModelForCausalLM.from_pretrained(
+    "TinyLlama-1.1B-qlora",           # ← the SFT adapter from Section 3
+    low_cpu_mem_usage=True,
+    device_map="auto",
+    quantization_config=bnb_config,   # ← re-quantize for DPO memory budget
+)
+merged_model = model.merge_and_unload()
+
+# Tokenizer setup — same as Section 3
+model_name = "TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T"
+tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+tokenizer.pad_token   = "<PAD>"
+tokenizer.padding_side = "left"
+```
+
+Two things to notice that differ from a fresh SFT run.
+
+**We are re-quantizing a model whose weights already absorbed the SFT update.** In Section 3 we merged the SFT LoRA into float16 weights (3g) precisely so the merge would be lossless. Now we re-quantize that merged float16 checkpoint to 4-bit NF4 — once — and the new 4-bit grid is computed from the SFT-adjusted weights. That is the right time to quantize: after every update we want preserved has been baked in.
+
+**The merged SFT model becomes the new "reference" $\pi_\text{ref}$ for DPO.** When `DPOTrainer` initialises in 7f, it internally snapshots the model we pass in to create $\pi_\text{ref}$. Whatever weights we feed in here are what $\pi_\text{ref}$ will be locked to for the rest of preference tuning. Hence the importance of merging the SFT adapter *before* DPO — if we left it unmerged, the DPO loss would compute log-probabilities relative to the *unmodified base TinyLlama*, and the "drift" being penalised would include the entire SFT update we worked so hard to install. We would essentially be undoing the SFT.
+
+### 7d. LoRA Configuration for the DPO Stage
+
+We now attach a **fresh** set of LoRA adapters on top of the SFT-merged model. These are not the same adapters from Section 3 — those are gone, baked permanently into the merged weights. The new adapters will accumulate the DPO update.
+
+```python
+from peft import LoraConfig, prepare_model_for_kbit_training, get_peft_model
+
+peft_config = LoraConfig(
+    lora_alpha=32,
+    lora_dropout=0.1,
+    r=64,
+    bias="none",
+    task_type="CAUSAL_LM",
+    target_modules=[
+        "k_proj", "gate_proj", "v_proj", "up_proj",
+        "q_proj", "o_proj", "down_proj"
+    ]
+)
+
+model = prepare_model_for_kbit_training(merged_model)
+model = get_peft_model(model, peft_config)
+```
+
+The config is **identical** to the SFT LoRA config from 3d — same rank ($r = 64$), same alpha ($\alpha = 32$), same dropout ($0.1$), same seven target modules. The book deliberately uses the same hyperparameters across both stages so the only differences in the training run come from the *loss function* (DPO vs SFT) and the *training arguments* (next subsection).
+
+A subtle practical detail: the new adapter is again initialised with $A$ random and $B = 0$ (from 2e), so at the very first DPO step the model's output is *identical* to the SFT-merged reference. The DPO loss therefore starts at its initial value — both $\pi_\theta$ and $\pi_\text{ref}$ produce the same probabilities, so $\log \pi_\theta - \log \pi_\text{ref} = 0$ for both chosen and rejected — and the loss grows from there as the adapter learns to bend the policy toward chosen responses and away from rejected ones.
+
+### 7e. DPOConfig — Training Arguments for Preference Tuning
+
+DPO uses `DPOConfig` rather than `TrainingArguments`, but `DPOConfig` is a thin subclass of `TrainingArguments` and shares almost every field. The book's settings:
 
 ```python
 from trl import DPOConfig
@@ -1582,23 +2186,45 @@ training_arguments = DPOConfig(
     per_device_train_batch_size=2,
     gradient_accumulation_steps=4,
     optim="paged_adamw_32bit",
-    learning_rate=1e-5,         # ← 20× lower than SFT's 2e-4
+    learning_rate=1e-5,          # ← 20× smaller than SFT's 2e-4
     lr_scheduler_type="cosine",
-    max_steps=200,              # ← short run for illustration
+    max_steps=200,               # ← short illustrative run
     logging_steps=10,
     fp16=True,
     gradient_checkpointing=True,
-    warmup_ratio=0.1            # ← warm up for first 10% of steps
+    warmup_ratio=0.1,            # ← new: linear ramp-up over first 10% of steps
 )
 ```
 
-The learning rate is a full order of magnitude lower than in SFT (1e-5 vs 2e-4). In SFT, we are teaching the model a fundamentally new behaviour — following instructions — and large updates are appropriate. In DPO, we are making subtle refinements to a model that already behaves well. Large updates would destroy the model's instruction-following capabilities in exchange for marginal preference alignment gains.
+Three settings that differ meaningfully from the SFT configuration in 3e are worth understanding mechanistically.
 
-`warmup_ratio=0.1` linearly increases the learning rate from 0 to `1e-5` during the first 10% of training steps. At the very start of DPO training, the model has not yet learned anything about the preference data, and gradient estimates are noisy. A warm-up period lets the model stabilise before full-strength updates are applied, preventing early catastrophic forgetting of the SFT model's capabilities.
+**`learning_rate=1e-5` — a full order of magnitude smaller than SFT's `2e-4`.** Why so cautious? In SFT we were teaching the model a *fundamentally new behaviour* (follow instructions instead of pattern-completing), so large updates were appropriate — the model needed substantial change. In DPO we are making **subtle refinements** to a model that already follows instructions well. The model already speaks coherently; we are just nudging its *preference* between two coherent answers. Large updates would damage the SFT-acquired instruction-following while moving the preference needle only marginally — a bad trade. The QLoRA paper reports that higher learning rates only become preferable for very large bases (>33B parameters); for a 1.1B model, $1\text{e-}5$ is squarely in the right zone.
 
----
+**`max_steps=200`** replaces SFT's `num_train_epochs=1`. With effective batch size $2 \times 4 = 8$, that is $200 \times 8 = 1{,}600$ training examples seen — well under one full epoch over the 6,000-example filtered dataset. The book explicitly describes this as "for illustration purposes." A full DPO run would last considerably longer. Using `max_steps` instead of `num_train_epochs` is the right pattern when you want an exact stopping point regardless of dataset size.
 
-### 7c. DPOTrainer and the Beta Parameter
+**`warmup_ratio=0.1`** is the only entirely new field. It linearly increases the learning rate from $0$ to $1\text{e-}5$ across the first $20$ steps ($10\%$ of $200$), then hands off to the cosine schedule for the remaining $180$ steps:
+
+```
+DPO learning-rate schedule with warmup_ratio = 0.1 and max_steps = 200:
+
+  1e-5  │             ╭─╮
+        │           ╱      ╲╮
+        │         ╱            ╲
+        │       ╱                  ╲╮
+        │     ╱                          ╲╮
+        │   ╱                                  ╲╮
+        │ ╱                                          ╲╮___
+     0  └─────────────────────────────────────────────────►  step
+        0      20                                          200
+        ↑                                                  ↑
+     warmup (linear 0 → 1e-5)                  cosine decay
+```
+
+Why warmup matters *specifically* for DPO: at the very start, the trainable model and the reference are *identical* (because $B = 0$ in the freshly initialised LoRA, as we noted in 7d). The log-probability ratios are exactly zero, the DPO loss is at its initial value, and the gradient direction is being inferred from very noisy signal. A warm-up period lets the adapter pick up a coherent initial direction with tiny updates before full-strength steps amplify any noise into damage to the SFT-acquired capabilities.
+
+### 7f. DPOTrainer and the Beta Parameter
+
+With everything in place, `DPOTrainer` is the actual training engine. It is the preference-tuning equivalent of `SFTTrainer` from 3f, but under the hood it runs the four-forward-pass pattern from 6d.
 
 ```python
 from trl import DPOTrainer
@@ -1609,107 +2235,228 @@ dpo_trainer = DPOTrainer(
     train_dataset=dpo_dataset,
     tokenizer=tokenizer,
     peft_config=peft_config,
-    beta=0.1,             # ← controls distance from reference model
-    max_prompt_length=512,
-    max_length=512,
+    beta=0.1,               # ← the DPO temperature from 6e
+    max_prompt_length=512,  # ← truncate the prompt at 512 tokens
+    max_length=512,         # ← truncate the full prompt+response at 512 tokens
 )
 
 dpo_trainer.train()
+
 dpo_trainer.model.save_pretrained("TinyLlama-1.1B-dpo-qlora")
 ```
 
-The `beta` parameter ($\beta$ in the DPO loss formula) is the most important DPO-specific hyperparameter. Think of it as the "leash length" keeping the trainable model close to the reference model.
+Three DPO-specific parameters appear here that did not exist in `SFTTrainer`.
 
-A small $\beta$ (e.g., 0.1) allows the model to deviate substantially from its reference. The preference signal dominates, and the model can make large shifts in its response distribution. A large $\beta$ (e.g., 0.5 or higher) keeps the model conservative — small adjustments, staying close to SFT behaviour. The value $\beta = 0.1$ is the most commonly used starting point.
+**`beta=0.1` — the $\beta$ from the DPO loss in 6e.** This is the single most important DPO-specific hyperparameter. Think of it as the leash length between $\pi_\theta$ and $\pi_\text{ref}$. Concrete effects across realistic values:
 
----
+| $\beta$ | Behaviour |
+|---------|-----------|
+| $0.01$ – $0.05$ | Very loose leash; trainable model can drift substantially. Risk: catastrophic forgetting of SFT capabilities. |
+| **$0.1$** | **Conventional sweet spot.** Enough freedom to learn preferences, tight enough to preserve SFT skills. Used by the book and most papers. |
+| $0.5$ – $1.0$ | Tight leash. The model can move only fractionally from $\pi_\text{ref}$. Preferences are learned weakly but SFT skills are very safe. |
 
-### 7d. Stacking SFT and DPO Adapters
+Mechanically: in the loss formula from 6e, a smaller $\beta$ shrinks the inner term $\beta(\text{ratio}_w - \text{ratio}_l)$ for a given log-ratio gap. That means a given drift from the reference produces less sigmoid response, less gradient pressure pushing further, and therefore *more* room to drift before the loss saturates. The leash analogy is exact.
 
-The full fine-tuning pipeline — SFT followed by DPO — requires loading two separate LoRA adapters and merging them in sequence:
+**`max_prompt_length=512` and `max_length=512`** are two distinct truncation limits. `max_prompt_length` caps the system + user prompt; `max_length` caps the *whole sequence* (prompt + response). With both set to 512, a long prompt would leave very little room for the response — in production runs you typically set `max_length` higher than `max_prompt_length` to give responses room to breathe.
+
+`DPOTrainer` does several things under the hood that are worth knowing:
+
+1. **Creates the reference model automatically.** It snapshots a frozen copy of `model` at construction time (after `prepare_model_for_kbit_training` and `get_peft_model` have run), which becomes $\pi_\text{ref}$.
+2. **Runs the four-pass scoring loop from 6d.** Every step: forward chosen and rejected through both $\pi_\theta$ and $\pi_\text{ref}$, sum log-probs token-by-token, plug into the DPO loss.
+3. **Masks the prompt tokens.** Just like `SFTTrainer` masks user-turn tokens, `DPOTrainer` computes log-probabilities only over the response tokens on each side. The prompt's log-probability would cancel from the chosen-vs-rejected subtraction anyway, but explicitly masking saves compute.
+4. **Saves only the LoRA adapter** when you call `save_pretrained` — a few tens of MB, just like in 3f.
+
+### 7g. Stacking SFT and DPO Adapters into a Final Aligned Model
+
+When DPO finishes, you have *two* LoRA adapter checkpoints on disk: `TinyLlama-1.1B-qlora` (the SFT adapter from Section 3) and `TinyLlama-1.1B-dpo-qlora` (the DPO adapter from 7f). For deployment, you typically want to fold both of them into the base weights to get a single standalone model with no PEFT overhead.
+
+The merge is **iterative**: apply and merge the SFT adapter first, then load and merge the DPO adapter on top.
 
 ```python
 from peft import AutoPeftModelForCausalLM, PeftModel
 
-# Step 1: Merge the SFT LoRA adapter into the base model
+# Step 1 — merge the SFT adapter into the base model (in float16 for a clean merge)
 sft_base = AutoPeftModelForCausalLM.from_pretrained(
     "TinyLlama-1.1B-qlora",
     low_cpu_mem_usage=True,
     device_map="auto",
 )
 sft_model = sft_base.merge_and_unload()
-# sft_model is now a standard model with SFT baked in — no adapter overhead
+# sft_model has SFT baked in — no adapter overhead remaining
 
-# Step 2: Load the DPO adapter on top of the merged SFT model
+# Step 2 — load the DPO adapter on top of the merged SFT model, then merge again
 dpo_peft_model = PeftModel.from_pretrained(
     sft_model,
     "TinyLlama-1.1B-dpo-qlora",
     device_map="auto",
 )
 final_model = dpo_peft_model.merge_and_unload()
-# final_model has both SFT and DPO permanently merged
+# final_model has both SFT and DPO permanently merged in
 ```
 
 ```
-Full Pipeline — From Base Model to Aligned Assistant:
+Full pipeline — from base model to aligned assistant:
 
   TinyLlama Base Model (pretrained)
           │
           ▼
   ┌────────────────────────────────────────┐
-  │  SFT with QLoRA                        │
-  │  Dataset: UltraChat (3,000 examples)   │
-  │  Learns: follow instructions           │
-  │  Saved: TinyLlama-1.1B-qlora/          │
+  │  SFT with QLoRA                         │
+  │  Dataset: UltraChat (3,000 examples)    │
+  │  Learns: follow instructions            │
+  │  Saved: TinyLlama-1.1B-qlora/           │
   └────────────────────────────────────────┘
           │
           ▼
-  merge_and_unload()   ←  A·B fused into W for every targeted layer
+  merge_and_unload()    ←  A·B fused into W for every targeted layer
           │
           ▼
   Instruction-Tuned Model (SFT baked in)
           │
           ▼
   ┌────────────────────────────────────────┐
-  │  DPO with QLoRA                        │
-  │  Dataset: distilabel-intel-orca pairs  │
-  │  Learns: prefer helpful responses      │
-  │  Saved: TinyLlama-1.1B-dpo-qlora/      │
+  │  DPO with QLoRA                         │
+  │  Dataset: distilabel-intel-orca pairs   │
+  │  Learns: prefer helpful responses       │
+  │  Saved: TinyLlama-1.1B-dpo-qlora/       │
   └────────────────────────────────────────┘
           │
           ▼
-  merge_and_unload()   ←  DPO A·B fused into SFT-merged weights
+  merge_and_unload()    ←  DPO A·B fused into the SFT-merged weights
           │
           ▼
   Final Aligned Model
-  ✓ Follows instructions (from SFT)
-  ✓ Prefers helpful, clear, accurate responses (from DPO)
-  ✓ No PEFT overhead at inference time
+   ✓ Follows instructions     (from SFT)
+   ✓ Prefers helpful answers  (from DPO)
+   ✓ Zero PEFT overhead at inference time
 ```
 
-The two-stage pipeline is more powerful than either stage alone, but it has costs: two training runs, two sets of hyperparameters to tune, and twice the experimentation overhead. This is precisely the problem that ORPO was designed to solve — collapsing both stages into a single training loop while preserving the benefits of both.
+The order matters conceptually: SFT is applied to the base, then DPO is applied on top. Reversing the merge order would not be wrong mathematically (matrix addition commutes), but it would diverge from the training order and would also misalign with the precision story — at each merge step we want to be in float16 so the addition is essentially lossless (3g), and that ordering is cleanest when we apply each adapter in the same order training did.
+
+The two-stage pipeline is more powerful than either stage alone, but the costs are real:
+
+- **Two training loops** — two `Trainer` invocations, two log streams to monitor, two checkpoints stored.
+- **Two sets of hyperparameters** — SFT's LR, epochs, batch *and* DPO's LR, max_steps, warmup_ratio, beta.
+- **Two debugging surfaces** — a problem visible at the end might trace back to either stage.
+
+This is exactly the engineering overhead that motivated **ORPO** (6g): collapse both stages into a single training loop with a single dataset and a single set of hyperparameters, at the cost of a slightly more complex loss. For a from-scratch project today, ORPO is increasingly the right starting point. For projects that already have a strong SFT model and want to add preference alignment without redoing the SFT, the two-stage pipeline shown here remains the cleanest path.
+
+That is the end of the pipeline. Starting from a base TinyLlama that could not follow instructions, we now have an aligned model that follows instructions, gives helpful responses, and prefers good answers over bad — built entirely on a single consumer GPU using QLoRA and DPO. Section 8 closes the chapter with the high-level takeaways.
 
 ---
 
 ## 8. Key Takeaways
 
-The central arc of this chapter is the journey from a raw pretrained model — which knows everything but can do nothing useful — to a fine-tuned, aligned model that follows instructions and consistently produces high-quality responses. Every technique in the chapter is a solution to a specific bottleneck in that journey.
+The central arc of the chapter was the journey from a raw pretrained model — which knows the world but cannot use that knowledge — to an aligned assistant that follows instructions and prefers helpful answers over unhelpful ones. Every technique we met is the answer to a specific bottleneck on that journey. The seven subsections below distil the chapter into its load-bearing ideas and end with a decision guide and the foundational papers.
 
-**LoRA is the key enabler.** By decomposing weight updates as the product of two thin matrices ($W' = W + AB$), LoRA reduces the number of trainable parameters by 768× or more for large models. The intrinsic-dimensionality insight behind LoRA — that meaningful fine-tuning changes live in a low-dimensional subspace — is one of the most important empirical discoveries in the field. B is initialised to zero so the model starts as an exact copy of the pretrained model; only the combination $AB$ gradually encodes the task-specific adaptation.
+### 8a. The Three-Stage Pipeline — Three Problems, Three Stages
 
-**QLoRA extends LoRA with 4-bit quantization.** Loading the frozen base model in 4-bit NF4 reduces memory by 4–8× with minimal accuracy loss. The combination of quantized base weights and float16 LoRA adapters makes it possible to fine-tune a 7B model on a single 8 GB GPU. Without QLoRA, fine-tuning was the exclusive territory of organisations with data-centre GPU clusters.
+The foundational mental model. Every modern LLM is built in three stages, and each stage exists because the previous one left something unfixed:
 
-**Evaluation remains the unsolved problem.** Word-level metrics (BLEU, ROUGE, perplexity) are fast but shallow. Benchmarks are useful but gameable — Goodhart's Law applies relentlessly. LLM-as-a-judge scales but carries biases. Human evaluation is the gold standard but expensive. The honest answer is that you must combine multiple evaluation signals, and ultimately test your model on the actual prompts your users will send.
+| Stage | Trains on | Fixes |
+|-------|-----------|-------|
+| 1. Pretraining | Hundreds of billions of tokens of raw text | Gives the model language and world knowledge |
+| 2. Supervised Fine-Tuning | Thousands of instruction–response pairs | Teaches it to *answer* rather than pattern-complete |
+| 3. Preference Tuning | Thousands of chosen-vs-rejected pairs | Teaches *taste* — to prefer better answers among valid ones |
 
-**DPO replaced PPO as the dominant alignment algorithm.** PPO requires three simultaneous models, reinforcement learning infrastructure, and careful hyperparameter tuning. DPO achieves the same goal — aligning model outputs with human preferences — using a simple supervised loss computed over the trainable model and a frozen reference. The key mathematical insight is that the optimal reward function is *implicit* in the LLM's log-probability ratios, so no separate reward model training is needed.
+Pretraining provides the **knowledge**, SFT provides the **interface**, preference tuning provides the **character**. Stage 1 is done for us — every fine-tuning project starts from an open-source base model. Stages 2 and 3 are this chapter's work.
 
-**ORPO collapses two stages into one.** If you want to push further, ORPO combines supervised fine-tuning and preference tuning into a single training loop, reducing engineering complexity while maintaining the alignment benefits of DPO. It is fully compatible with QLoRA.
+### 8b. The Pattern-Completion Problem Is Why SFT Exists
 
-The papers underlying these techniques are worth reading in full:
-- *"LoRA: Low-Rank Adaptation of Large Language Models"* — Hu et al., 2021
-- *"QLoRA: Efficient Finetuning of Quantized LLMs"* — Dettmers et al., 2023
-- *"Direct Preference Optimization: Your Language Model is Secretly a Reward Model"* — Rafailov et al., 2023
-- *"ORPO: Monolithic Preference Optimization without Reference Model"* — Hong et al., 2024
+The single most useful insight for understanding base models: they do not answer questions, they *complete patterns*. Given the prompt "What is 1+1?", a base model is just as likely to continue with "2. What is 1+1+1? 3. What is 1+1+1+1? …" as with the answer "2", because the training corpus contains many more numbered problem lists than answer keys.
+
+The base model is not stupid; it is loyal to its training distribution. SFT exists to overwrite *that loyalty* with a new behaviour — when you see question-shaped input, produce answer-shaped output. Crucially, SFT is **not** teaching the model new facts: it already knows the answer. SFT is teaching it the conversational format. This is why a few thousand SFT examples can change behaviour dramatically while changing knowledge almost not at all.
+
+### 8c. PEFT and LoRA — Why 1% Is Enough
+
+The most important empirical finding in fine-tuning: **you do not need to update every parameter**. Houlsby et al. showed that fine-tuning 3.6% of BERT's parameters reaches within 0.4% of the full-fine-tuning performance on GLUE. The reason is **intrinsic dimensionality** — the meaningful changes during fine-tuning live in a tiny subspace of the weight matrix; the remaining capacity goes unused.
+
+**LoRA** operationalises this by parameterising the weight update as the product of two thin matrices:
+
+$$W' = W + \frac{\alpha}{r} \cdot A \cdot B$$
+
+The original $W$ stays frozen; only $A$ and $B$ train. For GPT-3-scale matrices ($d = 12{,}288$) at rank $r = 8$, this is a **768× reduction** in trainable parameters per matrix. $B$ is initialised to zero so training begins as an exact copy of the pretrained model. The $\alpha/r$ scaling keeps the magnitude of the update stable across choices of rank.
+
+### 8d. QLoRA Democratised Fine-Tuning
+
+LoRA shrunk the *trainable* parameters; **QLoRA** also shrunk the *base model* by storing it in 4-bit NormalFloat. Combined with blockwise quantization and double quantization, the two together collapse the GPU memory budget by an order of magnitude:
+
+```
+Memory to fine-tune a 7B model:
+
+  Full fine-tuning (float32):   ~112 GB    ── multi-GPU cluster only
+  Full fine-tuning (float16):   ~56 GB     ── one H100 (80 GB) barely fits
+  LoRA on float16 base:         ~16 GB     ── one A100 / RTX 6000
+  QLoRA (4-bit base + LoRA):    ~6–8 GB    ── one RTX 3090 / 4060
+```
+
+That last row — moving from a data-centre cluster to a gaming GPU — is the practical inflection point that brought open-source fine-tuning to ordinary developers in 2023. None of the other techniques in this chapter would have had the same impact without it.
+
+### 8e. Evaluation Has No Silver Bullet
+
+There is no single correct way to evaluate a generative model. Each tool has a sharp tradeoff between speed and reliability:
+
+| Tool | Speed | Depth | Failure mode |
+|------|-------|-------|--------------|
+| Perplexity | Fast | Shallow | A confidently-wrong model can score very well |
+| BLEU / ROUGE | Fast | Surface n-gram overlap only | Penalises valid paraphrases |
+| BERTScore | Medium | Semantic, embedding-based | Still needs a reference; inherits BERT's biases |
+| Public benchmarks | Slow | Task-specific | Goodhart's Law — benchmark overfitting |
+| LLM-as-a-judge | Fast | Flexible, no reference needed | Length / style / position / self-preference biases |
+| Human eval (Chatbot Arena) | Slow | Gold standard | Expensive; crowd preferences may not match your use case |
+
+The unifying lesson is Goodhart's Law: *every metric you optimise against eventually becomes gameable*. The most honest evaluation you can run is to take the actual prompts your users will send, run them through the model, and judge the outputs yourself — the book's own punchline is "you are the best evaluator."
+
+### 8f. From PPO to DPO to ORPO — The Simplification Trajectory
+
+Each generation of preference-tuning algorithms strips away one piece of the previous stack:
+
+```
+PPO  (2017→2022):    policy + reference + reward model + RL infrastructure
+                     ── 3 large models in GPU memory, RL hyperparameters
+DPO  (2023):         policy + reference + supervised-style loss
+                     ── 2 large models, no reward model, no RL
+ORPO (2024):         policy alone + modified SFT loss + one training loop
+                     ── 1 large model, no separate SFT step, no reference
+```
+
+The mathematical breakthrough behind DPO — that the optimal RLHF policy implicitly defines its own reward, so $r(x, y) = \beta \log \pi^*(y \mid x)/\pi_\text{ref}(y \mid x) + \beta \log Z(x)$ can be substituted into the Bradley-Terry loss with $\log Z(x)$ cancelling between chosen and rejected terms — eliminated the reward model from the math entirely. This is one of the most consequential simplifications in recent LLM research.
+
+DPO is now the default for open-source preference tuning. ORPO is increasingly the right starting point for from-scratch projects because it collapses SFT and DPO into a single training loop with QLoRA compatibility.
+
+### 8g. Decision Guide and Papers to Read
+
+**Which technique to pick when:**
+
+| Your situation | Recommended approach |
+|----------------|---------------------|
+| Maximum quality, 8-GPU cluster available | Full fine-tuning |
+| Strong quality, one high-end GPU | LoRA on float16 base |
+| Single consumer GPU | **QLoRA** (the chapter's workhorse) |
+| Many fine-tuned variants of one base model | LoRA — share tiny adapters, keep one shared base |
+| Preference tuning, RL infrastructure already exists | PPO (more flexible, harder to tune) |
+| Preference tuning, want SFT-style simplicity | **DPO** (current default) |
+| SFT + preference in one training loop | ORPO |
+| Only a few hundred labelled examples | Stay with prompt engineering or RAG — fine-tuning needs at least a few thousand examples to beat them |
+
+For *evaluation*, combine at least three tools: perplexity for development, a public benchmark for absolute calibration, and either LLM-as-a-judge or human eval on the actual prompts your users will send.
+
+**Papers worth reading in full** once the conceptual scaffolding is in place:
+
+- **Intrinsic Dimensionality** — Aghajanyan, Zettlemoyer, Gupta (2020). *"Intrinsic Dimensionality Explains the Effectiveness of Language Model Fine-Tuning."* arXiv:2012.13255.
+- **Adapters** — Houlsby et al. (2019). *"Parameter-Efficient Transfer Learning for NLP."* PMLR.
+- **LoRA** — Hu et al. (2021). *"LoRA: Low-Rank Adaptation of Large Language Models."* arXiv:2106.09685.
+- **QLoRA** — Dettmers et al. (2023). *"QLoRA: Efficient Finetuning of Quantized LLMs."* arXiv:2305.14314.
+- **PPO** — Schulman et al. (2017). *"Proximal Policy Optimization Algorithms."* arXiv:1707.06347.
+- **DPO** — Rafailov et al. (2023). *"Direct Preference Optimization: Your Language Model is Secretly a Reward Model."* arXiv:2305.18290.
+- **ORPO** — Hong, Lee, Thorne (2024). *"ORPO: Monolithic Preference Optimization Without Reference Model."* arXiv:2403.07691.
+- **LLM-as-a-Judge** — Zheng et al. (2024). *"Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena."* NeurIPS.
+
+Three further directions worth exploring beyond the chapter:
+
+- **Continued pretraining** on domain text (medical, legal, code) before SFT, to push the base model's knowledge toward your target domain.
+- **Constitutional AI** (Bai et al., 2022) — an alternative alignment scheme that uses AI feedback instead of human preferences.
+- **DPO variants** — KTO, IPO, sDPO — each addresses a specific empirical weakness of vanilla DPO.
 
 ---
 
