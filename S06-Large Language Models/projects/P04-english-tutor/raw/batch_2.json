@@ -1,0 +1,727 @@
+[
+  {
+    "mode": "flow",
+    "topic": "describing_others",
+    "user": "She is really talented in music and also very good for languages.",
+    "assistant": "That's a wonderful combination of talents! Does she plan to pursue either of them professionally, or are they more personal passions she keeps for herself?",
+    "errors": [
+      {
+        "span": "talented in music",
+        "correction": "talented at music",
+        "type": "preposition"
+      },
+      {
+        "span": "good for languages",
+        "correction": "good at languages",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "media",
+    "user": "The film was very shocking but also interested rather than just being disturbing.",
+    "assistant": "That's a really thoughtful way to describe it. Sometimes the most unsettling films are the ones that actually make you think the most. What was it called? I'm curious now.",
+    "errors": [
+      {
+        "span": "also interested",
+        "correction": "also interesting",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "news",
+    "user": "Did you hear? They announce yesterday that the whole team is getting a bonus.",
+    "assistant": "That's fantastic news — a bonus always feels like a proper reward for hard work! Was it expected, or did it come as a surprise to the team?",
+    "errors": [
+      {
+        "span": "They announce yesterday",
+        "correction": "They announced yesterday",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "My doctor told me I should make more exercise and eat more vegetables every day.",
+    "assistant": "Advice most of us know but find genuinely hard to follow consistently! Have you found any form of exercise you actually enjoy, or does it still feel like a necessary chore?",
+    "errors": [
+      {
+        "span": "make more exercise",
+        "correction": "do more exercise",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "aspirations",
+    "user": "If I was fluent in English, my career opportunities would open up so much more.",
+    "assistant": "That's a really motivating goal to keep in mind! And you're already putting in the work. Are there specific roles or industries you're hoping English will open doors to?",
+    "errors": [
+      {
+        "span": "If I was fluent",
+        "correction": "If I were fluent",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "media",
+    "user": "I just see a documentary about ocean pollution and now I want to change my habits.",
+    "assistant": "Documentaries on that topic can be genuinely eye-opening. What part of it affected you the most? Are there specific habits you're already thinking about changing?",
+    "errors": [
+      {
+        "span": "I just see",
+        "correction": "I just saw",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "anticipation",
+    "user": "I am really looking forward for the holiday next month, I need a break.",
+    "assistant": "A holiday when you really need it is the best kind! Have you planned what you'll do, or are you keeping it open and just going with the flow when you get there?",
+    "errors": [
+      {
+        "span": "looking forward for",
+        "correction": "looking forward to",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "insight",
+    "user": "I suddenly catched the meaning of that grammar rule and everything maked sense at once.",
+    "assistant": "That 'aha moment' is genuinely one of the best feelings in language learning — when something clicks and you wonder how you didn't see it before. Which rule was it? Those breakthroughs really do stick with you.",
+    "errors": [
+      {
+        "span": "catched",
+        "correction": "caught",
+        "type": "irregular_verb"
+      },
+      {
+        "span": "maked sense",
+        "correction": "made sense",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "reported_speech",
+    "user": "She said me that she is working on a big project and will finish it next month.",
+    "assistant": "That sounds like she has her hands full! Is this a project you're both involved in, or just something she mentioned in passing? Do you two work closely together?",
+    "errors": [
+      {
+        "span": "said me",
+        "correction": "told me",
+        "type": "word_choice"
+      },
+      {
+        "span": "she is working",
+        "correction": "she was working",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "The internet has changed a world completely in last twenty years.",
+    "assistant": "It really has — it's almost impossible to imagine modern life without it now. Do you think the changes have been mostly positive, or do you have concerns about the downsides?",
+    "errors": [
+      {
+        "span": "changed a world",
+        "correction": "changed the world",
+        "type": "article"
+      },
+      {
+        "span": "in last twenty",
+        "correction": "in the last twenty",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "Yesterday I have finished the quarterly report for my manager.",
+    "assistant": "Quick note: 'have finished' → 'finished' (use past simple, not present perfect, with specific past times like 'yesterday'). Getting the quarterly report done is always a huge relief! What kind of metrics do you usually have to track?",
+    "errors": [
+      {
+        "span": "have finished",
+        "correction": "finished",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "I am working on this presentation since Monday and I'm still not done.",
+    "assistant": "Quick note: 'am working' → 'have been working' (use present perfect continuous for actions starting in the past and continuing now). Presentations can be surprisingly time-consuming! Are you building the slides from scratch or using a company template?",
+    "errors": [
+      {
+        "span": "am working",
+        "correction": "have been working",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "When I will get the promotion, I plan to take my whole team out for dinner.",
+    "assistant": "That's a fantastic way to celebrate and show appreciation for your team! Have you already thought about which restaurant you'd like to take them to?",
+    "errors": [
+      {
+        "span": "will get",
+        "correction": "get",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "My boss gived me a lot of new responsibilities this week.",
+    "assistant": "Quick note: 'gived' → 'gave' ('give' is an irregular verb). It sounds like your boss really trusts your abilities! Are you excited about the new tasks, or does it feel a bit overwhelming?",
+    "errors": [
+      {
+        "span": "gived",
+        "correction": "gave",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "I sended the email to the client three days ago but they haven't replied.",
+    "assistant": "Waiting on client replies can be so frustrating when you're trying to move a project forward. How long do you usually wait before sending a polite follow-up?",
+    "errors": [
+      {
+        "span": "sended",
+        "correction": "sent",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "The company growed very fast last year and we hired fifty new people.",
+    "assistant": "That kind of rapid expansion is impressive, but it definitely changes the company culture! Have you found it difficult to adapt to having so many new colleagues?",
+    "errors": [
+      {
+        "span": "growed",
+        "correction": "grew",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "I am software developer in a big tech company.",
+    "assistant": "Quick note: 'am software developer' → 'am a software developer' (professions require an article like 'a' or 'an' in English). That's a great field to be in! What specific programming languages do you work with the most?",
+    "errors": [
+      {
+        "span": "am software developer",
+        "correction": "am a software developer",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "The communication is very important when you are doing remote work.",
+    "assistant": "Quick note: 'The communication' → 'Communication' (we don't use 'the' for abstract nouns when speaking generally). You're absolutely right about that! What tools does your team use to stay connected throughout the day?",
+    "errors": [
+      {
+        "span": "The communication",
+        "correction": "Communication",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "He is best employee in our department and always hits his targets.",
+    "assistant": "It's always inspiring to work alongside high performers like that. Does he share his strategies with the rest of the team, or does he mostly work independently?",
+    "errors": [
+      {
+        "span": "is best employee",
+        "correction": "is the best employee",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "I need to prepare because I will meet the new clients in Monday morning.",
+    "assistant": "Quick note: 'in Monday morning' → 'on Monday morning' (we use 'on' for specific days and dates). Preparing early is definitely the smart move! Is this an initial introduction, or are you pitching a specific project to them?",
+    "errors": [
+      {
+        "span": "in Monday morning",
+        "correction": "on Monday morning",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "Whether we can hire a graphic designer depends of the budget for next quarter.",
+    "assistant": "Budget constraints are always the biggest hurdle for team expansion! If you don't get the budget, do you have someone internally who can handle the design work?",
+    "errors": [
+      {
+        "span": "depends of",
+        "correction": "depends on",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "I need to focus on one project because I am very bad in multitasking.",
+    "assistant": "Honestly, recent studies show that almost everyone is bad at multitasking—our brains just aren't built for it! Do you use any specific techniques, like time-blocking, to help you focus on one thing at a time?",
+    "errors": [
+      {
+        "span": "bad in",
+        "correction": "bad at",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "Can you remember me to call the supplier at 3 PM today?",
+    "assistant": "Quick note: 'remember me' → 'remind me' (you 'remind' someone else, but you 'remember' something yourself). I can certainly help keep track of that! What do you need to discuss with the supplier?",
+    "errors": [
+      {
+        "span": "remember me",
+        "correction": "remind me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "I am so relieved that I didn't do any mistake during the big presentation.",
+    "assistant": "Quick note: 'do any mistake' → 'make any mistake' (in English, we use 'make' with mistakes, choices, and plans). That is a fantastic feeling! How did the audience react to your pitch?",
+    "errors": [
+      {
+        "span": "do any mistake",
+        "correction": "make any mistake",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "My colleague said me that the afternoon strategy meeting is cancelled.",
+    "assistant": "A sudden free block of time in the afternoon is always a nice surprise! Are you going to use the time to catch up on emails, or focus on some deep work?",
+    "errors": [
+      {
+        "span": "said me",
+        "correction": "told me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "Everyone in the office are working very hard to finish the project before Friday.",
+    "assistant": "Quick note: 'Everyone...are' → 'Everyone...is' (words like 'everyone' and 'everybody' take singular verbs). It sounds like a real crunch week! Is the team going to get any downtime to recover once Friday passes?",
+    "errors": [
+      {
+        "span": "Everyone in the office are",
+        "correction": "Everyone in the office is",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "My manager and my supervisor is going to attend the conference next week.",
+    "assistant": "Having both of them at the conference could be really beneficial for networking. Are you staying back to hold down the fort while they are away?",
+    "errors": [
+      {
+        "span": "is going",
+        "correction": "are going",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "I need to ask my mentor for some advices about how to negotiate my salary.",
+    "assistant": "Quick note: 'advices' → 'advice' ('advice' is uncountable, so it never has an 's'). Seeking out a mentor's perspective on salary negotiation is a very smart move! Have you already done market research for your role?",
+    "errors": [
+      {
+        "span": "advices",
+        "correction": "advice",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "We have too many works to do before the software launch next month.",
+    "assistant": "The month before a major launch is always incredibly intense. Is your team working late hours to get through everything, or are you managing to keep a normal schedule?",
+    "errors": [
+      {
+        "span": "many works",
+        "correction": "much work",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "The new softwares we bought for accounting are very difficult to learn.",
+    "assistant": "Transitioning to new software almost always disrupts productivity at first. Has the company provided any formal training, or are you having to figure it out by trial and error?",
+    "errors": [
+      {
+        "span": "softwares",
+        "correction": "software",
+        "type": "countable_noun"
+      },
+      {
+        "span": "are",
+        "correction": "is",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "Why you didn't tell me that the client had changed the project scope?",
+    "assistant": "Quick note: 'Why you didn't tell' → 'Why didn't you tell' (in direct questions, the auxiliary verb comes before the subject). That kind of miscommunication can cause so many headaches! How much extra work does the new scope add?",
+    "errors": [
+      {
+        "span": "Why you didn't tell",
+        "correction": "Why didn't you tell",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "I always am the first person to arrive at the office in the morning.",
+    "assistant": "Quick note: 'always am' → 'am always' (adverbs of frequency like 'always' go *after* the verb 'to be'). That requires a lot of discipline! Do you prefer the quiet time before everyone else gets there?",
+    "errors": [
+      {
+        "span": "always am",
+        "correction": "am always",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "Can you tell me what time is the meeting with the marketing team?",
+    "assistant": "The marketing meeting is scheduled for 2:00 PM in the main conference room. Have you prepared the campaign data they asked for?",
+    "errors": [
+      {
+        "span": "what time is the meeting",
+        "correction": "what time the meeting is",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "If I would have more experience, I would definitely apply for the senior position.",
+    "assistant": "Quick note: 'If I would have' → 'If I had' (in the second conditional, the 'if' clause uses the past simple). It's frustrating when you have the skills but not the required years on paper! Are there ways you can take on senior tasks in your current role to build that experience?",
+    "errors": [
+      {
+        "span": "If I would have",
+        "correction": "If I had",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "Unless we don't finish this report by Friday, the director will be very upset.",
+    "assistant": "Deadlines driven by the director always add an extra layer of pressure. Do you think the team is on track to get it finalized before Friday afternoon?",
+    "errors": [
+      {
+        "span": "Unless we don't finish",
+        "correction": "Unless we finish",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "While I was taking the final exam, my pen was stopping working completely.",
+    "assistant": "Quick note: 'was stopping' → 'stopped' (use the past simple for a short action that interrupts a past continuous action). What an absolute nightmare! Did the invigilator have a spare pen you could borrow?",
+    "errors": [
+      {
+        "span": "was stopping",
+        "correction": "stopped",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "I learn English for three years but I still need a lot of speaking practice.",
+    "assistant": "Three years is a solid foundation, and speaking is usually the last piece of the puzzle to click into place. Have you tried finding language exchange partners online?",
+    "errors": [
+      {
+        "span": "I learn",
+        "correction": "I have been learning",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "I have graduated from the university in 2021 with a degree in physics.",
+    "assistant": "Physics is an incredibly challenging and fascinating degree! Are you working in a field related to your studies now, or did you pivot to something different?",
+    "errors": [
+      {
+        "span": "have graduated",
+        "correction": "graduated",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I choosed to study biology because I have always loved learning about nature.",
+    "assistant": "Quick note: 'choosed' → 'chose' (this is an irregular verb). Biology is such a vast and interesting subject! Are you more interested in ecology, or microscopic biology like genetics?",
+    "errors": [
+      {
+        "span": "choosed",
+        "correction": "chose",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I readed three chapters of the economics textbook last night before going to sleep.",
+    "assistant": "Quick note: 'readed' → 'read' (the past tense of 'read' is spelled the same, but pronounced like the color 'red'). That's some heavy reading right before bed! Do you find it hard to retain information when you study that late?",
+    "errors": [
+      {
+        "span": "readed",
+        "correction": "read",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "My friend forgotted to submit his final assignment on time and lost marks.",
+    "assistant": "That is such a painful way to lose points after doing all the hard work! Did the professor give him a chance to hand it in late for partial credit?",
+    "errors": [
+      {
+        "span": "forgotted",
+        "correction": "forgot",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I want to go to the university next year to study the architecture.",
+    "assistant": "Quick note: 'the architecture' → 'architecture' (we don't use articles with general academic subjects). Architecture is a brilliant mix of art and engineering! Do you prefer modern, sustainable design or classical styles?",
+    "errors": [
+      {
+        "span": "the architecture",
+        "correction": "architecture",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "In my astronomy class, we learned that sun is basically a medium-sized star.",
+    "assistant": "Astronomy really puts our place in the universe into perspective! Did the class cover what will happen to our solar system billions of years from now?",
+    "errors": [
+      {
+        "span": "that sun",
+        "correction": "that the sun",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "Our literature professor gave us an useful book about writing essays.",
+    "assistant": "Having a practical guide for essay writing makes a huge difference, especially for structuring arguments. What was the most helpful tip you got from the book?",
+    "errors": [
+      {
+        "span": "an useful",
+        "correction": "a useful",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I usually prefer to study in the library at the evening when it is quiet.",
+    "assistant": "Quick note: 'at the evening' → 'in the evening' (we say 'in the morning/afternoon/evening', but 'at night'). Evening study sessions can be very peaceful! Do you go alone, or do you have a study group?",
+    "errors": [
+      {
+        "span": "at the evening",
+        "correction": "in the evening",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "My older sister is married with a professor from the mathematics department.",
+    "assistant": "Quick note: 'married with' → 'married to' (in English, you are married *to* someone). That must make for some very analytical conversations at family dinners! Does she work in academia as well?",
+    "errors": [
+      {
+        "span": "married with",
+        "correction": "married to",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "I am very interested about taking a course on modern European history.",
+    "assistant": "Modern European history is incredibly complex and fascinating, especially looking at the world wars and the Cold War. Is there a specific decade you want to focus on?",
+    "errors": [
+      {
+        "span": "interested about",
+        "correction": "interested in",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "I find memorising long lists of vocabulary words very bored.",
+    "assistant": "Rote memorisation is definitely tedious! Have you tried using flashcard apps like Anki, or learning words through reading stories instead?",
+    "errors": [
+      {
+        "span": "very bored",
+        "correction": "very boring",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "I finally passed the advanced certification exam, so I am very exciting.",
+    "assistant": "Congratulations, that is a huge achievement! Passing an advanced certification takes a lot of dedication. How are you planning to celebrate?",
+    "errors": [
+      {
+        "span": "very exciting",
+        "correction": "very excited",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "The list of required readings for this semester are very long.",
+    "assistant": "Quick note: 'are' → 'is' (the subject is 'the list', which is singular, not 'readings'). A heavy reading load can be daunting! Do you try to read everything, or do you skim the less important chapters?",
+    "errors": [
+      {
+        "span": "are",
+        "correction": "is",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  }
+]

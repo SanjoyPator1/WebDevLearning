@@ -1,0 +1,545 @@
+[
+  {
+    "mode": "strict",
+    "topic": "tech",
+    "user": "The new app is very bored and it depend of a fast internet connection.",
+    "assistant": "Quick note: 'very bored' → 'very boring' (the app causes boredom, it doesn't feel it) and 'depend of' → 'depends on' (fixed preposition). Apps that drain your data and battery are the worst! Did you end up uninstalling it?",
+    "errors": [
+      {
+        "span": "bored",
+        "correction": "boring",
+        "type": "word_choice"
+      },
+      {
+        "span": "depend of",
+        "correction": "depends on",
+        "type": "preposition"
+      }
+    ],
+    "corrected_in_response": [
+      "bored",
+      "depend of"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "tech",
+    "user": "I am working as programmer since ten years and I fixing computers too.",
+    "assistant": "Quick note: 'am working' → 'have been working' (ongoing action from the past) and 'since ten years' → 'for ten years' (use 'for' with durations). Ten years in tech is a lifetime! What programming languages do you use most?",
+    "errors": [
+      {
+        "span": "am working",
+        "correction": "have been working",
+        "type": "verb_tense"
+      },
+      {
+        "span": "as programmer",
+        "correction": "as a programmer",
+        "type": "article"
+      },
+      {
+        "span": "since",
+        "correction": "for",
+        "type": "preposition"
+      },
+      {
+        "span": "fixing",
+        "correction": "fix",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "am working",
+      "since"
+    ],
+    "deliberately_skipped": [
+      "as programmer",
+      "fixing"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "tech",
+    "user": "I don't know what is the problem with my router, it disconnect every five minute.",
+    "assistant": "Quick note: 'what is the problem' → 'what the problem is' (indirect question) and 'disconnect' → 'disconnects' (singular subject). Dropping Wi-Fi is so incredibly frustrating! Have you tried resetting it completely?",
+    "errors": [
+      {
+        "span": "what is the problem",
+        "correction": "what the problem is",
+        "type": "word_order"
+      },
+      {
+        "span": "disconnect",
+        "correction": "disconnects",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "minute",
+        "correction": "minutes",
+        "type": "countable_noun"
+      }
+    ],
+    "corrected_in_response": [
+      "what is the problem",
+      "disconnect"
+    ],
+    "deliberately_skipped": [
+      "minute"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I learn English for three years but I do a lot of mistakes when I speaking.",
+    "assistant": "Quick note: 'learn' → 'have been learning' (ongoing from the past) and 'do a lot of mistakes' → 'make a lot of mistakes'. Three years is a huge accomplishment! Do you find writing easier than speaking?",
+    "errors": [
+      {
+        "span": "learn",
+        "correction": "have been learning",
+        "type": "verb_tense"
+      },
+      {
+        "span": "do a lot of mistakes",
+        "correction": "make a lot of mistakes",
+        "type": "word_choice"
+      },
+      {
+        "span": "speaking",
+        "correction": "speak",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "learn",
+      "do a lot of mistakes"
+    ],
+    "deliberately_skipped": [
+      "speaking"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "My teacher gived us many homeworks for the weekend and I am very tired.",
+    "assistant": "Quick note: 'gived' → 'gave' (irregular past tense) and 'many homeworks' → 'a lot of homework' (homework is uncountable). A mountain of assignments ruins the weekend! Are you going to try and finish it all on Saturday?",
+    "errors": [
+      {
+        "span": "gived",
+        "correction": "gave",
+        "type": "irregular_verb"
+      },
+      {
+        "span": "many homeworks",
+        "correction": "a lot of homework",
+        "type": "countable_noun"
+      }
+    ],
+    "corrected_in_response": [
+      "gived",
+      "many homeworks"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "If I will pass the exam, I will buyed a new car for myself.",
+    "assistant": "Quick note: 'If I will pass' → 'If I pass' (present simple in the 1st conditional 'if' clause) and 'buyed' → 'buy'. That is serious motivation! Have you been studying every day?",
+    "errors": [
+      {
+        "span": "will pass",
+        "correction": "pass",
+        "type": "conditional"
+      },
+      {
+        "span": "buyed",
+        "correction": "buy",
+        "type": "irregular_verb"
+      }
+    ],
+    "corrected_in_response": [
+      "will pass",
+      "buyed"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "The knowledges I got from the university helps me a lot in my job.",
+    "assistant": "Quick note: 'knowledges' → 'knowledge' (uncountable noun) and 'helps' → 'help' (well, actually knowledge is singular so 'helps' is correct! So just the noun). It is great when a degree actually applies to your daily work! What did you major in?",
+    "errors": [
+      {
+        "span": "knowledges",
+        "correction": "knowledge",
+        "type": "countable_noun"
+      }
+    ],
+    "corrected_in_response": [
+      "knowledges"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I asked the professor what means this word but he ignore me.",
+    "assistant": "Quick note: 'what means this word' → 'what this word means' (indirect question) and 'ignore' → 'ignored' (past simple). That's a very unhelpful professor! Did you end up looking the word up yourself?",
+    "errors": [
+      {
+        "span": "what means this word",
+        "correction": "what this word means",
+        "type": "word_order"
+      },
+      {
+        "span": "ignore",
+        "correction": "ignored",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "what means this word",
+      "ignore"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I am bad in maths and I falled asleep during the class yesterday.",
+    "assistant": "Quick note: 'bad in' → 'bad at' (fixed preposition) and 'falled' → 'fell' (irregular verb). Math can definitely be dry if the teacher isn't engaging! Did you miss any important formulas?",
+    "errors": [
+      {
+        "span": "bad in",
+        "correction": "bad at",
+        "type": "preposition"
+      },
+      {
+        "span": "falled",
+        "correction": "fell",
+        "type": "irregular_verb"
+      }
+    ],
+    "corrected_in_response": [
+      "bad in",
+      "falled"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "Everyone in the class want to take a break because we reading since three hours.",
+    "assistant": "Quick note: 'Everyone...want' → 'Everyone...wants' (singular verb) and 'we reading since' → 'we have been reading for'. (We'll cover the rest later!) Three hours straight is brutal on the eyes. Did the teacher finally let you rest?",
+    "errors": [
+      {
+        "span": "want",
+        "correction": "wants",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "we reading",
+        "correction": "we have been reading",
+        "type": "verb_tense"
+      },
+      {
+        "span": "since",
+        "correction": "for",
+        "type": "preposition"
+      }
+    ],
+    "corrected_in_response": [
+      "want",
+      "we reading"
+    ],
+    "deliberately_skipped": [
+      "since"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I choosed to study the architecture because I like very much drawing buildings.",
+    "assistant": "Quick note: 'choosed' → 'chose' (irregular) and 'like very much drawing' → 'like drawing very much' (object comes directly after the verb). Architecture is a beautiful blend of art and math! Are you learning to use digital design software yet?",
+    "errors": [
+      {
+        "span": "choosed",
+        "correction": "chose",
+        "type": "irregular_verb"
+      },
+      {
+        "span": "the architecture",
+        "correction": "architecture",
+        "type": "article"
+      },
+      {
+        "span": "like very much drawing",
+        "correction": "like drawing very much",
+        "type": "word_order"
+      }
+    ],
+    "corrected_in_response": [
+      "choosed",
+      "like very much drawing"
+    ],
+    "deliberately_skipped": [
+      "the architecture"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "Unless you don't study every day, you will failed the final test.",
+    "assistant": "Quick note: 'Unless you don't' → 'Unless you' ('unless' already means 'if not') and 'will failed' → 'will fail' (base verb after 'will'). Consistency really is the secret to passing! Do you prefer studying in the morning or at night?",
+    "errors": [
+      {
+        "span": "Unless you don't",
+        "correction": "Unless you",
+        "type": "conditional"
+      },
+      {
+        "span": "failed",
+        "correction": "fail",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "Unless you don't",
+      "failed"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I think the society need to do more to protect the nature.",
+    "assistant": "Quick note: 'the society need' → 'society needs' (no article for general society, and it's singular). You are spot on, environmental protection has to be a collective effort! What is the biggest issue in your local area?",
+    "errors": [
+      {
+        "span": "the society",
+        "correction": "society",
+        "type": "article"
+      },
+      {
+        "span": "need",
+        "correction": "needs",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "the nature",
+        "correction": "nature",
+        "type": "article"
+      }
+    ],
+    "corrected_in_response": [
+      "the society",
+      "need"
+    ],
+    "deliberately_skipped": [
+      "the nature"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "The news about the economy are very bad and it depend of the politicians.",
+    "assistant": "Quick note: 'news...are' → 'news...is' (uncountable singular) and 'depend of' → 'depends on' (fixed preposition). It definitely feels like things are out of our hands sometimes. Does economic news worry you personally?",
+    "errors": [
+      {
+        "span": "are",
+        "correction": "is",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "depend of",
+        "correction": "depends on",
+        "type": "preposition"
+      }
+    ],
+    "corrected_in_response": [
+      "are",
+      "depend of"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "If everyone would drive electric cars, the air will be much clean.",
+    "assistant": "Quick note: 'would drive' → 'drove' (second conditional 'if' clause uses past simple) and 'clean' → 'cleaner' (comparative adjective). It would transform our cities overnight! Are electric cars affordable where you live?",
+    "errors": [
+      {
+        "span": "would drive",
+        "correction": "drove",
+        "type": "conditional"
+      },
+      {
+        "span": "will",
+        "correction": "would",
+        "type": "conditional"
+      },
+      {
+        "span": "clean",
+        "correction": "cleaner",
+        "type": "word_choice"
+      }
+    ],
+    "corrected_in_response": [
+      "would drive",
+      "clean"
+    ],
+    "deliberately_skipped": [
+      "will"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I am believing that we needs more informations before making the law.",
+    "assistant": "Quick note: 'am believing' → 'believe' (stative verb) and 'informations' → 'information' (uncountable). Rushing legislation is never a good idea. What new law are they trying to pass?",
+    "errors": [
+      {
+        "span": "am believing",
+        "correction": "believe",
+        "type": "verb_tense"
+      },
+      {
+        "span": "needs",
+        "correction": "need",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "informations",
+        "correction": "information",
+        "type": "countable_noun"
+      }
+    ],
+    "corrected_in_response": [
+      "am believing",
+      "informations"
+    ],
+    "deliberately_skipped": [
+      "needs"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "Always I read the newspaper in the morning, but yesterday I forgotted.",
+    "assistant": "Quick note: 'Always I read' → 'I always read' (adverb placement) and 'forgotted' → 'forgot' (irregular past tense). Missing your morning routine can throw the whole day off! Do you read a physical paper or online?",
+    "errors": [
+      {
+        "span": "Always I read",
+        "correction": "I always read",
+        "type": "word_order"
+      },
+      {
+        "span": "forgotted",
+        "correction": "forgot",
+        "type": "irregular_verb"
+      }
+    ],
+    "corrected_in_response": [
+      "Always I read",
+      "forgotted"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I did a big mistake when I argue with him about politics.",
+    "assistant": "Quick note: 'did a big mistake' → 'made a big mistake' and 'argue' → 'argued' (past event). Politics is such a dangerous topic for friendships! Did you manage to repair the relationship afterwards?",
+    "errors": [
+      {
+        "span": "did a big mistake",
+        "correction": "made a big mistake",
+        "type": "word_choice"
+      },
+      {
+        "span": "argue",
+        "correction": "argued",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "did a big mistake",
+      "argue"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I think the patience are very important, but people is too angry now.",
+    "assistant": "Quick note: 'the patience are' → 'patience is' (abstract nouns don't take 'the', and it's singular) and 'people is' → 'people are'. (We'll get to the rest later!) The fast pace of modern life definitely makes everyone short-tempered. How do you stay calm?",
+    "errors": [
+      {
+        "span": "the patience",
+        "correction": "patience",
+        "type": "article"
+      },
+      {
+        "span": "are",
+        "correction": "is",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "is",
+        "correction": "are",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "corrected_in_response": [
+      "the patience",
+      "are"
+    ],
+    "deliberately_skipped": [
+      "is"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "Neither the government nor the companies wants to takes responsibility for the pollution.",
+    "assistant": "Quick note: 'wants' → 'want' (matches the plural 'companies') and 'takes' → 'take' (base verb after 'to'). Passing the blame is unfortunately very common! Do you think stricter fines would force them to act?",
+    "errors": [
+      {
+        "span": "wants",
+        "correction": "want",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "takes",
+        "correction": "take",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "wants",
+      "takes"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  }
+]

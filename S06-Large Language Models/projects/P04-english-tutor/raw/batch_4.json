@@ -1,0 +1,702 @@
+[
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "Everyone in my cooking class love the new chef.",
+    "assistant": "Having an engaging and passionate instructor makes learning to cook so much more enjoyable! What's the best technique he has taught you so far?",
+    "errors": [
+      {
+        "span": "love",
+        "correction": "loves",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "The new equipment in the kitchen are making my job much easier.",
+    "assistant": "Upgrading your kitchen tools can honestly change the way you cook. What new gadget is saving you the most time?",
+    "errors": [
+      {
+        "span": "are",
+        "correction": "is",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "I want to try this recipe, but it requires too many sugar.",
+    "assistant": "Recipes can definitely go overboard with sweetness! Do you usually try reducing it by half, or substitute it with honey or maple syrup?",
+    "errors": [
+      {
+        "span": "many sugar",
+        "correction": "much sugar",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "We ordered a lot of foods for the party.",
+    "assistant": "Quick note: 'foods' → 'food' ('food' is generally uncountable when talking about amounts). It's always better to have leftovers than hungry guests! What was the most popular dish?",
+    "errors": [
+      {
+        "span": "foods",
+        "correction": "food",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "I did a lot of researches online to find the perfect vegan cake recipe.",
+    "assistant": "Vegan baking can be really scientific when you're trying to replace eggs and dairy! Did the recipe you chose end up working out well?",
+    "errors": [
+      {
+        "span": "researches",
+        "correction": "research",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "I eat never fast food because it makes me feel sluggish.",
+    "assistant": "It's amazing how directly our diet impacts our energy levels! Do you usually meal prep to avoid the temptation of grabbing something quick?",
+    "errors": [
+      {
+        "span": "eat never",
+        "correction": "never eat",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "I don't know what is the secret ingredient in this sauce.",
+    "assistant": "Secret family recipes are the best! It could be something simple like a splash of vinegar or a pinch of sugar to balance the acidity. Have you tried asking the chef?",
+    "errors": [
+      {
+        "span": "what is the secret ingredient",
+        "correction": "what the secret ingredient is",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "I have prepared already all the vegetables for the stir-fry.",
+    "assistant": "Quick note: 'prepared already' → 'already prepared' (adverbs like 'already' go between the auxiliary verb 'have' and the main verb). Getting the prep work out of the way is the secret to a stress-free stir-fry! Are you using a wok?",
+    "errors": [
+      {
+        "span": "prepared already",
+        "correction": "already prepared",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "Unless you don't add salt, the potatoes will taste completely bland.",
+    "assistant": "Quick note: 'Unless you don't add' → 'Unless you add' ('unless' already means 'if not', so we don't use a negative verb after it). Potatoes definitely need proper seasoning! Do you prefer boiling or roasting them?",
+    "errors": [
+      {
+        "span": "Unless you don't add",
+        "correction": "Unless you add",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "If I had a bigger kitchen, I will bake fresh bread every single day.",
+    "assistant": "Quick note: 'I will bake' → 'I would bake' (in the second conditional, use 'would' + base verb in the main clause). A spacious kitchen is a baker's dream! What's your favourite type of bread to make right now?",
+    "errors": [
+      {
+        "span": "will bake",
+        "correction": "would bake",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "I am going to the gym since January but I don't see results yet.",
+    "assistant": "Quick note: 'am going' → 'have been going' (use present perfect continuous for actions starting in the past and continuing now). Plateaus can be so frustrating! Have you tried changing up your routine to shock your muscles?",
+    "errors": [
+      {
+        "span": "am going",
+        "correction": "have been going",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "While I ran on the treadmill yesterday, I was twisting my ankle.",
+    "assistant": "Oh no, ankle injuries can take such a long time to heal properly! Are you resting it, or have you already been to see a doctor?",
+    "errors": [
+      {
+        "span": "was twisting",
+        "correction": "twisted",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "I sleeped for nine hours last night because I was so tired.",
+    "assistant": "Quick note: 'sleeped' → 'slept' ('sleep' is an irregular verb). A solid nine hours of rest is incredible for recovery! Do you usually track your sleep quality?",
+    "errors": [
+      {
+        "span": "sleeped",
+        "correction": "slept",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "My doctor speaked to me about adding more vegetables to my diet.",
+    "assistant": "That's very standard advice, but it can be hard to follow consistently! Do you have any favorite ways to sneak more greens into your meals?",
+    "errors": [
+      {
+        "span": "speaked",
+        "correction": "spoke",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "I decided to hire personal trainer to help me lift weights safely.",
+    "assistant": "Quick note: 'hire personal trainer' → 'hire a personal trainer' (singular countable nouns need an article like 'a' or 'an'). That's a great investment in your health! Are you focusing on building strength or just general fitness?",
+    "errors": [
+      {
+        "span": "hire personal trainer",
+        "correction": "hire a personal trainer",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "The mental health is just as important as physical fitness.",
+    "assistant": "You are absolutely right, they are completely connected. What do you usually do to de-stress after a chaotic week?",
+    "errors": [
+      {
+        "span": "The mental health",
+        "correction": "Mental health",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "I always prefer to work out at the morning before I go to the office.",
+    "assistant": "Quick note: 'at the morning' → 'in the morning' (the correct preposition for morning, afternoon, and evening is 'in'). Getting it done early is a great habit! Does it make you feel more energized for the rest of the day?",
+    "errors": [
+      {
+        "span": "at the morning",
+        "correction": "in the morning",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "I am very interested about learning how to do yoga properly.",
+    "assistant": "Yoga is fantastic for both flexibility and core strength! Are you thinking of joining a local studio or following tutorials online?",
+    "errors": [
+      {
+        "span": "interested about",
+        "correction": "interested in",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "I was doing a lot of mistakes with my deadlift form at first.",
+    "assistant": "Quick note: 'doing a lot of mistakes' → 'making a lot of mistakes' (in English, we use 'make' with mistakes). Form is crucial for deadlifts to protect your back! Did a coach help you correct it?",
+    "errors": [
+      {
+        "span": "doing a lot of mistakes",
+        "correction": "making a lot of mistakes",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "My new interval training routine is very exhausted.",
+    "assistant": "Interval training will definitely wipe you out, but it builds stamina so quickly! How many times a week are you doing it?",
+    "errors": [
+      {
+        "span": "very exhausted",
+        "correction": "exhausting",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "My coach said me to drink at least three liters of water a day.",
+    "assistant": "Quick note: 'said me' → 'told me' (you use 'tell' when followed directly by a person object, like 'me'). Hydration really is key for recovery! Do you find it hard to drink that much water?",
+    "errors": [
+      {
+        "span": "said me",
+        "correction": "told me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "Everyone in my pilates class are much more flexible than I am.",
+    "assistant": "Try not to compare yourself—flexibility takes months of consistent practice to build! How long have you been doing pilates?",
+    "errors": [
+      {
+        "span": "are",
+        "correction": "is",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "My muscles is very sore today after lifting those heavy weights.",
+    "assistant": "Quick note: 'muscles is' → 'muscles are' ('muscles' is plural, so it needs a plural verb). Soreness means you definitely pushed yourself! Are you taking a rest day today?",
+    "errors": [
+      {
+        "span": "is",
+        "correction": "are",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "I need to buy some new equipments for my home gym setup.",
+    "assistant": "Quick note: 'equipments' → 'equipment' (it is an uncountable noun and has no plural form). A home gym is so convenient! What are you planning to buy next—dumbbells or a bench?",
+    "errors": [
+      {
+        "span": "equipments",
+        "correction": "equipment",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "My nutritionist gave me some good advices on how to reduce sugar.",
+    "assistant": "Cutting down on sugar is notoriously difficult since it's hidden in everything. What was the most helpful tip they gave you?",
+    "errors": [
+      {
+        "span": "advices",
+        "correction": "advice",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "I never am hungry immediately after a really intense workout.",
+    "assistant": "Quick note: 'never am' → 'am never' (adverbs of frequency like 'never' go after the verb 'to be'). That's quite common actually, as your body is still in fight-or-flight mode. What's your go-to meal once your appetite comes back?",
+    "errors": [
+      {
+        "span": "never am",
+        "correction": "am never",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "Excuse me, can you tell me where is the nearest pharmacy?",
+    "assistant": "There is a large pharmacy just two blocks down the street on the left. Are you looking for anything specific, or just general supplies?",
+    "errors": [
+      {
+        "span": "where is the nearest pharmacy",
+        "correction": "where the nearest pharmacy is",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "If I will eat healthier, I will definitely have more energy during the day.",
+    "assistant": "Quick note: 'If I will eat' → 'If I eat' (in the first conditional, the 'if' clause uses present simple). Diet plays such a huge role in our daily energy levels! What changes are you trying to make first?",
+    "errors": [
+      {
+        "span": "If I will eat",
+        "correction": "If I eat",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "If I wouldn't have eaten that heavy dessert, I would feel much better now.",
+    "assistant": "We've all been there—sugar crashes are the worst! A quick walk might help speed up digestion. Did the dessert at least taste amazing?",
+    "errors": [
+      {
+        "span": "wouldn't have eaten",
+        "correction": "hadn't eaten",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "I am surprisingly good in running long distances without getting tired.",
+    "assistant": "That is a great physical advantage to have! Have you ever considered signing up for a half marathon or a full marathon?",
+    "errors": [
+      {
+        "span": "good in",
+        "correction": "good at",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "I think artificial intelligence will changed the way we work entirely.",
+    "assistant": "Quick note: 'will changed' → 'will change' (after 'will', always use the base form of the verb). It's definitely going to disrupt a lot of industries! Does your company currently use any AI tools?",
+    "errors": [
+      {
+        "span": "will changed",
+        "correction": "will change",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "I upgrade my computer's operating system last week and now it is slow.",
+    "assistant": "That is incredibly frustrating when an update actually makes things worse! Have you tried restarting it, or checking if the new system takes up too much memory?",
+    "errors": [
+      {
+        "span": "upgrade",
+        "correction": "upgraded",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "I builded my own desktop computer from parts I bought online.",
+    "assistant": "Quick note: 'builded' → 'built' (the past tense of 'build' is irregular). Building a PC is such a rewarding project! Did you design it specifically for gaming, or for work?",
+    "errors": [
+      {
+        "span": "builded",
+        "correction": "built",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "My old phone falled into the swimming pool and stopped working.",
+    "assistant": "Oh no, water damage is usually the end of the line for electronics. Were you able to recover your photos and contacts from the cloud?",
+    "errors": [
+      {
+        "span": "falled",
+        "correction": "fell",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "The internet has changed a world completely over the last three decades.",
+    "assistant": "Quick note: 'a world' → 'the world' (we use 'the' because there is only one world in this context). It really has revolutionized everything! Do you think we rely on it too much nowadays?",
+    "errors": [
+      {
+        "span": "a world",
+        "correction": "the world",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "My sister works as data analyst for a large software company.",
+    "assistant": "That is a very in-demand field right now! Does she enjoy digging through all those complex datasets every day?",
+    "errors": [
+      {
+        "span": "as data analyst",
+        "correction": "as a data analyst",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "I saw a great documentary in the television about early computers.",
+    "assistant": "Quick note: 'in the television' → 'on television' or 'on TV' (we say 'on' for screens and broadcast media). The history of early computing is fascinating! Which era did it cover?",
+    "errors": [
+      {
+        "span": "in the television",
+        "correction": "on television",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "I am really looking forward for the new smartphone release next month.",
+    "assistant": "The new releases always bring some exciting, if incremental, features. Are you planning to upgrade your current phone, or are you just curious about the specs?",
+    "errors": [
+      {
+        "span": "looking forward for",
+        "correction": "looking forward to",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "Please remember me to plug in my laptop before I go to sleep.",
+    "assistant": "Quick note: 'remember me' → 'remind me' (you ask someone to 'remind' you to do something). I can certainly do that! There's nothing worse than waking up to a dead battery when you have a busy day.",
+    "errors": [
+      {
+        "span": "remember me",
+        "correction": "remind me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "There is many apps that can help you track your monthly expenses.",
+    "assistant": "Quick note: 'There is' → 'There are' (since 'many apps' is plural, the verb must be plural too). Budgeting apps make personal finance so much easier! Do you currently use one?",
+    "errors": [
+      {
+        "span": "There is",
+        "correction": "There are",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "The news about the upcoming tech regulations are causing a lot of debate.",
+    "assistant": "It's a very delicate balance between innovation and privacy. Do you think the government should be more involved in regulating tech companies?",
+    "errors": [
+      {
+        "span": "are",
+        "correction": "is",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "I downloaded too many softwares onto my computer and it ran out of memory.",
+    "assistant": "Quick note: 'many softwares' → 'much software' ('software' is an uncountable noun in English). That's an easy trap to fall into! Have you gone through and uninstalled the programs you don't use anymore?",
+    "errors": [
+      {
+        "span": "many softwares",
+        "correction": "much software",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "My tablet doesn't have much spaces left for new games.",
+    "assistant": "Storage limits are always a headache! Have you considered moving some of your larger files to an external drive or a cloud service?",
+    "errors": [
+      {
+        "span": "much spaces",
+        "correction": "much space",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "I don't understand what means this error code on my screen.",
+    "assistant": "Quick note: 'what means this error code' → 'what this error code means' (indirect questions follow normal statement word order). Error codes can be so cryptic! Have you tried searching for the specific number on a tech forum?",
+    "errors": [
+      {
+        "span": "what means this error code",
+        "correction": "what this error code means",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "Why you deleted that important folder from the shared drive?",
+    "assistant": "Accidentally deleting shared files is a classic office panic moment! Is there any way for the IT department to restore it from a backup?",
+    "errors": [
+      {
+        "span": "Why you deleted",
+        "correction": "Why did you delete",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "If I would have saved my document, I wouldn't have lost two hours of work.",
+    "assistant": "Quick note: 'If I would have saved' → 'If I had saved' (in the third conditional, use past perfect in the 'if' clause). That is a heartbreaking feeling! Does your software have an auto-recovery feature you can check?",
+    "errors": [
+      {
+        "span": "would have saved",
+        "correction": "had saved",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "Unless you don't update your password regularly, your account is vulnerable.",
+    "assistant": "Cybersecurity is so important these days. Do you use a password manager to keep track of all your different logins?",
+    "errors": [
+      {
+        "span": "don't update",
+        "correction": "update",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "I usually hear tech podcasts while I am driving to the office.",
+    "assistant": "Podcasts are a great way to make the commute feel productive. Do you have a favorite tech show you'd recommend?",
+    "errors": [
+      {
+        "span": "hear",
+        "correction": "listen to",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "I wish I can buy the latest virtual reality headset, but it is too expensive.",
+    "assistant": "The early versions of new hardware are always incredibly pricey. Have you ever tried VR, or are you just interested in the concept?",
+    "errors": [
+      {
+        "span": "can buy",
+        "correction": "could buy",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "The lecture about cybersecurity was very bored, so I almost fell asleep.",
+    "assistant": "Quick note: 'very bored' → 'very boring' (use -ing adjectives to describe the thing causing the feeling). Cybersecurity is vital, but the presentations can definitely be dry! What made it so dull?",
+    "errors": [
+      {
+        "span": "very bored",
+        "correction": "very boring",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  }
+]

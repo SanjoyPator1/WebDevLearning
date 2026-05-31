@@ -1,0 +1,702 @@
+[
+  {
+    "mode": "strict",
+    "topic": "future_plans",
+    "user": "When I will retire, I want to move to a quiet house in the countryside.",
+    "assistant": "Quick note: 'When I will retire' → 'When I retire' (after time words like 'when', use the present simple for future events). A quiet country house sounds idyllic! Would you want to grow your own vegetables?",
+    "errors": [
+      {
+        "span": "will retire",
+        "correction": "retire",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "future_plans",
+    "user": "By the end of next year, I have finished my master's degree.",
+    "assistant": "That is a massive milestone to look forward to! Do you plan to jump straight into the workforce, or take a break after graduating?",
+    "errors": [
+      {
+        "span": "have finished",
+        "correction": "will have finished",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "future_plans",
+    "user": "I recently writed a detailed five-year plan for my career.",
+    "assistant": "Quick note: 'writed' → 'wrote' (the past tense of 'write' is irregular). Having a clear roadmap can really help keep you focused! What is the biggest goal on your list?",
+    "errors": [
+      {
+        "span": "writed",
+        "correction": "wrote",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "future_plans",
+    "user": "I really hope I will winned the scholarship for the exchange program.",
+    "assistant": "Studying abroad is a life-changing experience! When do you find out if your application was successful?",
+    "errors": [
+      {
+        "span": "winned",
+        "correction": "win",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "future_plans",
+    "user": "My ultimate goal is to become best expert in my particular industry.",
+    "assistant": "Quick note: 'best expert' → 'the best expert' (superlatives always require the definite article 'the'). That's an ambitious and inspiring goal! Who are the experts you currently look up to in your field?",
+    "errors": [
+      {
+        "span": "best expert",
+        "correction": "the best expert",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "future_plans",
+    "user": "Moving to the abroad has always been a dream of mine since I was a kid.",
+    "assistant": "Living in a different culture teaches you so much about yourself. Is there a specific continent you are most drawn to?",
+    "errors": [
+      {
+        "span": "the abroad",
+        "correction": "abroad",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "future_plans",
+    "user": "My partner and I are planning to buy our first house in next year.",
+    "assistant": "Quick note: 'in next year' → 'next year' (we don't use prepositions before 'next', 'last', or 'this' when talking about time). House hunting is both exciting and stressful! Have you decided on a neighborhood yet?",
+    "errors": [
+      {
+        "span": "in next year",
+        "correction": "next year",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "future_plans",
+    "user": "Where I end up living will depend of the job offers I receive.",
+    "assistant": "That makes total sense—career opportunities often dictate location. Are you open to relocating to a completely different city if the offer is right?",
+    "errors": [
+      {
+        "span": "depend of",
+        "correction": "depend on",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "future_plans",
+    "user": "I hope to make a lot of progresses on my language skills this summer.",
+    "assistant": "Quick note: 'progresses' → 'progress' ('progress' is an uncountable noun in English and has no plural form). Summer is a great time to focus on learning! Are you planning to take a formal class?",
+    "errors": [
+      {
+        "span": "progresses",
+        "correction": "progress",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "future_plans",
+    "user": "I often wonder where will we live in ten years from now.",
+    "assistant": "It's fascinating to think about how much life can change in a decade. Do you picture yourself in an urban city, or somewhere quieter?",
+    "errors": [
+      {
+        "span": "where will we live",
+        "correction": "where we will live",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "Yesterday I go to the hospital to visit my newborn niece.",
+    "assistant": "Quick note: 'I go' → 'I went' (use past simple for finished events like 'yesterday'). That is such wonderful news! Does she look more like her mother or her father?",
+    "errors": [
+      {
+        "span": "I go",
+        "correction": "I went",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "I am knowing my husband since we were in high school together.",
+    "assistant": "High school sweethearts are so rare and special! Did you two start dating right away, or were you just friends first?",
+    "errors": [
+      {
+        "span": "am knowing",
+        "correction": "have known",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "My younger brother breaked the window while we were playing in the yard.",
+    "assistant": "Quick note: 'breaked' → 'broke' (the past tense of 'break' is irregular). Oh no, that sounds like a classic childhood disaster! How angry were your parents when they found out?",
+    "errors": [
+      {
+        "span": "breaked",
+        "correction": "broke",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "We choosed to spend the holidays quietly at home this year.",
+    "assistant": "A quiet holiday at home is sometimes exactly what you need to actually recharge. Do you normally travel to see extended family during the festive season?",
+    "errors": [
+      {
+        "span": "choosed",
+        "correction": "chose",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "My aunt is doctor at the local children's hospital.",
+    "assistant": "Quick note: 'is doctor' → 'is a doctor' (in English, singular professions always need an article like 'a' or 'an'). That must be a very rewarding but emotionally demanding job! Does she specialize in a specific type of pediatrics?",
+    "errors": [
+      {
+        "span": "is doctor",
+        "correction": "is a doctor",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "I believe that the family is the most important thing in a person's life.",
+    "assistant": "I completely agree with you—having a strong support system makes navigating life's challenges so much easier. Do you have a large extended family, or is it a smaller, close-knit group?",
+    "errors": [
+      {
+        "span": "the family",
+        "correction": "family",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "I am married with my wife for over a decade now.",
+    "assistant": "Quick note: 'married with' → 'married to' (the fixed preposition in English is to be married *to* someone). Over ten years is a wonderful milestone! Are you planning to do anything special for your next anniversary?",
+    "errors": [
+      {
+        "span": "married with",
+        "correction": "married to",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "My parents always arrive to our house unannounced on Sundays.",
+    "assistant": "Surprise visits can be lovely, but they definitely keep you on your toes! Do you usually just make them a cup of tea, or do they expect a full Sunday lunch?",
+    "errors": [
+      {
+        "span": "arrive to",
+        "correction": "arrive at",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "My older sister said me that she is moving to Canada next year.",
+    "assistant": "Quick note: 'said me' → 'told me' (we use 'tell' when mentioning the person being spoken to, but 'say' when not). Moving to another country is a huge life change! Will you be able to visit her often?",
+    "errors": [
+      {
+        "span": "said me",
+        "correction": "told me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "Can you borrow me your car so I can pick up the kids from school?",
+    "assistant": "I can definitely let you use the car for the school run. Are the kids bringing any friends home for playdates today, or is it just them?",
+    "errors": [
+      {
+        "span": "borrow me",
+        "correction": "lend me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "Everyone in my family love watching movies together on Friday nights.",
+    "assistant": "Quick note: 'love' → 'loves' (words like 'everyone' and 'everybody' take a singular verb). Movie nights are a great tradition! Who usually gets to pick the film?",
+    "errors": [
+      {
+        "span": "love",
+        "correction": "loves",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "My two siblings is coming over for a barbecue this weekend.",
+    "assistant": "A weekend barbecue sounds like a perfect way to catch up. Do you all get along well, or is there still a bit of childhood sibling rivalry?",
+    "errors": [
+      {
+        "span": "is",
+        "correction": "are",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "My grandfather gave me some great advices about saving money.",
+    "assistant": "Quick note: 'advices' → 'advice' ('advice' is an uncountable noun and cannot be pluralized). Grandparents always have the most practical wisdom! What was the best tip he gave you?",
+    "errors": [
+      {
+        "span": "advices",
+        "correction": "advice",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "We have too many furnitures in the living room now that the baby is crawling.",
+    "assistant": "Baby-proofing a house really does force you to embrace minimalism! Have you had to put a lot of your nicer things into storage?",
+    "errors": [
+      {
+        "span": "many furnitures",
+        "correction": "much furniture",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "I usually go on Sundays to my parents' house for lunch.",
+    "assistant": "Quick note: 'go on Sundays to my parents' house' → 'go to my parents' house on Sundays' (we usually put the place before the time in English sentences). Sunday lunches with family are a beautiful routine! Does your mother usually cook, or do you all help out?",
+    "errors": [
+      {
+        "span": "go on Sundays to my parents' house",
+        "correction": "go to my parents' house on Sundays",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "Why you didn't invite your cousins to the wedding ceremony?",
+    "assistant": "Keeping a wedding guest list small can definitely cause some family friction. Were they understanding about it, or did it cause a bit of drama?",
+    "errors": [
+      {
+        "span": "Why you didn't",
+        "correction": "Why didn't you",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "If my brother will ask me, I will help him paint his new apartment.",
+    "assistant": "Quick note: 'will ask' → 'asks' (in the first conditional, the 'if' clause uses the present simple tense). Helping someone move and paint is true sibling loyalty! Are you good at DIY projects, or is it mostly just manual labor for you?",
+    "errors": [
+      {
+        "span": "will ask",
+        "correction": "asks",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "I wish I have more time to spend with my kids during the week.",
+    "assistant": "Balancing work and family life is an endless struggle for parents. Do you manage to carve out any dedicated, phone-free time with them on the weekends?",
+    "errors": [
+      {
+        "span": "have",
+        "correction": "had",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "Neither my uncle nor my cousins likes to watch football on TV.",
+    "assistant": "Quick note: 'likes' → 'like' (with 'neither/nor', the verb matches the noun closest to it, which is the plural 'cousins'). That's quite unusual for a family! What do you all tend to watch when you're gathered in the living room?",
+    "errors": [
+      {
+        "span": "likes",
+        "correction": "like",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "If I would have a bigger dining table, I would host the family reunion.",
+    "assistant": "Quick note: 'would have' → 'had' (for the second conditional, use the past simple in the 'if' clause). Hosting the whole family requires so much space! Who usually takes on the responsibility of hosting the reunions?",
+    "errors": [
+      {
+        "span": "would have",
+        "correction": "had",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I am playing the acoustic guitar for five years now.",
+    "assistant": "Quick note: 'am playing' → 'have been playing' (use present perfect continuous for an action that started in the past and is still happening). Five years is long enough to get really good! Do you prefer fingerpicking or strumming chords?",
+    "errors": [
+      {
+        "span": "am playing",
+        "correction": "have been playing",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "When I will finish knitting this scarf, I will give it to my sister.",
+    "assistant": "Handmade gifts are always the most cherished ones! What color yarn are you using for the scarf?",
+    "errors": [
+      {
+        "span": "will finish",
+        "correction": "finish",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I drawed a portrait of my dog using charcoal yesterday.",
+    "assistant": "Quick note: 'drawed' → 'drew' (the past tense of 'draw' is irregular). Charcoal is such a wonderfully expressive medium for animal fur! Was it hard to get your dog to sit still, or did you use a photo?",
+    "errors": [
+      {
+        "span": "drawed",
+        "correction": "drew",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "Our local basketball team winned the amateur tournament last week.",
+    "assistant": "That's a huge victory! Winning a tournament takes so much coordination and practice. Did you all go out to celebrate together afterwards?",
+    "errors": [
+      {
+        "span": "winned",
+        "correction": "won",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I usually play the tennis with my colleague on Saturday mornings.",
+    "assistant": "Quick note: 'the tennis' → 'tennis' (we don't use articles with names of sports). A Saturday morning match is a great way to kick off the weekend! Are you two evenly matched, or does one of you usually win?",
+    "errors": [
+      {
+        "span": "the tennis",
+        "correction": "tennis",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "Learning to play piano requires a lot of daily practice and patience.",
+    "assistant": "It really does—building that muscle memory takes thousands of repetitions. What piece of music are you currently trying to master?",
+    "errors": [
+      {
+        "span": "play piano",
+        "correction": "play the piano",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I am really bad in painting with watercolors, but I enjoy it anyway.",
+    "assistant": "Quick note: 'bad in' → 'bad at' (the fixed phrase is 'good at' or 'bad at' something). Doing a hobby just for the joy of it, without worrying about being perfect, is the best way to relax! What kind of scenes do you try to paint?",
+    "errors": [
+      {
+        "span": "bad in",
+        "correction": "bad at",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "Whether we go hiking this weekend depends of the weather forecast.",
+    "assistant": "Hiking in the pouring rain is definitely miserable. If the weather is clear, which trail are you planning to tackle?",
+    "errors": [
+      {
+        "span": "depends of",
+        "correction": "depends on",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I do a lot of mistakes when I try to play fast songs on the keyboard.",
+    "assistant": "Quick note: 'do a lot of mistakes' → 'make a lot of mistakes' (in English, we always 'make' mistakes, choices, and plans). Speed will come naturally once the finger placements are automatic! Have you tried practicing with a metronome?",
+    "errors": [
+      {
+        "span": "do a lot of mistakes",
+        "correction": "make a lot of mistakes",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "The photography workshop I took last month was very bored.",
+    "assistant": "That's a shame! Photography can be so creative, but technical lectures on aperture and shutter speed can definitely drag on. Did you at least get to go out and shoot some photos?",
+    "errors": [
+      {
+        "span": "very bored",
+        "correction": "very boring",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "The local chess club meet every Thursday evening at the community center.",
+    "assistant": "Chess clubs are great places to sharpen your strategy against different styles of play. Are you playing in any rated tournaments soon?",
+    "errors": [
+      {
+        "span": "meet",
+        "correction": "meets",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I need to buy some new equipments for my scuba diving trip next month.",
+    "assistant": "Quick note: 'equipments' → 'equipment' (equipment is uncountable and has no plural form). Scuba diving is such an exhilarating hobby! What new gear are you looking to buy?",
+    "errors": [
+      {
+        "span": "equipments",
+        "correction": "equipment",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "I did a lot of researches online before buying my new digital camera.",
+    "assistant": "Cameras are a huge investment, so you definitely have to read the reviews carefully! Did you go for a mirrorless camera or a traditional DSLR?",
+    "errors": [
+      {
+        "span": "researches",
+        "correction": "research",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "I have many homeworks to finish before my pottery class on Wednesday.",
+    "assistant": "Pottery homework sounds intriguing—is it sketching designs, or practicing actual hand-building techniques at home?",
+    "errors": [
+      {
+        "span": "many homeworks",
+        "correction": "much homework",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I never am bored when I am reading a really good fantasy novel.",
+    "assistant": "Quick note: 'never am' → 'am never' (adverbs of frequency like 'never' go after the verb 'to be'). Fantasy worlds are the perfect escape from reality! What series are you currently immersed in?",
+    "errors": [
+      {
+        "span": "never am",
+        "correction": "am never",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "I don't know what is the best strategy to win at this board game.",
+    "assistant": "Some board games take three or four playthroughs before the engine really clicks! Are you playing a heavy strategy euro-game or something lighter?",
+    "errors": [
+      {
+        "span": "what is the best strategy",
+        "correction": "what the best strategy is",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "Unless you don't practice your swing, you won't get any better at golf.",
+    "assistant": "Quick note: 'Unless you don't practice' → 'Unless you practice' ('unless' already means 'if not', so we use a positive verb after it). Golf is famously unforgiving if you don't practice consistently! Do you prefer hitting at the driving range or playing a full 18 holes?",
+    "errors": [
+      {
+        "span": "Unless you don't practice",
+        "correction": "Unless you practice",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "If I didn't sprained my wrist, I would be playing in the tennis match today.",
+    "assistant": "Wrist injuries are the absolute worst for racquet sports. How long did the doctor say you have to rest it before you can get back on the court?",
+    "errors": [
+      {
+        "span": "didn't sprained",
+        "correction": "hadn't sprained",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "I see a movie at the cinema almost every single Friday night.",
+    "assistant": "Going to the cinema weekly is a brilliant ritual. Do you usually go for the big blockbusters, or do you prefer independent indie films?",
+    "errors": [
+      {
+        "span": "see",
+        "correction": "watch",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I like very much gardening when the weather gets warm in the spring.",
+    "assistant": "Quick note: 'like very much gardening' → 'like gardening very much' (in English, the object 'gardening' should come directly after the verb 'like'). Spring is the most rewarding time in a garden! Are you planting mostly flowers or vegetables this year?",
+    "errors": [
+      {
+        "span": "like very much gardening",
+        "correction": "like gardening very much",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  }
+]

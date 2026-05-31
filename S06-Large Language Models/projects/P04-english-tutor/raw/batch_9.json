@@ -1,0 +1,1467 @@
+[
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "food",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I cook dinner yesterday and it tasted terrible."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'cook' → 'cooked' (use past simple for an action finished yesterday). Oh no, cooking disasters happen to everyone! What were you trying to make?"
+      },
+      {
+        "role": "user",
+        "content": "I tried to make a traditional soup, but I putted too much salt."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'putted' → 'put' (the past tense of 'put' is just 'put'). Too much salt is so hard to fix! Did you end up ordering a takeaway instead?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "food",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I love eating the pizza, it is my favorite food."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'the pizza' → 'pizza' (don't use articles when speaking about food in general). Pizza is universally loved for a reason! Do you prefer a thin crust or a deep dish?"
+      },
+      {
+        "role": "user",
+        "content": "Thin crust. The thick crusts is too heavy for my stomach."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'crusts is' → 'crusts are' (plural nouns need plural verbs). Thin crust definitely lets the toppings shine more! What is your go-to topping combination?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "food",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I am eating at this restaurant since 2010."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'am eating' → 'have been eating' (use present perfect continuous for something that started in the past and continues). That is serious loyalty to one place! Has the menu changed much over the years?"
+      },
+      {
+        "role": "user",
+        "content": "Not really. The quality depends of the head chef, and he is the same."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'depends of' → 'depends on' (the verb 'depend' is always followed by 'on'). Having the same head chef for over a decade is rare! What is their signature dish?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "food",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Can you remember me to buy milk from the supermarket?"
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'remember me' → 'remind me' (you ask someone to 'remind' you). I will definitely remind you! Are we out of coffee beans too, or just milk?"
+      },
+      {
+        "role": "user",
+        "content": "Just milk. But I also need an advice on what wine to buy for dinner."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'an advice' → 'some advice' ('advice' is uncountable). I can help with that! What kind of meal are you cooking tonight?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "food",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "If I will have time, I will bake a cake for dessert."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'If I will have' → 'If I have' (use present simple in the 'if' clause). Homemade cake would be a fantastic treat! What flavor were you thinking of baking?"
+      },
+      {
+        "role": "user",
+        "content": "Chocolate. But I don't know where is the baking powder."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'where is the baking powder' → 'where the baking powder is' (indirect questions use normal word order). The baking powder should be in the top pantry cupboard. Do you have all the other ingredients?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "food",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I have visited a new vegan restaurant last night."
+      },
+      {
+        "role": "assistant",
+        "content": "Trying out new restaurants is always exciting! Did they have good alternatives to meat dishes?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, they served a burger made of black beans. It was very interested."
+      },
+      {
+        "role": "assistant",
+        "content": "Black bean burgers can be delicious if they're seasoned right. Did it actually taste like a traditional burger, or was it a completely different flavor?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "food",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Everyone in my family love spicy Mexican food."
+      },
+      {
+        "role": "assistant",
+        "content": "Mexican cuisine is incredible, the flavors are so vibrant! What is your favorite dish to order?"
+      },
+      {
+        "role": "user",
+        "content": "I usually order the tacos with a lot of hot sauces."
+      },
+      {
+        "role": "assistant",
+        "content": "Tacos are the perfect choice, you can customize them so much. Do you prefer corn tortillas or flour tortillas?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "food",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I do a lot of mistakes when I try to bake bread."
+      },
+      {
+        "role": "assistant",
+        "content": "Baking bread is honestly more science than art, it's very easy for things to go wrong! Does your dough usually fail to rise?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, I think the water I use is too much hot, so it kills the yeast."
+      },
+      {
+        "role": "assistant",
+        "content": "That is a very common issue! The water needs to be just lukewarm. Have you considered using a kitchen thermometer to check the temperature?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "food",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Unless you don't stir the risotto constantly, it will burn on the bottom."
+      },
+      {
+        "role": "assistant",
+        "content": "Risotto is definitely a dish that demands your full attention at the stove. Do you usually make it with mushrooms or seafood?"
+      },
+      {
+        "role": "user",
+        "content": "I make it with mushrooms and many garlic."
+      },
+      {
+        "role": "assistant",
+        "content": "Mushroom and garlic risotto is such a comforting, earthy combination. Do you finish it off with a lot of parmesan cheese?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "food",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Why you didn't eat the breakfast this morning?"
+      },
+      {
+        "role": "assistant",
+        "content": "I completely lost track of time and had to rush out the door to catch my train! Are you someone who needs breakfast immediately after waking up?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, I never am able to focus if I don't eat."
+      },
+      {
+        "role": "assistant",
+        "content": "I completely understand that, it's hard for the brain to work without fuel. Did you have something filling this morning?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "social",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "Yesterday I go to a really nice restaurant with my friends."
+      },
+      {
+        "role": "assistant",
+        "content": "That sounds like a great evening! What kind of food did they serve?"
+      },
+      {
+        "role": "user",
+        "content": "They had Italian food. Can you switch to strict mode? Did I make a mistake earlier?"
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Yes! 'I go' → 'I went' (use past simple for finished events like yesterday). Italian is always a crowd-pleaser! Did you get pasta or pizza?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "social",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "I have seen my best friend last weekend for the first time in months."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'have seen' → 'saw' (use past simple, not present perfect, with specific past times like 'last weekend'). It must have been so nice to catch up! What did you two do?"
+      },
+      {
+        "role": "user",
+        "content": "We went shopping. Let's switch to flow mode, I just want to chat without corrections."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "Absolutely, we can just chat! Shopping is a great way to spend the day. Did you end up buying anything nice?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "social",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "Everyone in my group of friends are coming to my birthday party."
+      },
+      {
+        "role": "assistant",
+        "content": "That is going to be such a fun celebration! Are you hosting it at your house, or renting a venue?"
+      },
+      {
+        "role": "user",
+        "content": "At my house. Switch to strict mode please, I want to know if my grammar was correct."
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "You had one small error: 'Everyone...are' → 'Everyone...is' (words like 'everyone' take a singular verb). Hosting at home is so much cozier! Are you cooking for them all?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "social",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "Can you borrow me your jacket? It is very cold outside."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'borrow me' → 'lend me' (you borrow *from* someone, but you lend *to* someone). Of course you can take it! Are you walking home in this weather?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, I am. Can we switch to flow mode? I'm too cold to think about grammar."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "No problem, stay warm! Button up the jacket, the wind is freezing tonight. Do you have far to walk?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "social",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "I wait for the taxi since an hour and it is still not here."
+      },
+      {
+        "role": "assistant",
+        "content": "Waiting that long is incredibly frustrating, especially if you have somewhere to be! Have you tried calling the dispatch office?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, they said it's coming. Please switch to strict mode and correct my first message."
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Sure! 'I wait' → 'I have been waiting' and 'since an hour' → 'for an hour' (use present perfect continuous + 'for' for duration). Hopefully it arrives in the next five minutes! Are you going to be late?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "social",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "Why you didn't invite him to the dinner?"
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'Why you didn't' → 'Why didn't you' (in direct questions, the auxiliary verb comes before the subject). It can be awkward navigating guest lists! Did you two have a falling out?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, we had a fight. Switch to flow mode, I just want to vent about it."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "I'm all ears. Falling out with a friend is always really stressful. Do you want to talk about what happened?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "tech",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "I buyed a new smart watch yesterday but it is very complicated."
+      },
+      {
+        "role": "assistant",
+        "content": "New tech can definitely have a steep learning curve! Are you struggling with the fitness tracking or the notifications?"
+      },
+      {
+        "role": "user",
+        "content": "The notifications. Switch to strict mode, did I use the right past tense for 'buy'?"
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Good catch! 'buyed' → 'bought' ('buy' is an irregular verb). Notifications can be overwhelming if they all buzz your wrist at once. Have you tried turning off the ones for social media?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "tech",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "The internet have changed everything about how we communicate."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'internet have' → 'internet has' (the internet is singular, so it takes 'has'). It truly has revolutionized the world! Do you think we communicate better or worse now?"
+      },
+      {
+        "role": "user",
+        "content": "Worse, people don't talk in real life. Switch to flow mode, I'm tired of grammar rules today."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "I totally get that. It's ironic that we have so many ways to connect, but people often feel more isolated. Do you try to put your phone away when you're with friends?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "tech",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "I don't know what means this error message on my computer."
+      },
+      {
+        "role": "assistant",
+        "content": "Error codes are usually completely cryptic! What does the message actually say?"
+      },
+      {
+        "role": "user",
+        "content": "It says 'Disk Full'. Switch to strict mode and fix my first sentence please."
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Of course! 'what means this error message' → 'what this error message means' (indirect questions use normal statement word order). 'Disk Full' just means you're out of storage! Do you have a lot of large video files saved?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "tech",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "My laptop falled off the desk and now the screen is black."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'falled' → 'fell' (the past tense is irregular). Oh no, that is a disaster! Can you hear the fan running, or is it completely dead?"
+      },
+      {
+        "role": "user",
+        "content": "I can hear the fan. Please switch to flow mode, I'm too panicked to learn right now."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "Take a deep breath! If the fan is running, the computer itself is probably fine and it's just a broken screen. Do you have an external monitor or a TV you can plug it into?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "tech",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "I downloaded too many softwares and my PC is slow."
+      },
+      {
+        "role": "assistant",
+        "content": "That will definitely bog down your system's memory. Have you tried uninstalling the ones you don't use?"
+      },
+      {
+        "role": "user",
+        "content": "Yes. Switch to strict mode, did I make a mistake with 'softwares'?"
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Yes, you did! 'many softwares' → 'much software' or 'a lot of software' (software is an uncountable noun in English). Once you uninstall them, you should probably restart the PC. Is it running faster now?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "tech",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "Always I forget my password for my email account."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'Always I forget' → 'I always forget' (adverbs of frequency go before the main verb). It is so hard to keep track of them all! Do you use a password manager?"
+      },
+      {
+        "role": "user",
+        "content": "No, I don't. Can we switch to flow mode?"
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "Sure thing! If you don't use a manager, resetting passwords constantly must be so annoying. Do you write them down in a notebook instead?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "education",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "I learn English since three years, but speaking is hard."
+      },
+      {
+        "role": "assistant",
+        "content": "Speaking is always the most intimidating part, but you're doing great! Do you practice speaking with anyone regularly?"
+      },
+      {
+        "role": "user",
+        "content": "Not really. Switch to strict mode, did I use the right tense in my first message?"
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Good question! 'I learn' → 'I have been learning', and 'since three years' → 'for three years' (present perfect continuous + 'for' for duration). Finding a language exchange partner online could really help build your confidence. Have you tried looking for one?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "education",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "My professor gived us a very difficult assignment today."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'gived' → 'gave' ('give' is an irregular verb). Assignments that push you are the ones you learn the most from! What is the topic of the paper?"
+      },
+      {
+        "role": "user",
+        "content": "It's about history. Switch to flow mode, I want to just talk about the essay."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "Absolutely. History can be a heavy subject to write about depending on the era. Which specific event are you analyzing?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "education",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "I choosed to study biology because I love animals."
+      },
+      {
+        "role": "assistant",
+        "content": "Biology is a fantastic choice if you're passionate about the natural world! Are you hoping to work in conservation or veterinary science?"
+      },
+      {
+        "role": "user",
+        "content": "Conservation. Can you switch to strict mode and correct my first sentence?"
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Of course! 'choosed' → 'chose' (the past tense of choose is irregular). Conservation is such a noble and important career path right now. Are you learning about ecosystem preservation?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "education",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "I did a big mistake on my final math exam."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'did a big mistake' → 'made a big mistake' (in English, we always 'make' mistakes). Oh no, that's incredibly frustrating! Was it a calculation error or did you misunderstand the question?"
+      },
+      {
+        "role": "user",
+        "content": "Calculation error. Let's switch to flow mode, thinking about it makes me sad."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "Don't beat yourself up too much, it happens to literally everyone under exam pressure. Will this significantly drop your overall grade for the year?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "education",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "Having good knowledges about the world is very important."
+      },
+      {
+        "role": "assistant",
+        "content": "I completely agree, staying informed helps you navigate life so much better. Do you read the news daily?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, I do. Switch to strict mode, is 'knowledges' a real word?"
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Actually, no! 'knowledges' → 'knowledge' (knowledge is an uncountable noun and has no plural form). Reading the news is a great habit. Which global topic interests you the most right now?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "education",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "If I will study hard, I will pass the entrance exam."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'If I will study' → 'If I study' (in the first conditional, the 'if' clause uses present simple). That is the right attitude to have! How many hours a day are you revising?"
+      },
+      {
+        "role": "user",
+        "content": "About four hours. Switch to flow mode please."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "Four hours is a really solid amount of studying! Just make sure you are taking breaks so you don't burn out. Are you studying alone or with a group?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "opinions",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "I think that the society needs to focus more on mental health."
+      },
+      {
+        "role": "assistant",
+        "content": "That is such an important issue, and thankfully it seems like people are finally talking about it more openly. What changes would you like to see first?"
+      },
+      {
+        "role": "user",
+        "content": "More funding for therapy. Switch to strict mode, was my first sentence perfect?"
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Almost! 'the society' → 'society' (we don't use 'the' for abstract nouns in a general sense). Better funding for therapy would change so many lives. Do you think schools should teach mental health awareness too?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "opinions",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "Whether we can solve climate change depends of government action."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'depends of' → 'depends on' (the verb 'depend' is always followed by 'on'). You are totally right, individual actions aren't enough without massive policy shifts. What is the most urgent policy they should pass?"
+      },
+      {
+        "role": "user",
+        "content": "Banning fossil fuels. Let's switch to flow mode."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "Transitioning away from fossil fuels is the biggest hurdle we face. Do you think your country is investing enough in renewable energy to make that happen soon?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "opinions",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "The news about the economy are very discouraging lately."
+      },
+      {
+        "role": "assistant",
+        "content": "It really does feel like it's one crisis after another these days. Does the economic situation make you worry about your own job security?"
+      },
+      {
+        "role": "user",
+        "content": "Sometimes. Switch to strict mode, did I make a grammar mistake?"
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Yes, a very common one! 'news...are' → 'news...is' ('news' ends in 's' but is a singular uncountable noun). It's totally natural to worry when the headlines are so grim. Do you try to limit how much news you read?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "opinions",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "If everyone would recycle, the world would be cleaner."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'would recycle' → 'recycled' (in the second conditional, use the past simple in the 'if' clause). It's such a simple habit, yet so many people ignore it! Is recycling easy to do in your city?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, we have bins everywhere. Switch to flow mode please."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "That's great, having accessible infrastructure is half the battle. Do you think they should fine people who refuse to separate their trash?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "opinions",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "I am believing that technology is making us more isolated."
+      },
+      {
+        "role": "assistant",
+        "content": "It is a paradox—we are more connected than ever, but people report feeling lonelier. Do you find yourself scrolling instead of talking to people?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, too often. Switch to strict mode and correct my first message."
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "Alright! 'am believing' → 'believe' (stative verbs like believe/know/understand are rarely used in continuous tenses). The endless scroll is designed to trap us! Have you tried setting app limits on your phone?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "opinions",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "user",
+        "content": "We need to collect more informations before judging the situation."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'informations' → 'information' ('information' is uncountable and has no plural form). That is a very mature approach! It's too easy to jump to conclusions based on rumors. What's the situation about?"
+      },
+      {
+        "role": "user",
+        "content": "It's about a local scandal. Switch to flow mode."
+      },
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "assistant",
+        "content": "Local scandals always get blown out of proportion before all the facts are out. Are the local newspapers covering it fairly, or just sensationalizing it?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "topic": "opinions",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "system",
+        "content": "mode: flow"
+      },
+      {
+        "role": "user",
+        "content": "Always I try to see both sides of an argument."
+      },
+      {
+        "role": "assistant",
+        "content": "That is a very rare and valuable trait to have, especially nowadays! Do you find it hard to stay neutral when it's a topic you care deeply about?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, sometimes. Switch to strict mode, where should 'always' go?"
+      },
+      {
+        "role": "system",
+        "content": "mode: strict"
+      },
+      {
+        "role": "assistant",
+        "content": "'Always I try' → 'I always try' (adverbs of frequency go between the subject and the main verb). It is definitely difficult to stay objective when emotions are involved! How do you usually calm down during a heated debate?"
+      }
+    ]
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "Yesterday I go to the club and I drinking much beers and dance all night.",
+    "assistant": "Quick note: 'I go' → 'I went' and 'drinking' → 'drank' (use past simple for finished events like yesterday). We can look at the other small things later! A big night out is fun but exhausting—how are you feeling today?",
+    "errors": [
+      {
+        "span": "I go",
+        "correction": "I went",
+        "type": "verb_tense"
+      },
+      {
+        "span": "drinking",
+        "correction": "drank",
+        "type": "verb_tense"
+      },
+      {
+        "span": "much beers",
+        "correction": "many beers",
+        "type": "countable_noun"
+      },
+      {
+        "span": "dance",
+        "correction": "danced",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "I go",
+      "drinking"
+    ],
+    "deliberately_skipped": [
+      "much beers",
+      "dance"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "My friends is very funny and we makes a lot of jokes together at the night.",
+    "assistant": "Quick note: 'friends is' → 'friends are' (plural noun needs a plural verb) and 'we makes' → 'we make' ('we' takes the base verb). Laughter is the best part of friendship! Who is usually the loudest in your group?",
+    "errors": [
+      {
+        "span": "friends is",
+        "correction": "friends are",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "makes",
+        "correction": "make",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "at the night",
+        "correction": "at night",
+        "type": "preposition"
+      }
+    ],
+    "corrected_in_response": [
+      "friends is",
+      "makes"
+    ],
+    "deliberately_skipped": [
+      "at the night"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "I am knowing him since five years and he always arrive late to dinner.",
+    "assistant": "Quick note: 'am knowing' → 'have known' (stative verbs don't use continuous tenses) and 'since five years' → 'for five years' (use 'for' with a duration). (We'll look at the other point next time). Punctuality can be a huge source of friction! Do you usually call him out on it?",
+    "errors": [
+      {
+        "span": "am knowing",
+        "correction": "have known",
+        "type": "verb_tense"
+      },
+      {
+        "span": "since",
+        "correction": "for",
+        "type": "preposition"
+      },
+      {
+        "span": "arrive",
+        "correction": "arrives",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "corrected_in_response": [
+      "am knowing",
+      "since"
+    ],
+    "deliberately_skipped": [
+      "arrive"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "If I would have money, I will buyed a round of drinks for everyone in the pub.",
+    "assistant": "Quick note: 'If I would have' → 'If I had' (second conditional uses past simple in the 'if' clause) and 'buyed' → 'buy'. It's the thought that counts! Do you prefer going to noisy pubs or quiet cafes?",
+    "errors": [
+      {
+        "span": "If I would have",
+        "correction": "If I had",
+        "type": "conditional"
+      },
+      {
+        "span": "will",
+        "correction": "would",
+        "type": "conditional"
+      },
+      {
+        "span": "buyed",
+        "correction": "buy",
+        "type": "irregular_verb"
+      }
+    ],
+    "corrected_in_response": [
+      "If I would have",
+      "buyed"
+    ],
+    "deliberately_skipped": [
+      "will"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "Why you didn't tell me that the party is cancelled and I dress up for nothing?",
+    "assistant": "Quick note: 'Why you didn't tell' → 'Why didn't you tell' (invert the auxiliary and subject in questions) and 'dress' → 'dressed' (past event). Oh no, getting fully ready for a canceled event is the worst! Did you end up doing something else?",
+    "errors": [
+      {
+        "span": "Why you didn't tell",
+        "correction": "Why didn't you tell",
+        "type": "word_order"
+      },
+      {
+        "span": "is",
+        "correction": "was",
+        "type": "verb_tense"
+      },
+      {
+        "span": "dress",
+        "correction": "dressed",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "Why you didn't tell",
+      "dress"
+    ],
+    "deliberately_skipped": [
+      "is"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "I borrowed him some money last week but he haven't payed me back yet.",
+    "assistant": "Quick note: 'borrowed him' → 'lent him' (you lend *to* someone) and 'payed' → 'paid' (irregular spelling). Money can make friendships really awkward! Are you going to ask him for it directly?",
+    "errors": [
+      {
+        "span": "borrowed him",
+        "correction": "lent him",
+        "type": "word_choice"
+      },
+      {
+        "span": "haven't",
+        "correction": "hasn't",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "payed",
+        "correction": "paid",
+        "type": "irregular_verb"
+      }
+    ],
+    "corrected_in_response": [
+      "borrowed him",
+      "payed"
+    ],
+    "deliberately_skipped": [
+      "haven't"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "Everyone are excited for the festival because we will seeing our favourite band.",
+    "assistant": "Quick note: 'Everyone are' → 'Everyone is' ('everyone' takes a singular verb) and 'will seeing' → 'will see' (use the base verb after 'will'). Live music is the best! What band are you all going to see?",
+    "errors": [
+      {
+        "span": "are",
+        "correction": "is",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "will seeing",
+        "correction": "will see",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "are",
+      "will seeing"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "I arrived to the restaurant late and my friends was very anger with me.",
+    "assistant": "Quick note: 'friends was' → 'friends were' (plural subject needs plural verb) and 'anger' → 'angry' (you need the adjective here). We've all been late before! Did you apologize and buy them an appetizer?",
+    "errors": [
+      {
+        "span": "arrived to",
+        "correction": "arrived at",
+        "type": "preposition"
+      },
+      {
+        "span": "was",
+        "correction": "were",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "anger",
+        "correction": "angry",
+        "type": "word_choice"
+      }
+    ],
+    "corrected_in_response": [
+      "was",
+      "anger"
+    ],
+    "deliberately_skipped": [
+      "arrived to"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "I like very much going to the cinema, but the tickets is too expensive now.",
+    "assistant": "Quick note: 'like very much going' → 'like going to the cinema very much' (the object comes before the adverb phrase) and 'tickets is' → 'tickets are' (plural noun). The prices really have skyrocketed! Do you only go for major blockbusters now?",
+    "errors": [
+      {
+        "span": "like very much going to the cinema",
+        "correction": "like going to the cinema very much",
+        "type": "word_order"
+      },
+      {
+        "span": "tickets is",
+        "correction": "tickets are",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "corrected_in_response": [
+      "like very much going to the cinema",
+      "tickets is"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "tech",
+    "user": "I buyed a new laptop yesterday but it crash when I opening the browser.",
+    "assistant": "Quick note: 'buyed' → 'bought' (irregular past tense) and 'crash' → 'crashes' (present simple for a recurring issue). What a terrible start for a brand new device! Are you going to return it to the store?",
+    "errors": [
+      {
+        "span": "buyed",
+        "correction": "bought",
+        "type": "irregular_verb"
+      },
+      {
+        "span": "crash",
+        "correction": "crashes",
+        "type": "verb_tense"
+      },
+      {
+        "span": "opening",
+        "correction": "open",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "buyed",
+      "crash"
+    ],
+    "deliberately_skipped": [
+      "opening"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "tech",
+    "user": "The internet have totally changed a world in the last twenty year.",
+    "assistant": "Quick note: 'internet have' → 'internet has' (singular subject) and 'a world' → 'the world' (there is only one). It really is the biggest shift in human history. Do you think we could survive without it now?",
+    "errors": [
+      {
+        "span": "have",
+        "correction": "has",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "a world",
+        "correction": "the world",
+        "type": "article"
+      },
+      {
+        "span": "year",
+        "correction": "years",
+        "type": "countable_noun"
+      }
+    ],
+    "corrected_in_response": [
+      "have",
+      "a world"
+    ],
+    "deliberately_skipped": [
+      "year"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "tech",
+    "user": "If I will lose my phone, I will lost all my photos and contacts.",
+    "assistant": "Quick note: 'If I will lose' → 'If I lose' (first conditional uses present simple in the 'if' clause) and 'will lost' → 'will lose' (use base verb after 'will'). That is a terrifying thought! Have you set up automatic cloud backups?",
+    "errors": [
+      {
+        "span": "will lose",
+        "correction": "lose",
+        "type": "conditional"
+      },
+      {
+        "span": "will lost",
+        "correction": "will lose",
+        "type": "verb_tense"
+      }
+    ],
+    "corrected_in_response": [
+      "will lose",
+      "will lost"
+    ],
+    "deliberately_skipped": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "tech",
+    "user": "I downloaded many softwares but my computer don't have enough spaces.",
+    "assistant": "Quick note: 'many softwares' → 'a lot of software' (uncountable) and 'spaces' → 'space' (also uncountable when talking about digital storage). Running out of storage is so frustrating! Can you delete some older programs?",
+    "errors": [
+      {
+        "span": "many softwares",
+        "correction": "a lot of software",
+        "type": "countable_noun"
+      },
+      {
+        "span": "don't",
+        "correction": "doesn't",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "spaces",
+        "correction": "space",
+        "type": "countable_noun"
+      }
+    ],
+    "corrected_in_response": [
+      "many softwares",
+      "spaces"
+    ],
+    "deliberately_skipped": [
+      "don't"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "tech",
+    "user": "Why you deleted the file? Now I must to write it again from start.",
+    "assistant": "Quick note: 'Why you deleted' → 'Why did you delete' (direct question inversion) and 'must to write' → 'must write' ('must' is followed by the base verb without 'to'). Accidental deletions are the worst! Is there a trash bin on your desktop to recover it from?",
+    "errors": [
+      {
+        "span": "Why you deleted",
+        "correction": "Why did you delete",
+        "type": "word_order"
+      },
+      {
+        "span": "must to write",
+        "correction": "must write",
+        "type": "verb_tense"
+      },
+      {
+        "span": "from start",
+        "correction": "from the start",
+        "type": "article"
+      }
+    ],
+    "corrected_in_response": [
+      "Why you deleted",
+      "must to write"
+    ],
+    "deliberately_skipped": [
+      "from start"
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "tech",
+    "user": "Always I forget my password, so I writed it on a paper.",
+    "assistant": "Quick note: 'Always I forget' → 'I always forget' (adverb placement) and 'writed' → 'wrote' (irregular past tense). (We can look at the other detail later). Writing it down is definitely old-school security! Do you keep the paper somewhere safe?",
+    "errors": [
+      {
+        "span": "Always I forget",
+        "correction": "I always forget",
+        "type": "word_order"
+      },
+      {
+        "span": "writed",
+        "correction": "wrote",
+        "type": "irregular_verb"
+      },
+      {
+        "span": "on a paper",
+        "correction": "on a piece of paper",
+        "type": "countable_noun"
+      }
+    ],
+    "corrected_in_response": [
+      "Always I forget",
+      "writed"
+    ],
+    "deliberately_skipped": [
+      "on a paper"
+    ],
+    "source": "tutor_handcrafted"
+  }
+]

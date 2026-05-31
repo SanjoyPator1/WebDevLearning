@@ -1,0 +1,702 @@
+[
+  {
+    "mode": "strict",
+    "topic": "childhood",
+    "user": "When I was young, I will play outside with my friends until it got dark.",
+    "assistant": "Quick note: 'will play' → 'would play' (use 'would' to describe repeated habits or routines in the past). Those long evenings playing outside are the best childhood memories! What kind of games did you all play?",
+    "errors": [
+      {
+        "span": "will play",
+        "correction": "would play",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "childhood",
+    "user": "I have visited Disneyland for the first time when I was eight years old.",
+    "assistant": "Eight is the absolute perfect age for Disneyland—everything still feels genuinely magical. Do you remember which ride was your favorite?",
+    "errors": [
+      {
+        "span": "have visited",
+        "correction": "visited",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "childhood",
+    "user": "I falled out of a tall tree when I was ten and broke my arm.",
+    "assistant": "Quick note: 'falled' → 'fell' (the past tense of 'fall' is irregular). Ouch, that must have been terrifying! Did you have to wear a cast for the rest of the summer?",
+    "errors": [
+      {
+        "span": "falled",
+        "correction": "fell",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "childhood",
+    "user": "I forgotted my lunchbox at school almost every day in first grade.",
+    "assistant": "First grade is a big adjustment, it's hard to remember to bring everything home! Did your parents get annoyed having to constantly replace missing lunchboxes?",
+    "errors": [
+      {
+        "span": "forgotted",
+        "correction": "forgot",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "childhood",
+    "user": "We had a big garden in the back of house where we built forts.",
+    "assistant": "Quick note: 'in the back of house' → 'in the back of the house' (you need the definite article 'the' when referring to a specific house). Building forts is a childhood rite of passage! Were they made of blankets or actual wood?",
+    "errors": [
+      {
+        "span": "in the back of house",
+        "correction": "in the back of the house",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "childhood",
+    "user": "I was very scared of the dogs when I was a little boy.",
+    "assistant": "That's a very common fear for kids, especially since dogs are so energetic and unpredictable. Did you eventually outgrow the fear and learn to like them?",
+    "errors": [
+      {
+        "span": "the dogs",
+        "correction": "dogs",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "childhood",
+    "user": "I lived in that neighborhood since five years before we moved away.",
+    "assistant": "Quick note: 'since five years' → 'for five years' (use 'for' with a duration of time, and 'since' for a starting point). Moving away from your childhood neighborhood is always tough. Did you manage to stay in touch with your friends there?",
+    "errors": [
+      {
+        "span": "since five years",
+        "correction": "for five years",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "childhood",
+    "user": "I used to ride my bike in the night during the summer holidays.",
+    "assistant": "Riding bikes on a warm summer night feels like pure freedom when you're a kid. Did you have a whole crew of friends that rode around together?",
+    "errors": [
+      {
+        "span": "in the night",
+        "correction": "at night",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "childhood",
+    "user": "There was many children in my neighborhood who liked playing hide and seek.",
+    "assistant": "Quick note: 'There was' → 'There were' (because 'many children' is plural, the verb must also be plural). Hide and seek with a whole neighborhood of kids sounds epic! Did you have a secret hiding spot that no one could ever find?",
+    "errors": [
+      {
+        "span": "There was",
+        "correction": "There were",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "childhood",
+    "user": "Always I wanted to be an astronaut when I grew up.",
+    "assistant": "Space exploration captures the imagination so perfectly when you're young! When did your career aspirations shift away from being an astronaut?",
+    "errors": [
+      {
+        "span": "Always I wanted",
+        "correction": "I always wanted",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "I am waiting for my friends at the bar since 8 PM and they are still not here.",
+    "assistant": "Quick note: 'am waiting' → 'have been waiting' (use present perfect continuous for an action that started in the past and is still happening). That is so frustrating! Are they usually this late when you make plans?",
+    "errors": [
+      {
+        "span": "am waiting",
+        "correction": "have been waiting",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "We will order the drinks as soon as the rest of the group will arrive.",
+    "assistant": "That's a good plan, it's always awkward when half the table has drinks and the others don't. What's your go-to drink order for a Friday night?",
+    "errors": [
+      {
+        "span": "will arrive",
+        "correction": "arrive",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "I drinked way too much coffee at the cafe with my friend this afternoon.",
+    "assistant": "Quick note: 'drinked' → 'drank' (the past tense of 'drink' is irregular). A caffeine overload can definitely leave you feeling jittery! Are you going to have trouble falling asleep tonight?",
+    "errors": [
+      {
+        "span": "drinked",
+        "correction": "drank",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "My friend speaked so loudly at the restaurant that people started staring at us.",
+    "assistant": "Oh no, that is the most uncomfortable feeling! Did you try to subtly get them to lower their voice, or did you just pretend not to notice the stares?",
+    "errors": [
+      {
+        "span": "speaked",
+        "correction": "spoke",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "We went to a best nightclub in the city to celebrate her promotion.",
+    "assistant": "Quick note: 'a best nightclub' → 'the best nightclub' (always use 'the' with superlative adjectives like 'best'). Celebrating a promotion is a great excuse for a big night out! What kind of music were they playing?",
+    "errors": [
+      {
+        "span": "a best nightclub",
+        "correction": "the best nightclub",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "He works as bartender at the pub down the street from my house.",
+    "assistant": "Having a friend who works at the local pub must have its perks! Do you visit him there often to catch up?",
+    "errors": [
+      {
+        "span": "as bartender",
+        "correction": "as a bartender",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "We arrived to the party very late because we couldn't find a taxi.",
+    "assistant": "Quick note: 'arrived to' → 'arrived at' (we use 'arrive at' for specific places and events, like a party or a building). Arriving fashionably late is sometimes the best way to make an entrance! Was the party already in full swing when you got there?",
+    "errors": [
+      {
+        "span": "arrived to",
+        "correction": "arrived at",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "I am really looking forward for the music festival this weekend.",
+    "assistant": "Music festivals are such a blast, especially when the weather is good! Who is the main headliner that you are most excited to see?",
+    "errors": [
+      {
+        "span": "looking forward for",
+        "correction": "looking forward to",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "Can you remember me to bring a bottle of wine to the dinner party?",
+    "assistant": "Quick note: 'remember me' → 'remind me' (you 'remind' someone else to do something, but you 'remember' to do it yourself). I will definitely remind you! Are you bringing red or white wine?",
+    "errors": [
+      {
+        "span": "remember me",
+        "correction": "remind me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "The networking event was very bored, so we decided to leave early and get food.",
+    "assistant": "Leaving a dull event to grab food is always the right decision. Where did you end up going to eat instead?",
+    "errors": [
+      {
+        "span": "very bored",
+        "correction": "very boring",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "Everyone in my friend group love going to escape rooms on the weekend.",
+    "assistant": "Quick note: 'love' → 'loves' (pronouns like 'everyone' and 'everybody' take a singular verb). Escape rooms are so much fun! Are you usually the one solving the puzzles, or the one searching for clues?",
+    "errors": [
+      {
+        "span": "love",
+        "correction": "loves",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "My friends is planning a surprise party for my thirtieth birthday.",
+    "assistant": "A surprise party! That is so sweet of them, though I suppose it's not a complete surprise anymore if you know they're planning it. Are you good at acting surprised?",
+    "errors": [
+      {
+        "span": "is planning",
+        "correction": "are planning",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "I gave him an advice on what to wear to the formal dinner.",
+    "assistant": "Quick note: 'an advice' → 'some advice' or just 'advice' ('advice' is an uncountable noun, so we cannot use 'an' with it). It can be tricky to navigate dress codes! Did he end up wearing a full suit?",
+    "errors": [
+      {
+        "span": "an advice",
+        "correction": "some advice",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "There were too many traffics on the way to the club, so we missed the DJ's intro.",
+    "assistant": "Missing the opening set because of traffic is the absolute worst. Did the rest of the DJ's set make up for the stressful journey?",
+    "errors": [
+      {
+        "span": "many traffics",
+        "correction": "much traffic",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "Why you didn't tell me that the dress code was strictly black tie?",
+    "assistant": "Quick note: 'Why you didn't tell' → 'Why didn't you tell' (in direct questions, the auxiliary verb comes before the subject). Oh no, showing up underdressed is a nightmare! Did you manage to borrow a jacket or did you just own the mistake?",
+    "errors": [
+      {
+        "span": "Why you didn't tell",
+        "correction": "Why didn't you tell",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "I like very much spending time with my colleagues outside of work hours.",
+    "assistant": "It makes a huge difference when you actually enjoy the company of the people you work with! Do you usually just go for drinks, or do you do activities together?",
+    "errors": [
+      {
+        "span": "like very much spending time",
+        "correction": "like spending time with my colleagues very much",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "If I will have enough money by Friday, I will buy a ticket for the concert.",
+    "assistant": "Quick note: 'If I will have' → 'If I have' (in first conditional sentences, use the present simple in the 'if' clause). Live music is always worth saving up for! Are tickets selling out fast?",
+    "errors": [
+      {
+        "span": "If I will have",
+        "correction": "If I have",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "I wish I can dance salsa like a professional, it looks so elegant.",
+    "assistant": "Salsa dancing is incredibly beautiful, but it definitely takes a lot of coordination! Have you ever considered signing up for beginner classes?",
+    "errors": [
+      {
+        "span": "can dance",
+        "correction": "could dance",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "Last night we have gone to a comedy show in the city center.",
+    "assistant": "Quick note: 'have gone' → 'went' (use the past simple, not present perfect, for events that happened at a specific time in the past like 'last night'). A good comedy show is the best stress reliever! Was the comedian someone famous, or a local act?",
+    "errors": [
+      {
+        "span": "have gone",
+        "correction": "went",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "I weared my favourite leather jacket to the gathering yesterday.",
+    "assistant": "A good leather jacket instantly elevates an outfit! Did you get any compliments on it from your friends?",
+    "errors": [
+      {
+        "span": "weared",
+        "correction": "wore",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I am believing that education should be completely free for everyone.",
+    "assistant": "Quick note: 'am believing' → 'believe' (stative verbs like 'believe', 'know', and 'think' are rarely used in the continuous form). You make a very compelling point! Do you think university should be free, or just primary and secondary school?",
+    "errors": [
+      {
+        "span": "am believing",
+        "correction": "believe",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "When the government will change the environmental laws, air quality will improve.",
+    "assistant": "Policy changes really are the most effective way to tackle pollution on a large scale. Which specific laws do you think need to be updated first?",
+    "errors": [
+      {
+        "span": "will change",
+        "correction": "changes",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "They builded this new museum to help preserve the local indigenous culture.",
+    "assistant": "Quick note: 'builded' → 'built' (the past tense of 'build' is irregular). Preserving local history is so incredibly important! Have you had a chance to visit the exhibits yet?",
+    "errors": [
+      {
+        "span": "builded",
+        "correction": "built",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "The politician choosed to ignore the scientists' warnings about the river.",
+    "assistant": "It's so frustrating when clear scientific evidence is bypassed for political reasons. Has there been any public pushback or protesting against his decision?",
+    "errors": [
+      {
+        "span": "choosed",
+        "correction": "chose",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "The society needs to do much more to support homeless people in winter.",
+    "assistant": "Quick note: 'The society' → 'Society' (we use the zero article when talking about abstract nouns or society in a general sense). You are absolutely right, winter is brutally hard for vulnerable populations. Are there many shelters in your city?",
+    "errors": [
+      {
+        "span": "The society",
+        "correction": "Society",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "I read an interesting article yesterday about the history of the art.",
+    "assistant": "Art history gives you such a fascinating window into what people valued in different eras. Which artistic period did the article focus on?",
+    "errors": [
+      {
+        "span": "the art",
+        "correction": "art",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "My opinion on this matter depends of what the scientific research actually says.",
+    "assistant": "Quick note: 'depends of' → 'depends on' (the verb 'depend' is always followed by the preposition 'on'). That is a very rational and measured approach! Are you currently waiting for a specific study to be published?",
+    "errors": [
+      {
+        "span": "depends of",
+        "correction": "depends on",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "I am very interested about modern philosophy and how it applies to technology.",
+    "assistant": "The intersection of philosophy and tech—especially regarding AI and ethics—is one of the most important discussions of our time. Is there a specific philosopher you enjoy reading?",
+    "errors": [
+      {
+        "span": "interested about",
+        "correction": "interested in",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I did a mistake when I voted for that local council member last year.",
+    "assistant": "Quick note: 'did a mistake' → 'made a mistake' (in English, we always use 'make' with mistakes). It is so disappointing when politicians don't follow through on their promises! What did they do to lose your support?",
+    "errors": [
+      {
+        "span": "did a mistake",
+        "correction": "made a mistake",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "The documentary about ocean pollution was very shocking and interested.",
+    "assistant": "Documentaries like that can completely change how you look at everyday habits. Has it made you rethink your own plastic consumption?",
+    "errors": [
+      {
+        "span": "interested",
+        "correction": "interesting",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "The news about the global economy are very worrying right now.",
+    "assistant": "Quick note: 'are' → 'is' (the word 'news' ends in 's' but is an uncountable singular noun, so it takes a singular verb). It definitely feels like a very unstable time. Does economic news usually affect your long-term planning?",
+    "errors": [
+      {
+        "span": "are",
+        "correction": "is",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "Neither the mayor nor the citizens wants to build a new highway through the park.",
+    "assistant": "It's rare to see politicians and citizens completely aligned on an issue! Preserving green spaces is so vital for urban areas. Will the highway be rerouted instead?",
+    "errors": [
+      {
+        "span": "wants",
+        "correction": "want",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "We need to gather more informations before making such a major decision.",
+    "assistant": "Quick note: 'informations' → 'information' ('information' is an uncountable noun and does not have a plural form). You are completely right, rushing into things blindly is dangerous. Where are you sourcing your data from?",
+    "errors": [
+      {
+        "span": "informations",
+        "correction": "information",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "The government has made many progresses in transitioning to renewable energy.",
+    "assistant": "That is definitely a step in the right direction! Are they focusing mostly on solar power, or investing heavily in wind energy too?",
+    "errors": [
+      {
+        "span": "many progresses",
+        "correction": "much progress",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I don't know why do people argue so aggressively on social media platforms.",
+    "assistant": "Quick note: 'why do people argue' → 'why people argue' (in indirect questions, we use standard statement word order). The anonymity of the internet definitely brings out the worst in people! Do you engage in online debates, or just scroll past them?",
+    "errors": [
+      {
+        "span": "why do people argue",
+        "correction": "why people argue",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "Always I try to read different newspapers to get a more balanced view of the world.",
+    "assistant": "That is a very healthy habit, especially in an era of echo chambers! Have you noticed a big difference in how various papers frame the exact same story?",
+    "errors": [
+      {
+        "span": "Always I try",
+        "correction": "I always try",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "If everyone would recycle, the environment would be much cleaner.",
+    "assistant": "Quick note: 'would recycle' → 'recycled' (in the second conditional, the 'if' clause uses the past simple tense). It's a shame that such a simple habit isn't adopted universally. Is recycling mandatory in your city?",
+    "errors": [
+      {
+        "span": "would recycle",
+        "correction": "recycled",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "Unless we don't reduce plastic waste, the oceans will suffer irreversible damage.",
+    "assistant": "The scale of the plastic problem in the oceans is truly heartbreaking to comprehend. Do you try to buy products with zero-waste packaging when you shop?",
+    "errors": [
+      {
+        "span": "don't reduce",
+        "correction": "reduce",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I think that the patience is a very important virtue in modern life.",
+    "assistant": "Quick note: 'the patience' → 'patience' (we don't use articles before general abstract nouns). I completely agree, especially since technology has made us expect instant gratification! Do you consider yourself a naturally patient person?",
+    "errors": [
+      {
+        "span": "the patience",
+        "correction": "patience",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "I discussed about the new labor laws with my coworkers during our lunch break.",
+    "assistant": "Those new laws seem to be a major talking point in every workplace right now. Were your coworkers generally in favor of the changes, or opposed to them?",
+    "errors": [
+      {
+        "span": "discussed about",
+        "correction": "discussed",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  }
+]

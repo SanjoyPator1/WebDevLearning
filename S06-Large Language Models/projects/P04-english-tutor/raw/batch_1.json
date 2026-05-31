@@ -1,0 +1,817 @@
+[
+  {
+    "mode": "strict",
+    "topic": "daily_life",
+    "user": "Yesterday I go to the park with my family and we play football for two hours.",
+    "assistant": "Quick note: 'go' → 'went' and 'play' → 'played' — both need past simple since you're talking about a finished event yesterday. That sounds like a really fun afternoon! What position do you usually play in football?",
+    "errors": [
+      {
+        "span": "I go",
+        "correction": "I went",
+        "type": "verb_tense"
+      },
+      {
+        "span": "we play",
+        "correction": "we played",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "shopping",
+    "user": "Last week I buyed a new jacket and it costed me a lot of money.",
+    "assistant": "Quick note: 'buyed' → 'bought' and 'costed' → 'cost' — both are irregular verbs. 'Cost' is actually the same in all tenses! Was the jacket worth it? What style did you go for?",
+    "errors": [
+      {
+        "span": "buyed",
+        "correction": "bought",
+        "type": "irregular_verb"
+      },
+      {
+        "span": "costed",
+        "correction": "cost",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "career",
+    "user": "I am studying to become engineer. It is very good job with stable income.",
+    "assistant": "Quick note: 'become engineer' → 'become an engineer', 'very good job' → 'a very good job' — we need the article 'a' before singular countable nouns. Engineering is a great path! What field of engineering are you specialising in?",
+    "errors": [
+      {
+        "span": "become engineer",
+        "correction": "become an engineer",
+        "type": "article"
+      },
+      {
+        "span": "very good job",
+        "correction": "a very good job",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I am very interested on cooking and I think I am quite good in it.",
+    "assistant": "Quick note: 'interested on' → 'interested in', 'good in it' → 'good at it' — both are fixed preposition collocations that just need to be memorised. That's a great skill to have! What kind of dishes do you most enjoy making?",
+    "errors": [
+      {
+        "span": "interested on",
+        "correction": "interested in",
+        "type": "preposition"
+      },
+      {
+        "span": "good in it",
+        "correction": "good at it",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "entertainment",
+    "user": "The lecture was very interested at first but then I started feeling very boring at the end.",
+    "assistant": "Quick note: 'very interested' → 'very interesting' (the lecture causes interest in others), 'very boring' → 'very bored' (you experienced the feeling). The -ing form describes the cause, the -ed form describes how a person feels. So it grabbed you at the start but lost you later — what was the topic?",
+    "errors": [
+      {
+        "span": "very interested",
+        "correction": "very interesting",
+        "type": "word_choice"
+      },
+      {
+        "span": "very boring",
+        "correction": "very bored",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "My parents is very supportive and my mother don't let me worry about small things.",
+    "assistant": "Quick note: 'parents is' → 'parents are' (plural subject needs plural verb), 'mother don't' → 'mother doesn't' (third person singular adds -es to 'do'). You're very lucky to have such a supportive family! How do they help you stay positive?",
+    "errors": [
+      {
+        "span": "parents is",
+        "correction": "parents are",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "mother don't",
+        "correction": "mother doesn't",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "I got a lot of useful informations from the travel agency and they gave me some good advices.",
+    "assistant": "Quick note: 'informations' → 'information' and 'advices' → 'advice' — both are uncountable nouns in English and have no plural form. Are you planning a big trip? Where are you hoping to go?",
+    "errors": [
+      {
+        "span": "informations",
+        "correction": "information",
+        "type": "countable_noun"
+      },
+      {
+        "span": "advices",
+        "correction": "advice",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "Where you are going for your vacation this summer?",
+    "assistant": "Quick note: 'Where you are going' → 'Where are you going' — in direct questions we invert the auxiliary verb and subject. Great question though! Have you already decided on a destination, or are you still exploring options?",
+    "errors": [
+      {
+        "span": "Where you are going",
+        "correction": "Where are you going",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "future_plans",
+    "user": "If I will have enough money next year, I will finally travel to Japan.",
+    "assistant": "Quick note: 'If I will have' → 'If I have' — in first conditional if-clauses we use present simple, not 'will'. It's a quirky rule but consistent. Japan is an incredible destination! What draws you there most — the culture, food, or scenery?",
+    "errors": [
+      {
+        "span": "If I will have",
+        "correction": "If I have",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "communication",
+    "user": "My teacher said me that I should practice speaking more outside of class.",
+    "assistant": "Quick note: 'said me' → 'told me' — 'tell' needs a person object directly after it, while 'say' doesn't. 'She told me...' or 'She said that I...' are both correct. That's great feedback from your teacher! How do you usually practice speaking when you're not in class?",
+    "errors": [
+      {
+        "span": "said me",
+        "correction": "told me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "daily_life",
+    "user": "I live in this city since three years and I see many changes in that time.",
+    "assistant": "Quick note: 'I live' → 'I have lived' and 'I see' → 'I have seen' — when an action started in the past and continues now (especially with 'since'), we use the present perfect. Three years is a good amount of time to notice changes! What's the biggest difference you've seen?",
+    "errors": [
+      {
+        "span": "I live",
+        "correction": "I have lived",
+        "type": "verb_tense"
+      },
+      {
+        "span": "I see",
+        "correction": "I have seen",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "daily_routine",
+    "user": "Every morning I make exercise and then do a shower before work.",
+    "assistant": "Quick note: 'make exercise' → 'do exercise' (or simply 'exercise'), 'do a shower' → 'have a shower' or 'take a shower' — these are fixed collocations. What kind of exercise do you do in the mornings? Is it something you always enjoy or more of a discipline?",
+    "errors": [
+      {
+        "span": "make exercise",
+        "correction": "do exercise",
+        "type": "word_choice"
+      },
+      {
+        "span": "do a shower",
+        "correction": "have a shower",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "learning",
+    "user": "Can you give me an advice on how to improve my pronunciation? I need an information about good podcasts too.",
+    "assistant": "Quick note: 'an advice' → 'some advice' and 'an information' → 'some information' — both advice and information are uncountable, so we can't use 'an' with them. Of course! The best tip for pronunciation is active listening and shadowing — copying native speakers line by line. Have you tried that before?",
+    "errors": [
+      {
+        "span": "an advice",
+        "correction": "some advice",
+        "type": "countable_noun"
+      },
+      {
+        "span": "an information",
+        "correction": "some information",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "learning",
+    "user": "I have been studying English since five years but I still feel not very confident.",
+    "assistant": "Quick note: 'since five years' → 'for five years' — use 'for' with a duration, 'since' with a starting point in time. Five years is a real investment! What area do you feel least confident in — speaking, listening, or grammar?",
+    "errors": [
+      {
+        "span": "since five years",
+        "correction": "for five years",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "Yesterday my friend thinked the restaurant was too expensive but I feeled it was worth it.",
+    "assistant": "Quick note: 'thinked' → 'thought' and 'feeled' → 'felt' — both are irregular past tense verbs. A classic dining disagreement! What kind of restaurant was it? Did you go somewhere special?",
+    "errors": [
+      {
+        "span": "thinked",
+        "correction": "thought",
+        "type": "irregular_verb"
+      },
+      {
+        "span": "feeled",
+        "correction": "felt",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "future_plans",
+    "user": "My dream is to make a travel around the world when I retire.",
+    "assistant": "Quick note: 'make a travel' → 'travel' or 'take a trip' — 'make a travel' isn't a natural English phrase. We say 'take a trip', 'go on a journey', or just 'travel'. Travelling the world in retirement sounds incredible! Which continent would you want to explore first?",
+    "errors": [
+      {
+        "span": "make a travel",
+        "correction": "take a trip",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "news",
+    "user": "The news about the new policy are very surprising. Everyone in my office are talking about it.",
+    "assistant": "Quick note: 'news...are' → 'news...is' ('news' is uncountable and always singular), 'Everyone...are' → 'Everyone...is' (everyone/someone/anyone always take singular verbs). What's the policy about? Does it affect your work directly?",
+    "errors": [
+      {
+        "span": "news...are",
+        "correction": "news...is",
+        "type": "subject_verb_agreement"
+      },
+      {
+        "span": "Everyone...are",
+        "correction": "Everyone...is",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I believe the education is most important thing for development of country.",
+    "assistant": "Quick note: 'the education' → 'education' (no article for general abstract nouns), 'most important thing' → 'the most important thing' (superlatives take 'the'). You make a great point! Do you think the quality of education in your country has improved over the last decade?",
+    "errors": [
+      {
+        "span": "the education is",
+        "correction": "education is",
+        "type": "article"
+      },
+      {
+        "span": "most important thing",
+        "correction": "the most important thing",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "learning",
+    "user": "I find learning new vocabulary very bored but practicing speaking is excited.",
+    "assistant": "Quick note: 'very bored' → 'very boring' (vocabulary causes the boredom), 'is excited' → 'is exciting' (speaking causes excitement in you). A quick rule: if YOU feel it, use -ed; if IT causes the feeling, use -ing. A tip for vocabulary: try learning words through stories or podcasts. Does that kind of context help?",
+    "errors": [
+      {
+        "span": "very bored",
+        "correction": "very boring",
+        "type": "word_choice"
+      },
+      {
+        "span": "is excited",
+        "correction": "is exciting",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "home",
+    "user": "She works at a big company in London and lives on a flat near the office.",
+    "assistant": "Quick note: 'lives on a flat' → 'lives in a flat' — we use 'in' for enclosed spaces like apartments and rooms. Does she enjoy living so close to work? Is that something you'd want, or do you prefer having some distance?",
+    "errors": [
+      {
+        "span": "lives on a flat",
+        "correction": "lives in a flat",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "past_events",
+    "user": "Last summer I have visited my grandparents and I have stayed for two weeks.",
+    "assistant": "Quick note: 'have visited' → 'visited' and 'have stayed' → 'stayed' — when you mention a specific past time like 'last summer', use past simple, not present perfect. The rule: present perfect = no specific time; past simple = specific time given. Did you enjoy the visit?",
+    "errors": [
+      {
+        "span": "I have visited",
+        "correction": "I visited",
+        "type": "verb_tense"
+      },
+      {
+        "span": "I have stayed",
+        "correction": "I stayed",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "regrets",
+    "user": "If I would have known about the job opportunity, I would have applied for it.",
+    "assistant": "Quick note: 'If I would have known' → 'If I had known' — in third conditional, the if-clause uses past perfect, not 'would have'. It's a common slip! What kind of job was it? Are there other opportunities in that area you could explore?",
+    "errors": [
+      {
+        "span": "If I would have known",
+        "correction": "If I had known",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "moving_home",
+    "user": "We just moved and we need to buy a lot of furnitures and new equipments for the house.",
+    "assistant": "Quick note: 'furnitures' → 'furniture' and 'equipments' → 'equipment' — both are uncountable nouns with no plural form in English. Moving is always exciting but exhausting! Are you furnishing from scratch or bringing things from your old place?",
+    "errors": [
+      {
+        "span": "furnitures",
+        "correction": "furniture",
+        "type": "countable_noun"
+      },
+      {
+        "span": "equipments",
+        "correction": "equipment",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "language_learning",
+    "user": "Can you explain me what means the phrase 'to be on the fence'?",
+    "assistant": "Quick note: 'explain me' → 'explain to me' ('explain' always needs 'to' before the person), 'what means' → 'what it means' — in embedded questions we don't invert the verb. Great phrase to know! 'To be on the fence' means to be undecided about something. Are there other expressions you've heard but aren't sure about?",
+    "errors": [
+      {
+        "span": "explain me",
+        "correction": "explain to me",
+        "type": "preposition"
+      },
+      {
+        "span": "what means",
+        "correction": "what it means",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "communication",
+    "user": "He told that he was busy and then said me he would call later.",
+    "assistant": "Quick note: 'told that' → 'said that' (tell must be followed by a person: told me/you/her that...), 'said me' → 'told me'. Did he actually call back? It can be frustrating when people don't follow through on that.",
+    "errors": [
+      {
+        "span": "told that",
+        "correction": "said that",
+        "type": "word_choice"
+      },
+      {
+        "span": "said me",
+        "correction": "told me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "I don't have much friends and I don't earn many money, so I tend to stay home.",
+    "assistant": "Quick note: 'much friends' → 'many friends' (countable noun), 'many money' → 'much money' (uncountable noun). Quick rule: many = countable, much = uncountable. Do you consider yourself more of a homebody by nature, or is it more about circumstances right now?",
+    "errors": [
+      {
+        "span": "much friends",
+        "correction": "many friends",
+        "type": "countable_noun"
+      },
+      {
+        "span": "many money",
+        "correction": "much money",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "My sister is dentist and she works at hospital in the city center.",
+    "assistant": "Quick note: 'is dentist' → 'is a dentist', 'at hospital' → 'at a hospital' — we need the article 'a' before singular countable nouns. Is she happy in that career? Do any of your other family members work in healthcare?",
+    "errors": [
+      {
+        "span": "is dentist",
+        "correction": "is a dentist",
+        "type": "article"
+      },
+      {
+        "span": "at hospital",
+        "correction": "at a hospital",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "decisions",
+    "user": "Whether I go out or not depends of the weather and of how tired I feel.",
+    "assistant": "Quick note: 'depends of' → 'depends on' — 'depend on' is a fixed collocation, like 'rely on' and 'focus on'. That's a very sensible approach! What do you usually do when you decide to stay in?",
+    "errors": [
+      {
+        "span": "depends of",
+        "correction": "depends on",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "future",
+    "user": "When I will finish my course next year, I will look for a better job.",
+    "assistant": "Quick note: 'When I will finish' → 'When I finish' — after 'when' used for future situations, we use present simple, just like with 'if'. How much of the course do you have left? Is the job you're aiming for related to your current field?",
+    "errors": [
+      {
+        "span": "When I will finish",
+        "correction": "When I finish",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "lending",
+    "user": "My colleague asked me if he could borrow me his pen because he forgot mine at home.",
+    "assistant": "Quick note: there's a mix-up here — if he wanted your pen, he'd ask to borrow yours, or ask if you could lend him one. 'Borrow' = take from someone, 'lend' = give to someone. The correct version: 'He asked if he could borrow my pen.' Do you work closely with your colleagues day to day?",
+    "errors": [
+      {
+        "span": "borrow me his pen",
+        "correction": "borrow my pen",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "This morning my boss give me a big project and I don't know how I will manage everything.",
+    "assistant": "That sounds like a lot of pressure! Big projects can feel overwhelming at first, but they often become clearer once you break them into smaller steps. What's the project about, and do you have a team to work with?",
+    "errors": [
+      {
+        "span": "boss give me",
+        "correction": "boss gave me",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "I recently started learning guitar. It is very difficult instrument but I enjoy it a lot.",
+    "assistant": "Learning an instrument is such a rewarding challenge! How long have you been playing, and can you play any songs yet — even simple ones? That first tune you manage to get right is a great feeling.",
+    "errors": [
+      {
+        "span": "difficult instrument",
+        "correction": "a difficult instrument",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "skills",
+    "user": "I am very good in speaking but my writing is definitely my weakest area.",
+    "assistant": "That's actually a really common pattern — speaking tends to improve faster when you're using the language daily. What kind of writing do you find most challenging? Formal writing, grammar, or just getting thoughts organised on the page?",
+    "errors": [
+      {
+        "span": "good in speaking",
+        "correction": "good at speaking",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "evening_routine",
+    "user": "After a long day at work, I am always very exhausted and boring.",
+    "assistant": "Long workdays can really drain you. Do you have any rituals to help you wind down in the evenings — something that helps you actually switch off from work mode?",
+    "errors": [
+      {
+        "span": "boring",
+        "correction": "bored",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "My colleagues is very helpful whenever I have a question about English at work.",
+    "assistant": "That sounds like a really supportive environment! It makes such a difference when the people around you are patient and encouraging. Have they noticed your English improving over time?",
+    "errors": [
+      {
+        "span": "colleagues is",
+        "correction": "colleagues are",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "media",
+    "user": "I finded a really interesting podcast about history and I listened to it all weekend.",
+    "assistant": "Getting absorbed in a podcast all weekend is such a satisfying feeling! What period or topic was it covering? I'd love to hear more about it.",
+    "errors": [
+      {
+        "span": "finded",
+        "correction": "found",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "decisions",
+    "user": "I need to collect more informations before I make my final decision.",
+    "assistant": "That's a very sensible approach — rushing into big decisions without enough background rarely goes well. What's the decision you're thinking through, if you don't mind sharing?",
+    "errors": [
+      {
+        "span": "informations",
+        "correction": "information",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "productivity",
+    "user": "I already finish my work for today so now I can finally relax.",
+    "assistant": "Nothing beats that feeling of being completely done for the day! Now that you have some free time, what do you like to do to unwind?",
+    "errors": [
+      {
+        "span": "I already finish",
+        "correction": "I have already finished",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "The patience is very important when you are learning new language.",
+    "assistant": "Absolutely — patience and consistency are probably the two most important ingredients for language learning. Would you say you're naturally patient, or do you find it frustrating when progress feels slow?",
+    "errors": [
+      {
+        "span": "The patience",
+        "correction": "Patience",
+        "type": "article"
+      },
+      {
+        "span": "new language",
+        "correction": "a new language",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "study",
+    "user": "I have an important exam in next Monday and I have been studying every evening.",
+    "assistant": "Exam prep mode is intense! The fact that you're studying every evening shows real dedication. How are you feeling about it — fairly confident, or is there a specific topic you're still not sure about?",
+    "errors": [
+      {
+        "span": "in next Monday",
+        "correction": "on next Monday",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "study",
+    "user": "I need to make my homework before I can watch anything tonight.",
+    "assistant": "Getting the important things out of the way first is always the right call! What subject is your homework for? Is it something you enjoy or more of a chore?",
+    "errors": [
+      {
+        "span": "make my homework",
+        "correction": "do my homework",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "wishes",
+    "user": "If I would have more free time, I will travel a lot more than I do now.",
+    "assistant": "If only we could all conjure up more hours in the day! If you did have more free time to travel, where would be your first destination? Anywhere at the top of your bucket list?",
+    "errors": [
+      {
+        "span": "If I would have",
+        "correction": "If I had",
+        "type": "conditional"
+      },
+      {
+        "span": "I will travel",
+        "correction": "I would travel",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "My phone don't work properly since I dropped it last week and now the screen flickers.",
+    "assistant": "A flickering screen is so annoying — it's one of those things that's hard to ignore once you notice it. Is it worth getting repaired, or are you thinking of just replacing it?",
+    "errors": [
+      {
+        "span": "phone don't",
+        "correction": "phone doesn't",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "My daughter is very interested on learning music and she practices every single day.",
+    "assistant": "Daily practice at a young age makes such a difference — it builds habits that stay for life! What instrument is she learning, and how old is she?",
+    "errors": [
+      {
+        "span": "interested on",
+        "correction": "interested in",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "communication",
+    "user": "I writed an email to the company three days ago but nobody has replied yet.",
+    "assistant": "Waiting for a reply is frustrating, especially when it feels urgent. How long are you willing to give them before following up? Sometimes a short phone call moves things along faster.",
+    "errors": [
+      {
+        "span": "writed",
+        "correction": "wrote",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "We made a trip to the coast last weekend and we had a really wonderful time.",
+    "assistant": "A weekend at the coast sounds perfect! Did you go swimming, or was it more of a leisurely walk along the shore kind of trip?",
+    "errors": [
+      {
+        "span": "made a trip",
+        "correction": "took a trip",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "housing",
+    "user": "I am living in this apartment since I graduated from university six years ago.",
+    "assistant": "Six years in the same place — that's a real sense of home! Is it somewhere you're happy to stay long-term, or are you thinking of a change at some point?",
+    "errors": [
+      {
+        "span": "I am living",
+        "correction": "I have been living",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "I had the lunch with a colleague and we tried to speak the English the whole time.",
+    "assistant": "Combining a meal with English practice is such a smart idea! Did the conversation flow naturally, or did you find yourselves slipping back into your native language when it got tricky?",
+    "errors": [
+      {
+        "span": "the lunch",
+        "correction": "lunch",
+        "type": "article"
+      },
+      {
+        "span": "speak the English",
+        "correction": "speak English",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "language_learning",
+    "user": "I don't understand why does English grammar have so many exceptions to every rule.",
+    "assistant": "That feeling is completely universal — even very advanced learners find English exceptions maddening! Is there a particular rule that has been especially difficult for you to get your head around?",
+    "errors": [
+      {
+        "span": "why does English grammar have",
+        "correction": "why English grammar has",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "When I travel, I always pack too many luggages and then struggle at the airport.",
+    "assistant": "The eternal over-packing struggle! Do you tend to check bags in, or do you aim for carry-on only? Some people swear by packing lists to keep themselves honest.",
+    "errors": [
+      {
+        "span": "many luggages",
+        "correction": "much luggage",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  }
+]

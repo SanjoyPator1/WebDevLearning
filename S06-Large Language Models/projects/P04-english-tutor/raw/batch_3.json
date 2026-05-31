@@ -1,0 +1,707 @@
+[
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "Neither the professor nor the students wants to schedule a makeup class on Saturday.",
+    "assistant": "Quick note: 'wants' → 'want' (with 'neither/nor', the verb matches the noun closest to it, which is the plural 'students'). I completely understand that—Saturdays should be protected! How will you make up for the missed material?",
+    "errors": [
+      {
+        "span": "wants",
+        "correction": "want",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "Each of the students have to do a twenty-minute presentation at the end of the course.",
+    "assistant": "Twenty minutes is a substantial amount of time to fill! Have you already chosen the topic you're going to present on?",
+    "errors": [
+      {
+        "span": "have",
+        "correction": "has",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I am doing a research about renewable energy policies for my master's thesis.",
+    "assistant": "Quick note: 'a research' → 'research' or 'some research' (research is an uncountable noun in English). Renewable energy is a highly relevant field right now! What specific policies are you analyzing?",
+    "errors": [
+      {
+        "span": "a research",
+        "correction": "research",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "I felt frustrated because I couldn't put all my knowledges into the short essay.",
+    "assistant": "That's the hardest part of academic writing—editing down what you know to fit a strict word count. Do you usually write a long draft first and then cut it down?",
+    "errors": [
+      {
+        "span": "knowledges",
+        "correction": "knowledge",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "Excuse me, I wonder where is the main university library?",
+    "assistant": "Quick note: 'where is the main university library' → 'where the main university library is' (in indirect questions starting with 'I wonder', we don't invert the verb). The main library is right across from the student union. Are you looking for a specific section?",
+    "errors": [
+      {
+        "span": "where is the main university library",
+        "correction": "where the main university library is",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "I like very much my new science teacher because he explains things clearly.",
+    "assistant": "Having a teacher who can break down complex concepts clearly makes all the difference in the world! What science topic are you covering with him right now?",
+    "errors": [
+      {
+        "span": "like very much my new science teacher",
+        "correction": "like my new science teacher very much",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "Already I finished my homework for tomorrow, so I can relax tonight.",
+    "assistant": "There is no better feeling than having an evening completely free of assignments! Do you have any fun plans for tonight, or are you just going to rest?",
+    "errors": [
+      {
+        "span": "Already I finished",
+        "correction": "I already finished",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "If I will pass the entrance exam, my parents are going to buy me a laptop.",
+    "assistant": "Quick note: 'If I will pass' → 'If I pass' (in the first conditional, the 'if' clause uses present simple). That is a fantastic motivation! Have you been taking practice exams to prepare?",
+    "errors": [
+      {
+        "span": "If I will pass",
+        "correction": "If I pass",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "If I had studied harder, I would pass the history exam last week.",
+    "assistant": "Quick note: 'would pass' → 'would have passed' (for the third conditional talking about the past, use 'would have' + past participle). Hindsight is always 20/20! Will you have a chance to retake it?",
+    "errors": [
+      {
+        "span": "would pass",
+        "correction": "would have passed",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "I wish I can understand native speakers when they talk very fast.",
+    "assistant": "Listening to fast speech is incredibly tough, but your ear does adjust over time! Have you tried listening to English podcasts and slowing the speed down to 0.8x at first?",
+    "errors": [
+      {
+        "span": "can understand",
+        "correction": "could understand",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "Last summer I have visited Spain with my friends.",
+    "assistant": "Quick note: 'have visited' → 'visited' (use past simple, not present perfect, when you mention a specific past time like 'last summer'). Spain is an amazing destination! Which cities did you go to?",
+    "errors": [
+      {
+        "span": "have visited",
+        "correction": "visited",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "I am staying in this hotel since three days.",
+    "assistant": "It's always nice to have a steady base when you're travelling! Are you enjoying the hotel's amenities, or are you mostly out exploring the city?",
+    "errors": [
+      {
+        "span": "am staying",
+        "correction": "have been staying",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "While we drove to the airport, the car was breaking down.",
+    "assistant": "Quick note: 'was breaking down' → 'broke down' (use the past simple for a short action that interrupts a past continuous action). That must have been so stressful! Did you still manage to catch your flight?",
+    "errors": [
+      {
+        "span": "was breaking down",
+        "correction": "broke down",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "I flyed to Tokyo for my holiday last month.",
+    "assistant": "Quick note: 'flyed' → 'flew' ('fly' is an irregular verb). Tokyo is such a vibrant and fascinating city! Did you experience any culture shock when you first arrived?",
+    "errors": [
+      {
+        "span": "flyed",
+        "correction": "flew",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "We leaved the hotel very early to avoid the morning traffic.",
+    "assistant": "Getting an early start is always the smartest strategy when travelling! Did you manage to get some sleep in the car to make up for the early morning?",
+    "errors": [
+      {
+        "span": "leaved",
+        "correction": "left",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "My brother losed his passport right before we went to the airport.",
+    "assistant": "Quick note: 'losed' → 'lost' (the past tense of 'lose' is irregular). Oh no, that is every traveller's worst nightmare! Did he manage to find it, or did you have to delay the trip?",
+    "errors": [
+      {
+        "span": "losed",
+        "correction": "lost",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "We stayed in a best hotel in Paris during our trip.",
+    "assistant": "Quick note: 'a best hotel' → 'the best hotel' (always use 'the' with superlative adjectives like 'best'). That sounds like an incredibly luxurious trip! Did it have a view of the Eiffel Tower?",
+    "errors": [
+      {
+        "span": "a best hotel",
+        "correction": "the best hotel",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "I love travelling because I want to explore the nature.",
+    "assistant": "Getting out into the wild is definitely the best way to disconnect and recharge. Do you prefer hiking in the mountains, or are you more drawn to coastal landscapes?",
+    "errors": [
+      {
+        "span": "the nature",
+        "correction": "nature",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "He works as pilot for a large international airline.",
+    "assistant": "Quick note: 'as pilot' → 'as a pilot' (in English, professions require an article like 'a' or 'an'). That must be such an exciting career! Does he have a favourite route that he flies regularly?",
+    "errors": [
+      {
+        "span": "as pilot",
+        "correction": "as a pilot",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "We arrived to London very late at night.",
+    "assistant": "Quick note: 'arrived to' → 'arrived in' (we use 'arrive in' for cities and countries, and 'arrive at' for specific buildings). Arriving late can be exhausting! Did you go straight to bed, or did you grab a late-night bite to eat?",
+    "errors": [
+      {
+        "span": "arrived to",
+        "correction": "arrived in",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "I usually travel with train because the views are so scenic.",
+    "assistant": "Train journeys really do offer the most beautiful perspectives of the countryside. Do you have a favourite train route that you've taken so far?",
+    "errors": [
+      {
+        "span": "with train",
+        "correction": "by train",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "My whole family goes in holiday together every August.",
+    "assistant": "Quick note: 'in holiday' → 'on holiday' (the fixed phrase is always 'on holiday'). A yearly family trip is a lovely tradition! Do you tend to go back to the same spot, or pick somewhere new each time?",
+    "errors": [
+      {
+        "span": "in holiday",
+        "correction": "on holiday",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "We made a great trip to the mountains last winter.",
+    "assistant": "Quick note: 'made a great trip' → 'took a great trip' (we say 'take a trip' or 'go on a trip' in English). A winter mountain getaway sounds perfect! Did you do any skiing, or was it more about cozying up by the fire?",
+    "errors": [
+      {
+        "span": "made a great trip",
+        "correction": "took a great trip",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "I always bring my camera when I go to abroad.",
+    "assistant": "Taking a good camera is essential when exploring new countries! What kind of photography do you enjoy the most—landscapes, architecture, or street photography?",
+    "errors": [
+      {
+        "span": "go to abroad",
+        "correction": "go abroad",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "Can you borrow me your travel adapter for my trip?",
+    "assistant": "Quick note: 'borrow me' → 'lend me' (you 'lend' something to someone, and 'borrow' something from someone). I can certainly lend it to you! Which country are you heading to?",
+    "errors": [
+      {
+        "span": "borrow me",
+        "correction": "lend me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "A large group of tourists were blocking the entrance to the museum.",
+    "assistant": "Quick note: 'group...were' → 'group...was' (collective nouns like 'group' take a singular verb when acting as a single unit). Crowds can definitely test your patience! Did you eventually get inside to see the exhibits?",
+    "errors": [
+      {
+        "span": "were",
+        "correction": "was",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "There is many beautiful historical buildings in this city.",
+    "assistant": "It sounds like a fantastic place to explore on foot! Do you usually take guided walking tours to learn the history, or do you prefer to wander around yourself?",
+    "errors": [
+      {
+        "span": "There is",
+        "correction": "There are",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "We had too many luggages to carry onto the train.",
+    "assistant": "Wrestling with heavy bags on public transport is always a struggle! Did you manage to find enough space in the luggage racks once you boarded?",
+    "errors": [
+      {
+        "span": "many luggages",
+        "correction": "much luggage",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "I went to the desk to ask for an information about my delayed flight.",
+    "assistant": "Quick note: 'an information' → 'some information' or just 'information' ('information' is an uncountable noun, so it cannot take 'a' or 'an'). Flight delays are incredibly frustrating! Did they give you a clear update on when you'd depart?",
+    "errors": [
+      {
+        "span": "an information",
+        "correction": "some information",
+        "type": "countable_noun"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "Where you bought those cheap train tickets?",
+    "assistant": "Quick note: 'Where you bought' → 'Where did you buy' (direct questions in the past simple need the auxiliary 'did' and the base verb). Scoring cheap tickets is always a win! Are you planning a long-distance trip?",
+    "errors": [
+      {
+        "span": "Where you bought",
+        "correction": "Where did you buy",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "I usually go in the summer to Italy.",
+    "assistant": "Italy is absolutely stunning that time of year, although it does get quite hot! Which region is your favourite to visit?",
+    "errors": [
+      {
+        "span": "go in the summer to Italy",
+        "correction": "go to Italy in the summer",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "I asked the hotel receptionist what time does the pool close.",
+    "assistant": "Quick note: 'what time does the pool close' → 'what time the pool closes' (in embedded or indirect questions, we use normal statement word order without 'do/does'). A late-night swim is the best way to end a day of travelling! Were you able to fit one in?",
+    "errors": [
+      {
+        "span": "what time does the pool close",
+        "correction": "what time the pool closes",
+        "type": "word_order"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "If I will have a long weekend, I will visit the coast.",
+    "assistant": "Quick note: 'If I will have' → 'If I have' (in the first conditional, the 'if' clause uses the present simple, not 'will'). A coastal escape sounds wonderful! Do you have a specific beach town in mind?",
+    "errors": [
+      {
+        "span": "If I will have",
+        "correction": "If I have",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "I wish I have enough money to travel business class.",
+    "assistant": "Business class really does make long-haul flights so much more bearable, especially being able to lie flat! Have you ever managed to get a free upgrade?",
+    "errors": [
+      {
+        "span": "have",
+        "correction": "had",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "If I knew about the thunderstorm, I wouldn't book the boat tour.",
+    "assistant": "Being out on the water during a storm is definitely not the relaxing experience you paid for! Did the tour company offer you a refund or a chance to reschedule?",
+    "errors": [
+      {
+        "span": "knew",
+        "correction": "had known",
+        "type": "conditional"
+      },
+      {
+        "span": "wouldn't book",
+        "correction": "wouldn't have booked",
+        "type": "conditional"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "When the guests will arrive, I will serve the appetizers.",
+    "assistant": "Timing the food perfectly for when guests walk in is an art form! What kind of appetizers have you prepared for them?",
+    "errors": [
+      {
+        "span": "will arrive",
+        "correction": "arrive",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "I cook dinner in the kitchen when suddenly the fire alarm went off.",
+    "assistant": "That is terrifying! A loud fire alarm is enough to ruin anyone's focus. Was everything okay, or did something actually burn?",
+    "errors": [
+      {
+        "span": "cook",
+        "correction": "was cooking",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "I have eaten sushi for the first time in 2015.",
+    "assistant": "Quick note: 'have eaten' → 'ate' (use the past simple, not present perfect, when you mention a specific past year like '2015'). Sushi can be such an acquired taste! Did you like it immediately, or did it take some getting used to?",
+    "errors": [
+      {
+        "span": "have eaten",
+        "correction": "ate",
+        "type": "verb_tense"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "I cutted the carrots into very small pieces for the soup.",
+    "assistant": "Finely diced vegetables really help build a great flavor base for soups! What kind of soup are you making?",
+    "errors": [
+      {
+        "span": "cutted",
+        "correction": "cut",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "The waiter bringed us the wrong dessert, but we ate it anyway.",
+    "assistant": "Sometimes the happy accidents end up being delicious! What did you end up eating, and was it better than what you originally ordered?",
+    "errors": [
+      {
+        "span": "bringed",
+        "correction": "brought",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "I drinked three cups of espresso after dinner last night.",
+    "assistant": "Quick note: 'drinked' → 'drank' ('drink' is an irregular verb). Three espressos late at night is a lot of caffeine! Did you have trouble falling asleep afterwards?",
+    "errors": [
+      {
+        "span": "drinked",
+        "correction": "drank",
+        "type": "irregular_verb"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "I never skip the breakfast because it gives me energy for the day.",
+    "assistant": "It really is the most important meal to kickstart your metabolism. What is your go-to morning meal when you're in a rush?",
+    "errors": [
+      {
+        "span": "the breakfast",
+        "correction": "breakfast",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "We went to fantastic Italian restaurant to celebrate my birthday.",
+    "assistant": "Italian food is the perfect choice for a celebration meal! Did you go for a classic pasta dish, or did you try something new?",
+    "errors": [
+      {
+        "span": "to fantastic",
+        "correction": "to a fantastic",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "Fresh garlic is most important ingredient in this pasta sauce.",
+    "assistant": "Quick note: 'most important' → 'the most important' (always use 'the' before superlative adjectives). Garlic really does make everything better! Do you roast it first, or mince it raw?",
+    "errors": [
+      {
+        "span": "most important",
+        "correction": "the most important",
+        "type": "article"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "I love eating a hot bowl of soup in cold days.",
+    "assistant": "Nothing beats a warming soup when the weather turns freezing outside. Are you a fan of creamy soups, or do you prefer clear broths?",
+    "errors": [
+      {
+        "span": "in cold days",
+        "correction": "on cold days",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "My grandmother is very good in baking traditional bread.",
+    "assistant": "There is absolutely nothing like the smell of homemade bread straight from the oven! Has she taught you any of her baking techniques?",
+    "errors": [
+      {
+        "span": "good in",
+        "correction": "good at",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "A good salad depends of using very fresh vegetables.",
+    "assistant": "Quick note: 'depends of' → 'depends on' ('depend' is always followed by 'on'). You're totally right, the quality of the produce makes or breaks it! What's your favourite vegetable to add in for crunch?",
+    "errors": [
+      {
+        "span": "depends of",
+        "correction": "depends on",
+        "type": "preposition"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "I was very interesting in learning how to make homemade pasta.",
+    "assistant": "Quick note: 'interesting' → 'interested' (use -ed adjectives for how a person feels, and -ing for the thing causing the feeling). Making pasta from scratch is such a fun skill! Have you bought a pasta machine yet?",
+    "errors": [
+      {
+        "span": "interesting",
+        "correction": "interested",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "Please remember me to take the chicken out of the freezer.",
+    "assistant": "I will definitely help keep you on track with that! Defrosting meat is one of those things that's so easy to forget until it's time to cook.",
+    "errors": [
+      {
+        "span": "remember me",
+        "correction": "remind me",
+        "type": "word_choice"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "Neither my brother nor my parents likes spicy food.",
+    "assistant": "Quick note: 'likes' → 'like' (when using 'neither/nor', the verb matches the noun closest to it, which is the plural 'parents'). That makes cooking for the family tricky! Do you just add hot sauce to your own plate?",
+    "errors": [
+      {
+        "span": "likes",
+        "correction": "like",
+        "type": "subject_verb_agreement"
+      }
+    ],
+    "source": "tutor_handcrafted"
+  }
+]

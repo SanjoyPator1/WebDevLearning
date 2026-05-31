@@ -1,0 +1,18 @@
+# Sama Mac requirements
+# Install with: pip install -r requirements_mac.txt
+#
+# llama-cpp-python must be installed with Metal support for GPU acceleration.
+# The CMAKE_ARGS line below enables this automatically on Apple Silicon.
+#
+# Run this instead of plain pip install:
+#   CMAKE_ARGS="-DLLAMA_METAL=on" pip install llama-cpp-python
+
+llama-cpp-python       # install separately with CMAKE_ARGS above
+gradio>=4.0.0
+transformers>=4.40.0
+sentence-transformers>=2.7.0
+faiss-cpu>=1.7.4
+chromadb>=0.5.0
+spacy>=3.7.0
+torch>=2.2.0           # CPU-only on Mac is fine for safety + embedder
+# After installing, run: python -m spacy download en_core_web_sm

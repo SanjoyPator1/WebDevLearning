@@ -1,0 +1,1202 @@
+[
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "work",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I am working here since three years and I like it."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'am working since' → 'have been working for' (use present perfect continuous for a duration). That is a good amount of time to settle in! What is your exact role at the company?"
+      },
+      {
+        "role": "user",
+        "content": "I am financial analyst. I look at datas all day."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'am financial analyst' → 'am a financial analyst' (professions need an article), and 'datas' → 'data' ('data' is already plural/uncountable). That sounds like intense work! Do you enjoy the analytical side of it?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "work",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "My boss gived me a new project yesterday."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'gived' → 'gave' (the past tense of 'give' is irregular). A new project is always an exciting challenge! What is the main objective of it?"
+      },
+      {
+        "role": "user",
+        "content": "We need to do a research about the market trends."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'do a research' → 'do some research' or 'do research' (research is an uncountable noun in English). Market trends are shifting so fast lately! Are you focusing on a specific demographic?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "work",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "The communication is very important for a remote team."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'The communication' → 'Communication' (we don't use 'the' for general abstract nouns). I completely agree with you! Does your team use Slack or Teams to stay in touch?"
+      },
+      {
+        "role": "user",
+        "content": "We use Teams. I usually answer messages at the morning."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'at the morning' → 'in the morning' (the correct preposition is 'in'). Setting aside specific times for messages is a smart way to stay productive. Do you have many video calls too?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "work",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I want to ask my manager for an advice about my career."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'an advice' → 'some advice' ('advice' is an uncountable noun). Speaking with your manager about your career path is a great initiative! Do you know what you want your next step to be?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, if I will get promoted, I want to lead a team."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'If I will get' → 'If I get' (use the present simple in the 'if' clause of a first conditional). Leadership is a great goal! Have you managed any smaller projects yet?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "work",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Everyone in the office are tired today because of the deadline."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'Everyone...are' → 'Everyone...is' (words like 'everyone' always take a singular verb). Deadlines definitely drain the whole team's energy! Did you all manage to submit everything on time?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, we finished it, but I don't know what means the client's email."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'what means the client's email' → 'what the client's email means' (indirect questions follow normal statement word order). Ambiguous client feedback is the worst! Do you need to schedule a call to clarify?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "work",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I sended the quarterly report to the directors last night."
+      },
+      {
+        "role": "assistant",
+        "content": "Sending off a massive report like that is always a huge relief! Have any of the directors replied with feedback yet?"
+      },
+      {
+        "role": "user",
+        "content": "Not yet. I think they will read it in Monday."
+      },
+      {
+        "role": "assistant",
+        "content": "That gives you a nice quiet weekend before you have to worry about their responses! Are you planning to just relax for the next couple of days?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "work",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "My colleague has leaved the company for a better job."
+      },
+      {
+        "role": "assistant",
+        "content": "It's always bittersweet when a good colleague moves on. Will you have to take over any of their responsibilities until a replacement is found?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, I have too many works right now."
+      },
+      {
+        "role": "assistant",
+        "content": "That sounds incredibly stressful. Has your manager offered you any extra support or extended your deadlines to help you cope?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "work",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I always am the last person to leave the office."
+      },
+      {
+        "role": "assistant",
+        "content": "Working late every single day can lead to burnout very quickly! Do you stay late because of the workload, or just because it's quieter?"
+      },
+      {
+        "role": "user",
+        "content": "Because we have a lot of new softwares to learn."
+      },
+      {
+        "role": "assistant",
+        "content": "Learning new systems definitely slows everything down at first. Is the company at least providing good training sessions for it?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "work",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I am very bad in public speaking, so I hate presentations."
+      },
+      {
+        "role": "assistant",
+        "content": "Public speaking is one of the most common fears in the workplace! Do you get nervous about the audience, or just about forgetting your words?"
+      },
+      {
+        "role": "user",
+        "content": "I am scared that I will do a mistake when I talk."
+      },
+      {
+        "role": "assistant",
+        "content": "That makes total sense, the pressure to be perfect is heavy. Sometimes practicing in front of a mirror or recording yourself can really help build confidence. Have you tried that?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "work",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "If I would have known about the meeting, I would have prepared."
+      },
+      {
+        "role": "assistant",
+        "content": "Getting caught off guard by a meeting is incredibly frustrating! Was it a sudden addition to your calendar?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, my boss said me about it five minutes before."
+      },
+      {
+        "role": "assistant",
+        "content": "Five minutes is absolutely no time at all! Did you just have to improvise your answers on the spot?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "travel",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Last year I have visited Japan for two weeks."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'have visited' → 'visited' (use past simple when giving a specific time like 'last year'). Two weeks in Japan sounds like a dream trip! Did you stay in Tokyo the whole time?"
+      },
+      {
+        "role": "user",
+        "content": "No, we traveled with train to Kyoto as well."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'with train' → 'by train' (we use 'by' for modes of transport). Taking the bullet train must have been quite an experience! Did you get to see Mount Fuji on the way?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "travel",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "My luggage were lost at the airport yesterday."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'luggage were' → 'luggage was' (luggage is an uncountable noun and always takes a singular verb). What a stressful way to start a trip! Did the airline eventually locate your bags?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, they finded it this morning and sent it to my hotel."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'finded' → 'found' (the past tense of 'find' is irregular). I'm so glad they returned it quickly! Did you have to buy emergency clothes in the meantime?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "travel",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I am staying in a best hotel near the beach."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'a best hotel' → 'the best hotel' (always use 'the' with superlatives). A beachfront hotel sounds incredibly relaxing! Do you have a balcony with a view of the ocean?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, and the weather is very hot, so I swim every days."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'every days' → 'every day' ('every' is always followed by a singular noun). That sounds like the perfect summer routine! Are the waves quite big, or is the water calm?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "travel",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I don't know where is the central train station."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'where is the central train station' → 'where the central train station is' (indirect questions use normal word order). The central station is usually right in the middle of town. Are you trying to catch a train today?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, if I will miss it, I have to wait three hours."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'If I will miss' → 'If I miss' (use present simple in the 'if' clause of a first conditional). Waiting three hours would ruin the day's plans! Do you have Google Maps on your phone to guide you?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "travel",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "We arrived to the museum just before it closed."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'arrived to' → 'arrived at' (we say 'arrive at' a specific building or location). Cutting it close! Did they still let you inside to look around?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, but the security guard was very boring and kept rushing us."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'very boring' → 'very annoying' or 'very pushy' ('boring' means making you feel uninterested, not frustrating). It's hard to enjoy art when you're being rushed! Did you at least get to see the main exhibit?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "travel",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I make a travel to South America every winter."
+      },
+      {
+        "role": "assistant",
+        "content": "Escaping the winter cold for South America sounds like a brilliant tradition. Which country is your absolute favorite to visit?"
+      },
+      {
+        "role": "user",
+        "content": "I love Peru because the nature is so beautiful."
+      },
+      {
+        "role": "assistant",
+        "content": "Peru has some of the most stunning landscapes in the world. Have you done the hike up to Machu Picchu?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "travel",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "My friend bringed me a souvenir from her trip to Egypt."
+      },
+      {
+        "role": "assistant",
+        "content": "That is so thoughtful of her! What kind of souvenir did she bring back for you?"
+      },
+      {
+        "role": "user",
+        "content": "It is a small pyramid made of stones. I like it very much."
+      },
+      {
+        "role": "assistant",
+        "content": "A little stone pyramid is a perfect memento of Egypt. Do you have a specific shelf at home where you display souvenirs?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "travel",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "There is many tourists in the city center during August."
+      },
+      {
+        "role": "assistant",
+        "content": "August is definitely the peak season for crowds! Do you try to avoid the center of town when it gets that busy?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, I prefer to stay on my house where it is quiet."
+      },
+      {
+        "role": "assistant",
+        "content": "I don't blame you at all. A quiet house is much better than navigating through massive groups of people taking photos!"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "travel",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I need to ask for an information about renting a bicycle."
+      },
+      {
+        "role": "assistant",
+        "content": "Renting a bike is the best way to explore a new city! Are you looking for a city bike for the roads, or a mountain bike for trails?"
+      },
+      {
+        "role": "user",
+        "content": "A city bike. I hope the traffic are not too dangerous."
+      },
+      {
+        "role": "assistant",
+        "content": "City traffic can be intimidating, but many places have great dedicated bike lanes now. Have you checked if the city has a good cycling network?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "travel",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "If I would have booked earlier, the flights would be cheaper."
+      },
+      {
+        "role": "assistant",
+        "content": "Flight prices always skyrocket at the last minute! Did you still manage to find a reasonably priced ticket, or did you have to pay a lot?"
+      },
+      {
+        "role": "user",
+        "content": "I payed double the normal price, but I had to go."
+      },
+      {
+        "role": "assistant",
+        "content": "Sometimes you just have no choice when the trip is unavoidable. Hopefully, the rest of the trip's expenses were easier to manage!"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "hobbies",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I am playing the piano since I was a little boy."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'am playing' → 'have been playing' (use present perfect continuous for an ongoing action starting in the past). That is a lifelong passion! What style of music do you enjoy playing the most?"
+      },
+      {
+        "role": "user",
+        "content": "I like very much classical music, especially Chopin."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'like very much classical music' → 'like classical music very much' (in English, the object comes immediately after the verb 'like'). Chopin's pieces are beautiful but so technically demanding! Which of his nocturnes is your favorite?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "hobbies",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "My team winned the local football tournament on Sunday."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'winned' → 'won' (the past tense of 'win' is irregular). That is a massive achievement, congratulations! What position do you usually play?"
+      },
+      {
+        "role": "user",
+        "content": "I play as goalkeeper. It is very excited when I save a goal."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'is very excited' → 'is very exciting' (use -ing adjectives to describe the situation that causes the feeling). Being a goalkeeper is so much pressure! Do you ever get nervous before penalty shootouts?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "hobbies",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I want to buy a new camera but it depends of the price."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'depends of' → 'depends on' ('depend' is always followed by 'on'). Photography gear is notoriously expensive! Are you looking for a DSLR or a mirrorless camera?"
+      },
+      {
+        "role": "user",
+        "content": "A mirrorless one. I asked the shop what time do they close."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'what time do they close' → 'what time they close' (indirect questions don't use the auxiliary 'do'). Mirrorless cameras are great for travel because they're lighter! Are you going to buy it today?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "hobbies",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I have too many equipments for camping in my garage."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'many equipments' → 'much equipment' (equipment is uncountable and takes 'much', not 'many'). It's so easy to accumulate gear over the years! Are you planning a camping trip soon to use it all?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, if the weather will be nice this weekend."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'will be nice' → 'is nice' (in the first conditional, use the present simple after 'if'). Fingers crossed for sunshine! Are you heading to the mountains or a forest?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "hobbies",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Everyone in my book club read the chapters very fast."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'read' → 'reads' (words like 'everyone' take a singular verb). Fast readers can make book clubs a bit stressful! How many chapters are you supposed to read each week?"
+      },
+      {
+        "role": "user",
+        "content": "Three chapters. I usually read them in the night."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'in the night' → 'at night' (we say 'in the morning/afternoon' but 'at night'). Reading before sleep is a wonderful way to wind down. What genre is the club currently reading?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "hobbies",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I builded a wooden table for my garden last week."
+      },
+      {
+        "role": "assistant",
+        "content": "That is an incredibly impressive DIY project! Have you done much woodworking before, or was this your first time?"
+      },
+      {
+        "role": "user",
+        "content": "It was my first time. I did a lot of mistakes."
+      },
+      {
+        "role": "assistant",
+        "content": "Mistakes are just part of the learning process! Did the table turn out sturdy enough to actually use?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "hobbies",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I am very good in painting landscapes with watercolors."
+      },
+      {
+        "role": "assistant",
+        "content": "Watercolors are so notoriously unforgiving, being good at them takes real skill! Do you usually paint from photographs or go outside to paint?"
+      },
+      {
+        "role": "user",
+        "content": "I prefer to paint the nature while sitting outside."
+      },
+      {
+        "role": "assistant",
+        "content": "Plein air painting is wonderful, though I imagine changing sunlight makes it tricky. Do you have a favorite spot in your town to paint?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "hobbies",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I never am tired when I am playing video games."
+      },
+      {
+        "role": "assistant",
+        "content": "Video games have a unique way of making hours vanish without you even noticing! What kind of games are keeping you hooked right now?"
+      },
+      {
+        "role": "user",
+        "content": "Role-playing games. I like them because the stories is great."
+      },
+      {
+        "role": "assistant",
+        "content": "A good RPG story can rival any novel or movie. Which game world has been your absolute favorite to explore?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "hobbies",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I wish I have more free time for knitting."
+      },
+      {
+        "role": "assistant",
+        "content": "It's so hard to find time for hobbies when life gets busy. Are you working on a big knitting project right now?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, I am making a sweater, but the pattern are very complicated."
+      },
+      {
+        "role": "assistant",
+        "content": "Sweaters are a massive commitment, especially if there's complex cable work involved. Who is the sweater for?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "hobbies",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I need an advice on how to improve my photography skills."
+      },
+      {
+        "role": "assistant",
+        "content": "I'd be happy to help! The biggest game-changer for most people is understanding lighting. What do you struggle with the most?"
+      },
+      {
+        "role": "user",
+        "content": "My photos are always blurry when I shoot at the night."
+      },
+      {
+        "role": "assistant",
+        "content": "Night photography is tough! You definitely need a slower shutter speed, which means a tripod is absolutely essential. Do you have one?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "health",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I go to the gym every day since two months."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'go...since two months' → 'have been going...for two months' (present perfect continuous for ongoing habits, and 'for' for duration). That is amazing consistency! Have you noticed a big difference in your fitness?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, my muscles is getting much stronger."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'muscles is' → 'muscles are' ('muscles' is plural). It's so rewarding when you can actually feel yourself getting stronger! What is your favorite exercise to do?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "health",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I sleeped terribly last night and now my head hurts."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'sleeped' → 'slept' (the past tense of sleep is irregular). I'm sorry to hear that, sleep deprivation ruins the whole day! Have you had enough water today?"
+      },
+      {
+        "role": "user",
+        "content": "Not really. The doctor said me I need to drink more."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'said me' → 'told me' (use 'tell' when directly followed by a person object like 'me'). Dehydration will definitely trigger headaches! Do you have a water bottle on your desk?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "health",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "The mental health is very important, especially in winter."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'The mental health' → 'Mental health' (we don't use 'the' for general abstract concepts). You are completely right, the lack of sunlight really affects people. Do you take vitamin D supplements?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, I take them at the morning with breakfast."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'at the morning' → 'in the morning' (the correct preposition is 'in'). Taking them with breakfast is a great habit to build. Have you noticed any improvement in your mood?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "health",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I don't know why does my back hurt after sitting all day."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'why does my back hurt' → 'why my back hurts' (indirect questions use statement word order). Sitting is surprisingly hard on the spine! Does your office chair have good lumbar support?"
+      },
+      {
+        "role": "user",
+        "content": "No, it is a very cheap chair. I need to buy a better furnitures."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'a better furnitures' → 'better furniture' (furniture is an uncountable noun, no 'a' and no 's'). Investing in a good ergonomic chair is completely worth it for your health. Are you going to shop for one this weekend?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "health",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "If I would have stretched, I wouldn't have pulled a muscle."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'If I would have' → 'If I had' (third conditional uses past perfect in the 'if' clause). Skipping the warm-up always catches up with us! Is the pulled muscle very painful right now?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, it hurts very much. I will put some ice on it in Monday."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'in Monday' → 'on Monday' (we use 'on' for days of the week). Please don't wait until Monday, put ice on it today to reduce the swelling! Have you taken any painkillers?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "health",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "While I was lifting weights, I was feeling a sharp pain."
+      },
+      {
+        "role": "assistant",
+        "content": "A sharp pain is a huge red flag when lifting. Did you stop your workout immediately?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, I dropped the weights and I go straight home."
+      },
+      {
+        "role": "assistant",
+        "content": "That was definitely the smartest thing you could do. Have you scheduled an appointment with a physiotherapist?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "health",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I am very interested about trying a new vegetarian diet."
+      },
+      {
+        "role": "assistant",
+        "content": "A vegetarian diet can be incredibly healthy if it's well-planned! What made you want to make the switch?"
+      },
+      {
+        "role": "user",
+        "content": "I want to have more energy, and eating meat makes me tired."
+      },
+      {
+        "role": "assistant",
+        "content": "Digesting heavy meats definitely takes a lot of energy. Are you planning to cut it out completely all at once, or transition slowly?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "health",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Unless I don't drink coffee, I can't wake up properly."
+      },
+      {
+        "role": "assistant",
+        "content": "Coffee is definitely the fuel that runs the modern world! How many cups do you usually have to get through the day?"
+      },
+      {
+        "role": "user",
+        "content": "I usually drink three cups, but my doctor say it is too much."
+      },
+      {
+        "role": "assistant",
+        "content": "Three cups is quite a bit of caffeine! Have you tried swapping the afternoon cup for something like green tea instead?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "health",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I always am hungry after I finish swimming."
+      },
+      {
+        "role": "assistant",
+        "content": "Swimming burns a massive amount of calories because of the water resistance. What is your favorite post-swim snack?"
+      },
+      {
+        "role": "user",
+        "content": "I love to eat a large pasta because it gives me carbohydrates."
+      },
+      {
+        "role": "assistant",
+        "content": "Pasta is the perfect recovery meal for replenishing your energy stores! Do you usually swim in the morning or the evening?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "health",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "My friend runned a full marathon last weekend."
+      },
+      {
+        "role": "assistant",
+        "content": "Running a full marathon is a staggering achievement! Did you go to the finish line to cheer them on?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, but there was too many peoples blocking the view."
+      },
+      {
+        "role": "assistant",
+        "content": "Marathon crowds are always so dense, it's really hard to spot anyone. Did you manage to find your friend afterwards to celebrate?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "technology",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I upgrade my phone every two years when the new model comes out."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'upgrade' → 'upgraded' (if you are talking about past events) OR the sentence is actually correct if it's a general habit! Assuming it's a habit, no correction needed. What feature usually convinces you to upgrade?"
+      },
+      {
+        "role": "user",
+        "content": "The battery. My old phone was dying very fast."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'was dying' is fine, but usually we just say 'died very fast' for a general state. A degrading battery is definitely the main reason most people buy a new phone. Are you happy with the battery on your current one?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "technology",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I have downloaded a new software for editing videos yesterday."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'have downloaded a new software' → 'downloaded new software' (past simple with 'yesterday', and 'software' is uncountable). Video editing is a great skill to learn! Is it a professional program like Premiere Pro?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, but I don't know what means all the different buttons."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'what means all the different buttons' → 'what all the different buttons mean' (indirect question word order). Professional software interfaces are incredibly overwhelming at first. Have you found any good YouTube tutorials for it?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "technology",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "The internet have changed how we live completely."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'The internet have' → 'The internet has' ('internet' is a singular noun). It really has revolutionized every aspect of daily life! What do you think is the best thing about it?"
+      },
+      {
+        "role": "user",
+        "content": "I like very much the ability to talk to people far away."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'like very much the ability' → 'like the ability very much' (the object comes right after the verb). Video calls have made the world feel so much smaller! Do you use them to talk to family overseas?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "technology",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "If my laptop will break, I will lose all my files."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'will break' → 'breaks' (use present simple in the 'if' clause of a first conditional). That is a terrifying thought! Have you not backed up your files to the cloud?"
+      },
+      {
+        "role": "user",
+        "content": "I try to do it, but I have too many datas to upload."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'many datas' → 'much data' or 'a lot of data' ('data' is uncountable/plural). Uploading large files can definitely take forever on a slow connection. Could you buy an external hard drive instead?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "strict",
+    "topic": "technology",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Can you borrow me your charger? My battery is at 2 percent."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'borrow me' → 'lend me' (you lend *to* someone, you borrow *from* someone). Of course, here you go! Does your battery always drain this fast?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, I think the phone is broken. I will take it to the shop in Saturday."
+      },
+      {
+        "role": "assistant",
+        "content": "Quick note: 'in Saturday' → 'on Saturday' (we use 'on' for days of the week). Getting the battery replaced is usually much cheaper than buying a whole new phone. Is the shop nearby?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "technology",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "My laptop falled off the desk and the screen shattered."
+      },
+      {
+        "role": "assistant",
+        "content": "Oh no, that is an absolute disaster! Are you able to plug it into an external monitor so you can at least use it temporarily?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, but I am very boring of using it like a desktop computer."
+      },
+      {
+        "role": "assistant",
+        "content": "I completely understand, losing the portability of a laptop defeats the whole point of having one! Have you looked up how much the screen repair will cost?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "technology",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I am working in IT since five years, so I fix my own computers."
+      },
+      {
+        "role": "assistant",
+        "content": "Having the skills to fix your own hardware must save you so much money and stress! What is the most common hardware issue you see?"
+      },
+      {
+        "role": "user",
+        "content": "Usually, people spill water on their keyboards. It happens every days."
+      },
+      {
+        "role": "assistant",
+        "content": "Liquid spills are definitely the ultimate laptop killer! Do you usually tell them the machine is dead, or is there a trick to saving it?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "technology",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Why you didn't reply to my text message last night?"
+      },
+      {
+        "role": "assistant",
+        "content": "I am so sorry, I put my phone on 'Do Not Disturb' while I was reading and completely forgot to check it! Was it something urgent?"
+      },
+      {
+        "role": "user",
+        "content": "No, I just wanted to ask an advice about buying a smart watch."
+      },
+      {
+        "role": "assistant",
+        "content": "Oh, I'd love to help with that! Are you looking for something mainly for fitness tracking, or more for checking notifications?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "technology",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "I always am forgetting my passwords for different websites."
+      },
+      {
+        "role": "assistant",
+        "content": "It is honestly impossible to remember them all securely without help. Have you considered using a dedicated password manager app?"
+      },
+      {
+        "role": "user",
+        "content": "I tried one, but it was too complicated. I prefer to write them in a notebook."
+      },
+      {
+        "role": "assistant",
+        "content": "A physical notebook is definitely safe from hackers, as long as you don't lose the book! Do you keep it hidden somewhere secure in your house?"
+      }
+    ]
+  },
+  {
+    "type": "multi_turn",
+    "mode": "flow",
+    "topic": "technology",
+    "source": "tutor_handcrafted",
+    "conversation": [
+      {
+        "role": "user",
+        "content": "If I wouldn't have installed that update, my computer would be fine."
+      },
+      {
+        "role": "assistant",
+        "content": "Bad software updates are incredibly frustrating. Have you tried booting the computer in safe mode to roll back the update?"
+      },
+      {
+        "role": "user",
+        "content": "Yes, but it says there is an error. I need to bring it to a professional."
+      },
+      {
+        "role": "assistant",
+        "content": "That sounds like a deep system issue. Hopefully, the repair shop can fix it without having to wipe all your data!"
+      }
+    ]
+  }
+]
