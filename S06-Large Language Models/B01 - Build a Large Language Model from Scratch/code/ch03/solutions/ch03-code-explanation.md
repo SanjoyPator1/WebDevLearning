@@ -8,18 +8,18 @@ The reference notebook is `ch03-coding-attention-mechanisms-solution-solved.ipyn
 
 ## Table of Contents
 
-0. [Setup](#0-setup)
-1. [3.1 & 3.2 — Why Attention? From RNN Bottlenecks to Self-Attention](#1-31--32--why-attention-from-rnn-bottlenecks-to-self-attention)
-2. [3.3.1 — A Simple Self-Attention Mechanism Without Trainable Weights](#2-331--a-simple-self-attention-mechanism-without-trainable-weights)
-3. [3.3.2 — Computing Attention Weights for All Input Tokens](#3-332--computing-attention-weights-for-all-input-tokens)
-4. [3.4.1 — Self-Attention with Trainable Weights: Q, K, V](#4-341--self-attention-with-trainable-weights-q-k-v)
-5. [3.4.2 — `SelfAttention_v1` and `SelfAttention_v2`](#5-342--selfattention_v1-and-selfattention_v2)
-6. [3.5.1 — Causal Attention: Hiding Future Words](#6-351--causal-attention-hiding-future-words)
-7. [3.5.2 — Masking with Dropout](#7-352--masking-with-dropout)
-8. [3.5.3 — `CausalAttention`: A Compact Causal Attention Class](#8-353--causalattention-a-compact-causal-attention-class)
-9. [3.6.1 — `MultiHeadAttentionWrapper`: Stacking Heads](#9-361--multiheadattentionwrapper-stacking-heads)
-10. [3.6.2 — `MultiHeadAttention`: The Efficient, Production Implementation](#10-362--multiheadattention-the-efficient-production-implementation)
-11. [Putting It All Together & Where This Leads](#11-putting-it-all-together--where-this-leads)
+0. [Setup](#0--setup)
+1. [3.1 & 3.2 — Why Attention? From RNN Bottlenecks to Self-Attention](#1--31--32--why-attention-from-rnn-bottlenecks-to-self-attention)
+2. [3.3.1 — A Simple Self-Attention Mechanism Without Trainable Weights](#2--331--a-simple-self-attention-mechanism-without-trainable-weights)
+3. [3.3.2 — Computing Attention Weights for All Input Tokens](#3--332--computing-attention-weights-for-all-input-tokens)
+4. [3.4.1 — Self-Attention with Trainable Weights: Q, K, V](#4--341--self-attention-with-trainable-weights-q-k-v)
+5. [3.4.2 — `SelfAttention_v1` and `SelfAttention_v2`](#5--342--selfattention_v1-and-selfattention_v2)
+6. [3.5.1 — Causal Attention: Hiding Future Words](#6--351--causal-attention-hiding-future-words)
+7. [3.5.2 — Masking with Dropout](#7--352--masking-with-dropout)
+8. [3.5.3 — `CausalAttention`: A Compact Causal Attention Class](#8--353--causalattention-a-compact-causal-attention-class)
+9. [3.6.1 — `MultiHeadAttentionWrapper`: Stacking Heads](#9--361--multiheadattentionwrapper-stacking-heads)
+10. [3.6.2 — `MultiHeadAttention`: The Efficient, Production Implementation](#10--362--multiheadattention-the-efficient-production-implementation)
+11. [Putting It All Together & Where This Leads](#11--putting-it-all-together--where-this-leads)
 
 ---
 
@@ -341,9 +341,23 @@ W_value = torch.nn.Parameter(torch.rand(d_in, d_out), requires_grad=False)
 These produce the following 3×2 matrices:
 
 ```
-W_query = [[0.2961, 0.5166],     W_key = [[0.1366, 0.1025],     W_value = [[0.0756, 0.1966],
-           [0.2517, 0.6886],               [0.1841, 0.7264],               [0.3164, 0.4017],
-           [0.0740, 0.8665]]               [0.3153, 0.6871]]               [0.1186, 0.8274]]
+W_query = [
+    [0.2961, 0.5166],
+    [0.2517, 0.6886],
+    [0.0740, 0.8665]
+]
+
+W_key = [
+    [0.1366, 0.1025],
+    [0.1841, 0.7264],
+    [0.3153, 0.6871]
+]
+
+W_value = [
+    [0.0756, 0.1966],
+    [0.3164, 0.4017],
+    [0.1186, 0.8274]
+]
 ```
 
 (`requires_grad=False` here only because we're hand-computing values for inspection — in a real model these would be trainable parameters, exactly what `nn.Linear` gives us in Section 5.)
@@ -359,6 +373,36 @@ values = inputs @ W_value
 print("keys.shape:", keys.shape)      # torch.Size([6, 2])
 print("values.shape:", values.shape)  # torch.Size([6, 2])
 ```
+
+
+#### Extra notes
+
+##### What is `torch.nn.Parameter`?
+
+In PyTorch, a `Parameter` is a special subclass of a standard `Tensor`.
+
+When you wrap a regular tensor inside `torch.nn.Parameter()`, you are officially registering it with PyTorch's neural network module (`nn.Module`). You are essentially telling PyTorch: **"Hey, this isn't just random data. This is a weight matrix that I want the model to learn, track, and update during training."**
+
+**Regular Tensor vs. Parameter:**
+
+* **`torch.rand(d_in, d_out)`**: This is just a regular grid of random numbers (like scrap paper). The optimizer ignores it.
+* **`nn.Parameter(torch.rand(d_in, d_out))`**: This turns that grid into an official, trainable weight. When you eventually call `optimizer.step()`, PyTorch will look through your model, find everything marked as a `Parameter`, and update its numbers to make the model smarter.
+
+##### The Catch: Why `requires_grad=False`?
+
+You might notice something weird in the code:
+
+```python
+W_query = torch.nn.Parameter(torch.rand(d_in, d_out), requires_grad=False)
+
+```
+
+By default, an `nn.Parameter` has `requires_grad=True`, meaning PyTorch will start tracking every single math operation it touches so it can calculate gradients (the "learning" part of machine learning).
+
+However, in this specific "Dry Run" chapter, we are not training the model yet. We are just doing manual math to see how the shapes and numbers move around.
+
+* If `requires_grad` was left on, PyTorch would attach a bunch of messy gradient-tracking metadata to our print statements (like `grad_fn=<AddBackward0>`), making it harder to read the raw numbers.
+* The author set it to `False` here purely to keep the printed output clean for the tutorial. In a real, training model, these are fully trainable weights with `requires_grad=True` (which is exactly what `nn.Linear` sets up for us automatically later in the chapter).
 
 **Layer 3 — Dry run** for `query_2`: $x^{(2)} = [0.55, 0.87, 0.66]$, and $W_q$'s first column is $[0.2961, 0.2517, 0.0740]$:
 
@@ -392,6 +436,45 @@ print(attn_scores_2)
 ```
 
 This is the same idea as Section 3's $\omega_{2i} = x^{(2)} \cdot x^{(i)}$, except now both sides are _projected_ vectors: $\omega_{2i} = q^{(2)} \cdot k^{(i)}$.
+
+#### Extra notes
+
+Keeping track of tensor shapes is arguably the most important (and sometimes most frustrating!) part of writing PyTorch code.
+
+When you call `.shape` on a PyTorch tensor, it returns a list showing the size of the tensor in every dimension.
+
+For a 2D matrix (like a standard spreadsheet or grid), the shape always follows this rule: **`[number_of_rows, number_of_columns]`**.
+
+#### What `shape[0]` and `shape[1]` mean:
+
+Because Python is zero-indexed (it starts counting at 0):
+
+* **`shape[0]`** asks for the first number in that list. It tells you the **number of rows** (which usually represents the number of words/tokens or the batch size).
+* **`shape[1]`** asks for the second number in that list. It tells you the **number of columns** (which usually represents the embedding dimension, or how many numbers make up a single word's vector).
+
+---
+
+#### Looking at your specific example:
+
+In Step 1 of your notes, you printed the shape of the `keys` matrix:
+`print(keys.shape) # torch.Size([6, 2])`
+
+This means the `keys` matrix has 6 rows (one for each word in your sentence) and 2 columns (the $d_{out}$ or $d_k$ dimension we projected them into).
+
+So, if you run:
+
+* `keys.shape[0]`, PyTorch looks at `[6, 2]` and grabs the first number: **6**.
+* `keys.shape[1]`, PyTorch looks at `[6, 2]` and grabs the second number: **2**.
+
+#### Why `d_k = keys.shape[1]`?
+
+You are trying to find $d_k$ so you can calculate $\sqrt{d_k}$ for the scaled dot-product attention. $d_k$ is the dimension of your key vectors.
+
+Since each word is represented by a row of 2 numbers, the dimension is 2.
+By writing `d_k = keys.shape[1]`, you are dynamically telling PyTorch: *"Look at the keys matrix, see how many columns it has, and save that number as $d_k$."* This is much better than hardcoding `d_k = 2`, because if you change your model size later, this code will automatically adapt!
+
+***Note on your notes:*** *In the actual code block in your markdown, the author wrote `d_k = keys.shape[-1]`. In Python, an index of `-1` means "grab the very last item in the list." Since `keys.shape` only has two items `[6, 2]`, grabbing the second item `[1]` or the last item `[-1]` does the exact same thing!*
+
 
 ### Step 3 — Scaling by $\sqrt{d_k}$ (the most important new idea)
 
@@ -440,16 +523,89 @@ print(attn_weights_2)
 
 ### Step 4 — Context vector via value vectors
 
+**The Intuition: What are we doing here?**
+This step is the ultimate payoff of the entire self-attention mechanism. Everything we did before this (Query, Key, Dot Product, Softmax) was just preparation to figure out *how to mix the ingredients*.
+
+* **Queries ($Q$)** were used to ask: *"What am I looking for?"*
+* **Keys ($K$)** were used to answer: *"What do I have?"*
+* **Values ($V$)** are the actual **"Content"**. The `values` matrix is a 6x2 grid holding the raw "meaning" each word contributes to the output.
+
+Now, we "cash in" our Softmax percentages to build a new, enriched word vector. We blend the *content* (Values) of all the words together using those exact attention percentages.
+
 $$z^{(2)} = \sum_{i=1}^{6} \alpha_{2i} \, v^{(i)} \quad\Longleftrightarrow\quad z^{(2)} = \alpha_2 V$$
+
+---
+
+**The Dry Run: How the Dimensions are Calculated**
+Let's build the final **Context Vector** ($z^{(2)}$) for the word "journey". We use the Attention Weights we calculated for "journey", and apply them to the Value Matrix.
+
+* **The Attention Weights ($\alpha_2$):** `[0.1500, 0.2264, 0.2199, 0.1311, 0.0906, 0.1820]`
+* **The Value Matrix ($V$):** A 6x2 grid. Column 1 holds the Dimension 1 values, and Column 2 holds the Dimension 2 values.
+
+```text
+               [Dim 1]   [Dim 2]
+Value_0 (Your)    0.1855    0.8812
+Value_1 (journey) 0.3951    1.0037
+Value_2 (starts)  0.3879    0.9831
+Value_3 (with)    0.2393    0.5493
+Value_4 (one)     0.1492    0.3346
+Value_5 (step)    0.3221    0.7863
+
+```
+
+**Calculating Dimension 1:**
+We multiply the Attention Weights by **Column 1** of the Value Matrix and sum them up:
+
+```text
+z^(2)_1 = (Weight_0 × Value_0[Dim 1]) + (Weight_1 × Value_1[Dim 1]) + ...
+
+        = (0.1500 × 0.1855)       # Your
+        + (0.2264 × 0.3951)       # journey
+        + (0.2199 × 0.3879)       # starts
+        + (0.1311 × 0.2393)       # with
+        + (0.0906 × 0.1492)       # one
+        + (0.1820 × 0.3221)       # step
+        
+        = 0.0278 + 0.0894 + 0.0853 + 0.0313 + 0.0135 + 0.0586
+        = 0.3059 (Rounds to 0.3061 with PyTorch's full precision)
+
+```
+
+**Calculating Dimension 2:**
+The weights stay *exactly the same*, but we multiply them by **Column 2** of the Value Matrix:
+
+```text
+z^(2)_2 = (Weight_0 × Value_0[Dim 2]) + (Weight_1 × Value_1[Dim 2]) + ...
+
+        = (0.1500 × 0.8812)       # Your
+        + (0.2264 × 1.0037)       # journey
+        + (0.2199 × 0.9831)       # starts
+        + (0.1311 × 0.5493)       # with
+        + (0.0906 × 0.3346)       # one
+        + (0.1820 × 0.7863)       # step
+        
+        = 0.1322 + 0.2272 + 0.2162 + 0.0720 + 0.0303 + 0.1431
+        = 0.8210
+
+```
+
+---
+
+**Automating the Math in PyTorch**
+When we put Dimension 1 and Dimension 2 together, we get our final, context-aware vector: `[0.3061, 0.8210]`. In PyTorch, the `@` symbol (matrix multiplication) executes those two large blocks of addition and multiplication simultaneously.
 
 ```python
 context_vec_2 = attn_weights_2 @ values
 print(context_vec_2)
 # tensor([0.3061, 0.8210])
+
 ```
 
-Note this is a _different_ number from Section 2's `context_vec_2 = [0.4419, 0.6515, 0.5683]` — that's expected and correct! Here, the context vector lives in the $d_{out}=2$ dimensional **value space**, not the original $d_{in}=3$ dimensional input space, and it's computed using _learned_ (here, randomly-initialized) projections rather than raw inputs.
+**Why are the numbers different from Section 2?**
+If you look back at Section 2 (where we didn't use trainable weights), the context vector for "journey" was `[0.4419, 0.6515, 0.5683]`. Here, it is `[0.3061, 0.8210]`. This is completely expected for two reasons:
 
+1. **The Shape:** The original context vector lived in the $d_{in}=3$ dimensional input space. Our new vector lives in the $d_{out}=2$ dimensional **Value space**.
+2. **The Source:** We are no longer blending the raw, static input embeddings. We are blending the *learned* (here, randomly-initialized) Value projections. The model has projected the words into a space specifically optimized for output.
 ---
 
 ## 5 — 3.4.2 — `SelfAttention_v1` and `SelfAttention_v2`
@@ -536,7 +692,41 @@ print(sa_v2(inputs))
 
 **Gotcha**: `sa_v1` and `sa_v2` produce _completely different numbers_ (`[0.30, 0.81]` vs. `[-0.07, 0.07]`) even though the _algorithm_ is identical. This is purely because (a) different random seeds were used (123 vs. 789) and (b) `nn.Linear`'s initialization differs from `torch.rand`. The book notes that if you manually copy `nn.Linear`'s weight matrices into `sa_v1`'s parameters (`sa_v1.W_query.data = sa_v2.W_query.weight.T.data`, etc.), both classes produce identical outputs — confirming they implement the same math.
 
----
+#### Extra Notes
+
+Here is exactly why the syntax changes from `x @ W` to `W(x)`. You can add this directly to your notes to explain the mechanics of `nn.Linear`:
+
+##### Why `self.W_query(x)` instead of `x @ self.W_query`?
+
+In `SelfAttention_v1`, our weight matrix was a raw **`nn.Parameter`**. Because it was just a grid of numbers, we had to manually tell PyTorch to perform matrix multiplication using the `@` operator:
+
+```python
+# v1: Manual matrix multiplication
+queries = x @ self.W_query
+
+```
+
+In `SelfAttention_v2`, we upgraded to **`nn.Linear`**.
+`nn.Linear` is not just a matrix; it is a complete PyTorch **Layer** (a class). It automatically creates the weight matrix inside itself, and it has a built-in `forward()` function that knows exactly how to do the math.
+
+When you call an `nn.Linear` object like a function—passing `x` into it as an argument—PyTorch automatically runs the matrix multiplication behind the scenes.
+
+```python
+# v2: Calling the Linear layer
+queries = self.W_query(x)
+
+```
+
+**Under the Hood:**
+When you write `self.W_query(x)`, PyTorch is secretly executing this exact math for you:
+`queries = x @ W_query.weight.T + W_query.bias`
+
+**Why make this switch?**
+
+1. **Cleaner Code:** You don't have to write out the `@` operations or manually handle transposing `.T` matrices.
+2. **Bias Handling:** `nn.Linear` automatically handles adding a bias vector if `qkv_bias=True`. Doing that manually with raw parameters takes extra lines of code.
+3. **Better Initialization:** `nn.Linear` uses a highly optimized default formula (Kaiming initialization) to generate its initial random numbers, which makes the model train much faster and more stably than using pure `torch.rand`.
+
 
 ## 6 — 3.5.1 — Causal Attention: Hiding Future Words
 
