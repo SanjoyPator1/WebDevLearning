@@ -374,7 +374,6 @@ print("keys.shape:", keys.shape)      # torch.Size([6, 2])
 print("values.shape:", values.shape)  # torch.Size([6, 2])
 ```
 
-
 #### Extra notes
 
 ##### What is `torch.nn.Parameter`?
@@ -385,8 +384,8 @@ When you wrap a regular tensor inside `torch.nn.Parameter()`, you are officially
 
 **Regular Tensor vs. Parameter:**
 
-* **`torch.rand(d_in, d_out)`**: This is just a regular grid of random numbers (like scrap paper). The optimizer ignores it.
-* **`nn.Parameter(torch.rand(d_in, d_out))`**: This turns that grid into an official, trainable weight. When you eventually call `optimizer.step()`, PyTorch will look through your model, find everything marked as a `Parameter`, and update its numbers to make the model smarter.
+- **`torch.rand(d_in, d_out)`**: This is just a regular grid of random numbers (like scrap paper). The optimizer ignores it.
+- **`nn.Parameter(torch.rand(d_in, d_out))`**: This turns that grid into an official, trainable weight. When you eventually call `optimizer.step()`, PyTorch will look through your model, find everything marked as a `Parameter`, and update its numbers to make the model smarter.
 
 ##### The Catch: Why `requires_grad=False`?
 
@@ -401,8 +400,8 @@ By default, an `nn.Parameter` has `requires_grad=True`, meaning PyTorch will sta
 
 However, in this specific "Dry Run" chapter, we are not training the model yet. We are just doing manual math to see how the shapes and numbers move around.
 
-* If `requires_grad` was left on, PyTorch would attach a bunch of messy gradient-tracking metadata to our print statements (like `grad_fn=<AddBackward0>`), making it harder to read the raw numbers.
-* The author set it to `False` here purely to keep the printed output clean for the tutorial. In a real, training model, these are fully trainable weights with `requires_grad=True` (which is exactly what `nn.Linear` sets up for us automatically later in the chapter).
+- If `requires_grad` was left on, PyTorch would attach a bunch of messy gradient-tracking metadata to our print statements (like `grad_fn=<AddBackward0>`), making it harder to read the raw numbers.
+- The author set it to `False` here purely to keep the printed output clean for the tutorial. In a real, training model, these are fully trainable weights with `requires_grad=True` (which is exactly what `nn.Linear` sets up for us automatically later in the chapter).
 
 **Layer 3 — Dry run** for `query_2`: $x^{(2)} = [0.55, 0.87, 0.66]$, and $W_q$'s first column is $[0.2961, 0.2517, 0.0740]$:
 
@@ -449,8 +448,8 @@ For a 2D matrix (like a standard spreadsheet or grid), the shape always follows 
 
 Because Python is zero-indexed (it starts counting at 0):
 
-* **`shape[0]`** asks for the first number in that list. It tells you the **number of rows** (which usually represents the number of words/tokens or the batch size).
-* **`shape[1]`** asks for the second number in that list. It tells you the **number of columns** (which usually represents the embedding dimension, or how many numbers make up a single word's vector).
+- **`shape[0]`** asks for the first number in that list. It tells you the **number of rows** (which usually represents the number of words/tokens or the batch size).
+- **`shape[1]`** asks for the second number in that list. It tells you the **number of columns** (which usually represents the embedding dimension, or how many numbers make up a single word's vector).
 
 ---
 
@@ -463,18 +462,17 @@ This means the `keys` matrix has 6 rows (one for each word in your sentence) and
 
 So, if you run:
 
-* `keys.shape[0]`, PyTorch looks at `[6, 2]` and grabs the first number: **6**.
-* `keys.shape[1]`, PyTorch looks at `[6, 2]` and grabs the second number: **2**.
+- `keys.shape[0]`, PyTorch looks at `[6, 2]` and grabs the first number: **6**.
+- `keys.shape[1]`, PyTorch looks at `[6, 2]` and grabs the second number: **2**.
 
 #### Why `d_k = keys.shape[1]`?
 
 You are trying to find $d_k$ so you can calculate $\sqrt{d_k}$ for the scaled dot-product attention. $d_k$ is the dimension of your key vectors.
 
 Since each word is represented by a row of 2 numbers, the dimension is 2.
-By writing `d_k = keys.shape[1]`, you are dynamically telling PyTorch: *"Look at the keys matrix, see how many columns it has, and save that number as $d_k$."* This is much better than hardcoding `d_k = 2`, because if you change your model size later, this code will automatically adapt!
+By writing `d_k = keys.shape[1]`, you are dynamically telling PyTorch: _"Look at the keys matrix, see how many columns it has, and save that number as $d_k$."_ This is much better than hardcoding `d_k = 2`, because if you change your model size later, this code will automatically adapt!
 
-***Note on your notes:*** *In the actual code block in your markdown, the author wrote `d_k = keys.shape[-1]`. In Python, an index of `-1` means "grab the very last item in the list." Since `keys.shape` only has two items `[6, 2]`, grabbing the second item `[1]` or the last item `[-1]` does the exact same thing!*
-
+**_Note on your notes:_** _In the actual code block in your markdown, the author wrote `d_k = keys.shape[-1]`. In Python, an index of `-1` means "grab the very last item in the list." Since `keys.shape` only has two items `[6, 2]`, grabbing the second item `[1]` or the last item `[-1]` does the exact same thing!_
 
 ### Step 3 — Scaling by $\sqrt{d_k}$ (the most important new idea)
 
@@ -524,13 +522,13 @@ print(attn_weights_2)
 ### Step 4 — Context vector via value vectors
 
 **The Intuition: What are we doing here?**
-This step is the ultimate payoff of the entire self-attention mechanism. Everything we did before this (Query, Key, Dot Product, Softmax) was just preparation to figure out *how to mix the ingredients*.
+This step is the ultimate payoff of the entire self-attention mechanism. Everything we did before this (Query, Key, Dot Product, Softmax) was just preparation to figure out _how to mix the ingredients_.
 
-* **Queries ($Q$)** were used to ask: *"What am I looking for?"*
-* **Keys ($K$)** were used to answer: *"What do I have?"*
-* **Values ($V$)** are the actual **"Content"**. The `values` matrix is a 6x2 grid holding the raw "meaning" each word contributes to the output.
+- **Queries ($Q$)** were used to ask: _"What am I looking for?"_
+- **Keys ($K$)** were used to answer: _"What do I have?"_
+- **Values ($V$)** are the actual **"Content"**. The `values` matrix is a 6x2 grid holding the raw "meaning" each word contributes to the output.
 
-Now, we "cash in" our Softmax percentages to build a new, enriched word vector. We blend the *content* (Values) of all the words together using those exact attention percentages.
+Now, we "cash in" our Softmax percentages to build a new, enriched word vector. We blend the _content_ (Values) of all the words together using those exact attention percentages.
 
 $$z^{(2)} = \sum_{i=1}^{6} \alpha_{2i} \, v^{(i)} \quad\Longleftrightarrow\quad z^{(2)} = \alpha_2 V$$
 
@@ -539,8 +537,8 @@ $$z^{(2)} = \sum_{i=1}^{6} \alpha_{2i} \, v^{(i)} \quad\Longleftrightarrow\quad 
 **The Dry Run: How the Dimensions are Calculated**
 Let's build the final **Context Vector** ($z^{(2)}$) for the word "journey". We use the Attention Weights we calculated for "journey", and apply them to the Value Matrix.
 
-* **The Attention Weights ($\alpha_2$):** `[0.1500, 0.2264, 0.2199, 0.1311, 0.0906, 0.1820]`
-* **The Value Matrix ($V$):** A 6x2 grid. Column 1 holds the Dimension 1 values, and Column 2 holds the Dimension 2 values.
+- **The Attention Weights ($\alpha_2$):** `[0.1500, 0.2264, 0.2199, 0.1311, 0.0906, 0.1820]`
+- **The Value Matrix ($V$):** A 6x2 grid. Column 1 holds the Dimension 1 values, and Column 2 holds the Dimension 2 values.
 
 ```text
                [Dim 1]   [Dim 2]
@@ -565,14 +563,14 @@ z^(2)_1 = (Weight_0 × Value_0[Dim 1]) + (Weight_1 × Value_1[Dim 1]) + ...
         + (0.1311 × 0.2393)       # with
         + (0.0906 × 0.1492)       # one
         + (0.1820 × 0.3221)       # step
-        
+
         = 0.0278 + 0.0894 + 0.0853 + 0.0313 + 0.0135 + 0.0586
         = 0.3059 (Rounds to 0.3061 with PyTorch's full precision)
 
 ```
 
 **Calculating Dimension 2:**
-The weights stay *exactly the same*, but we multiply them by **Column 2** of the Value Matrix:
+The weights stay _exactly the same_, but we multiply them by **Column 2** of the Value Matrix:
 
 ```text
 z^(2)_2 = (Weight_0 × Value_0[Dim 2]) + (Weight_1 × Value_1[Dim 2]) + ...
@@ -583,7 +581,7 @@ z^(2)_2 = (Weight_0 × Value_0[Dim 2]) + (Weight_1 × Value_1[Dim 2]) + ...
         + (0.1311 × 0.5493)       # with
         + (0.0906 × 0.3346)       # one
         + (0.1820 × 0.7863)       # step
-        
+
         = 0.1322 + 0.2272 + 0.2162 + 0.0720 + 0.0303 + 0.1431
         = 0.8210
 
@@ -605,7 +603,8 @@ print(context_vec_2)
 If you look back at Section 2 (where we didn't use trainable weights), the context vector for "journey" was `[0.4419, 0.6515, 0.5683]`. Here, it is `[0.3061, 0.8210]`. This is completely expected for two reasons:
 
 1. **The Shape:** The original context vector lived in the $d_{in}=3$ dimensional input space. Our new vector lives in the $d_{out}=2$ dimensional **Value space**.
-2. **The Source:** We are no longer blending the raw, static input embeddings. We are blending the *learned* (here, randomly-initialized) Value projections. The model has projected the words into a space specifically optimized for output.
+2. **The Source:** We are no longer blending the raw, static input embeddings. We are blending the _learned_ (here, randomly-initialized) Value projections. The model has projected the words into a space specifically optimized for output.
+
 ---
 
 ## 5 — 3.4.2 — `SelfAttention_v1` and `SelfAttention_v2`
@@ -727,7 +726,6 @@ When you write `self.W_query(x)`, PyTorch is secretly executing this exact math 
 2. **Bias Handling:** `nn.Linear` automatically handles adding a bias vector if `qkv_bias=True`. Doing that manually with raw parameters takes extra lines of code.
 3. **Better Initialization:** `nn.Linear` uses a highly optimized default formula (Kaiming initialization) to generate its initial random numbers, which makes the model train much faster and more stably than using pure `torch.rand`.
 
-
 ## 6 — 3.5.1 — Causal Attention: Hiding Future Words
 
 **Summary**: For a language model that predicts the _next_ token, a token must never be allowed to attend to tokens that come _after_ it — otherwise the model could "cheat" by looking at the answer. **Causal** (a.k.a. masked, or autoregressive) attention enforces this by zeroing out the upper-triangular part of the attention weight matrix.
@@ -826,6 +824,55 @@ print(attn_weights)
 #         [0.1935, 0.1663, 0.1666, 0.1542, 0.1666, 0.1529]],
 #        grad_fn=<SoftmaxBackward0>)
 ```
+
+#### The Code Breakdown
+
+**Line 1: Building the "Future" Map**
+
+```python
+mask = torch.triu(torch.ones(context_length, context_length), diagonal=1)
+
+```
+
+- `torch.ones` creates a 6x6 grid of pure `1`s.
+- `torch.triu` (Triangle Upper) isolates only the upper-right triangle of that grid (starting one step above the center diagonal because of `diagonal=1`). It leaves those as `1`s and turns everything else to `0`s.
+- This creates a map of "Future Words". A `1` means "this word is in the future," and a `0` means "this word is in the past or present."
+
+**Line 2: Applying the Mask (`masked_fill`)**
+
+```python
+masked = attn_scores.masked_fill(mask.bool(), -torch.inf)
+
+```
+
+- `.masked_fill()` takes our grid of raw `attn_scores` and overlays the triangle mask on top of it.
+- Wherever the mask is `True` (a `1`), it rips out the raw attention score and replaces it with **Negative Infinity** (`-torch.inf`).
+- Wherever the mask is `False` (a `0`), it leaves the original attention score completely alone.
+
+Here is what the matrix looks like after `.masked_fill()` runs:
+
+```text
+# Word 0 only sees itself. Words 1-5 are blocked (-inf).
+[ 0.2899,    -inf,    -inf,    -inf,    -inf,    -inf]
+
+# Word 1 sees Word 0 and itself. Words 2-5 are blocked.
+[ 0.4656,  0.1723,    -inf,    -inf,    -inf,    -inf]
+
+# ...and so on.
+[ 0.4594,  0.1703,  0.1731,    -inf,    -inf,    -inf]
+
+```
+
+#### The Magic: Why Negative Infinity?
+
+Why don't we just replace the future scores with `0`?
+
+Remember that immediately after this step, we push these scores through the **Softmax** function to turn them into percentages. Softmax uses exponents.
+
+- If we fed it a raw score of `0`, $e^{0} = 1$, which would actually give the future word a chunk of the attention budget!
+- By using Negative Infinity, we exploit the rule that $e^{-\infty} = 0$.
+
+By setting future scores to $-\infty$ _before_ Softmax, we mathematically guarantee that Softmax will calculate the numerator as exactly `0`, assigning those future words **0% attention weight**. The model is mathematically forced to ignore them!
 
 **Layer 2 — Math**: $e^{-\infty} = 0$, so any position set to $-\infty$ before softmax contributes _exactly_ $0$ to both the numerator and the denominator of $\text{softmax}(x)_i = e^{x_i} / \sum_j e^{x_j}$ — which is _precisely_ what "zero out and renormalize" (Approach 1) does, but in a single pass.
 
@@ -969,37 +1016,287 @@ The third change is `masked_fill_` with a trailing underscore — an _in-place_ 
 
 Both items in the batch produce identical output — expected, since `batch` was constructed by stacking two copies of the same `inputs`.
 
+### Extra Notes
+
+`register_buffer` is one of those "hidden gem" PyTorch features that you rarely see in beginner tutorials, but it is absolutely essential for writing robust, professional-grade models.
+
+Most simple models only deal with trainable weights (like `nn.Linear`), which PyTorch handles automatically.
+
+Here is the breakdown of exactly what it is and why the author used it here. This will make a great addition to your notes on PyTorch mechanics.
+
+---
+
+### What is `self.register_buffer`?
+
+In PyTorch, `register_buffer` is used to tell your neural network: **"Here is a tensor that is extremely important to how the model works, but it is NOT a trainable weight, so do not update it during backpropagation."**
+
+To understand why this is necessary, it helps to look at the alternatives. You might be wondering, _"Why didn't the author just write `self.mask = torch.triu(...)`?"_ or _"Why didn't they make it an `nn.Parameter` like the weights?"_
+
+Here is exactly what would happen in those scenarios:
+
+##### 1. Why not just a regular attribute? (`self.mask = torch.triu(...)`)
+
+If you just assign the mask as a regular Python attribute, PyTorch's backend doesn't officially "know" about it. This causes two massive problems:
+
+- **The GPU Crash:** When you eventually run `model.to('cuda')` to move your model to the GPU for fast training, PyTorch will move all your `nn.Linear` layers, but it will leave your `self.mask` sitting behind on the CPU. When the model tries to multiply the GPU tensors with the CPU mask, the code will crash with a device mismatch error.
+- **Saving/Loading:** When you save your model using `model.state_dict()`, standard attributes are ignored. The mask wouldn't be saved in your model file.
+
+##### 2. Why not an `nn.Parameter`?
+
+As we discussed earlier, `nn.Parameter` tells PyTorch to track gradients and update the numbers to make the model "learn."
+
+- The causal mask is a strict, permanent rule (1s in the upper triangle, 0s elsewhere). If we made it a `Parameter`, the optimizer would try to change those 1s and 0s during training, completely destroying our rule about hiding future words!
+
+---
+
+##### The Solution: The Buffer
+
+By using `self.register_buffer('mask', tensor)`, you get the best of both worlds:
+
+1. **It moves with the model:** When you call `model.to('cuda')`, PyTorch knows to pick up the mask and move it to the GPU right alongside your `W_query` and `W_key` matrices.
+2. **It saves with the model:** It gets cleanly packed into your `state_dict` when you save your weights.
+3. **It does not learn:** The optimizer completely ignores it, ensuring your triangular mask stays exactly as 1s and 0s forever.
+
+##### How to use it later in the code
+
+Because you registered it with the name `'mask'`, PyTorch automatically creates an attribute for you. Later in your `forward()` function, you don't need any special syntax to use it—you can just call `self.mask` exactly as if it were a normal variable!
+
+---
+
+### Why `keys.transpose(1, 2)` instead of `keys.T`?
+
+**The Problem with `.T`**  
+In earlier steps, our`keys`matrix was 2D:`[Sequence Length, Embedding Dimension]`. Calling `.T` simply flipped the rows and columns.
+
+But in real training, we pass data in **Batches** (multiple sentences at once). This makes our `keys` tensor 3-Dimensional: `[Batch Size, Sequence Length, Embedding Dimension]`.
+If you use `.T` on a 3D tensor, PyTorch reverses _all_ the dimensions. That destroys our batch structure! We want the Batch dimension to stay exactly where it is.
+
+**The Solution: `.transpose()**`The`.transpose(dimA, dimB)` function lets us surgically choose exactly which two dimensions to swap.
+
+In Python, dimensions are zero-indexed:
+
+- **Dimension 0:** Batch Size (Number of sentences)
+- **Dimension 1:** Sequence Length (Number of words)
+- **Dimension 2:** Embedding Size ($d_k$, the features)
+
+When we write `keys.transpose(1, 2)`, we are telling PyTorch:
+_"Leave Dimension 0 (the batches) completely alone. Just swap Dimension 1 (Words) and Dimension 2 (Features)."_
+
+##### The Shape Math (Dry Run)
+
+Let's say we have a batch of **8 sentences**, each with **6 words**, and our projected key embedding size is **2**.
+
+1. **The Starting Shapes:**
+
+- `queries.shape`: `[8, 6, 2]` _(Batch, Words, Features)_
+- `keys.shape`: `[8, 6, 2]` _(Batch, Words, Features)_
+
+2. **The Transpose:**
+   To do matrix multiplication (`@`), the inner dimensions must match. We need to multiply `[8, 6, 2]` by `[8, 2, 6]`.
+
+```python
+keys_transposed = keys.transpose(1, 2)
+print(keys_transposed.shape)
+# torch.Size([8, 2, 6])
+
+```
+
+3. **The Matrix Multiplication (`@`):**
+   PyTorch automatically ignores the Batch dimension (8) and does the matrix multiplication on the rest: `(6 x 2) @ (2 x 6)`.
+
+```python
+attention_scores = queries @ keys.transpose(1, 2)
+print(attention_scores.shape)
+# torch.Size([8, 6, 6])
+
+```
+
+**The Result:** We perfectly output a shape of `[8, 6, 6]`. This means we successfully generated an isolated 6x6 attention grid for _all 8 sentences_ simultaneously!
+
+---
+
+### Dynamic Slicing: `[:num_tokens, :num_tokens]`
+
+#### Code
+
+```python
+attention_scores.masked_fill(
+            self.mask.bool()[:num_tokens:num_tokens], -torch.inf
+        )
+```
+
+**The Problem: Max Length vs. Current Length**
+When we initialized the `CausalAttention` class, we built the `self.mask` using the _maximum_ possible `context_length` the model can ever handle (for example, 1024 words). We do this once in `__init__` so we don't waste time rebuilding the mask on every single forward pass.
+
+However, the specific batch of sentences we pass in right now might only be 6 words long (`num_tokens = 6`).
+If we try to overlay a 1024x1024 mask onto a 6x6 `attn_scores` grid, PyTorch will immediately crash with a shape mismatch error!
+
+**The Solution: Slicing**
+The syntax `[ : , : ]` is how we crop matrices in PyTorch.
+
+- The first side of the comma targets the **rows**.
+- The second side of the comma targets the **columns**.
+- Leaving the space before the colon blank means "start from 0".
+
+So, `[:num_tokens, :num_tokens]` translates to: _"Start at row 0 and grab down to `num_tokens`. Then start at column 0 and grab across to `num_tokens`."_
+
+It acts like a cookie cutter, stamping out the exact size we need from the top-left corner of our giant mask.
+
+---
+
+#### A Small Visual Example
+
+Imagine our model has a maximum context length of 4. In `__init__`, we built this 4x4 mask:
+
+```text
+self.mask =
+[[0, 1, 1, 1],
+ [0, 0, 1, 1],
+ [0, 0, 0, 1],
+ [0, 0, 0, 0]]
+
+```
+
+Now, imagine we pass in the sentence "Your journey" (only **2 words**).
+PyTorch calculates a 2x2 grid for `attn_scores`.
+
+We apply the slice: `self.mask[:2, :2]`
+
+PyTorch goes to the giant mask, grabs rows 0 and 1, and columns 0 and 1. It perfectly crops out the top-left 2x2 corner:
+
+```text
+Sliced Mask =
+[[0, 1],
+ [0, 0]]
+
+```
+
+Now, the sliced mask perfectly fits our 2x2 `attn_scores`, the negative infinities are applied correctly, and the code runs without crashing
+
+---
+
+### The Golden Rule of PyTorch: The Trailing Underscore (`_`)
+
+In PyTorch, there is a strict, universal naming convention for how functions handle computer memory:
+
+- **No Underscore (e.g., `masked_fill`):** Creates a **brand new** tensor. Think of this as clicking _"Save As"_ on a document.
+- **Trailing Underscore (e.g., `masked_fill_`):** Modifies the **existing** tensor directly. Think of this as clicking _"Save"_ on your current document.
+
+---
+
+#### How it Looks in Code
+
+#### 1. The "Save As" Mistake (Out-of-Place)
+
+If you use the standard version without the underscore, PyTorch does the math and generates a new tensor. However, if you don't assign it to a variable, that new tensor immediately vanishes into the void!
+
+```python
+scores = torch.tensor([1, 2, 3])
+
+# PyTorch creates a new tensor, but we didn't assign it to anything!
+scores.masked_fill(mask, 0)
+
+print(scores)
+# tensor([1, 2, 3]) --> The original is completely unchanged!
+
+```
+
+#### 2. The Correct "Save As"
+
+To keep the changes using the standard method, you _must_ overwrite the old variable or catch the output in a new variable.
+
+```python
+scores = torch.tensor([1, 2, 3])
+
+# We explicitly save the new tensor over the old variable
+scores = scores.masked_fill(mask, 0)
+
+```
+
+#### 3. The "In-Place" Fix (The Trailing Underscore)
+
+By adding the underscore, you tell PyTorch to go into the computer's memory, rip out the old numbers in the original tensor, and replace them on the spot. No new tensor is created.
+
+```python
+scores = torch.tensor([1, 2, 3])
+
+# Modifies the original tensor directly in memory
+scores.masked_fill_(mask, 0)
+
+print(scores)
+# tensor([0, 0, 0]) --> Success!
+
+```
+
+---
+
+> **Why use In-Place (`_`)? Memory Efficiency!**
+> In Transformer models, attention matrices can become massive (e.g., a batch of 1024x1024 grids). Creating a brand new copy of that entire grid just to apply a causal mask wastes a huge amount of GPU memory (VRAM). Using `masked_fill_` alters the grid right where it sits, keeping your memory usage lean and helping prevent dreaded Out-Of-Memory (OOM) crashes!
+
 ---
 
 ## 9 — 3.6.1 — `MultiHeadAttentionWrapper`: Stacking Heads
 
 **Summary**: A single attention "head" learns _one_ notion of relevance between tokens. **Multi-head attention** runs several independent attention heads _in parallel_, each with its own $W_q, W_k, W_v$, and concatenates their outputs — letting the model attend to different _kinds_ of relationships simultaneously (e.g. one head might learn syntactic relationships, another might learn coreference).
 
-**The intuition**: Picture a panel of expert reviewers reading the same document, each with a different specialty (one focused on grammar, one on factual consistency, one on tone). Each reviewer ("head") produces their own independent assessment ("context vector") of every sentence; the final report concatenates all their notes side by side. No single reviewer needs to capture _everything_ — they specialize, and their combined output is richer than any one of them alone.
+**The problem it solves**: A single head is forced to compress everything it needs to know about token relationships into one set of Q, K, V weights. Consider the word "it" in "The animal didn't cross the street because it was too tired" — to resolve this correctly, the model needs to think about syntax ("it" is a subject), semantics ("tired" applies to living things), and long-range structure ("animal" is far away). One head has to compromise across all of these. Multiple heads let each one specialize freely.
 
-### The simplest possible implementation: a `ModuleList` of `CausalAttention`s
+**The intuition**: Picture a panel of expert reviewers reading the same document, each with a different specialty — one focused on grammar, one on meaning, one on long-range references. Each reviewer produces their own independent assessment of every sentence. The final output stitches all their notes side by side. No single reviewer needs to capture _everything_ — they specialize, and their combined output is richer than any one of them alone.
+
+**How heads actually learn differently**: All heads receive the same input `x` and are constructed with identical arguments — so why do they learn different things? Because every time you instantiate a `CausalAttention`, its `W_query`, `W_key`, `W_value` are freshly randomly initialized by `nn.Linear`. Head 1 and Head 2 start from completely different weight values. From that point, backpropagation nudges each head's weights based on the gradient flowing through _that specific head's_ path in the computation graph. Since they started differently, and since each head's output occupies a different slice of the final concatenated vector, the gradients they receive are different too. Over many training steps they naturally drift toward capturing different patterns — this specialization is not designed in, it _emerges_.
+
+---
+
+### Why `nn.ModuleList` and not a plain Python list?
+
+If you stored your heads in a regular Python list, PyTorch would be completely unaware they exist. Their parameters would be invisible to `model.parameters()`, they wouldn't move to GPU when you call `.to(device)`, and they wouldn't appear in `state_dict()` for saving and loading. `nn.ModuleList` is PyTorch's way of properly registering a list of submodules so all of that works automatically.
+
+---
+
+### The class
 
 ```python
 class MultiHeadAttentionWrapper(nn.Module):
-    """Multi-head attention built by stacking `num_heads` independent
-    CausalAttention modules side by side.
-    """
+
     def __init__(self, d_in, d_out, context_length, dropout, num_heads, qkv_bias=False):
         super().__init__()
-        self.heads = nn.ModuleList(
-            [CausalAttention(d_in, d_out, context_length, dropout, qkv_bias)
-             for _ in range(num_heads)]
-        )
+
+        # Create num_heads independent CausalAttention modules and register
+        # them with PyTorch via nn.ModuleList (a plain Python list would
+        # hide them from PyTorch's parameter tracking, device handling, etc.)
+        # Each head gets the same constructor arguments but lands on different
+        # random weights because nn.Linear reinitializes every time it is called
+        heads_list = []
+        for _ in range(num_heads):
+            single_head = CausalAttention(d_in, d_out, context_length, dropout, qkv_bias)
+            heads_list.append(single_head)
+
+        self.heads = nn.ModuleList(heads_list)
 
     def forward(self, x):
-        return torch.cat([head(x) for head in self.heads], dim=-1)
 
+        # Run every head on the same input x independently
+        # Each head produces (batch, num_tokens, d_out)
+        head_outputs = []
+        for head in self.heads:
+            head_outputs.append(head(x))
+
+        # Concatenate along the last dimension (the feature/embedding dim)
+        # Two heads with d_out=2 each → (batch, num_tokens, 4)
+        # We are making each token's representation WIDER, not adding more tokens
+        combined = torch.cat(head_outputs, dim=-1)
+        return combined
+```
+
+### Running it
+
+```python
 torch.manual_seed(123)
 context_length = batch.shape[1]  # 6 — number of tokens
 d_in, d_out = 3, 2
-mha = MultiHeadAttentionWrapper(d_in, d_out, context_length, 0.0, num_heads=2)
+mhaw = MultiHeadAttentionWrapper(d_in, d_out, context_length, 0.0, num_heads=2)
 
-context_vecs = mha(batch)
+context_vecs = mhaw(batch)
 print(context_vecs)
 # tensor([[[-0.4519,  0.2216,  0.4772,  0.1063],
 #          [-0.5874,  0.0058,  0.5891,  0.3257],
@@ -1014,42 +1311,1446 @@ print(context_vecs)
 #          [-0.5675, -0.0843,  0.5478,  0.3589],
 #          [-0.5526, -0.0981,  0.5321,  0.3428],
 #          [-0.5299, -0.1081,  0.5077,  0.3493]]], grad_fn=<CatBackward0>)
+
 print("context_vecs.shape:", context_vecs.shape)
 # context_vecs.shape: torch.Size([2, 6, 4])
 ```
 
-With `num_heads=2` and `d_out=2` per head, `torch.cat(..., dim=-1)` concatenates the two `(2, 6, 2)` outputs along the last dimension into `(2, 6, 4)`. Notice the first 2 columns of the output (`[-0.4519, 0.2216, ...]`) are _identical_ to Section 8's `CausalAttention` output — that's `head[0]`, constructed with the exact same `manual_seed(123)` as the standalone example. The remaining 2 columns are `head[1]`, a second independent attention computation with different (also seeded) weights.
+### Reading the output
 
-**Gotcha — this is computationally wasteful**. Each of the `num_heads` `CausalAttention` instances performs its _own_ separate `nn.Linear` projections and its _own_ separate matmuls — `num_heads` independent, sequential (in the Python `for` loop inside `torch.cat`) passes through nearly-identical code. On a GPU, launching many small operations sequentially is much slower than launching one large batched operation. Section 10 fixes this.
+The output shape is `(2, 6, 4)` — batch size 2, 6 tokens, 4-dimensional context vector per token. That 4 comes from `d_out * num_heads = 2 * 2`. Each token's 4-dim vector is literally two 2-dim slices placed side by side:
+
+```
+token "Your" → [-0.4519,  0.2216,  |  0.4772,   0.1063 ]
+               └── Head 1's view ─┘  └─ Head 2's view ─┘
+```
+
+You can verify Head 1's output directly — the first 2 columns `[-0.4519, 0.2216, ...]` are _identical_ to the standalone `CausalAttention` output from Section 8. That's because `torch.manual_seed(123)` followed by the first `CausalAttention(...)` call produces the exact same weights as the standalone example. Head 2 gets the next random initialization and produces the remaining 2 columns.
+
+Both batch items are identical because `batch` was constructed by stacking two copies of the same `inputs` tensor.
+
+### Why `dim=-1` for the concatenation?
+
+`dim=-1` always means the last dimension. For our `(batch, num_tokens, d_out)` tensors, that is the feature/embedding dimension. Concatenating there makes each token's representation _wider_ — you are not adding more tokens, you are adding more information per token. If you mistakenly used `dim=0` or `dim=1` you would be stacking along batch or token dimensions, which would scramble the structure entirely.
+
+### The limitation of this approach
+
+Each of the `num_heads` `CausalAttention` instances runs its own full `nn.Linear` projections and its own matmuls — completely separately, in a Python `for` loop. On a GPU, launching many small sequential operations is much slower than one large batched operation. The model is also parameter-heavier than it needs to be. Section 10 — `MultiHeadAttention` — fixes both of these by projecting Q, K, V once at full width and then reshaping to split into heads, achieving the same result in a single fused tensor operation.
 
 ---
 
 ## 10 — 3.6.2 — `MultiHeadAttention`: The Efficient, Production Implementation
 
-**Summary**: Instead of running `num_heads` separate small attention computations, we run **one** attention computation with `d_out`-dimensional Q/K/V projections, then _reshape_ the result to "split" the `d_out` dimension into `num_heads` heads of size `head_dim = d_out / num_heads`, each of which gets its own causal-masked, softmax'd attention — all via batched tensor operations with no Python-level loop over heads.
+**Summary**: Instead of running `num_heads` separate small attention computations
+in a Python loop, we run **one** attention computation with `d_out`-dimensional
+Q/K/V projections, then _reshape_ the result to split the `d_out` dimension into
+`num_heads` heads — each of size `head_dim = d_out // num_heads` — and do all the
+attention math in one big batched tensor operation with no Python-level loop over
+heads.
 
-**The intuition**: Section 9's wrapper is like hiring `num_heads` separate analysts, each doing their own complete data pipeline from scratch. Section 10 is like hiring _one_ analyst who pulls all the data once, then mentally partitions their notes into `num_heads` separate notebooks and analyzes each notebook independently — same end result, but the expensive "pull all the data" step happens only once.
+---
+
+### Why bother? The problem with the Wrapper
+
+In `MultiHeadAttentionWrapper`, every head ran its own separate `nn.Linear`
+projection and its own matmul — one after another in a Python `for` loop. On a
+CPU this is merely inefficient. On a GPU it is much worse: GPUs are designed to
+do one _massive_ parallel operation, not many small sequential ones. Launching 8
+separate small matmuls is far slower than launching one matmul that is 8x larger,
+even though the total arithmetic is identical. `MultiHeadAttention` fixes this by
+doing everything in one shot.
+
+---
+
+### The Core Idea: Project Once, Then Split
+
+This is the single most important thing to understand about this class.
+
+**Wrapper approach** — project into small then run separately:
+
+```
+
+Head 1: x → W_q1 (3×1) → q1 then attention independently
+Head 2: x → W_q2 (3×1) → q2 then attention independently
+
+```
+
+**Efficient approach** — project into big then split:
+
+```
+
+x → W_query (3×2) → queries (batch, 6, 2)
+↓
+split into 2 heads along last dim
+↓
+Head 1 gets: queries[:, :, 0:1] shape (batch, 6, 1)
+Head 2 gets: queries[:, :, 1:2] shape (batch, 6, 1)
+↓
+both processed in ONE batched matmul
+
+```
+
+The math is identical — the weights that Head 1 sees in the efficient version
+correspond exactly to what a standalone Head 1 would have learned in the wrapper
+version. But now it all happens in one GPU call.
+
+---
+
+### Theory: What is `head_dim` and why must `d_out % num_heads == 0`?
+
+In `MultiHeadAttention`, `d_out` is the **total** output width you want — it must
+equal `d_in` in GPT so blocks can be stacked (output of one block feeds the next).
+
+`head_dim = d_out // num_heads` is how wide each individual head's Q, K, V vectors
+are. For example with `d_out=4, num_heads=2`: each head works in a 2-dimensional
+space. With `d_out=768, num_heads=12` (GPT-2 small): each head works in a
+64-dimensional space.
+
+The divisibility requirement `d_out % num_heads == 0` is simply because you cannot
+split 5 features evenly into 2 heads — the split must be exact. If it is not, the
+`.view()` reshape will fail.
+
+The scaling factor inside softmax also changes: instead of dividing by
+`sqrt(d_out)` like before, we now divide by `sqrt(head_dim)`. This is correct
+because each head's dot product is a sum over `head_dim` dimensions, not `d_out`
+dimensions — and the variance argument from Section 4 applies to the actual dot
+product dimension.
+
+---
+
+### The Shape Transformation Story
+
+This is the trickiest part of the whole chapter. Every line changes the shape, so
+let's track it carefully with `b=2, num_tokens=6, d_in=3, d_out=2, num_heads=2,
+head_dim=1`. We use letters instead of real numbers so you can track exactly where
+each value goes after every transformation.
+
+---
+
+**Step 1 — Project: `x → queries, keys, values`**
+
+One big linear projection per Q, K, V. Nothing is split into heads yet — this is
+identical to what `CausalAttention` did. Each token gets a 2-dim query vector.
+
+```
+x.shape = (2, 6, 3)          ← (batch, tokens, d_in)
+
+queries = W_query(x)
+queries.shape = (2, 6, 2)    ← (batch, tokens, d_out)  — not split yet
+
+Batch 0:                        Batch 1:  (identical, since batch = stack of same input)
+  token 0  "Your"    → [a, b]     token 0  "Your"    → [a, b]
+  token 1  "journey" → [c, d]     token 1  "journey" → [c, d]
+  token 2  "starts"  → [e, f]     token 2  "starts"  → [e, f]
+  token 3  "with"    → [g, h]     token 3  "with"    → [g, h]
+  token 4  "one"     → [i, j]     token 4  "one"     → [i, j]
+  token 5  "step"    → [k, l]     token 5  "step"    → [k, l]
+
+(keys and values follow the same shape — skipped here for brevity)
+```
+
+**Matrix Visualization:**
+
+```
+x.shape = (2, 6, 3)    ← (batch, tokens, d_in)
+
+x = [
+      [                                  ← Batch 0
+        [0.43, 0.15, 0.89],      ← "Your"
+        [0.55, 0.87, 0.66],      ← "journey"
+        [0.57, 0.85, 0.64],      ← "starts"
+        [0.22, 0.58, 0.33],      ← "with"
+        [0.77, 0.25, 0.10],      ← "one"
+        [0.05, 0.80, 0.55]       ← "step"
+      ],
+      [                                  ← Batch 1 (identical)
+        [0.43, 0.15, 0.89],      ← "Your"
+        [0.55, 0.87, 0.66],      ← "journey"
+        [0.57, 0.85, 0.64],      ← "starts"
+        [0.22, 0.58, 0.33],      ← "with"
+        [0.77, 0.25, 0.10],      ← "one"
+        [0.05, 0.80, 0.55]       ← "step"
+      ]
+    ]
+```
+
+After passing through `W_query` — each 3-dim token vector gets projected down to
+2-dim. We use letters to track where each value goes in later steps.
+
+```
+queries = W_query(x)
+queries.shape = (2, 6, 2)    ← (batch, tokens, d_out)
+                                 d_out=2 is the FULL width, not yet split into heads
+
+queries = [
+            [                     ← Batch 0
+              [a, b],    ← "Your"    — a is position 0, b is position 1
+              [c, d],    ← "journey"
+              [e, f],    ← "starts"
+              [g, h],    ← "with"
+              [i, j],    ← "one"
+              [k, l]     ← "step"
+            ],
+            [                     ← Batch 1 (identical values, same input)
+              [a, b],    ← "Your"
+              [c, d],    ← "journey"
+              [e, f],    ← "starts"
+              [g, h],    ← "with"
+              [i, j],    ← "one"
+              [k, l]     ← "step"
+            ]
+          ]
+
+keys   = W_key(x)     → same shape (2, 6, 2), different values (W_key ≠ W_query)
+values = W_value(x)   → same shape (2, 6, 2), different values (W_value ≠ W_query)
+```
+
+At this point each token's 2-dim vector is just a flat row — `[a, b]` for "Your",
+`[c, d]` for "journey", and so on. The split into Head 1 and Head 2 has NOT
+happened yet. Both `a` and `b` are sitting side by side with no head assignment.
+Step 2 is where those two numbers get separated into their respective heads.
+
+---
+
+**The batches are identical by construction** — remember in the chapter, `batch` was created like this:
+
+```python
+batch = torch.stack((inputs, inputs), dim=0)
+```
+
+You literally stacked the same `inputs` tensor twice. So Batch 0 and Batch 1 have the exact same token embeddings going in, and therefore the exact same projected values coming out. That is why both batches show `[a, b]` for "Your" — it is not a mistake, it is just reflecting the fact that the input data is identical. In real training, each batch item would be a different sentence with completely different values.
+
+**The heads being different is a separate story** — that has nothing to do with the batch dimension. The heads differ because after Step 2 and Step 3, `a` goes to Head 1 and `b` goes to Head 2. Those two values came from the same `W_query` projection, but they end up in different heads which then have their own separate attention computations with different score matrices and different attention weight distributions.
+
+So to be precise:
+
+```
+Batch 0 = Batch 1       ← because we stacked the same input twice (artificial setup)
+Head 1 ≠ Head 2         ← because a ≠ b, and they go through different attention paths
+```
+
+The weight initialization difference I mentioned earlier was about `W_query`, `W_key`, `W_value` being different across heads in the **Wrapper** version — where each `CausalAttention` had its own separate weight matrices. In `MultiHeadAttention` the split happens differently via `.view()`, but the end result is the same — `a` and `b` are different numbers because `W_query` projects into a 2-dim space and those two dimensions naturally carry different information.
+
+**Step 2 — Reshape: split `d_out` into `(num_heads, head_dim)`**
+
+`.view(b, num_tokens, num_heads, head_dim)` reinterprets the last dimension.
+`d_out=2` becomes `(num_heads=2, head_dim=1)`. No data moves in memory — PyTorch
+just changes how it reads the same bytes. The two numbers that were side by side
+in a flat row are now read as two separate heads.
+
+Before `.view()` — each token owns a flat 2-dim row, no head assignment yet:
+
+```
+queries.shape = (2, 6, 2)    ← (batch, tokens, d_out)
+
+queries = [
+            [              ← Batch 0
+              [a, b],    ← "Your"    — both a and b belong to no head yet
+              [c, d],    ← "journey"
+              [e, f],    ← "starts"
+              [g, h],    ← "with"
+              [i, j],    ← "one"
+              [k, l]     ← "step"
+            ],           ← end Batch 0
+            [              ← Batch 1 (identical)
+              [a, b],    ← "Your"
+              [c, d],    ← "journey"
+              [e, f],    ← "starts"
+              [g, h],    ← "with"
+              [i, j],    ← "one"
+              [k, l]     ← "step"
+            ]            ← end Batch 1
+          ]
+```
+
+After `.view(b, num_tokens, num_heads, head_dim)` — same data, now the last dim
+`d_out=2` is read as `(num_heads=2, head_dim=1)`. Each token's flat `[a, b]` row
+becomes `[[a], [b]]` — `a` is now Head 1's slot, `b` is now Head 2's slot:
+
+Two way of visualization:  
+**1st**
+
+```
+queries.shape = (2, 6, 2, 1)    ← (batch, tokens, heads, head_dim)
+
+queries = [
+            [                     ← Batch 0
+              [[a], [b]],    ← "Your"    — [a] = Head 1,  [b] = Head 2
+              [[c], [d]],    ← "journey" — [c] = Head 1,  [d] = Head 2
+              [[e], [f]],    ← "starts"  — [e] = Head 1,  [f] = Head 2
+              [[g], [h]],    ← "with"    — [g] = Head 1,  [h] = Head 2
+              [[i], [j]],    ← "one"     — [i] = Head 1,  [j] = Head 2
+              [[k], [l]]     ← "step"    — [k] = Head 1,  [l] = Head 2
+            ],                ← end Batch 0
+            [                     ← Batch 1 (identical)
+              [[a], [b]],    ← "Your"
+              [[c], [d]],    ← "journey"
+              [[e], [f]],    ← "starts"
+              [[g], [h]],    ← "with"
+              [[i], [j]],    ← "one"
+              [[k], [l]]     ← "step"
+            ]                 ← end Batch 1
+          ]
+
+Indexing is now: queries[batch, token, head, head_dim_position]
+  queries[0, 0, 0, 0] = a   ← Batch 0, "Your",    Head 1
+  queries[0, 0, 1, 0] = b   ← Batch 0, "Your",    Head 2
+  queries[0, 1, 0, 0] = c   ← Batch 0, "journey", Head 1
+  queries[0, 1, 1, 0] = d   ← Batch 0, "journey", Head 2
+```
+
+**2nd**
+
+```
+queries.shape = (2, 6, 2, 1)    ← (batch, tokens, heads, head_dim)
+
+queries = [
+            [                         ← Batch 0
+              [                  ← "Your"
+                [a],             ← Head 1's query for "Your"
+                [b]              ← Head 2's query for "Your"
+              ],
+              [                  ← "journey"
+                [c],             ← Head 1's query for "journey"
+                [d]              ← Head 2's query for "journey"
+              ],
+              [                  ← "starts"
+                [e],             ← Head 1's query for "starts"
+                [f]              ← Head 2's query for "starts"
+              ],
+              [                  ← "with"
+                [g],             ← Head 1's query for "with"
+                [h]              ← Head 2's query for "with"
+              ],
+              [                  ← "one"
+                [i],             ← Head 1's query for "one"
+                [j]              ← Head 2's query for "one"
+              ],
+              [                  ← "step"
+                [k],             ← Head 1's query for "step"
+                [l]              ← Head 2's query for "step"
+              ]
+            ],                        ← end Batch 0
+            [                         ← Batch 1 (identical)
+              [
+                [a],
+                [b]
+              ],
+              [
+                [c],
+                [d]
+              ],
+              [
+                [e],
+                [f]
+              ],
+              [
+                [g],
+                [h]
+              ],
+              [
+                [i],
+                [j]
+              ],
+              [
+                [k],
+                [l]
+              ]
+            ]                         ← end Batch 1
+          ]
+
+Indexing is now: queries[batch, token, head, head_dim_position]
+  queries[0, 0, 0, 0] = a   ← Batch 0, "Your",    Head 1
+  queries[0, 0, 1, 0] = b   ← Batch 0, "Your",    Head 2
+  queries[0, 1, 0, 0] = c   ← Batch 0, "journey", Head 1
+  queries[0, 1, 1, 0] = d   ← Batch 0, "journey", Head 2
+```
+
+Notice the data is still grouped by token — "Your" owns both `[a]` and `[b]`,
+"journey" owns both `[c]` and `[d]`, and so on. Each token is still carrying both
+heads' values together. Head 1 and Head 2 are not yet separated into their own
+independent groups. Step 3 fixes that by transposing so heads come before tokens.
+
+---
+
+**Step 3 — Transpose: bring `num_heads` next to `batch`**
+
+`.transpose(1, 2)` swaps dim 1 (`num_tokens=6`) and dim 2 (`num_heads=2`). No data
+moves — only the indexing order changes. After this, each `[batch, head]` slice
+contains that head's queries for ALL tokens, which is exactly what one head needs
+to compute its own attention scores independently.
+
+Before `.transpose(1, 2)` — grouped by token, each token owns both heads:
+
+```
+queries.shape = (2, 6, 2, 1)    ← (batch, tokens, heads, head_dim)
+
+queries = [
+            [                         ← Batch 0
+              [                  ← Token 0 "Your"    — owns both heads
+                [a],             ← Head 1's query for "Your"
+                [b]              ← Head 2's query for "Your"
+              ],
+              [                  ← Token 1 "journey" — owns both heads
+                [c],             ← Head 1's query for "journey"
+                [d]              ← Head 2's query for "journey"
+              ],
+              [                  ← Token 2 "starts"  — owns both heads
+                [e],             ← Head 1's query for "starts"
+                [f]              ← Head 2's query for "starts"
+              ],
+              [                  ← Token 3 "with"    — owns both heads
+                [g],             ← Head 1's query for "with"
+                [h]              ← Head 2's query for "with"
+              ],
+              [                  ← Token 4 "one"     — owns both heads
+                [i],             ← Head 1's query for "one"
+                [j]              ← Head 2's query for "one"
+              ],
+              [                  ← Token 5 "step"    — owns both heads
+                [k],             ← Head 1's query for "step"
+                [l]              ← Head 2's query for "step"
+              ]
+            ],                        ← end Batch 0
+            [                         ← Batch 1 (identical)
+              [[a], [b]],        ← Token 0 "Your"    (Head 1, Head 2)
+              [[c], [d]],        ← Token 1 "journey" (Head 1, Head 2)
+              [[e], [f]],        ← Token 2 "starts"  (Head 1, Head 2)
+              [[g], [h]],        ← Token 3 "with"    (Head 1, Head 2)
+              [[i], [j]],        ← Token 4 "one"     (Head 1, Head 2)
+              [[k], [l]]         ← Token 5 "step"    (Head 1, Head 2)
+            ]                         ← end Batch 1
+          ]
+```
+
+After `.transpose(1, 2)` — now grouped by head, each head owns all tokens:
+
+```
+queries.shape = (2, 2, 6, 1)    ← (batch, heads, tokens, head_dim)
+                 ↑   ↑  ↑  ↑
+               batch  │  │  head_dim
+                    heads tokens
+                    (swapped!)
+
+queries = [
+            [                         ← Batch 0
+              [                  ← Head 1 — owns ALL tokens
+                [a],             ← Token 0 "Your"    — Head 1's query
+                [c],             ← Token 1 "journey" — Head 1's query
+                [e],             ← Token 2 "starts"  — Head 1's query
+                [g],             ← Token 3 "with"    — Head 1's query
+                [i],             ← Token 4 "one"     — Head 1's query
+                [k]              ← Token 5 "step"    — Head 1's query
+              ],
+              [                  ← Head 2 — owns ALL tokens
+                [b],             ← Token 0 "Your"    — Head 2's query
+                [d],             ← Token 1 "journey" — Head 2's query
+                [f],             ← Token 2 "starts"  — Head 2's query
+                [h],             ← Token 3 "with"    — Head 2's query
+                [j],             ← Token 4 "one"     — Head 2's query
+                [l]              ← Token 5 "step"    — Head 2's query
+              ]
+            ],                        ← end Batch 0
+            [                         ← Batch 1 (identical)
+              [                  ← Head 1 — owns ALL tokens
+                [a],             ← Token 0 "Your"    — Head 1's query
+                [c],             ← Token 1 "journey" — Head 1's query
+                [e],             ← Token 2 "starts"  — Head 1's query
+                [g],             ← Token 3 "with"    — Head 1's query
+                [i],             ← Token 4 "one"     — Head 1's query
+                [k]              ← Token 5 "step"    — Head 1's query
+              ],
+              [                  ← Head 2 — owns ALL tokens
+                [b],             ← Token 0 "Your"    — Head 2's query
+                [d],             ← Token 1 "journey" — Head 2's query
+                [f],             ← Token 2 "starts"  — Head 2's query
+                [h],             ← Token 3 "with"    — Head 2's query
+                [j],             ← Token 4 "one"     — Head 2's query
+                [l]              ← Token 5 "step"    — Head 2's query
+              ]
+            ]                         ← end Batch 1
+          ]
+
+Indexing is now: queries[batch, head, token, head_dim_position]
+  queries[0, 0, 0, 0] = a   ← Batch 0, Head 1, Token 0 "Your"
+  queries[0, 0, 1, 0] = c   ← Batch 0, Head 1, Token 1 "journey"
+  queries[0, 1, 0, 0] = b   ← Batch 0, Head 2, Token 0 "Your"
+  queries[0, 1, 1, 0] = d   ← Batch 0, Head 2, Token 1 "journey"
+```
+
+Each `[batch, head]` slice is now a self-contained `(6, 1)` matrix — all of one
+head's queries across every token. PyTorch's batched matmul treats `(batch=2,
+heads=2)` as the outer batch dimensions and runs 4 independent matmuls in one call:
+
+```
+  queries[0, 0, :, :] — Batch 0, Head 1: [[a], [c], [e], [g], [i], [k]]  shape (6, 1)
+  queries[0, 1, :, :] — Batch 0, Head 2: [[b], [d], [f], [h], [j], [l]]  shape (6, 1)
+  queries[1, 0, :, :] — Batch 1, Head 1: [[a], [c], [e], [g], [i], [k]]  shape (6, 1)
+  queries[1, 1, :, :] — Batch 1, Head 2: [[b], [d], [f], [h], [j], [l]]  shape (6, 1)
+```
+
+If you had NOT transposed — a `[batch, token]` slice would give `(heads, head_dim)`
+meaning two heads' queries for just ONE token. The matmul would compute scores
+between heads instead of between tokens — completely wrong.
+
+---
+
+**Step 4 — Attention scores: `queries @ keys.transpose(2, 3)`**
+
+We want Q @ K^T per head. Keys after step 3 have shape `(2, 2, 6, 1)`. We need to
+transpose the last two dims of K — turning `(tokens, head_dim)` into
+`(head_dim, tokens)` — so the matmul works out to `(tokens, tokens)` per head.
+That is `transpose(2, 3)`, not `transpose(1, 2)`.
+
+First, what `keys.transpose(2, 3)` does — swaps the last two dims of keys,
+turning each head's `(6, 1)` column into a `(1, 6)` row:
+
+```
+keys.shape = (2, 2, 6, 1)    ← (batch, heads, tokens, head_dim)  — after Step 3
+
+keys = [
+         [                        ← Batch 0
+           [                 ← Head 1 — owns ALL tokens
+             [a'],           ← Token 0 "Your"    — Head 1's key
+             [c'],           ← Token 1 "journey" — Head 1's key
+             [e'],           ← Token 2 "starts"  — Head 1's key
+             [g'],           ← Token 3 "with"    — Head 1's key
+             [i'],           ← Token 4 "one"     — Head 1's key
+             [k']            ← Token 5 "step"    — Head 1's key
+           ],
+           [                 ← Head 2 — owns ALL tokens
+             [b'],           ← Token 0 "Your"    — Head 2's key
+             [d'],           ← Token 1 "journey" — Head 2's key
+             [f'],           ← Token 2 "starts"  — Head 2's key
+             [h'],           ← Token 3 "with"    — Head 2's key
+             [j'],           ← Token 4 "one"     — Head 2's key
+             [l']            ← Token 5 "step"    — Head 2's key
+           ]
+         ],                       ← end Batch 0
+         [                        ← Batch 1 (identical)
+           [                      ← Head 1 — owns ALL tokens
+             [a'], [c'], [e'], [g'], [i'], [k']
+           ],
+           [                      ← Head 2 — owns ALL tokens
+             [b'], [d'], [f'], [h'], [j'], [l']
+           ]
+         ]                        ← end Batch 1
+       ]
+
+Note: keys use primed letters (a', b', ...) to show they are different values
+from queries (a, b, ...) — W_key ≠ W_query so the projections differ.
+```
+
+After `keys.transpose(2, 3)` — each head's token column flipped into a row:
+
+```
+keys.transpose(2, 3).shape = (2, 2, 1, 6)    ← (batch, heads, head_dim, tokens)
+
+keys.transpose(2, 3) = [
+                          [                             ← Batch 0
+                            [                      ← Head 1
+                              [a', c', e', g', i', k']  ← all 6 token keys in one row
+                            ],
+                            [                      ← Head 2
+                              [b', d', f', h', j', l']  ← all 6 token keys in one row
+                            ]
+                          ],                            ← end Batch 0
+                          [                             ← Batch 1 (identical)
+                            [[a', c', e', g', i', k']],
+                            [[b', d', f', h', j', l']]
+                          ]                             ← end Batch 1
+                        ]
+```
+
+Now the matmul `queries @ keys.transpose(2, 3)` — PyTorch treats `(batch=2,
+heads=2)` as outer batch dims and runs 4 independent `(6,1) @ (1,6)` matmuls,
+each producing a `(6, 6)` score matrix:
+
+```
+queries[0, 0] @ keys.transpose(2,3)[0, 0]
+= [[a],   @   [[a', c', e', g', i', k']]
+   [c],
+   [e],
+   [g],
+   [i],
+   [k]]
+
+= [                                              ← each row = one query token
+    [a*a', a*c', a*e', a*g', a*i', a*k'],   ← Token 0 "Your"    attends to all
+    [c*a', c*c', c*e', c*g', c*i', c*k'],   ← Token 1 "journey" attends to all
+    [e*a', e*c', e*e', e*g', e*i', e*k'],   ← Token 2 "starts"  attends to all
+    [g*a', g*c', g*e', g*g', g*i', g*k'],   ← Token 3 "with"    attends to all
+    [i*a', i*c', i*e', i*g', i*i', i*k'],   ← Token 4 "one"     attends to all
+    [k*a', k*c', k*e', k*g', k*i', k*k']    ← Token 5 "step"    attends to all
+  ]
+  shape: (6, 6)    ← Batch 0, Head 1's score matrix
+```
+
+All 4 matmuls happen in one GPU call, giving:
+
+```
+attn_scores.shape = (2, 2, 6, 6)    ← (batch, heads, tokens, tokens)
+
+attn_scores = [
+                [                         ← Batch 0
+                  [                  ← Head 1's score matrix (6×6)
+                    [a*a', a*c', a*e', a*g', a*i', a*k'],   ← "Your"    vs all
+                    [c*a', c*c', c*e', c*g', c*i', c*k'],   ← "journey" vs all
+                    [e*a', e*c', e*e', e*g', e*i', e*k'],   ← "starts"  vs all
+                    [g*a', g*c', g*e', g*g', g*i', g*k'],   ← "with"    vs all
+                    [i*a', i*c', i*e', i*g', i*i', i*k'],   ← "one"     vs all
+                    [k*a', k*c', k*e', k*g', k*i', k*k']    ← "step"    vs all
+                  ],
+                  [                  ← Head 2's score matrix (6×6)
+                    [b*b', b*d', b*f', b*h', b*j', b*l'],   ← "Your"    vs all
+                    [d*b', d*d', d*f', d*h', d*j', d*l'],   ← "journey" vs all
+                    [f*b', f*d', f*f', f*h', f*j', f*l'],   ← "starts"  vs all
+                    [h*b', h*d', h*f', h*h', h*j', h*l'],   ← "with"    vs all
+                    [j*b', j*d', j*f', j*h', j*j', j*l'],   ← "one"     vs all
+                    [l*b', l*d', l*f', l*h', l*j', l*l']    ← "step"    vs all
+                  ]
+                ],                        ← end Batch 0
+                [                         ← Batch 1 (identical to Batch 0)
+                  [... Head 1's score matrix ...],
+                  [... Head 2's score matrix ...]
+                ]                         ← end Batch 1
+              ]
+
+Head 1 and Head 2 produce DIFFERENT score matrices because a ≠ b and a' ≠ b'
+— the two heads projected the same input tokens into different query and key
+spaces, so they measure token similarity differently.
+```
+
+---
+
+**Step 5 — Mask, scale, softmax, dropout**
+
+Same logic as `CausalAttention`, just 4D now. The causal mask and softmax both
+operate on the last two dimensions `(tokens, tokens)` — so nothing conceptually
+new here, just one extra dimension to carry around.
+
+We have 4 independent score matrices coming in — one per `(batch, head)` combo.
+Each one gets masked, scaled, and softmaxed completely independently.
+
+**Sub-step 5a — Apply causal mask (upper triangle → -inf)**
+
+The mask prevents each token from attending to future tokens. Same `torch.triu`
+mask from `CausalAttention`, just broadcast across the `(batch, heads)` dims:
+
+```
+mask = [            ← shape (6, 6), broadcast over (batch=2, heads=2) automatically
+  [0, 1, 1, 1, 1, 1],   ← "Your"    can only see itself
+  [0, 0, 1, 1, 1, 1],   ← "journey" can see "Your" and itself
+  [0, 0, 0, 1, 1, 1],   ← "starts"  can see tokens 0-2
+  [0, 0, 0, 0, 1, 1],   ← "with"    can see tokens 0-3
+  [0, 0, 0, 0, 0, 1],   ← "one"     can see tokens 0-4
+  [0, 0, 0, 0, 0, 0]    ← "step"    can see all tokens
+]
+where 1 → replace with -inf,  0 → keep the score
+
+After masking — shown for Batch 0, Head 1:
+
+attn_scores[0, 0] = [
+  [a*a',   -inf,   -inf,   -inf,   -inf,   -inf],  ← "Your"    — only sees itself
+  [c*a', c*c',     -inf,   -inf,   -inf,   -inf],  ← "journey" — sees 2 tokens
+  [e*a', e*c',   e*e',     -inf,   -inf,   -inf],  ← "starts"  — sees 3 tokens
+  [g*a', g*c',   g*e',   g*g',     -inf,   -inf],  ← "with"    — sees 4 tokens
+  [i*a', i*c',   i*e',   i*g',   i*i',     -inf],  ← "one"     — sees 5 tokens
+  [k*a', k*c',   k*e',   k*g',   k*i',   k*k' ]   ← "step"    — sees all 6
+]
+
+Batch 0, Head 2 gets the same mask pattern but on different score values:
+
+attn_scores[0, 1] = [
+  [b*b',   -inf,   -inf,   -inf,   -inf,   -inf],  ← "Your"
+  [d*b', d*d',     -inf,   -inf,   -inf,   -inf],  ← "journey"
+  [f*b', f*d',   f*f',     -inf,   -inf,   -inf],  ← "starts"
+  [h*b', h*d',   h*f',   h*h',     -inf,   -inf],  ← "with"
+  [j*b', j*d',   j*f',   j*h',   j*j',     -inf],  ← "one"
+  [l*b', l*d',   l*f',   l*h',   l*j',   l*l' ]   ← "step"
+]
+```
+
+**Sub-step 5b — Scale by `1 / sqrt(head_dim)`**
+
+We divide by `sqrt(head_dim)=sqrt(1)=1` in our toy example, so the numbers do
+not change here. In a real model with larger `head_dim` (e.g. 64 in GPT-2), this
+scaling matters — it prevents dot products from growing too large and pushing
+softmax into a saturated, near-zero-gradient region. We divide by `sqrt(head_dim)`
+and NOT `sqrt(d_out)` because each head's dot product sums over `head_dim`
+dimensions, not `d_out` dimensions — that is what controls the variance.
+
+```
+attn_scores[0, 0] after scaling (head_dim=1, so unchanged here):
+
+[
+  [a*a',   -inf,   -inf,   -inf,   -inf,   -inf],
+  [c*a', c*c',     -inf,   -inf,   -inf,   -inf],
+  [e*a', e*c',   e*e',     -inf,   -inf,   -inf],
+  [g*a', g*c',   g*e',   g*g',     -inf,   -inf],
+  [i*a', i*c',   i*e',   i*g',   i*i',     -inf],
+  [k*a', k*c',   k*e',   k*g',   k*i',   k*k' ]
+]
+```
+
+**Sub-step 5c — Softmax along `dim=-1`**
+
+Softmax is applied row by row — each token gets its own probability distribution
+over the tokens it is allowed to attend to. `-inf` entries become exactly `0`
+after softmax (`e^-inf = 0`), so future tokens vanish cleanly without any
+renormalization step needed.
+
+```
+attn_weights.shape = (2, 2, 6, 6)    ← same shape, values now sum to 1 per row
+
+attn_weights[0, 0] = [          ← Batch 0, Head 1 — after softmax
+  [1.0,    0,      0,      0,      0,      0   ],  ← "Your"    — 100% on itself
+  [w_ca, w_cc,     0,      0,      0,      0   ],  ← "journey" — split over 2 tokens
+  [w_ea, w_ec,   w_ee,     0,      0,      0   ],  ← "starts"  — split over 3 tokens
+  [w_ga, w_gc,   w_ge,  w_gg,      0,      0   ],  ← "with"    — split over 4 tokens
+  [w_ia, w_ic,   w_ie,  w_ig,   w_ii,      0   ],  ← "one"     — split over 5 tokens
+  [w_ka, w_kc,   w_ke,  w_kg,   w_ki,     w_kk ]   ← "step"    — split over 6 tokens
+]
+where each row sums to 1.0
+
+attn_weights[0, 1] = [          ← Batch 0, Head 2 — different values, same structure
+  [1.0,    0,      0,      0,      0,      0   ],
+  [w_db, w_dd,     0,      0,      0,      0   ],
+  [w_fb, w_fd,   w_ff,     0,      0,      0   ],
+  [w_hb, w_hd,   w_hf,  w_hh,      0,      0   ],
+  [w_jb, w_jd,   w_jf,  w_jh,   w_jj,      0   ],
+  [w_lb, w_ld,   w_lf,  w_lh,   w_lj,     w_ll ]
+]
+
+Head 1 and Head 2 have completely different weight values — same triangular
+structure enforced by the mask, but different attention distributions because
+their score matrices a*a', c*a'... vs b*b', d*b'... came from different
+query and key projections.
+```
+
+**Sub-step 5d — Dropout**
+
+Randomly zeroes out some attention weights during training and scales the
+survivors by `1/(1-p)` to keep expected values unchanged. At `dropout=0.0`
+(as in our test) nothing changes. The shape stays `(2, 2, 6, 6)` throughout.
+
+```
+attn_weights.shape = (2, 2, 6, 6)    ← unchanged by dropout at rate 0.0
+```
+
+---
+
+**Step 6 — Context vectors: `attn_weights @ values`**
+
+This is the exact same weighted-sum operation `CausalAttention` did, just
+running once per `(batch, head)` slice instead of once per call. Each head
+blends the value vectors of every token it is allowed to see, using the
+attention weights it computed for itself in Step 5.
+
+First, what `values` looks like after Step 3 — same shape and structure as
+`keys`, but produced by `W_value`, so we use double-primed letters (`a''`,
+`b''`, ...) to keep queries, keys, and values visually distinct:
+
+```
+values.shape = (2, 2, 6, 1)    ← (batch, heads, tokens, head_dim)
+               ↑   ↑  ↑  ↑
+             batch heads tokens head_dim
+
+values = [
+           [                        ← Batch 0
+             [                 ← Head 1 — owns ALL tokens
+               [a''],          ← Token 0 "Your"    — Head 1's value
+               [c''],          ← Token 1 "journey" — Head 1's value
+               [e''],          ← Token 2 "starts"  — Head 1's value
+               [g''],          ← Token 3 "with"    — Head 1's value
+               [i''],          ← Token 4 "one"     — Head 1's value
+               [k'']           ← Token 5 "step"    — Head 1's value
+             ],
+             [                 ← Head 2 — owns ALL tokens
+               [b''],          ← Token 0 "Your"    — Head 2's value
+               [d''],          ← Token 1 "journey" — Head 2's value
+               [f''],          ← Token 2 "starts"  — Head 2's value
+               [h''],          ← Token 3 "with"    — Head 2's value
+               [j''],          ← Token 4 "one"     — Head 2's value
+               [l'']           ← Token 5 "step"    — Head 2's value
+             ]
+           ],                       ← end Batch 0
+           [                        ← Batch 1 (identical)
+             [                 ← Head 1 — owns ALL tokens
+               [a''],          ← Token 0 "Your"    — Head 1's value
+               [c''],          ← Token 1 "journey" — Head 1's value
+               [e''],          ← Token 2 "starts"  — Head 1's value
+               [g''],          ← Token 3 "with"    — Head 1's value
+               [i''],          ← Token 4 "one"     — Head 1's value
+               [k'']           ← Token 5 "step"    — Head 1's value
+             ],
+             [                 ← Head 2 — owns ALL tokens
+               [b''],          ← Token 0 "Your"    — Head 2's value
+               [d''],          ← Token 1 "journey" — Head 2's value
+               [f''],          ← Token 2 "starts"  — Head 2's value
+               [h''],          ← Token 3 "with"    — Head 2's value
+               [j''],          ← Token 4 "one"     — Head 2's value
+               [l'']           ← Token 5 "step"    — Head 2's value
+             ]
+           ]                        ← end Batch 1
+         ]
+
+Note: values use double-primed letters (a'', b'', ...) — different numbers
+from both queries (a, b, ...) and keys (a', b', ...), since
+W_value ≠ W_query ≠ W_key.
+```
+
+Now the matmul `attn_weights @ values` — PyTorch treats `(batch=2, heads=2)`
+as outer batch dims and runs 4 independent `(6, 6) @ (6, 1)` matmuls, each
+producing a `(6, 1)` column of context vectors:
+
+```
+attn_weights[0, 0] @ values[0, 0]      ← Batch 0, Head 1
+
+  [1.0,    0,      0,      0,      0,      0   ]      [a'']
+  [w_ca, w_cc,     0,      0,      0,      0   ]      [c'']
+  [w_ea, w_ec,   w_ee,     0,      0,      0   ]   @  [e'']
+  [w_ga, w_gc,   w_ge,  w_gg,      0,      0   ]      [g'']
+  [w_ia, w_ic,   w_ie,  w_ig,   w_ii,      0   ]      [i'']
+  [w_ka, w_kc,   w_ke,  w_kg,   w_ki,   w_kk  ]      [k'']
+
+= [
+    [1.0*a''                                                          ],  ← "Your"    — sees only itself
+    [w_ca*a'' + w_cc*c''                                              ],  ← "journey" — blends 2 values
+    [w_ea*a'' + w_ec*c'' + w_ee*e''                                   ],  ← "starts"  — blends 3 values
+    [w_ga*a'' + w_gc*c'' + w_ge*e'' + w_gg*g''                        ],  ← "with"    — blends 4 values
+    [w_ia*a'' + w_ic*c'' + w_ie*e'' + w_ig*g'' + w_ii*i''             ],  ← "one"     — blends 5 values
+    [w_ka*a'' + w_kc*c'' + w_ke*e'' + w_kg*g'' + w_ki*i'' + w_kk*k'' ]   ← "step"    — blends 6 values
+  ]
+  shape: (6, 1)    ← Batch 0, Head 1's context vectors, one per token
+
+We label these six results ca, cc, ce, cg, ci, ck — each name keeps the query
+letter of the token it belongs to so you can trace it straight back to Step 1.
+```
+
+Head 2 runs the identical mechanics on its own numbers:
+
+```
+attn_weights[0, 1] @ values[0, 1]      ← Batch 0, Head 2
+
+= [
+    [1.0*b''                                                              ],  ← "Your"
+    [w_db*b'' + w_dd*d''                                                  ],  ← "journey"
+    [w_fb*b'' + w_fd*d'' + w_ff*f''                                       ],  ← "starts"
+    [w_hb*b'' + w_hd*d'' + w_hf*f'' + w_hh*h''                            ],  ← "with"
+    [w_jb*b'' + w_jd*d'' + w_jf*f'' + w_jh*h'' + w_jj*j''                 ],  ← "one"
+    [w_lb*b'' + w_ld*d'' + w_lf*f'' + w_lh*h'' + w_lj*j'' + w_ll*l''     ]   ← "step"
+  ]
+  shape: (6, 1)    ← Batch 0, Head 2's context vectors
+
+We label these cb, cd, cf, ch, cj, cl.
+```
+
+All 4 `(batch, head)` matmuls happen in one GPU call, giving:
+
+```
+context_vec.shape = (2, 2, 6, 1)    ← (batch, heads, tokens, head_dim)
+                     ↑   ↑  ↑  ↑
+                   batch heads tokens head_dim
+
+context_vec = [
+                [                         ← Batch 0
+                  [                  ← Head 1 — owns ALL tokens
+                    [ca],            ← Token 0 "Your"    — Head 1's context
+                    [cc],            ← Token 1 "journey" — Head 1's context
+                    [ce],            ← Token 2 "starts"  — Head 1's context
+                    [cg],            ← Token 3 "with"    — Head 1's context
+                    [ci],            ← Token 4 "one"     — Head 1's context
+                    [ck]             ← Token 5 "step"    — Head 1's context
+                  ],
+                  [                  ← Head 2 — owns ALL tokens
+                    [cb],            ← Token 0 "Your"    — Head 2's context
+                    [cd],            ← Token 1 "journey" — Head 2's context
+                    [cf],            ← Token 2 "starts"  — Head 2's context
+                    [ch],            ← Token 3 "with"    — Head 2's context
+                    [cj],            ← Token 4 "one"     — Head 2's context
+                    [cl]             ← Token 5 "step"    — Head 2's context
+                  ]
+                ],                        ← end Batch 0
+                [                         ← Batch 1 (identical)
+                  [                  ← Head 1 — owns ALL tokens
+                    [ca],            ← Token 0 "Your"    — Head 1's context
+                    [cc],            ← Token 1 "journey" — Head 1's context
+                    [ce],            ← Token 2 "starts"  — Head 1's context
+                    [cg],            ← Token 3 "with"    — Head 1's context
+                    [ci],            ← Token 4 "one"     — Head 1's context
+                    [ck]             ← Token 5 "step"    — Head 1's context
+                  ],
+                  [                  ← Head 2 — owns ALL tokens
+                    [cb],            ← Token 0 "Your"    — Head 2's context
+                    [cd],            ← Token 1 "journey" — Head 2's context
+                    [cf],            ← Token 2 "starts"  — Head 2's context
+                    [ch],            ← Token 3 "with"    — Head 2's context
+                    [cj],            ← Token 4 "one"     — Head 2's context
+                    [cl]             ← Token 5 "step"    — Head 2's context
+                  ]
+                ]                         ← end Batch 1
+              ]
+
+Indexing is now: context_vec[batch, head, token, head_dim_position]
+  context_vec[0, 0, 0, 0] = ca   ← Batch 0, Head 1, Token 0 "Your"
+  context_vec[0, 0, 1, 0] = cc   ← Batch 0, Head 1, Token 1 "journey"
+  context_vec[0, 1, 0, 0] = cb   ← Batch 0, Head 2, Token 0 "Your"
+  context_vec[0, 1, 1, 0] = cd   ← Batch 0, Head 2, Token 1 "journey"
+```
+
+Each head has produced its own independent context vector for every token,
+built entirely from its own query/key/value projections and its own attention
+weights. The two heads are still sitting in separate slots — `ca` and `cb` both
+describe "Your", but from two completely different points of view. They are not
+yet combined. Step 7 starts putting them back together.
+
+---
+
+**Step 7 — Transpose back: bring `num_tokens` back to position 1**
+
+`.transpose(1, 2)` swaps `heads` and `tokens` back. We are exactly reversing
+Step 3 — putting tokens back at position 1 so the shape matches what the rest
+of PyTorch expects `(batch, tokens, features)`. No data moves, only the indexing
+order changes.
+
+Before `.transpose(1, 2)` — this is exactly Step 6's output, grouped by head,
+each head owning all tokens:
+
+```
+context_vec.shape = (2, 2, 6, 1)    ← (batch, heads, tokens, head_dim)
+                     ↑   ↑  ↑  ↑
+                   batch heads tokens head_dim
+
+context_vec = [
+                [                         ← Batch 0
+                  [                  ← Head 1 — owns ALL tokens
+                    [ca],            ← Token 0 "Your"    — Head 1's context
+                    [cc],            ← Token 1 "journey" — Head 1's context
+                    [ce],            ← Token 2 "starts"  — Head 1's context
+                    [cg],            ← Token 3 "with"    — Head 1's context
+                    [ci],            ← Token 4 "one"     — Head 1's context
+                    [ck]             ← Token 5 "step"    — Head 1's context
+                  ],
+                  [                  ← Head 2 — owns ALL tokens
+                    [cb],            ← Token 0 "Your"    — Head 2's context
+                    [cd],            ← Token 1 "journey" — Head 2's context
+                    [cf],            ← Token 2 "starts"  — Head 2's context
+                    [ch],            ← Token 3 "with"    — Head 2's context
+                    [cj],            ← Token 4 "one"     — Head 2's context
+                    [cl]             ← Token 5 "step"    — Head 2's context
+                  ]
+                ],                        ← end Batch 0
+                [                         ← Batch 1 (identical)
+                  [                  ← Head 1 — owns ALL tokens
+                    [ca],            ← Token 0 "Your"    — Head 1's context
+                    [cc],            ← Token 1 "journey" — Head 1's context
+                    [ce],            ← Token 2 "starts"  — Head 1's context
+                    [cg],            ← Token 3 "with"    — Head 1's context
+                    [ci],            ← Token 4 "one"     — Head 1's context
+                    [ck]             ← Token 5 "step"    — Head 1's context
+                  ],
+                  [                  ← Head 2 — owns ALL tokens
+                    [cb],            ← Token 0 "Your"    — Head 2's context
+                    [cd],            ← Token 1 "journey" — Head 2's context
+                    [cf],            ← Token 2 "starts"  — Head 2's context
+                    [ch],            ← Token 3 "with"    — Head 2's context
+                    [cj],            ← Token 4 "one"     — Head 2's context
+                    [cl]             ← Token 5 "step"    — Head 2's context
+                  ]
+                ]                         ← end Batch 1
+              ]
+```
+
+After `.transpose(1, 2)` — now grouped by token again, each token owns both
+heads' results side by side:
+
+```
+context_vec.shape = (2, 6, 2, 1)    ← (batch, tokens, heads, head_dim)
+                     ↑  ↑   ↑  ↑
+                   batch tokens heads head_dim
+                              (swapped back!)
+
+context_vec = [
+                [                         ← Batch 0
+                  [                  ← Token 0 "Your"    — owns both heads
+                    [ca],            ← Head 1's context for "Your"
+                    [cb]             ← Head 2's context for "Your"
+                  ],
+                  [                  ← Token 1 "journey" — owns both heads
+                    [cc],            ← Head 1's context for "journey"
+                    [cd]             ← Head 2's context for "journey"
+                  ],
+                  [                  ← Token 2 "starts"  — owns both heads
+                    [ce],            ← Head 1's context for "starts"
+                    [cf]             ← Head 2's context for "starts"
+                  ],
+                  [                  ← Token 3 "with"    — owns both heads
+                    [cg],            ← Head 1's context for "with"
+                    [ch]             ← Head 2's context for "with"
+                  ],
+                  [                  ← Token 4 "one"     — owns both heads
+                    [ci],            ← Head 1's context for "one"
+                    [cj]             ← Head 2's context for "one"
+                  ],
+                  [                  ← Token 5 "step"    — owns both heads
+                    [ck],            ← Head 1's context for "step"
+                    [cl]             ← Head 2's context for "step"
+                  ]
+                ],                        ← end Batch 0
+                [                         ← Batch 1 (identical)
+                  [                  ← Token 0 "Your"
+                    [ca],            ← Head 1's context for "Your"
+                    [cb]             ← Head 2's context for "Your"
+                  ],
+                  [                  ← Token 1 "journey"
+                    [cc],            ← Head 1's context for "journey"
+                    [cd]             ← Head 2's context for "journey"
+                  ],
+                  [                  ← Token 2 "starts"
+                    [ce],            ← Head 1's context for "starts"
+                    [cf]             ← Head 2's context for "starts"
+                  ],
+                  [                  ← Token 3 "with"
+                    [cg],            ← Head 1's context for "with"
+                    [ch]             ← Head 2's context for "with"
+                  ],
+                  [                  ← Token 4 "one"
+                    [ci],            ← Head 1's context for "one"
+                    [cj]             ← Head 2's context for "one"
+                  ],
+                  [                  ← Token 5 "step"
+                    [ck],            ← Head 1's context for "step"
+                    [cl]             ← Head 2's context for "step"
+                  ]
+                ]                         ← end Batch 1
+              ]
+
+Indexing is now: context_vec[batch, token, head, head_dim_position]
+  context_vec[0, 0, 0, 0] = ca   ← Batch 0, Token 0 "Your",    Head 1
+  context_vec[0, 0, 1, 0] = cb   ← Batch 0, Token 0 "Your",    Head 2
+  context_vec[0, 1, 0, 0] = cc   ← Batch 0, Token 1 "journey", Head 1
+  context_vec[0, 1, 1, 0] = cd   ← Batch 0, Token 1 "journey", Head 2
+```
+
+Compare this directly to Step 2's "before transpose" picture — same shape
+`(2, 6, 2, 1)`, same grouping by token, same nesting structure. We have come
+full circle on the shape. But the values inside are completely different — in
+Step 2 these slots held raw `W_query` projections (`a, b, c, d, ...`), now
+they hold context vectors (`ca, cb, cc, cd, ...`) that have each been blended
+across every token that head was allowed to see.
+
+---
+
+**Step 8 — Merge heads back into `d_out`**
+
+`.contiguous()` first — `.transpose()` only changes stride metadata, not actual
+memory layout, leaving the tensor non-contiguous. `.view()` requires contiguous
+memory, so `.contiguous()` makes a proper copy with the right layout first.
+
+Then `.view(b, num_tokens, d_out)` merges `(num_heads=2, head_dim=1)` back into
+`d_out=2` — the exact inverse of Step 2's `.view()`. Each token's two
+single-number head outputs become one flat 2-dim row again.
+
+Before `.view()` — this is exactly Step 7's output, grouped by token, heads
+still in their own slot:
+
+```
+context_vec.shape = (2, 6, 2, 1)    ← (batch, tokens, heads, head_dim)
+                     ↑  ↑   ↑  ↑
+                   batch tokens heads head_dim
+
+context_vec = [
+                [                         ← Batch 0
+                  [                  ← Token 0 "Your"    — owns both heads
+                    [ca],            ← Head 1's context for "Your"
+                    [cb]             ← Head 2's context for "Your"
+                  ],
+                  [                  ← Token 1 "journey" — owns both heads
+                    [cc],            ← Head 1's context for "journey"
+                    [cd]             ← Head 2's context for "journey"
+                  ],
+                  [                  ← Token 2 "starts"  — owns both heads
+                    [ce],            ← Head 1's context for "starts"
+                    [cf]             ← Head 2's context for "starts"
+                  ],
+                  [                  ← Token 3 "with"    — owns both heads
+                    [cg],            ← Head 1's context for "with"
+                    [ch]             ← Head 2's context for "with"
+                  ],
+                  [                  ← Token 4 "one"     — owns both heads
+                    [ci],            ← Head 1's context for "one"
+                    [cj]             ← Head 2's context for "one"
+                  ],
+                  [                  ← Token 5 "step"    — owns both heads
+                    [ck],            ← Head 1's context for "step"
+                    [cl]             ← Head 2's context for "step"
+                  ]
+                ],                        ← end Batch 0
+                [                         ← Batch 1 (identical)
+                  [                  ← Token 0 "Your"
+                    [ca],            ← Head 1's context for "Your"
+                    [cb]             ← Head 2's context for "Your"
+                  ],
+                  [                  ← Token 1 "journey"
+                    [cc],            ← Head 1's context for "journey"
+                    [cd]             ← Head 2's context for "journey"
+                  ],
+                  [                  ← Token 2 "starts"
+                    [ce],            ← Head 1's context for "starts"
+                    [cf]             ← Head 2's context for "starts"
+                  ],
+                  [                  ← Token 3 "with"
+                    [cg],            ← Head 1's context for "with"
+                    [ch]             ← Head 2's context for "with"
+                  ],
+                  [                  ← Token 4 "one"
+                    [ci],            ← Head 1's context for "one"
+                    [cj]             ← Head 2's context for "one"
+                  ],
+                  [                  ← Token 5 "step"
+                    [ck],            ← Head 1's context for "step"
+                    [cl]             ← Head 2's context for "step"
+                  ]
+                ]                         ← end Batch 1
+              ]
+```
+
+After `.contiguous().view(b, num_tokens, d_out)` — the `(heads=2, head_dim=1)`
+last two dims collapse into a single flat `d_out=2` dim. Each token's two head
+slots become one flat row again — the exact inverse of Step 2:
+
+```
+context_vec.shape = (2, 6, 2)    ← (batch, tokens, d_out)
+                     ↑  ↑  ↑
+                   batch tokens d_out
+
+context_vec = [
+                [                              ← Batch 0
+                  [ca, cb],    ← Token 0 "Your"    — Head 1 || Head 2 (naively stitched)
+                  [cc, cd],    ← Token 1 "journey" — Head 1 || Head 2 (naively stitched)
+                  [ce, cf],    ← Token 2 "starts"  — Head 1 || Head 2 (naively stitched)
+                  [cg, ch],    ← Token 3 "with"    — Head 1 || Head 2 (naively stitched)
+                  [ci, cj],    ← Token 4 "one"     — Head 1 || Head 2 (naively stitched)
+                  [ck, cl]     ← Token 5 "step"    — Head 1 || Head 2 (naively stitched)
+                ],                             ← end Batch 0
+                [                              ← Batch 1 (identical)
+                  [ca, cb],    ← Token 0 "Your"
+                  [cc, cd],    ← Token 1 "journey"
+                  [ce, cf],    ← Token 2 "starts"
+                  [cg, ch],    ← Token 3 "with"
+                  [ci, cj],    ← Token 4 "one"
+                  [ck, cl]     ← Token 5 "step"
+                ]                              ← end Batch 1
+              ]
+
+Indexing is now: context_vec[batch, token, d_out_position]
+  context_vec[0, 0, 0] = ca   ← Batch 0, Token 0 "Your",    Head 1's value
+  context_vec[0, 0, 1] = cb   ← Batch 0, Token 0 "Your",    Head 2's value
+  context_vec[0, 1, 0] = cc   ← Batch 0, Token 1 "journey", Head 1's value
+  context_vec[0, 1, 1] = cd   ← Batch 0, Token 1 "journey", Head 2's value
+```
+
+Notice the shape is back to 3D — `(batch, tokens, d_out)` — same as what came
+out of Step 1's projection. We have gone from 3D → 4D → 4D → 3D across steps
+1 through 8. But the content is completely transformed: what started as raw
+linear projections is now context-aware blended representations from two
+independent attention heads.
+
+At this point `ca` and `cb` are adjacent in memory but mathematically
+untouched by one another — Head 1 has no idea what Head 2 found, and vice
+versa. The values are naively stitched side by side with no mixing. Step 9
+fixes that.
+
+---
+
+**Step 9 — Output projection: mix across heads**
+
+`out_proj` is `nn.Linear(d_out, d_out)` — a learned `(2, 2)` weight matrix.
+It takes all `d_out=2` features of each token and produces new `d_out=2`
+features. Critically, every output value is a weighted combination of BOTH
+heads' inputs — so information can finally flow between what Head 1 and Head 2
+found independently.
+
+Before `out_proj` — this is exactly Step 8's output, heads naively stitched:
+
+```
+context_vec.shape = (2, 6, 2)    ← (batch, tokens, d_out)
+                     ↑  ↑  ↑
+                   batch tokens d_out
+
+context_vec = [
+                [                              ← Batch 0
+                  [ca, cb],    ← Token 0 "Your"    — Head 1 || Head 2 (not yet mixed)
+                  [cc, cd],    ← Token 1 "journey" — Head 1 || Head 2 (not yet mixed)
+                  [ce, cf],    ← Token 2 "starts"  — Head 1 || Head 2 (not yet mixed)
+                  [cg, ch],    ← Token 3 "with"    — Head 1 || Head 2 (not yet mixed)
+                  [ci, cj],    ← Token 4 "one"     — Head 1 || Head 2 (not yet mixed)
+                  [ck, cl]     ← Token 5 "step"    — Head 1 || Head 2 (not yet mixed)
+                ],                             ← end Batch 0
+                [                              ← Batch 1 (identical)
+                  [ca, cb],    ← Token 0 "Your"
+                  [cc, cd],    ← Token 1 "journey"
+                  [ce, cf],    ← Token 2 "starts"
+                  [cg, ch],    ← Token 3 "with"
+                  [ci, cj],    ← Token 4 "one"
+                  [ck, cl]     ← Token 5 "step"
+                ]                              ← end Batch 1
+              ]
+```
+
+What `out_proj` does — for each token, it multiplies the token's full `d_out=2`
+vector by `W_out` (shape `(2, 2)`). Every output dimension receives contributions
+from BOTH head slots:
+
+```
+out_proj weight matrix W_out shape: (2, 2)
+
+    W_out = [ [W[0,0], W[0,1]],     ← weights for producing output dim 0
+              [W[1,0], W[1,1]] ]    ← weights for producing output dim 1
+
+For any token with input [Head1_value, Head2_value]:
+
+  new[0] = W[0,0] * Head1_value + W[0,1] * Head2_value   ← output dim 0 mixes BOTH heads
+  new[1] = W[1,0] * Head1_value + W[1,1] * Head2_value   ← output dim 1 mixes BOTH heads
+```
+
+Applied to every token in Batch 0:
+
+```
+Token 0 "Your"    — input [ca, cb]:
+  new[0] = W[0,0]*ca + W[0,1]*cb
+  new[1] = W[1,0]*ca + W[1,1]*cb
+  output → [new_a0, new_a1]
+
+Token 1 "journey" — input [cc, cd]:
+  new[0] = W[0,0]*cc + W[0,1]*cd
+  new[1] = W[1,0]*cc + W[1,1]*cd
+  output → [new_c0, new_c1]
+
+Token 2 "starts"  — input [ce, cf]:
+  new[0] = W[0,0]*ce + W[0,1]*cf
+  new[1] = W[1,0]*ce + W[1,1]*cf
+  output → [new_e0, new_e1]
+
+Token 3 "with"    — input [cg, ch]:
+  new[0] = W[0,0]*cg + W[0,1]*ch
+  new[1] = W[1,0]*cg + W[1,1]*ch
+  output → [new_g0, new_g1]
+
+Token 4 "one"     — input [ci, cj]:
+  new[0] = W[0,0]*ci + W[0,1]*cj
+  new[1] = W[1,0]*ci + W[1,1]*cj
+  output → [new_i0, new_i1]
+
+Token 5 "step"    — input [ck, cl]:
+  new[0] = W[0,0]*ck + W[0,1]*cl
+  new[1] = W[1,0]*ck + W[1,1]*cl
+  output → [new_k0, new_k1]
+
+We label each result new_<letter>0 and new_<letter>1, keeping the query letter
+of the token so it stays traceable back to Step 1.
+```
+
+After `out_proj` — same shape, but every value now carries information from
+both heads:
+
+```
+context_vec.shape = (2, 6, 2)    ← (batch, tokens, d_out) — unchanged
+                     ↑  ↑  ↑
+                   batch tokens d_out
+
+context_vec = [
+                [                                   ← Batch 0
+                  [new_a0, new_a1],    ← Token 0 "Your"    — both heads mixed
+                  [new_c0, new_c1],    ← Token 1 "journey" — both heads mixed
+                  [new_e0, new_e1],    ← Token 2 "starts"  — both heads mixed
+                  [new_g0, new_g1],    ← Token 3 "with"    — both heads mixed
+                  [new_i0, new_i1],    ← Token 4 "one"     — both heads mixed
+                  [new_k0, new_k1]     ← Token 5 "step"    — both heads mixed
+                ],                                  ← end Batch 0
+                [                                   ← Batch 1 (identical)
+                  [new_a0, new_a1],    ← Token 0 "Your"
+                  [new_c0, new_c1],    ← Token 1 "journey"
+                  [new_e0, new_e1],    ← Token 2 "starts"
+                  [new_g0, new_g1],    ← Token 3 "with"
+                  [new_i0, new_i1],    ← Token 4 "one"
+                  [new_k0, new_k1]     ← Token 5 "step"
+                ]                                   ← end Batch 1
+              ]
+
+Indexing is now: context_vec[batch, token, d_out_position]
+  context_vec[0, 1, 0] = new_c0   ← Batch 0, "journey", output dim 0
+                                      = W[0,0]*cc + W[0,1]*cd
+                                        ↑ Head 1's answer for "journey"
+                                                    ↑ Head 2's answer for "journey"
+
+  context_vec[0, 1, 1] = new_c1   ← Batch 0, "journey", output dim 1
+                                      = W[1,0]*cc + W[1,1]*cd
+                                        ↑ Head 1's answer for "journey"
+                                                    ↑ Head 2's answer for "journey"
+```
+
+The shape stays `(2, 6, 2)` — same as what entered `out_proj`. But the content
+has completely transformed:
+
+```
+Before out_proj:   [cc, cd]          — Head 1's answer || Head 2's answer, untouched
+After  out_proj:   [new_c0, new_c1]  — every dim is a learned mix of both heads
+```
+
+The model learns `W_out` during training — deciding which combinations of head
+outputs are most useful. "Head 1 noticed a syntactic subject AND Head 2 noticed
+a pronoun reference → these two together should produce a strong noun-like
+output signal" is the kind of relationship `W_out` can learn to encode.
+
+This `context_vec` is the final return value of `MultiHeadAttention.forward()`.
+The shape `(batch, tokens, d_out)` matches the input shape `(batch, tokens,
+d_in)` exactly — which is why transformer blocks can be stacked, the output
+of one feeds directly into the next with no reshaping needed.
+
+---
+
+### Dry Run: Watching "journey" Flow Through Every Step
+
+Let's trace just Token 1 "journey" through the full shape transformation, using
+the same letters from the shape story above so you can cross-reference exactly.
+Settings: `b=2, num_tokens=6, d_in=3, d_out=2, num_heads=2, head_dim=1`.
+
+**Before anything — "journey"'s raw embedding (Step 1 input):**
+
+```
+x[0, 1, :] = [0.55, 0.87, 0.66]    shape: (3,)    ← d_in=3
+```
+
+**After `W_query` projection — flat row, no head assignment yet (end of Step 1):**
+
+```
+queries[0, 1, :] = [c, d]    shape: (2,)    ← d_out=2, using letters c and d
+                               ↑  ↑            from the full shape story above
+                               c  d
+                         position 0  position 1
+```
+
+**After `.view(b, num_tokens, num_heads, head_dim)` — split into heads (end of Step 2):**
+
+```
+queries[0, 1, :, :] = [        shape: (2, 1)
+                         [c],  ← Head 1's query for "journey"
+                         [d]   ← Head 2's query for "journey"
+                       ]
+```
+
+**After `.transpose(1, 2)` — indexed by head first (end of Step 3):**
+
+```
+indexing changes from queries[batch, token, head, hd]
+                  to   queries[batch, head, token, hd]
+
+queries[0, 0, 1, 0] = c    ← Batch 0, Head 1, Token 1 "journey"
+queries[0, 1, 1, 0] = d    ← Batch 0, Head 2, Token 1 "journey"
+
+"journey" is no longer addressable as one unit — its two values now live in
+separate head slices, processed completely independently from here.
+```
+
+**After attention scores, mask, softmax (Steps 4 and 5):**
+
+```
+Head 1 computes its own 6×6 score matrix using c against all keys a', c', e'...
+Head 2 computes its own 6×6 score matrix using d against all keys b', d', f'...
+
+Each produces its own row of attention weights for "journey":
+  attn_weights[0, 0, 1, :] = [0,  w_cc, 0, 0, 0, 0]   ← Head 1's weights for "journey"
+                                ↑   ↑
+                              masked  only sees tokens 0 and 1 (causal mask)
+  attn_weights[0, 1, 1, :] = [0,  w_dd, 0, 0, 0, 0]   ← Head 2's weights for "journey"
+
+Different score values → different weight distributions → different blending.
+```
+
+**After `attn_weights @ values` — each head produces its own context (end of Step 6):**
+
+```
+context_vec[0, 0, 1, 0] = cc    ← Batch 0, Head 1's context for "journey"
+                                    = w_ca*a'' + w_cc*c''
+context_vec[0, 1, 1, 0] = cd    ← Batch 0, Head 2's context for "journey"
+                                    = w_db*b'' + w_dd*d''
+
+Two completely independent blended results, still in separate head slots.
+```
+
+**After `.transpose(1, 2)` — token owns both heads again (end of Step 7):**
+
+```
+context_vec[0, 1, :, :] = [        shape: (2, 1)
+                              [cc], ← Head 1's context for "journey"
+                              [cd]  ← Head 2's context for "journey"
+                            ]
+```
+
+**After `.contiguous().view(b, num_tokens, d_out)` — heads merged (end of Step 8):**
+
+```
+context_vec[0, 1, :] = [cc, cd]    shape: (2,)    ← naively stitched, not yet mixed
+                          ↑   ↑
+                        Head1 Head2
+```
+
+**After `out_proj` — cross-head mixed (end of Step 9):**
+
+```
+context_vec[0, 1, :] = [new_c0, new_c1]    shape: (2,)    ← final output
+
+where:
+  new_c0 = W[0,0]*cc + W[0,1]*cd    ← both heads contribute to output dim 0
+  new_c1 = W[1,0]*cc + W[1,1]*cd    ← both heads contribute to output dim 1
+```
+
+"journey" entered as a static 3-dim embedding `[0.55, 0.87, 0.66]` and leaves
+as a 2-dim context-aware representation `[new_c0, new_c1]` that has been
+informed by two independent attention perspectives — each looking at the whole
+sequence through its own learned query/key/value projections.
+
+---
+
+### Why `keys.transpose(2, 3)` and not `keys.transpose(1, 2)`?
+
+After Step 3, `keys` has shape `(batch, num_heads, num_tokens, head_dim)` — 4
+dimensions. We want the matmul to happen over the last two dimensions
+`(num_tokens, head_dim)`. To do `Q @ K^T` in that space we need to transpose the
+last two dims of K, turning `(num_tokens, head_dim)` into `(head_dim, num_tokens)`.
+That is `transpose(2, 3)`. Using `transpose(1, 2)` would swap `num_heads` and
+`num_tokens` instead — completely wrong shape.
+
+---
 
 ### The class
 
 ```python
 class MultiHeadAttention(nn.Module):
-    """Efficient multi-head attention computed with a single batched
-    matrix multiplication instead of a Python loop over heads.
-    """
+
     def __init__(self, d_in, d_out, context_length, dropout, num_heads, qkv_bias=False):
         super().__init__()
         assert d_out % num_heads == 0, "d_out must be divisible by num_heads"
 
         self.d_out = d_out
         self.num_heads = num_heads
-        self.head_dim = d_out // num_heads  # Reduce the projection dim to match desired output dim
+        self.head_dim = d_out // num_heads  # width each head works in
 
+        # One big projection for all heads combined — NOT one per head
+        # The split into heads happens later via .view()
         self.W_query = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_key   = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
-        self.out_proj = nn.Linear(d_out, d_out)  # Linear layer to combine head outputs
+
+        # Final linear layer to mix information across heads after concatenation
+        self.out_proj = nn.Linear(d_out, d_out)
+
         self.dropout = nn.Dropout(dropout)
+
+        # Causal mask — same as CausalAttention, registered as a buffer
+        # so it moves with the model to GPU but is not a trainable parameter
         self.register_buffer(
             'mask',
             torch.triu(torch.ones(context_length, context_length), diagonal=1)
@@ -1058,34 +2759,66 @@ class MultiHeadAttention(nn.Module):
     def forward(self, x):
         b, num_tokens, d_in = x.shape
 
-        keys    = self.W_key(x)    # Shape: (b, num_tokens, d_out)
+        # Step 1 — Project into Q, K, V (one big projection each)
+        # shape: (b, num_tokens, d_out) — not yet split into heads
         queries = self.W_query(x)
+        keys    = self.W_key(x)
         values  = self.W_value(x)
 
-        # Split d_out into (num_heads, head_dim)
+        # Step 2 — Split d_out into (num_heads, head_dim)
+        # .view() is free — no data copied, just strides change
+        # shape: (b, num_tokens, d_out) → (b, num_tokens, num_heads, head_dim)
+        queries = queries.view(b, num_tokens, self.num_heads, self.head_dim)
         keys    = keys.view(b, num_tokens, self.num_heads, self.head_dim)
         values  = values.view(b, num_tokens, self.num_heads, self.head_dim)
-        queries = queries.view(b, num_tokens, self.num_heads, self.head_dim)
 
-        # Group by num_heads
-        keys    = keys.transpose(1, 2)
+        # Step 3 — Bring num_heads next to batch so matmul treats (batch, heads)
+        # as the outer batch dims and runs each head independently
+        # shape: (b, num_tokens, num_heads, head_dim) → (b, num_heads, num_tokens, head_dim)
         queries = queries.transpose(1, 2)
+        keys    = keys.transpose(1, 2)
         values  = values.transpose(1, 2)
 
-        attn_scores = queries @ keys.transpose(2, 3)  # Dot product for each head
+        # Step 4 — Attention scores: Q @ K^T over the last two dims
+        # transpose(2, 3) flips (num_tokens, head_dim) → (head_dim, num_tokens) for K
+        # shape: (b, num_heads, num_tokens, head_dim) @ (b, num_heads, head_dim, num_tokens)
+        #      → (b, num_heads, num_tokens, num_tokens)
+        attn_scores = queries @ keys.transpose(2, 3)
 
+        # Step 5 — Apply causal mask, scale, softmax, dropout
+        # Slice mask to num_tokens in case input is shorter than context_length
         mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
         attn_scores.masked_fill_(mask_bool, -torch.inf)
-
-        attn_weights = torch.softmax(attn_scores / keys.shape[-1]**0.5, dim=-1)
+        # Divide by sqrt(head_dim) NOT sqrt(d_out) — the dot product sums over
+        # head_dim dimensions, so that is what controls variance (see Section 4)
+        attn_weights = torch.softmax(attn_scores / self.head_dim**0.5, dim=-1)
         attn_weights = self.dropout(attn_weights)
 
-        context_vec = (attn_weights @ values).transpose(1, 2)
+        # Step 6 — Weighted sum of values per head
+        # shape: (b, num_heads, num_tokens, num_tokens) @ (b, num_heads, num_tokens, head_dim)
+        #      → (b, num_heads, num_tokens, head_dim)
+        context_vec = attn_weights @ values
+
+        # Step 7 — Transpose back: tokens back to position 1
+        # shape: (b, num_heads, num_tokens, head_dim) → (b, num_tokens, num_heads, head_dim)
+        context_vec = context_vec.transpose(1, 2)
+
+        # Step 8 — Merge heads back into d_out
+        # .contiguous() needed because transpose only changes strides not memory layout
+        # .view() then merges (num_heads, head_dim) → d_out
+        # shape: (b, num_tokens, num_heads, head_dim) → (b, num_tokens, d_out)
         context_vec = context_vec.contiguous().view(b, num_tokens, self.d_out)
-        context_vec = self.out_proj(context_vec)  # optional projection
+
+        # Step 9 — Mix across heads with the output projection
+        # shape: (b, num_tokens, d_out) → (b, num_tokens, d_out) — same shape, cross-head mixed
+        context_vec = self.out_proj(context_vec)
 
         return context_vec
+```
 
+### Running it
+
+```python
 torch.manual_seed(123)
 batch_size, context_length, d_in = batch.shape
 d_out = 2
@@ -1106,132 +2839,187 @@ print(context_vecs)
 #          [0.2693, 0.3873],
 #          [0.2639, 0.3928],
 #          [0.2575, 0.4028]]], grad_fn=<ViewBackward0>)
+
 print("context_vecs.shape:", context_vecs.shape)
 # context_vecs.shape: torch.Size([2, 6, 2])
 ```
 
-### Walking through the shape transformations
+---
 
-This is the trickiest part of the chapter, so let's track the shape after every line, with `b=2, num_tokens=6, d_in=3, d_out=2, num_heads=2, head_dim=1`:
-
-```
-x                            : (2, 6, 3)
-queries = W_query(x)         : (2, 6, 2)            ← d_out=2, "flat", not yet split into heads
-
-queries.view(b, n, h, hd)    : (2, 6, 2, 1)          ← split last dim 2 into (num_heads=2, head_dim=1)
-queries.transpose(1, 2)      : (2, 2, 6, 1)          ← (batch, num_heads, num_tokens, head_dim)
-
-attn_scores = q @ k.transpose(2,3)
-            (2,2,6,1) @ (2,2,1,6)  → (2, 2, 6, 6)    ← (batch, num_heads, num_tokens, num_tokens)
-
-attn_weights @ values
- (2,2,6,6) @ (2,2,6,1) → (2, 2, 6, 1)                ← (batch, num_heads, num_tokens, head_dim)
-
-.transpose(1, 2)             : (2, 6, 2, 1)          ← back to (batch, num_tokens, num_heads, head_dim)
-.contiguous().view(b, n, d_out) : (2, 6, 2)          ← merge (num_heads, head_dim) back into d_out
-
-out_proj(...)                : (2, 6, 2)             ← final linear mix across heads
-```
-
-**Why `.view()` to split, and `.transpose()` to group?** `.view(b, num_tokens, num_heads, head_dim)` is a _free_ operation — it reinterprets the existing contiguous `(b, num_tokens, d_out)` memory as `(b, num_tokens, num_heads, head_dim)` without copying any data, because `d_out = num_heads * head_dim` and the last dimension is the one being split (splitting the _last_, contiguous dimension never requires a copy). `.transpose(1, 2)` then swaps `num_tokens` and `num_heads` to bring `num_heads` next to `batch` — this _does_ break contiguity (transpose only swaps strides, doesn't move data), which is exactly why `.contiguous()` is required later before the final `.view()` (you cannot `.view()` a non-contiguous tensor; `.reshape()` would work too but might silently copy).
-
-**Why `keys.transpose(2, 3)` (not `(1, 2)` like in `CausalAttention`)?** Because `keys` now has _4_ dimensions, `(b, num_heads, num_tokens, head_dim)`. We want $QK^T$ _per head_, i.e. a matmul over the last two dimensions `(num_tokens, head_dim)`, treating `(b, num_heads)` as "batch" dimensions that PyTorch's batched matmul (`@`/`torch.matmul`) automatically broadcasts over. `transpose(2, 3)` swaps exactly those last two dims, turning `(b, h, n, hd)` into `(b, h, hd, n)`, so `(b,h,n,hd) @ (b,h,hd,n) → (b,h,n,n)`.
-
-### A tiny concrete example of 4D batched matmul
-
-To build intuition for "matmul on the last two dims, broadcast over the rest":
-
-```python
-a = torch.tensor([[[[0.2745, 0.6584, 0.2775, 0.8573],
-                     [0.8993, 0.0390, 0.9268, 0.7388],
-                     [0.7179, 0.7058, 0.9156, 0.4340]],
-
-                    [[0.0772, 0.3565, 0.1479, 0.5331],
-                     [0.4066, 0.2318, 0.4545, 0.9737],
-                     [0.4606, 0.5159, 0.4220, 0.5786]]]])
-print(a.shape)
-# torch.Size([1, 2, 3, 4])    →  (batch=1, num_heads=2, num_tokens=3, head_dim=4)
-
-print(a @ a.transpose(2, 3))
-# tensor([[[[1.3208, 1.1631, 1.2879],
-#           [1.1631, 2.2150, 1.8424],
-#           [1.2879, 1.8424, 2.0402]],
-#
-#          [[0.4391, 0.7003, 0.5903],
-#           [0.7003, 1.3737, 1.0620],
-#           [0.5903, 1.0620, 0.9912]]]])
-
-# Verify: head 0's matmul, computed in isolation, matches a[0,0] @ a[0,0].T
-first_head = a[0, 0, :, :]
-first_res = first_head @ first_head.T
-print("First head:\n", first_res)
-# tensor([[1.3208, 1.1631, 1.2879],
-#         [1.1631, 2.2150, 1.8424],
-#         [1.2879, 1.8424, 2.0402]])
-
-second_head = a[0, 1, :, :]
-second_res = second_head @ second_head.T
-print("Second head:\n", second_res)
-# tensor([[0.4391, 0.7003, 0.5903],
-#         [0.7003, 1.3737, 1.0620],
-#         [0.5903, 1.0620, 0.9912]])
-```
-
-`a @ a.transpose(2, 3)` on a 4D tensor computes, _for each combination of the leading dimensions_ (here, for each of the 2 "heads"), the matmul of the trailing $3\times4$ matrix with its own transpose — exactly equivalent to looping over `a[0, h, :, :] @ a[0, h, :, :].T` for `h in {0, 1}`, but done in one vectorized call. This is the same mechanism `attn_scores = queries @ keys.transpose(2, 3)` relies on inside `MultiHeadAttention.forward`.
-
-### `MultiHeadAttentionWrapper` vs. `MultiHeadAttention` — what's the same, what's different
+### Wrapper vs Efficient — Side by Side
 
 ```
-MultiHeadAttentionWrapper(d_in, d_out=2, num_heads=2)
-  → output dim = d_out * num_heads = 4   (each head outputs d_out, then concatenated)
+MultiHeadAttentionWrapper(d_in=3, d_out=2, num_heads=2)
+  Each head projects: 3 → 2    (d_in → d_out)
+  Output per head:    (batch, 6, 2)
+  After concat:       (batch, 6, 4)   ← d_out * num_heads
+  No out_proj
 
-MultiHeadAttention(d_in, d_out=2, num_heads=2)
-  → output dim = d_out = 2               (d_out is split across heads: head_dim = d_out / num_heads = 1)
+MultiHeadAttention(d_in=3, d_out=2, num_heads=2)
+  One projection:     3 → 2    (d_in → d_out)
+  head_dim:           2 // 2 = 1
+  Each head works in: 1-dimensional space  ← only because d_out=2, num_heads=2
+  Output:             (batch, 6, 2)        — in GPT-2 small this would be
+  Has out_proj                               d_out=768, num_heads=12, head_dim=64
 ```
 
-In `MultiHeadAttention`, `d_out` is the _total_ output dimension you want (matching `d_in` so blocks can be stacked), and each head operates on a `head_dim = d_out / num_heads` slice — this is why the constructor asserts `d_out % num_heads == 0`. `MultiHeadAttention` also adds a final `out_proj` linear layer, an extra learned mixing step across the concatenated heads that the wrapper version doesn't have. This is why the two classes' outputs (`[0.3190, 0.4858]`, ... vs. the wrapper's `[-0.4519, 0.2216, 0.4772, 0.1063]`, ...) differ — different shapes, different weights, and an extra projection layer.
+In real GPT usage you set `d_out` to whatever total output width you want (e.g.
+768), and `MultiHeadAttention` handles the per-head splitting internally via
+`head_dim = d_out // num_heads`. With the Wrapper, `d_out` per head × `num_heads`
+gives the total, so you would set `d_out=384` to end up with 768 total.
+
+This is why their numbers differ — different shapes, different weights, and an
+extra `out_proj` in `MultiHeadAttention`.
+
+---
+
+### Gotcha — `.view()` vs `.reshape()`
+
+`.view()` only works on contiguous tensors. After a `.transpose()`, the tensor is
+non-contiguous (the memory layout no longer matches the logical shape), so
+`.view()` will raise an error. Two ways to handle this:
+
+- `.contiguous().view(...)` — make a proper memory copy first, then reshape. This
+  is what the book uses and what you will see in most production code.
+- `.reshape(...)` — does `.contiguous().view()` internally when needed, but may
+  silently make a copy even when you don't expect it. Using `.contiguous().view()`
+  explicitly is clearer about what is happening.
 
 ---
 
 ## 11 — Putting It All Together & Where This Leads
 
-The full journey of this chapter, in one diagram:
+### The Full Pipeline in One Diagram
+
+Every step from raw input to final context vectors, with shapes tracked at each
+transition — using the same settings from this chapter: `b=2, n=6, d_in=3,
+d_out=2, num_heads=2, head_dim=1`:
 
 ```
 inputs (b, n, d_in)
+  shape: (2, 6, 3)
        │
-       ▼
- ┌─────────────────────────────────────────────────────────┐
- │  W_query, W_key, W_value  (nn.Linear, no bias)           │
- │       Q, K, V  each (b, n, d_out)                        │
- └─────────────────────────────────────────────────────────┘
+       ▼  Step 1 — W_query, W_key, W_value (nn.Linear, no bias)
+       │           one big projection each, NOT one per head
        │
-       ▼  split into heads: view + transpose
- (b, num_heads, n, head_dim)
+  Q, K, V  each (b, n, d_out)
+  shape: (2, 6, 2)
        │
-       ▼
- attn_scores = Q @ K^T                  (b, num_heads, n, n)
+       ▼  Step 2 — .view(b, n, num_heads, head_dim)
+       │           split d_out into (num_heads, head_dim)
+       │           free reshape — no data copied
        │
-       ▼  scale by 1/sqrt(head_dim)
-       │  causal mask: future positions → -inf
-       │  softmax(dim=-1)
-       │  dropout
-       ▼
- attn_weights                            (b, num_heads, n, n)
+  shape: (2, 6, 2, 1)
        │
-       ▼
- context = attn_weights @ V              (b, num_heads, n, head_dim)
+       ▼  Step 3 — .transpose(1, 2)
+       │           bring num_heads next to batch
+       │           so matmul treats (batch, heads) as outer dims
        │
-       ▼  transpose + merge heads back
- (b, n, d_out)
+  shape: (2, 2, 6, 1)   ← (batch, num_heads, tokens, head_dim)
        │
-       ▼
- out_proj (nn.Linear)
+       ▼  Step 4 — Q @ K.transpose(2, 3)
+       │           4 independent (6,1)@(1,6) matmuls in one GPU call
        │
-       ▼
- context_vecs (b, n, d_out)
+  attn_scores (b, num_heads, n, n)
+  shape: (2, 2, 6, 6)
+       │
+       ▼  Step 5 — causal mask: upper triangle → -inf
+       │           scale by 1/sqrt(head_dim)
+       │           softmax(dim=-1) → rows sum to 1
+       │           dropout
+       │
+  attn_weights (b, num_heads, n, n)
+  shape: (2, 2, 6, 6)
+       │
+       ▼  Step 6 — attn_weights @ V
+       │           4 independent (6,6)@(6,1) matmuls in one GPU call
+       │
+  context (b, num_heads, n, head_dim)
+  shape: (2, 2, 6, 1)
+       │
+       ▼  Step 7 — .transpose(1, 2)
+       │           bring tokens back to position 1
+       │
+  shape: (2, 6, 2, 1)
+       │
+       ▼  Step 8 — .contiguous().view(b, n, d_out)
+       │           merge (num_heads, head_dim) back into d_out
+       │           .contiguous() needed because transpose broke memory layout
+       │
+  shape: (2, 6, 2)   ← heads naively stitched, not yet mixed
+       │
+       ▼  Step 9 — out_proj (nn.Linear d_out → d_out)
+       │           every output dim receives contributions from ALL heads
+       │           model learns which head combinations are most useful
+       │
+  context_vecs (b, n, d_out)
+  shape: (2, 6, 2)   ← same shape as Step 1 output — blocks can be stacked
 ```
 
-Every numeric example in this document was produced by `MultiHeadAttention` and its building blocks exactly as shown — this _is_ the attention block used inside a GPT transformer block. What's still missing, and what Chapter 4 builds next: wrapping this attention block together with a feed-forward network, **layer normalization**, **residual ("skip") connections**, and **GELU activations** into a complete **transformer block** — and then stacking many of those blocks (12 for GPT-2 small) to form the full GPT architecture. The `d_out`, `context_length`, and `num_heads` hyperparameters introduced here become the `emb_dim`, `context_length`, and `n_heads` entries of the GPT config dictionary in Chapter 4.
+---
 
-**Connection forward**: notice that `MultiHeadAttention.__init__` takes `d_in` and `d_out` as _separate_ arguments, but in GPT they're always equal (`d_in == d_out == emb_dim`) — this is what makes it possible to stack transformer blocks: the output of one block has the same shape as its input, so it can be fed directly into the next block.
+### Why the Output Shape Matches the Input Shape
+
+Notice that `inputs` came in as `(b, n, d_in)` and `context_vecs` goes out as
+`(b, n, d_out)`. In GPT, `d_in` and `d_out` are always set equal to `emb_dim`
+— so the shape going out of `MultiHeadAttention` is identical to the shape
+going in. This is not accidental — it is what makes stacking transformer blocks
+possible. Block 2 receives exactly the same shape that Block 1 received, so
+you can chain as many blocks as you want without any reshaping between them.
+
+```
+Block 1:  (b, n, emb_dim) → MultiHeadAttention → (b, n, emb_dim)
+                                    ↓
+Block 2:  (b, n, emb_dim) → MultiHeadAttention → (b, n, emb_dim)
+                                    ↓
+Block 3:  (b, n, emb_dim) → MultiHeadAttention → (b, n, emb_dim)
+                                    ↓
+  ... × 12 for GPT-2 small, × 96 for GPT-4
+```
+
+---
+
+### What Chapter 4 Adds
+
+`MultiHeadAttention` on its own is one piece of a transformer block. Chapter 4
+wraps it together with three more components to form a complete block:
+
+```
+input (b, n, emb_dim)
+       │
+       ▼  LayerNorm        — normalizes each token's vector to mean=0, std=1
+       │                     stabilizes training, especially for deep stacks
+       ▼  MultiHeadAttention  — what we built in this chapter
+       │
+       ▼  residual connection — adds the original input back to the output
+       │                        (input + attention_output)
+       │                        lets gradients flow directly to early layers
+       ▼  LayerNorm
+       │
+       ▼  FeedForward       — two linear layers with GELU activation between them
+       │                      expands to 4×emb_dim then back down
+       │                      adds per-token non-linear computation
+       ▼  residual connection
+       │
+output (b, n, emb_dim)   ← same shape, this block can be stacked
+```
+
+The hyperparameters we used throughout this chapter map directly to the GPT
+config dictionary in Chapter 4:
+
+```
+this chapter          Chapter 4 GPT config
+────────────────────────────────────────────
+d_in / d_out      →   emb_dim        (768 for GPT-2 small)
+context_length    →   context_length (1024 for GPT-2 small)
+num_heads         →   n_heads        (12 for GPT-2 small)
+head_dim          →   emb_dim // n_heads  (64 for GPT-2 small)
+dropout           →   drop_rate      (0.1 for GPT-2 small)
+```
+
+So `MultiHeadAttention` is not a standalone module — it is the core of every
+transformer block, and every transformer block is one floor of the full GPT
+tower. What we built in this chapter is exactly what gets repeated 12, 24, or
+96 times in real models.
+
+---
