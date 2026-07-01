@@ -11,6 +11,14 @@ data
 *.zip
 *.keras
 *.h5
+*.pth
+**/gpt2/
+**/__pycache__/
+loss-plot.pdf
+temperature-plot.pdf
+
+# Generated SQLite databases (e.g. MCP server demos)
+*.db
 
 rough.py
 
@@ -21,3 +29,6 @@ books
 research
 
 .DS_Store
+
+# Personal Claude Code permission overrides (machine-specific)
+.claude/settings.local.json

@@ -1123,9 +1123,9 @@ The book chose _The Verdict_ for three reasons that are worth internalising befo
 from previous_chapters import create_dataloader_v1
 
 train_ratio = 0.90
-split_idx = int(train_ratio * len(text_data))
-train_data = text_data[:split_idx]
-val_data   = text_data[split_idx:]
+split_idx   = int(train_ratio * len(text_data))
+train_data  = text_data[:split_idx]
+val_data    = text_data[split_idx:]
 
 torch.manual_seed(123)
 
@@ -1133,7 +1133,7 @@ train_loader = create_dataloader_v1(
     train_data,
     batch_size=2,
     max_length=GPT_CONFIG_124M["context_length"],   # 256
-    stride=GPT_CONFIG_124M["context_length"],       # also 256 — no overlap
+    stride=GPT_CONFIG_124M["context_length"],       # 256 — no overlap
     drop_last=True,
     shuffle=True,
     num_workers=0,
@@ -1150,38 +1150,187 @@ val_loader = create_dataloader_v1(
 )
 ```
 
-### What `create_dataloader_v1` does (recap from chapter 2)
+**Summary.** Split `text_data` into a 90% training portion and a 10% validation portion, then wrap each in a `DataLoader` that yields `(inputs, targets)` batches of shape `(2, 256)`. The train loader shuffles and drops the last incomplete batch; the val loader is deterministic and keeps every sample.
 
-It takes a long text string, tokenises it, and slides a window of `max_length` tokens across it with step `stride`. Each window becomes one input sequence; the corresponding target sequence is the same window shifted by one token to the right. The resulting `(input, target)` pairs are wrapped in a PyTorch `DataLoader` that yields them in batches.
+**The problem it solves.** The model needs a repeatable supply of `(inputs, targets)` tensor pairs drawn from the training text. It also needs a held-out validation set — text the model never trains on — to measure whether it is generalising or merely memorising. The `DataLoader` handles the sliding window, the batching, and the shuffling automatically each epoch.
 
-### Why `stride == max_length` (non-overlapping windows)?
+**The train/val split — dry run.**
 
-Two valid strategies exist:
+```
+len(text_data) = 20,479 characters
 
-- **stride == max_length** (used here) — every token appears in exactly one training sample. Cheaper, less data, no information seen twice per epoch.
-- **stride < max_length** — windows overlap. Same token can appear in multiple training samples in different positions. More training data per epoch, but the model sees the same token multiple times per epoch — risk of overfitting.
+split_idx = int(0.90 × 20,479) = int(18,431.1) = 18,431
 
-For this tiny dataset, non-overlapping windows are perfectly fine. With ~5,000 tokens and `max_length=256`, we get **~20 windows per epoch**, which is meaningful with batch size 2.
+train_data = text_data[:18,431]    ← 18,431 characters  ≈ 90%
+val_data   = text_data[18,431:]   ←  2,048 characters  ≈ 10%
+```
 
-### Why `drop_last=True` for train but `False` for val?
+In tokens (applying the 4 chars/token rule of thumb):
 
-- **train:** `drop_last=True` discards an incomplete final batch. Adam's gradient statistics misbehave on batches of different sizes during training (the variance estimate gets noisier).
-- **val:** `drop_last=False` keeps the last partial batch — we want to evaluate on _all_ validation samples, not throw away a few.
+```
+train_data  ≈ 18,431 / 4 ≈ 4,608 tokens
+val_data    ≈  2,048 / 4 ≈   512 tokens
+```
 
-### `shuffle=True` for train, `False` for val
+**What `create_dataloader_v1` does — the sliding window.**
 
-- **train:** shuffling prevents the model from memorising the order of samples and helps each batch be a random sub-sample of the training distribution.
-- **val:** unshuffled because the validation loss should be deterministic for fair comparison across epochs.
+The function tokenises the text string and slides a window of `max_length=256` tokens across it with step `stride=256`. Each window position produces one `(input, target)` pair: input is the window, target is the same window shifted left by one token. Using small numbers to illustrate — say `max_length=4, stride=4` on a 12-token sequence `[t0, t1, ..., t11]`:
 
-### `num_workers=0`
+```
+Window 0:  input = [t0,  t1,  t2,  t3]    target = [t1,  t2,  t3,  t4]
+Window 1:  input = [t4,  t5,  t6,  t7]    target = [t5,  t6,  t7,  t8]
+Window 2:  input = [t8,  t9, t10, t11]    target = [t9, t10, t11,  t12]  ← needs t12
+```
 
-Use the main Python process to load data instead of forking helper processes. For a 20 KB text file, parallel data loading is pointless and the fork overhead would dominate. For large datasets you would bump this up to 4 or 8 to keep the GPU fed.
+The last window needs one token beyond the sequence end, so a sequence of $N$ tokens yields $\lfloor (N - 1) / \text{stride} \rfloor$ complete windows.
 
-### `torch.manual_seed(123)` before creating loaders
+Applied to the real numbers:
 
-Because `shuffle=True` uses an internal random number generator, seeding before creating the train loader pins the shuffle order. This makes every epoch reproducible.
+```
+train tokens ≈ 4,608    max_length = 256    stride = 256
 
----
+windows = floor((4,608 - 1) / 256) = floor(4,607 / 256) = floor(17.99) = 17
+
+val tokens ≈ 512
+
+windows = floor((512 - 1) / 256) = floor(511 / 256) = floor(1.996) = 1
+```
+
+So the train loader has 17 windows and the val loader has 1 window.
+
+**Why `stride == max_length` — non-overlapping windows.**
+
+With `stride=256` and `max_length=256` every token appears in exactly one window. No token is seen twice in a single epoch:
+
+```
+stride = max_length = 256   (this section — non-overlapping):
+
+Window 0:  [t0   …  t255]
+Window 1:  [t256 …  t511]
+Window 2:  [t512 …  t767]
+           ↑
+           no overlap — each token in exactly one window
+```
+
+If `stride < max_length`, windows overlap and the same token appears in multiple windows within one epoch:
+
+```
+stride = 128, max_length = 256   (overlapping):
+
+Window 0:  [t0   …  t255]
+Window 1:  [t128 …  t383]   ← tokens t128–t255 appear again
+Window 2:  [t256 …  t511]
+           ↑
+           overlap region — same tokens seen twice per epoch
+```
+
+Overlapping gives the model more training signal per epoch but risks overfitting faster on a tiny dataset. Non-overlapping is the safer choice here.
+
+**Batch shapes produced by each loader.**
+
+With `batch_size=2` and `max_length=256`, each `(inputs, targets)` batch has shape:
+
+```
+inputs.shape  = (2, 256)    ← (batch_size, max_length)
+                 ↑  ↑
+              batch seq_len
+
+targets.shape = (2, 256)    ← same shape, each row shifted left by one token
+```
+
+17 training windows with `batch_size=2` gives 8 complete batches of 2, with 1 window left over. `drop_last=True` discards that leftover, so the train loader yields exactly 8 batches per epoch. The val loader has 1 window, which is below `batch_size=2` but `drop_last=False` keeps it anyway — it yields one partial batch of size 1.
+
+**Why `drop_last=True` for train but `False` for val.**
+
+During training, the optimiser's gradient statistics (especially Adam's running variance estimate) become noisier on a batch that is smaller than expected. Discarding the last incomplete training batch keeps every gradient update based on the same batch size. For validation there is no gradient computation — we are only measuring loss — so throwing away any validation samples would give a slightly inaccurate val loss. `drop_last=False` keeps every sample.
+
+**Why `shuffle=True` for train but `False` for val.**
+
+Shuffling the training windows each epoch prevents the model from memorising the order of samples and ensures each batch is a random draw from the training distribution. Validation must not be shuffled — the val loss should be identical on every evaluation pass for fair comparison across epochs, and determinism makes debugging easier.
+
+**`torch.manual_seed(123)` before creating the loaders.**
+
+The seed pins the internal random number generator that the train loader uses for shuffling. Without it, the window order changes every time the notebook is run, making the loss curve non-reproducible. The seed must be set before `create_dataloader_v1` is called — setting it afterward has no effect on the already-created loader's shuffle state.
+
+Sure. Let me build it from scratch with tiny numbers.
+
+**The setup — think of windows first, batches second.**
+
+The sliding window runs across the tokenised text and cuts it into independent chunks of `max_length` tokens. Each chunk is one window. With `max_length=4` and `stride=4` on a 16-token training text:
+
+```
+full token sequence:
+[t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15]
+
+Window 0:  [t0,  t1,  t2,  t3]
+Window 1:  [t4,  t5,  t6,  t7]
+Window 2:  [t8,  t9,  t10, t11]
+Window 3:  [t12, t13, t14, t15]
+
+total windows = 4
+```
+
+Each window immediately produces one `(input, target)` pair by shifting left one token:
+
+```
+Window 0:  input = [t0,  t1,  t2,  t3]    target = [t1,  t2,  t3,  t4]
+Window 1:  input = [t4,  t5,  t6,  t7]    target = [t5,  t6,  t7,  t8]
+Window 2:  input = [t8,  t9,  t10, t11]   target = [t9,  t10, t11, t12]
+Window 3:  input = [t12, t13, t14, t15]   target = [t13, t14, t15, t16]
+```
+
+So at this point we have 4 individual samples, each of length 4 tokens. The DataLoader has not been involved yet — these are just the raw pairs.
+
+**Now the DataLoader groups windows into batches.**
+
+With `batch_size=2`, the DataLoader stacks two windows side by side into one tensor:
+
+```
+Batch 0:
+  inputs  = [[t0,  t1,  t2,  t3],    ← Window 0
+              [t4,  t5,  t6,  t7]]    ← Window 1
+  shape: (2, 4)   ← (batch_size=2, max_length=4)
+
+Batch 1:
+  inputs  = [[t8,  t9,  t10, t11],   ← Window 2
+              [t12, t13, t14, t15]]   ← Window 3
+  shape: (2, 4)   ← (batch_size=2, max_length=4)
+```
+
+So with 4 windows and `batch_size=2` you get exactly 2 batches per epoch. Each batch covers `2 × 4 = 8` tokens. Two batches cover all `16` tokens — the full training text, nothing skipped.
+
+**Now scaling back to the real numbers.**
+
+```
+train tokens  ≈ 4,608
+max_length    = 256
+stride        = 256
+
+windows = floor((4,608 - 1) / 256) = 17 windows
+```
+
+17 windows, `batch_size=2`:
+
+```
+Batch 0:   Window 0  + Window 1     → inputs shape (2, 256)
+Batch 1:   Window 2  + Window 3     → inputs shape (2, 256)
+Batch 2:   Window 4  + Window 5     → inputs shape (2, 256)
+...
+Batch 7:   Window 14 + Window 15    → inputs shape (2, 256)
+──────────────────────────────────────────────────────────
+Window 16  ← leftover, only 1 window, can't fill a batch of 2
+            drop_last=True discards it
+```
+
+Result: 8 complete batches per epoch, 1 window discarded. Each batch covers `2 × 256 = 512` tokens. 8 batches cover `8 × 512 = 4,096` tokens out of the ~4,608 available — the discarded window accounts for the missing ~512.
+
+The key thing to hold onto: `batch_size` controls how many windows are stacked together into one tensor. It does not change the length of each sequence — that is always `max_length`. The shape `(2, 256)` means "2 independent sequences, each 256 tokens long, processed in parallel in one forward pass."
+
+**Gotchas.**
+
+`num_workers=0` uses the main Python process for data loading. On Windows, any `num_workers > 0` requires wrapping the training loop inside `if __name__ == "__main__":` — without it, each worker process re-imports the script and spawns more workers recursively, causing a crash. For a 20 KB text file the overhead of forking workers would exceed any loading benefit anyway.
+
+The `split_idx` cuts on a character boundary, not a token boundary. The tokeniser sees `train_data` and `val_data` as independent strings and re-tokenises from the start of each — so the first token of `val_data` is always a clean token start, never a broken subword fragment from splitting mid-token.
 
 ## 12 — Section 5.1.3: Sanity Checks on the Loaders
 
@@ -1230,13 +1379,14 @@ Train loader yields **9 batches × 2 samples × 256 tokens = 4608 tokens** (clos
 
 ---
 
-## 13 — Section 5.1.3: calc_loss_batch and calc_loss_loader
+## 13 — Section 5.1.3: `calc_loss_batch` and `calc_loss_loader`
 
 ```python
 def calc_loss_batch(input_batch, target_batch, model, device):
-    input_batch, target_batch = input_batch.to(device), target_batch.to(device)
+    input_batch  = input_batch.to(device)
+    target_batch = target_batch.to(device)
     logits = model(input_batch)
-    loss = torch.nn.functional.cross_entropy(
+    loss   = torch.nn.functional.cross_entropy(
         logits.flatten(0, 1), target_batch.flatten()
     )
     return loss
@@ -1261,32 +1411,95 @@ def calc_loss_loader(data_loader, model, device, num_batches=None):
     return total_loss / num_batches
 ```
 
-These two utilities will be called from the training loop dozens of times per epoch — bundling them as functions keeps the loop readable.
+**Summary.** Two utility functions that will be called from the training loop on every evaluation step. `calc_loss_batch` computes the cross-entropy loss for a single `(inputs, targets)` batch — one forward pass, one scalar. `calc_loss_loader` iterates a DataLoader and averages the loss across multiple batches, with an option to stop early for a cheap mid-training estimate.
 
-### `calc_loss_batch` — one batch, one scalar loss
+**The problem they solve.** The training loop needs to evaluate loss on both training and validation data repeatedly — at the end of every epoch and optionally mid-epoch. Without these helpers the loop body would be cluttered with repeated flatten-and-cross-entropy boilerplate, device management, and accumulation logic. Bundling them as named functions keeps the loop readable and the device handling in one place.
 
-Identical mathematically to what we did manually in section 8: forward through the model, flatten logits + targets, run `cross_entropy`. The only addition is the `.to(device)` calls that move the batch to GPU (if available) before computation.
+**`calc_loss_batch` — shape story for one batch.**
 
-### Why `.to(device)` is inside this function, not in the loader
+```
+input_batch.shape  = (2, 256)    ← (batch_size, seq_len)  on CPU from DataLoader
+       ↓  .to(device)            ← move to GPU if available, no-op if already on device
+input_batch.shape  = (2, 256)    ← same shape, now on the correct device
 
-You could move data to the device inside the `DataLoader` (via a custom `collate_fn`). Putting it inside `calc_loss_batch` is more flexible: the same function works on any device, and you can call it on CPU for debugging without changing the loader.
+       ↓  model(input_batch)
+logits.shape = (2, 256, 50257)   ← (batch_size, seq_len, vocab_size)
 
-### `calc_loss_loader` — average loss across (sampled) batches
+       ↓  logits.flatten(0, 1)
+shape = (512, 50257)             ← (batch_size × seq_len, vocab_size)
 
-Two patterns this function supports:
+target_batch.shape = (2, 256)
+       ↓  target_batch.flatten()
+shape = (512,)                   ← (batch_size × seq_len,)
 
-- **`num_batches=None`** — iterate every batch in the loader. Used at the _end_ of training when you want an accurate final evaluation.
-- **`num_batches=5`** — stop after 5 batches. Used _during_ training every `eval_freq` steps to get a quick noisy estimate of train/val loss without spending too long on evaluation.
+       ↓  F.cross_entropy(logits_flat, targets_flat)
+loss   = scalar tensor           ← mean negative log probability over 512 positions
+```
 
-### Why `loss.item()` and not just `loss`?
+This is mathematically identical to what Section 8 did manually — flatten both tensors, pass to `F.cross_entropy`, get a scalar. The only addition here is the `.to(device)` calls.
 
-`loss` is a 0-D PyTorch tensor with autograd graph attached. `loss.item()` extracts the underlying Python float and discards the autograd graph. Summing `.item()` values into `total_loss` keeps the running tally cheap and avoids accidentally keeping a giant autograd graph alive across all batches.
+**Why `.to(device)` lives inside `calc_loss_batch` and not in the DataLoader.**
 
-### Why guard against `len(data_loader) == 0`?
+The DataLoader runs on CPU by default — it loads data from disk and constructs tensors in CPU memory. The model's weights live on whichever device was chosen (`cuda`, `mps`, or `cpu`). PyTorch requires that both the input tensor and the model weights be on the same device before a forward pass, otherwise it raises a device mismatch error immediately.
 
-If someone passes an empty loader (e.g. mis-configured train/val split), `total_loss / num_batches` would divide by zero. Returning `float("nan")` is a clear signal that something is wrong without crashing the loop.
+Putting `.to(device)` inside `calc_loss_batch` means the transfer happens as late as possible — just before the forward pass — which is the standard pattern. It also means the same function works unchanged regardless of device: pass `device="cpu"` for debugging, `device="cuda"` for training, no other change needed.
 
----
+**`calc_loss_loader` — accumulation logic dry run.**
+
+Say the train loader has 8 batches and we call `calc_loss_loader(train_loader, model, device, num_batches=3)`:
+
+```
+num_batches = min(3, 8) = 3      ← cap at loader length
+
+i=0:  loss = calc_loss_batch(...)   → e.g. 10.81   total_loss = 10.81
+i=1:  loss = calc_loss_batch(...)   → e.g. 10.79   total_loss = 21.60
+i=2:  loss = calc_loss_batch(...)   → e.g. 10.83   total_loss = 32.43
+i=3:  i < num_batches is False      → break
+
+return 32.43 / 3 = 10.81   ← average loss over 3 batches
+```
+
+With `num_batches=None`:
+
+```
+num_batches = len(data_loader) = 8   ← iterate every batch
+
+return total_loss / 8                ← accurate full-loader average
+```
+
+The two modes serve different purposes. During training, evaluating all 8 batches every few steps would be slow — `num_batches=5` gives a quick noisy estimate cheap enough to run frequently. At the end of training, `num_batches=None` gives the accurate final number reported in the results.
+
+**Why `loss.item()` and not `loss` directly.**
+
+`loss` returned by `F.cross_entropy` is a 0-dimensional PyTorch tensor with a full autograd computation graph attached — the graph records every operation from input through the model to the loss, ready for `.backward()`. Summing 8 such tensors into `total_loss` would keep all 8 graphs alive in memory simultaneously, potentially several GB of activations for a 124M model.
+
+`loss.item()` extracts the scalar value as a plain Python float and lets the graph be garbage-collected immediately. The running sum `total_loss` is then just a Python float — cheap, graph-free, and safe to accumulate across many batches.
+
+**The three guard cases at the top of `calc_loss_loader`.**
+
+```
+len(data_loader) == 0   →  return float("nan")
+                               ↑
+                   empty loader — total_loss / 0 would crash;
+                   nan is a visible signal that the split was misconfigured
+
+num_batches is None     →  num_batches = len(data_loader)
+                               ↑
+                   evaluate every batch — used for final accurate reporting
+
+num_batches provided    →  num_batches = min(num_batches, len(data_loader))
+                               ↑
+                   cap at loader length — prevents requesting more batches
+                   than exist (e.g. asking for 10 batches from a 1-batch val loader)
+```
+
+The `min` in the third case is important for the val loader specifically. The val loader has only 1 batch. If the training loop calls `calc_loss_loader(val_loader, ..., num_batches=5)`, without the `min` the loop would try to iterate 5 batches from a loader that only has 1, iterate only once, and then divide by 5 — returning a loss that is 5× too small. The `min` prevents this silently wrong result.
+
+**Gotchas.**
+
+`model` must be in `eval()` mode when these functions are called for validation. `model.eval()` disables dropout and switches BatchNorm to use running statistics — without it, the val loss includes random dropout noise and is not a fair measure of the model's actual performance. The training loop is responsible for calling `model.eval()` before evaluation and `model.train()` before resuming training updates.
+
+`total_loss` is initialised as `0.` (a Python float) rather than `0` (an integer) or `torch.tensor(0.)`. This ensures the accumulated sum stays a Python float throughout and never accidentally triggers tensor semantics or holds a gradient.
 
 ## 14 — Section 5.1.3: Picking a Device and the Initial Loss
 
@@ -1333,7 +1546,11 @@ Before any training, both train and val losses are ~10.99 — essentially $\ln(5
 
 ---
 
-## 15 — Section 5.2: The Training Loop — train_model_simple
+Let me first check what section number we're on and read the existing notes style carefully.Good — I have the full context. Now writing the rewritten section 15 with full data flow tracing and a concrete mini-example throughout.
+
+---
+
+## 15 — Section 5.2: The Training Loop — `train_model_simple`
 
 ```python
 def train_model_simple(model, train_loader, val_loader, optimizer, device,
@@ -1367,45 +1584,129 @@ def train_model_simple(model, train_loader, val_loader, optimizer, device,
     return train_losses, val_losses, track_tokens_seen
 ```
 
-This is the **canonical PyTorch training loop**. Every neural network you'll ever train uses this same skeleton.
+**Summary.** The canonical PyTorch training loop. Every neural network you will ever train uses this same skeleton — the only things that change between projects are the model, the loss function, and the data. This function wraps that skeleton with two extras: periodic evaluation of train and val loss every `eval_freq` steps, and a qualitative text sample generated after every epoch.
 
-### The four-step optimisation rhythm
+**The problem it solves.** The model currently has random weights and produces gibberish. This function feeds it real text batch by batch, computes how wrong its predictions are, and nudges every weight in the direction that reduces that error. After enough repetitions the weights encode real statistical patterns of English.
 
-For each batch:
+**The four-step optimisation rhythm — what happens for every batch.**
+
+Every batch goes through exactly these four steps in order:
 
 ```
-1. optimizer.zero_grad()    # clear gradients from the previous batch
-2. loss = calc_loss_batch(...)
-3. loss.backward()          # populate .grad on every parameter via backprop
-4. optimizer.step()          # update parameters using their .grad
+Step 1 — optimizer.zero_grad()
+Step 2 — loss = calc_loss_batch(input_batch, target_batch, model, device)
+Step 3 — loss.backward()
+Step 4 — optimizer.step()
 ```
 
-#### Why `zero_grad()` is at the _start_ of the loop (not the end)?
+To make this concrete, use a toy setup: `batch_size=2`, `seq_len=4`, `vocab_size=5`. The batch arrives as:
 
-PyTorch **accumulates** gradients across `.backward()` calls by default. This is intentional — it's what enables **gradient accumulation** (chapter 12). For standard training where every batch is a fresh update, you have to zero them yourself. Placing the call at the start (rather than after `optimizer.step()`) is slightly safer: if you ever `return` or `break` out of the loop, the gradients are reset before the next iteration of the outer loop.
+```
+input_batch  = [[t0, t1, t2, t3],    shape: (2, 4)
+                 [t4, t5, t6, t7]]
 
-#### What `loss.backward()` actually does
+target_batch = [[t1, t2, t3, t4],    shape: (2, 4)  ← shifted left by one
+                 [t5, t6, t7, t8]]
+```
 
-Autograd traversed the computation graph that was built during the forward pass (from `loss` all the way back to every parameter). At each node it applies the chain rule, accumulating gradients into the `.grad` attribute of every parameter. After this call, every weight has a gradient telling it which direction to move to reduce the loss.
+**Step 1 — `optimizer.zero_grad()`.**
 
-#### What `optimizer.step()` actually does
+PyTorch accumulates gradients by default — every call to `.backward()` adds to whatever is already stored in each parameter's `.grad` attribute rather than overwriting it. This is intentional: it enables gradient accumulation across multiple small batches when GPU memory is too tight to fit one large batch. For standard training where every batch is a fresh independent update, the accumulated gradients from the previous batch must be cleared before computing new ones. Zeroing at the start of the batch (rather than after `optimizer.step()`) is safer: if the loop ever exits early via a `break` or exception, the stale gradients are gone before the next iteration begins.
 
-For AdamW (used here): update each parameter using its `.grad`, smoothed by per-parameter momentum and variance buffers, and scaled by the learning rate. The high-level update for parameter $w$ is:
+**Step 2 — `loss = calc_loss_batch(...)`.**
 
-$$w \leftarrow w - \eta \cdot \hat{m} / (\sqrt{\hat{v}} + \epsilon) - \eta \cdot \lambda \cdot w$$
+The data flows through the model:
 
-where $\eta$ is the learning rate, $\hat{m}$ and $\hat{v}$ are bias-corrected first and second moments of the gradients, and $\lambda$ is the weight decay coefficient.
+```
+input_batch  (2, 4)
+       ↓  model(input_batch)          ← full GPT forward pass
+logits       (2, 4, 5)                ← (batch, seq_len, vocab_size)
+       ↓  logits.flatten(0, 1)
+             (8, 5)                   ← 8 independent token predictions
+       ↓  target_batch.flatten()
+             (8,)                     ← 8 correct next-token labels
+       ↓  F.cross_entropy(...)
+loss         scalar                   ← mean negative log probability over 8 positions
+```
 
-### The bookkeeping variables
+While this forward pass runs, PyTorch's autograd engine silently records every operation into a computation graph — a map of exactly how `loss` depends on every weight in the model. This graph is what makes Step 3 possible.
 
-- **`tokens_seen`** — running total of how many tokens the model has been trained on. Useful as a secondary x-axis on the loss plot (section 17).
-- **`global_step`** — counts every gradient update across all epochs. Used to decide _when_ to evaluate (every `eval_freq` steps).
+**Step 3 — `loss.backward()`.**
 
-### `model.train()` at the top of each epoch
+Autograd walks the computation graph in reverse — from the scalar `loss` all the way back to every weight matrix — and applies the chain rule at each node. The result is that every parameter `p` in the model now has `p.grad` populated: a tensor of the same shape as `p` telling the optimiser which direction to move that parameter to reduce the loss.
 
-This re-enables dropout, which gets disabled inside `evaluate_model` when we set `model.eval()`. Without re-enabling it, the second epoch onwards would train without regularisation. (Not catastrophic with `drop_rate=0.1`, but the practice of pairing `eval()` with a subsequent `train()` is standard.)
+Conceptually:
 
-### `evaluate_model` — the inner helper
+```
+loss
+  ↑ chain rule applied at each node travelling backwards
+out_head weights        → .grad populated
+LayerNorm scale/shift   → .grad populated
+FFN weight matrices     → .grad populated   (× 12 blocks)
+Attention Q/K/V/O       → .grad populated   (× 12 blocks)
+token embedding table   → .grad populated
+positional embedding    → .grad populated
+```
+
+Every trainable parameter in the 124M model receives its gradient in this single call. No weight is updated yet — `.backward()` only computes and stores the gradients.
+
+**Step 4 — `optimizer.step()`.**
+
+The optimiser reads every parameter's `.grad` and updates the parameter value. For AdamW — the optimiser used here — the update for each parameter $w$ is:
+
+$$w \leftarrow w - \eta \cdot \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon} - \eta \cdot \lambda \cdot w$$
+
+where $\eta$ is the learning rate, $\hat{m}$ is the bias-corrected running mean of past gradients (momentum — smooths noisy updates), $\hat{v}$ is the bias-corrected running mean of squared gradients (adapts the step size per parameter), and $\lambda$ is the weight decay coefficient (shrinks large weights slightly each step). The net effect is that every weight shifts by a small amount in the direction that reduces the loss on this batch.
+
+**Bookkeeping variables — what they track and why.**
+
+```
+tokens_seen  ← running total of tokens the model has trained on
+               updated by input_batch.numel() = batch_size × seq_len = 2 × 256 = 512
+               per batch — useful as a device-independent x-axis on the loss plot
+               (wall-clock time varies by hardware; tokens seen does not)
+
+global_step  ← counts every gradient update, starting from -1 so the first
+               update lands on step 0 and triggers an eval immediately
+               used to decide when to evaluate: if global_step % eval_freq == 0
+```
+
+**The full epoch loop — tracing one epoch with real numbers.**
+
+With 8 training batches, `eval_freq=5`, `eval_iter=5`:
+
+```
+epoch 0 begins  →  model.train()
+
+  batch 0:  zero_grad → forward → backward → step
+            tokens_seen = 512,  global_step = 0
+            0 % 5 == 0  →  evaluate_model() called
+            print "Ep 1 (Step 000000): Train loss X.XXX, Val loss X.XXX"
+
+  batch 1:  zero_grad → forward → backward → step
+            tokens_seen = 1024, global_step = 1
+            1 % 5 != 0  →  no evaluation
+
+  batch 2:  global_step = 2,  no evaluation
+  batch 3:  global_step = 3,  no evaluation
+  batch 4:  global_step = 4,  no evaluation
+
+  batch 5:  zero_grad → forward → backward → step
+            tokens_seen = 3072, global_step = 5
+            5 % 5 == 0  →  evaluate_model() called
+            print "Ep 1 (Step 000005): Train loss X.XXX, Val loss X.XXX"
+
+  batch 6:  global_step = 6,  no evaluation
+  batch 7:  global_step = 7,  no evaluation
+
+epoch 0 ends  →  generate_and_print_sample() called
+                 prints 50 generated tokens from start_context
+
+epoch 1 begins  →  model.train()   ← re-enables dropout, which eval turned off
+  ...
+```
+
+**`evaluate_model` — the inner evaluation helper.**
 
 ```python
 def evaluate_model(model, train_loader, val_loader, device, eval_iter):
@@ -1417,12 +1718,9 @@ def evaluate_model(model, train_loader, val_loader, device, eval_iter):
     return train_loss, val_loss
 ```
 
-- `model.eval()` — disable dropout for evaluation.
-- `torch.no_grad()` — disable autograd. Evaluation doesn't need gradients; saves memory and time.
-- `num_batches=eval_iter` — evaluate on only the first `eval_iter` batches, not the full loader. This makes evaluation fast (otherwise we'd be evaluating every 5 steps for as long as evaluation takes, slowing training significantly).
-- `model.train()` at the end — restore training mode for the next batch.
+`model.eval()` disables dropout — during evaluation, predictions must be deterministic so the loss is comparable across calls. `torch.no_grad()` disables autograd graph construction for the evaluation forward passes — no gradients are needed and skipping graph construction saves the memory those intermediate activations would have occupied. `num_batches=eval_iter` stops after `eval_iter` batches rather than running the full loader — a quick noisy estimate is cheap enough to run every few steps without slowing training. `model.train()` at the end restores dropout before returning so the very next training batch is regularised correctly.
 
-### `generate_and_print_sample` — at the end of every epoch
+**`generate_and_print_sample` — qualitative monitor after each epoch.**
 
 ```python
 def generate_and_print_sample(model, tokenizer, device, start_context):
@@ -1439,13 +1737,104 @@ def generate_and_print_sample(model, tokenizer, device, start_context):
     model.train()
 ```
 
-After each epoch, generate 50 new tokens from the prompt and print them. This is a **qualitative monitor**: it lets you visually confirm the model is improving by watching the output progress from random gibberish to recognisable English fragments to (eventually) verbatim text from the training story.
+After each epoch, generate 50 tokens from `start_context` and print them. This is a qualitative sanity check — watching the output progress from random gibberish in epoch 1 to recognisable English in epoch 5 to near-verbatim story text by epoch 10 confirms the model is learning without needing to interpret any numbers. `context_size = model.pos_emb.weight.shape[0]` reads the positional embedding table's first dimension rather than hard-coding `256` — if you later swap in a GPT-2 model with a 1024-token context, this line keeps working without modification.
 
-### Why `context_size = model.pos_emb.weight.shape[0]`?
+**Gotchas.**
 
-Instead of hard-coding 256, this reads the actual size of the positional embedding table from the model itself. If you ever swap in a different model (like the GPT-2 with 1024 context in section 27), this code keeps working without modification.
+`model.train()` must be called at the top of every epoch, not just once before the outer loop. `evaluate_model` calls `model.eval()` mid-loop and then calls `model.train()` before returning — but `generate_and_print_sample` also calls `model.eval()` at the end of each epoch and restores `model.train()` at its end. If either helper forgot its `model.train()` call, all subsequent training batches would run without dropout. The explicit `model.train()` at the top of each epoch is a belt-and-suspenders guard against this.
 
----
+`optimizer.zero_grad()` must come before `calc_loss_batch`, never after `optimizer.step()`. Placing it after the step feels logical — "clean up after yourself" — but if the loop breaks between `step()` and the next iteration's `zero_grad()`, the stale gradients survive into the next epoch and corrupt the first update of that epoch.
+
+`input_batch.numel()` returns `batch_size × seq_len = 2 × 256 = 512` — the total number of integer token IDs in the batch. This counts input tokens only, not target tokens, even though both tensors are the same size. The convention is to count inputs: each input token corresponds to one forward-pass position and one gradient signal, so `numel()` of `input_batch` is the natural measure of "how much text the model processed this step."
+
+### Extra Notes
+
+`track_tokens_seen` is the list that accumulates `tokens_seen` at every evaluation point — every time `global_step % eval_freq == 0`, the current value of `tokens_seen` gets appended to it alongside the train and val losses for that step.
+
+```python
+track_tokens_seen.append(tokens_seen)
+```
+
+So after training finishes, you have three parallel lists of equal length, one entry per evaluation:
+
+```
+train_losses      = [10.81, 9.32, 7.14, ...]
+val_losses        = [10.79, 9.41, 7.30, ...]
+track_tokens_seen  = [512,   3072, 5632, ...]
+```
+
+The reason it exists is for plotting. Section 17 (the next section in the chapter, the loss curve visualisation) plots train and val loss against `track_tokens_seen` on the x-axis instead of against epoch number or step number. The book uses this specifically:
+
+```python
+fig, ax1 = plt.subplots()
+ax1.plot(epochs_seen, train_losses, label="Training loss")
+ax1.plot(epochs_seen, val_losses, linestyle="-.", label="Validation loss")
+ax1.set_xlabel("Epochs")
+
+ax2 = ax1.twiny()  # second x-axis sharing the same y-axis
+ax2.plot(track_tokens_seen, train_losses, alpha=0)  # invisible plot for tick alignment
+ax2.set_xlabel("Tokens seen")
+```
+
+It is plotted as a _second_, parallel x-axis at the top of the same chart — epochs on the bottom axis, tokens seen on the top axis, both describing the same points.
+
+Why tokens seen matters as a metric: epoch number and step number are both dependent on your specific configuration — batch size, sequence length, dataset size all change what one "step" or one "epoch" represents. Tokens seen is a config-independent measure of how much actual data the model has processed, which is the standard way training progress is reported and compared across different LLM training runs in research papers — you'll see this same x-axis convention ("tokens seen" or "tokens trained") in essentially every scaling-law or pretraining paper.
+
+We will use it — it gets returned from `train_model_simple` precisely so the next section (the loss plotting section) can consume it.
+
+#### Quick Summary
+
+A quick walkthrough of what each line is doing:
+
+`optimizer.zero_grad()` — clears out the gradients left over from the previous batch, so this batch starts with a clean slate.
+
+`loss = calc_loss_batch(...)` — runs the batch through the model (forward pass) and computes a single number: how wrong the model's predictions were on this batch.
+
+`loss.backward()` — this is where PyTorch figures out, for every single weight in the model, "if I nudge this weight up or down a tiny bit, does the loss go up or down, and by how much." It stores that answer in each weight's `.grad`. No weights change yet — this step only calculates the directions.
+
+`optimizer.step()` — now the actual update happens. The optimiser looks at every weight's `.grad` from the step above and actually moves the weight a small amount in the direction that reduces the loss.
+
+`tokens_seen += input_batch.numel()` — just counting how many tokens we've fed the model so far, for tracking/plotting later.
+
+`global_step += 1` — counting how many batches (updates) we've done in total, across all epochs.
+
+`if global_step % eval_freq == 0:` — every `eval_freq` steps, pause training briefly and check how the model is doing on both train and val data, then print it and save it for the loss curve plot later.
+
+`generate_and_print_sample(...)` — once per epoch (after going through all batches), generate some sample text so you can eyeball how the model's output is improving.
+
+So in one sentence per pair: `zero_grad` resets, `loss = calc_loss_batch` measures how wrong, `backward` calculates how to fix it, `step` actually fixes it.
+
+#### Step Count
+
+`global_step` increases by 1 every single time the inner `for input_batch, target_batch in train_loader:` loop runs one iteration. One iteration of that loop = one batch = one full forward pass + backward pass + weight update.
+
+Let's trace it concretely with your earlier example: 8 batches per epoch, 2 epochs total.
+
+```
+global_step starts at -1   (before any batch is processed)
+
+Epoch 1:
+  batch 0 processed (zero_grad → forward → backward → step)  → global_step becomes 0
+  batch 1 processed                                            → global_step becomes 1
+  batch 2 processed                                            → global_step becomes 2
+  batch 3 processed                                            → global_step becomes 3
+  batch 4 processed                                            → global_step becomes 4
+  batch 5 processed                                            → global_step becomes 5
+  batch 6 processed                                            → global_step becomes 6
+  batch 7 processed                                            → global_step becomes 7
+  ← end of epoch 1, 8 batches processed, global_step = 7
+
+Epoch 2:
+  batch 0 processed                                            → global_step becomes 8
+  batch 1 processed                                            → global_step becomes 9
+  ...
+  batch 7 processed                                            → global_step becomes 15
+  ← end of epoch 2, global_step = 15
+```
+
+So `global_step` does **not** reset at the start of each epoch — it just keeps climbing across the entire training run, epoch after epoch. After 2 epochs of 8 batches each, you've done 16 total weight updates, and `global_step` ends at 15 (because it started at -1, not 0).
+
+That's also exactly why it starts at `-1` instead of `0` — so that the very first batch (`global_step` becomes `0` after incrementing) immediately satisfies `0 % eval_freq == 0` and triggers an evaluation right at the start of training, giving you a baseline loss before any meaningful training has happened.
 
 ## 16 — Section 5.2: Running the 10-Epoch Training
 
@@ -1796,7 +2185,7 @@ Top-p is generally considered slightly better because it adapts; top-k is simple
 
 ---
 
-## 22 — Section 5.3.3: The Full generate() Function
+## 22 — Section 5.3.3: The Full `generate()` Function
 
 ```python
 def generate(model, idx, max_new_tokens, context_size,
@@ -1835,33 +2224,215 @@ def generate(model, idx, max_new_tokens, context_size,
     return idx
 ```
 
-This is **the** key takeaway function of the chapter. It generalises `generate_text_simple` from chapter 4 with three extra features: top-k filtering, temperature sampling, and early stopping on an end-of-sequence token.
+**Summary.** The production-grade generation function that replaces `generate_text_simple` from Chapter 4. It keeps the same autoregressive skeleton — crop context, forward pass, append, repeat — but adds three independent controls layered on top: top-k filtering to restrict the candidate pool, temperature to control how random the sampling is within that pool, and early stopping when an end-of-sequence token is produced.
 
-### The branching structure
+**The problem it solves.** `generate_text_simple` always picks the single highest-probability token (pure argmax). This is deterministic and often repetitive — the same prompt always produces the exact same continuation, and the model tends to loop into repeated phrases. `generate` introduces controlled randomness so the same prompt can produce varied, more natural-sounding continuations, while still letting you dial the randomness down to near-deterministic when you want reliability.
+
+**The five-step loop, traced with concrete numbers.**
+
+Use a toy vocabulary of 5 tokens to make every transformation visible. Say at one generation step the model produces these raw logits for the last position:
 
 ```
-For each step:
-    1. Crop context, forward pass, keep last position
-    2. If top_k is set      → mask non-top-k logits to -inf
-    3. If temperature > 0.0 → divide by T, softmax, multinomial sample
-       Else                  → argmax (greedy)
-    4. If next token is eos_id → break
-    5. Append next token to idx
+logits = [1.2, 3.5, 0.8, 4.1, 2.0]    ← one score per vocab token (indices 0-4)
 ```
 
-### The MPS stability fix
+**Step 1 — crop context, forward pass, keep last position.**
+
+The model has a fixed maximum context length it can accept at once — `context_size`. As generation proceeds, `idx` grows by one token every iteration, so it will eventually exceed `context_size`. Step 1 solves two separate problems: trimming the input down to a size the model can accept, and then extracting only the one prediction we actually need from the model's output.
+
+**Dry run — trimming the input with `idx[:, -context_size:]`.**
+
+Say `context_size = 5`, and generation has already produced 8 tokens so far:
+
+```
+idx = [[5, 12, 3, 47, 9, 21, 6, 30]]        shape: (1, 8)
+        ↑                        ↑
+   oldest tokens              newest token (just appended last iteration)
+```
+
+The model was trained with a maximum window of 5 tokens — it has no positional embedding beyond position 4, so feeding it all 8 tokens would crash. `idx[:, -context_size:]` slices off everything except the last 5 tokens:
+
+```
+idx[:, -5:]
+
+idx_cond = [[47, 9, 21, 6, 30]]             shape: (1, 5)
+              ↑               ↑
+        5th-from-last      most recent token
+```
+
+Tokens `5, 12, 3` are dropped — they fell outside the sliding window and the model never sees them at this step. Only the 5 most recent tokens go into the forward pass.
+
+**Dry run — the forward pass and what the output shape means.**
+
+```
+idx_cond.shape = (1, 5)                     ← (batch, seq_len)
+       ↓  model(idx_cond)
+logits.shape   = (1, 5, vocab_size)         ← one prediction PER input position
+```
+
+A transformer predicts "what comes next" at every single input position simultaneously, not just at the end. So this `logits` tensor actually contains 5 separate predictions:
+
+```
+logits[0, 0, :]  ← prediction for what comes after token 47   (position 0)
+logits[0, 1, :]  ← prediction for what comes after token 9    (position 1)
+logits[0, 2, :]  ← prediction for what comes after token 21   (position 2)
+logits[0, 3, :]  ← prediction for what comes after token 6    (position 3)
+logits[0, 4, :]  ← prediction for what comes after token 30   (position 4, LAST)
+```
+
+During training, all 5 of these predictions are useful — we have a ground-truth target at every position and compute loss against all of them at once (this is exactly the `(batch, seq_len, vocab)` flattening you saw back in Section 8). But during generation there are no targets for positions 0 through 3 — those tokens are already fixed, already part of the sequence. The only question we're actually asking right now is "what token comes after the most recent one, token 30?" — and that answer lives only in `logits[0, 4, :]`.
+
+> ## Quick Reference: PyTorch Slicing Syntax
+>
+> **The comma splits dimensions.** For a tensor `x[A, B]`, everything before the comma controls dim 0, everything after controls dim 1 (and so on for more dims).
+>
+> **A bare colon `:` means "keep everything" along that dimension.**
+>
+> **`start:stop` is a slice range.** Negative numbers count backward from the end.
+>
+> ```
+> my_list = [10, 20, 30, 40, 50, 60, 70, 80]
+> # index:     0   1   2   3   4   5   6   7
+> # neg idx:  -8  -7  -6  -5  -4  -3  -2  -1
+>
+> my_list[-5:]   →  [40, 50, 60, 70, 80]    ← last 5 elements
+> ```
+>
+> **Applied to `idx[:, -context_size:]`** (a 2D tensor, shape `(batch, seq_len)`):
+>
+> ```
+> idx.shape = (1, 8)
+> idx       = [[5, 12, 3, 47, 9, 21, 6, 30]]
+>
+> idx[:, -5:]
+>      ↑   ↑
+>    keep   take last 5 along seq_len
+>    all
+>    rows
+>
+> → [[47, 9, 21, 6, 30]]    shape: (1, 5)
+> ```
+>
+> `:` before the comma → keep all rows (batch). `-5:` after the comma → slice the last 5 positions of the sequence dimension.
+>
+> **A single number (no colon) removes that dimension; a slice keeps it.** This matters for `logits[:, -1, :]` (a 3D tensor, shape `(batch, seq_len, vocab)`):
+>
+> ```
+> logits[:, -1, :]
+>         ↑   ↑   ↑
+>       dim0 dim1 dim2
+>
+> dim0 → ":"   = keep all rows (batch)
+> dim1 → "-1"  = single INDEX, not a slice → grabs just the last position AND collapses that dimension
+> dim2 → ":"   = keep all columns (full vocab)
+> ```
+>
+> ```
+> logits.shape = (1, 5, 50257)
+>        ↓  logits[:, -1, :]
+> logits.shape = (1, 50257)        ← seq_len dimension is gone, not size-1
+> ```
+>
+> Compare to `-1:` (with trailing colon) — that would be a slice from the last position to the end, which keeps the dimension as size 1 instead of removing it: `logits[:, -1:, :]` would give shape `(1, 1, 50257)`.
+
+**Dry run — extracting the last position with `logits[:, -1, :]`.**
+
+```
+logits[:, -1, :]   ← keep only index 4 (the last position) along the seq_len dimension
+
+logits.shape = (1, vocab_size)              ← the 4 other predictions are discarded
+```
+
+This single row is what gets passed on to Steps 2 and 3 (top-k filtering and temperature/sampling) to decide the actual next token to append.
+
+**Putting both slicing operations together.**
+
+```
+idx.shape       = (1, 8)                    ← full sequence generated so far
+       ↓  idx[:, -context_size:]            ← trim to the model's max window (an INPUT problem)
+idx_cond.shape  = (1, 5)
+       ↓  model(idx_cond)
+logits.shape    = (1, 5, vocab_size)        ← one prediction per position in idx_cond
+       ↓  logits[:, -1, :]                  ← keep only the prediction for the newest token (an OUTPUT problem)
+logits.shape    = (1, vocab_size)           ← exactly what's needed to pick the next token
+```
+
+The first slice (`idx[:, -context_size:]`) solves "the input is too long for the model." The second slice (`logits[:, -1, :]`) solves "the model gives me more predictions than I need — I only want the one for the very last token I gave it."
+
+**Step 2 — top-k filtering (only if `top_k` is set).**
+
+With `top_k=3` on `logits = [1.2, 3.5, 0.8, 4.1, 2.0]`:
+
+```
+torch.topk(logits, 3)  → top_logits = [4.1, 3.5, 2.0]   ← 3 largest values, sorted descending
+
+min_val = top_logits[:, -1] = 2.0    ← the smallest value among the top 3
+
+torch.where(logits < min_val, -inf, logits):
+  1.2 < 2.0  → -inf      ← token 0 eliminated
+  3.5 < 2.0  → False     → stays 3.5
+  0.8 < 2.0  → -inf      ← token 2 eliminated
+  4.1 < 2.0  → False     → stays 4.1
+  2.0 < 2.0  → False     → stays 2.0   (equal, not less than, so kept)
+
+logits after filtering = [-inf, 3.5, -inf, 4.1, 2.0]
+```
+
+Three candidates survive: tokens 1, 3, and 4. The other two are mathematically impossible to sample, because `softmax(-inf) = 0` exactly.
+
+**Step 3 — temperature, then softmax, then sample (or argmax if `temperature=0.0`).**
+
+With `temperature=0.8` applied to `[-inf, 3.5, -inf, 4.1, 2.0]`:
+
+```
+logits / temperature:
+  -inf / 0.8 = -inf
+   3.5 / 0.8 = 4.375
+  -inf / 0.8 = -inf
+   4.1 / 0.8 = 5.125
+   2.0 / 0.8 = 2.5
+
+scaled logits = [-inf, 4.375, -inf, 5.125, 2.5]
+```
+
+Then the stability subtraction (explained below), then softmax converts these into a probability distribution that sums to 1 across the three surviving tokens, with `-inf` entries becoming exactly `0`. `torch.multinomial(probs, num_samples=1)` then draws one token randomly, weighted by these probabilities — token 3 is most likely to be drawn since it has the highest probability, but tokens 1 and 4 still have a real chance.
+
+If instead `temperature=0.0`, the `else` branch fires: plain `torch.argmax`, which always picks token 3 (the highest logit) with no randomness at all. This is identical to Chapter 4's `generate_text_simple` behaviour.
+
+**The MPS/numerical stability fix.**
 
 ```python
 logits = logits - logits.max(dim=-1, keepdim=True).values
 ```
 
-This is the standard **log-sum-exp** trick. After dividing logits by `temperature`, very large logits can become huge (e.g. `6.75 / 0.1 = 67.5`), and `e^67.5` overflows even in float32. Subtracting the row-wise max before exponentiating shifts all values down so the largest is exactly 0, preventing overflow. Mathematically the softmax is unchanged (subtracting a constant from all logits doesn't affect the softmax). Numerically it's the difference between getting `nan` outputs and getting correct ones — especially on Apple's MPS backend where numerical edge cases are more common.
+This is the log-sum-exp trick from Section 8, applied here for the same reason. After dividing by a small temperature, logits can become very large — `5.125` divided by a temperature of `0.1` instead of `0.8` would give `51.25`, and $e^{51.25}$ is large enough to risk overflow on some backends, especially Apple's MPS. Subtracting the row-wise maximum before exponentiating shifts every value down so the largest becomes exactly `0`:
 
-### The `eos_id` parameter
+```
+scaled logits        = [-inf, 4.375, -inf, 5.125, 2.5]
+row max               = 5.125
+after subtraction     = [-inf, -0.75, -inf, 0.0, -2.625]
+```
 
-Pass `eos_id=tokenizer.eot_token` (50256 for GPT-2) and the loop terminates the moment the model emits the end-of-text token. Useful for sequence-to-sequence tasks where you want generation to stop at a natural endpoint rather than at a fixed `max_new_tokens`.
+Softmax of this shifted version is mathematically identical to softmax of the original — subtracting a constant from every entry in a row does not change the resulting probabilities, because the constant cancels out in the numerator and denominator of softmax. The only thing that changes is numerical safety: `e^0 = 1` instead of `e^5.125 ≈ 168`, keeping every intermediate value small and well within float32's safe range.
 
-### Calling the full function
+**Step 4 — early stopping on `eos_id`.**
+
+```python
+if idx_next == eos_id:
+    break
+```
+
+If `eos_id=50256` (GPT-2's `<|endoftext|>` token) is passed and the sampled `idx_next` equals it, generation stops immediately rather than continuing to `max_new_tokens`. This matters for tasks with a natural stopping point — like answering a question — where padding the output with extra tokens past the natural end would be wasteful or incoherent.
+
+**Step 5 — append and repeat.**
+
+```python
+idx = torch.cat((idx, idx_next), dim=1)
+```
+
+`idx_next` has shape `(1, 1)`. Concatenating along `dim=1` (the sequence dimension) grows `idx` by one token, exactly as `generate_text_simple` did in Chapter 4. The loop then repeats with the newly extended `idx`.
+
+**Calling the full function.**
 
 ```python
 torch.manual_seed(123)
@@ -1876,56 +2447,104 @@ token_ids = generate(
 print("Output text:\n", token_ids_to_text(token_ids, tokenizer))
 ```
 
-With `top_k=25` and `temperature=1.4`, we get a moderate amount of variety. On the (overfit) model trained earlier, the output is still nonsensical because the model only knows the verbatim training story — but the _generation mechanics_ now support real LLM-quality decoding.
+`torch.manual_seed(123)` is necessary here because `torch.multinomial` is stochastic — without seeding, every run would produce a different output even with identical inputs. With `top_k=25` and `temperature=1.4` (mild flattening, moderate randomness), the output has noticeably more variety than greedy decoding while still being constrained to plausible high-probability tokens. On the small overfit model trained earlier in the chapter, the output remains nonsensical in meaning — it only ever saw one short story — but the generation mechanics themselves are now identical to what production LLM serving systems use.
 
----
+**Gotchas.**
 
-## 23 — Section 5.4: Saving and Loading the Model state_dict
+`temperature=0.0` is the trigger for the deterministic `else` branch, not `temperature=1.0`. A temperature of exactly `1.0` still goes through the sampling branch — it is the natural, unscaled softmax distribution sampled randomly, not equivalent to argmax.
+
+The `top_k` filtering happens before temperature scaling, not after. If you applied temperature first and top-k second, you would compute softmax probabilities on the full vocabulary at the wrong scale before restricting the field — the order in this function (filter the candidate pool first, then reshape the competition among survivors) is the only correct sequence.
+
+`idx_next == eos_id` compares a `(1, 1)` tensor to a Python int. PyTorch broadcasts this correctly into an element-wise boolean tensor, and the `if` statement implicitly calls `.item()` on a single-element tensor — but this only works because `idx_next` has exactly one element. If `generate` were ever modified to support `batch_size > 1`, this comparison would need to change to check each sequence in the batch independently.
+
+## 23 — Section 5.4: Saving and Loading the Model `state_dict`
 
 ```python
 torch.save(model.state_dict(), "model.pth")
 ```
 
-### What is `state_dict`?
+**Summary.** `model.state_dict()` returns every learnable tensor in the model — every weight matrix, bias, scale, and shift — bundled into a single Python dictionary keyed by parameter name. `torch.save` serialises that dictionary to disk. This is the standard, recommended way to persist a trained model in PyTorch, as opposed to pickling the entire model object.
 
-It's a Python `dict` mapping parameter names (strings like `"trf_blocks.0.att.W_query.weight"`) to their tensor values. It contains:
+**The problem it solves.** Training takes time and compute. Once a model is trained, its weights need to survive past the Python process that trained them — to be reloaded later for inference, to resume training, or to be shared with someone else. `state_dict` is the portable container for exactly that: the learned numbers, with no dependency on how the training script was written.
 
-- Every `nn.Parameter` in the model (weights, biases, scales, shifts).
-- Every persistent buffer (e.g. the causal attention mask, which is registered as a buffer rather than a parameter).
+**The intuition.** Think of `GPTModel` as a blueprint (the class definition — empty drawers and labels, no actual values) and `state_dict()` as the contents of every drawer (the actual numbers). Saving `state_dict` saves only the contents, not the blueprint. To use it again later you need the same blueprint (the class code) available, then you pour the saved contents back into a freshly built set of drawers.
 
-It does **not** contain:
-
-- The model's _code_ (your `GPTModel` class definition). To restore the model, you need the same class available.
-- Anything about the optimiser, the loss curve, or training metadata.
-
-### Why `state_dict` over `torch.save(model)`?
-
-`torch.save(model)` pickles the whole Python object, including the class. If you ever rename the class or move it to a different module, the pickle can't be unpickled — your saved model is unusable. `state_dict` is **just tensors plus string keys** — portable across code refactors.
-
-### Loading it back
+**What's actually inside `state_dict` — a concrete look.**
 
 ```python
-model = GPTModel(GPT_CONFIG_124M)   # instantiate a fresh model first
+sd = model.state_dict()
+print(list(sd.keys())[:4])
+print(sd["tok_emb.weight"].shape)
+print(sd["trf_blocks.0.att.W_query.weight"].shape)
+```
 
-if torch.cuda.is_available(): device = torch.device("cuda")
-elif torch.backends.mps.is_available(): ...
-else: device = torch.device("cpu")
+```
+['tok_emb.weight', 'pos_emb.weight',
+ 'trf_blocks.0.att.W_query.weight', 'trf_blocks.0.att.mask']
+
+tok_emb.weight.shape                       = (50257, 768)   ← vocab_size, emb_dim
+trf_blocks.0.att.W_query.weight.shape      = (768, 768)     ← d_in, d_out, block 0's query projection
+```
+
+Every key is a dotted path mirroring the module hierarchy you defined in `__init__`: `trf_blocks.0.att.W_query.weight` means "inside `self.trf_blocks`, block index 0, inside `self.att`, the `W_query` linear layer's weight matrix." This is exactly why the class definition still matters even though it isn't saved — the dictionary keys only make sense relative to a model built with that exact structure.
+
+`state_dict` contains two kinds of entries. Every `nn.Parameter` — weights, biases, LayerNorm's scale and shift — is included because these are what the optimiser updates during training. It also includes every registered buffer, such as the causal attention mask (`trf_blocks.0.att.mask`) — buffers are tensors that move with the model (e.g. `.to(device)`) and get saved/loaded with it, but are not trained by the optimiser since they hold fixed values like the mask, not learned ones.
+
+`state_dict` deliberately excludes the model's Python code (the `GPTModel` class definition itself — you must have that available separately to reconstruct the blueprint), anything about the optimiser's internal state (covered separately in Section 24), and any training metadata like the loss curve or epoch count.
+
+**Why `state_dict` instead of `torch.save(model)` directly.**
+
+`torch.save(model)` pickles the entire Python object, including a reference to the class itself. This creates a brittle dependency: if you ever rename the `GPTModel` class, move it to a different file, or even just change the Python/PyTorch version between saving and loading, unpickling can fail outright. `state_dict` sidesteps this entirely — it is just tensors and string keys, nothing executable, nothing tied to a specific class location. As long as you can instantiate a `GPTModel` with matching architecture, the saved weights will load into it regardless of how the surrounding code has changed.
+
+**Loading it back — step by step.**
+
+```python
+model = GPTModel(GPT_CONFIG_124M)   # fresh model, random weights — the empty blueprint
+
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+elif torch.backends.mps.is_available():
+    device = torch.device("mps")
+else:
+    device = torch.device("cpu")
 
 model.load_state_dict(torch.load("model.pth", map_location=device, weights_only=True))
 model.eval()
 ```
 
-Three things to notice:
+```
+GPTModel(GPT_CONFIG_124M)
+       ↓  fresh instance — all weights random, same architecture as the saved one
+       ↓  torch.load("model.pth", ...)
+state_dict   ← the saved dictionary of tensors, loaded into memory
+       ↓  model.load_state_dict(state_dict)
+       ↓  every tensor in state_dict overwrites the matching-named tensor in model
+model        ← now has the trained weights instead of random initialisation
+```
 
-- **You need a fresh `GPTModel` instance first** — the `state_dict` has no notion of the class. You instantiate with the same config, then overwrite the random weights with the saved ones.
-- **`map_location=device`** — controls where the loaded tensors land. Without it, a `.pth` saved on a CUDA machine would try to recreate CUDA tensors when loaded on a CPU-only machine and fail. `map_location` redirects them to the right device.
-- **`weights_only=True`** — security flag (default `False` in PyTorch < 2.6, default `True` in 2.6+). Tells PyTorch to refuse to unpickle anything except tensors and basic Python types. Without this, a malicious `.pth` file could execute arbitrary code at load time. Always set `True` unless you have a specific reason not to.
+A fresh `GPTModel` instance must be created first, built with the identical config (`GPT_CONFIG_124M`) used during training. The `state_dict` itself carries no information about layer sizes, depth, or vocabulary size — it is purely a flat dictionary of tensors. If you instantiate the model with a different config (say, a different number of layers), `load_state_dict` will raise a key mismatch or shape mismatch error rather than silently loading wrong-shaped weights.
 
-### File size
+`map_location=device` controls which device the loaded tensors are placed on. Without it, PyTorch defaults to recreating tensors on whatever device they were saved from — a `.pth` file saved from a CUDA-equipped machine would attempt to allocate CUDA tensors when loaded on a CPU-only machine, and fail immediately with a device error. `map_location` redirects every tensor to the target device during the load itself, regardless of where it was originally saved.
 
-`model.pth` for the 124M parameter model is ~498 MB (124M × 4 bytes for float32). This matches what we computed in chapter 4 section 21.
+`weights_only=True` is a security flag. By default (`False` in PyTorch versions before 2.6), `torch.load` uses Python's `pickle` module, which can execute arbitrary code embedded in the file during deserialisation. A malicious `.pth` file could exploit this to run attacker-controlled code the moment you call `torch.load`. `weights_only=True` restricts deserialisation to only tensors and basic Python types (lists, dicts, numbers), which is all a legitimate `state_dict` should ever contain. There is essentially no legitimate reason to disable this for loading model weights.
 
----
+**File size — what to expect.**
+
+```
+124M parameters × 4 bytes/parameter (float32)
+= 496,000,000 bytes
+≈ 473 MB
+```
+
+This matches the parameter count established in Chapter 4's parameter-counting section. The saved `.pth` file size scales linearly with parameter count and precision — switching to float16 storage would roughly halve it.
+
+**Gotchas.**
+
+`model.eval()` after loading is easy to forget and produces subtly wrong results rather than an error. If the model still has dropout active (the default `model.train()` mode), inference outputs become non-deterministic and degraded — running the same input twice gives different results, and generated text quality drops because random units are still being zeroed out.
+
+Calling `load_state_dict` on a model whose architecture doesn't exactly match the saved one (different number of layers, different embedding dimension, a renamed module) raises a `RuntimeError` listing every missing or unexpected key. This is usually the correct failure mode — but if you intentionally want to load a partial state dict (e.g. transferring only the embedding layer into a differently-sized model), you need `model.load_state_dict(state_dict, strict=False)`, which silently skips non-matching keys instead of raising.
+
+`torch.load(..., map_location=device)` loads tensors onto `device`, but the freshly instantiated `model = GPTModel(GPT_CONFIG_124M)` is created on CPU by default before the weights are loaded into it. After `load_state_dict`, the model's parameters take on the device of the loaded tensors — but it is safer and more explicit to also call `model.to(device)` after loading, especially if any submodules construct new tensors at runtime that wouldn't automatically follow the loaded weights' device.
 
 ## 24 — Section 5.4: Checkpointing the Optimizer Too
 
@@ -1936,13 +2555,41 @@ torch.save({
 }, "model_and_optimizer.pth")
 ```
 
-### Why save the optimizer?
+**Summary.** A single `.pth` file holding two state dictionaries bundled into one Python dict: the model's weights and the optimiser's internal state. This is the checkpoint format needed to truly resume training later, as opposed to Section 23's model-only save, which is sufficient only for inference.
 
-If you want to **resume training**, restoring just the weights is not enough. Adam (and AdamW) keeps two **momentum buffers** per parameter — the running first moment ($m$) and second moment ($v$) of the gradients. These buffers take many warmup steps to stabilise. If you reload the model without them, the optimiser restarts from zero, and the first ~100 steps after resume are essentially destabilising the model.
+**The problem it solves.** Section 23 saves the model's weights, which is enough to generate text or continue using the model for inference. But it is not enough to resume _training_ without a quality hit. AdamW does not just look at the current gradient — it maintains running statistics across every previous step, and those statistics are lost if you only save the weights.
 
-Saving the optimiser state preserves these buffers so training continues smoothly. The size is roughly **2× the model size** because there are two buffers per parameter.
+**The intuition.** Think of training as walking down a hill with momentum — you're not just reacting to the slope directly under your feet right now, you're also carrying speed and direction built up from your last several steps. The model weights are your current position on the hill. The optimiser state is your current speed and direction. Saving only the weights and resuming training is like teleporting to the same spot on the hill but with zero momentum — you have to build that momentum back up from scratch before you're moving efficiently again.
 
-### Loading both back
+**What AdamW actually tracks per parameter.**
+
+For every single trainable parameter, AdamW maintains two running buffers:
+
+$$m_t = \beta_1 m_{t-1} + (1-\beta_1)\, g_t \qquad \text{(first moment — momentum, an exponential moving average of past gradients)}$$
+
+$$v_t = \beta_2 v_{t-1} + (1-\beta_2)\, g_t^2 \qquad \text{(second moment — adapts the step size per parameter, an exponential moving average of squared past gradients)}$$
+
+where $g_t$ is the gradient at step $t$. These are not derived from the current weights — they are a running history accumulated across every batch seen so far. If you reload only the weights and start a fresh `AdamW` optimiser, both $m$ and $v$ reset to zero, and it takes many steps of training before they re-stabilise into useful estimates again. During that re-stabilisation window, the updates are noisier and less effective — research and practice both show this shows up as a small but real spike or stall in the loss curve immediately after a naive resume.
+
+**Dry run — what gets stored, sizes included.**
+
+```
+124M parameters in the model
+
+model_state_dict        ≈ 124M params × 4 bytes (float32) ≈ 473 MB
+
+optimizer_state_dict:
+  exp_avg   (m, first moment)   ≈ 124M params × 4 bytes  ≈ 473 MB
+  exp_avg_sq (v, second moment) ≈ 124M params × 4 bytes  ≈ 473 MB
+                                                            ─────────
+                                  optimizer total         ≈ 946 MB
+
+model_and_optimizer.pth total    ≈ 473 MB + 946 MB ≈ 1.4 GB
+```
+
+The optimiser state alone is roughly double the model size, because it stores two full-sized buffers ($m$ and $v$) per parameter, on top of the parameter itself. This is why full training checkpoints for large models are often 3× the size of an inference-only weights file.
+
+**Loading both back — step by step.**
 
 ```python
 checkpoint = torch.load("model_and_optimizer.pth", weights_only=True)
@@ -1955,19 +2602,116 @@ optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 model.train()
 ```
 
-The pattern: instantiate fresh `model` and `optimizer`, then overwrite both with the saved state.
+```
+torch.load("model_and_optimizer.pth")
+       ↓
+checkpoint = {"model_state_dict": {...}, "optimizer_state_dict": {...}}
+       ↓
+GPTModel(GPT_CONFIG_124M)              ← fresh model, random weights
+       ↓  model.load_state_dict(checkpoint["model_state_dict"])
+model now has the trained weights
 
-### What about the learning rate scheduler, RNG state, etc.?
+torch.optim.AdamW(model.parameters(), ...)   ← fresh optimiser, zero momentum buffers
+       ↓  optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+optimizer now has the saved m and v buffers, matched back to model's parameters
+       ↓
+model.train()                          ← ready to resume exactly where training left off
+```
 
-For full training resumability you would also save:
+The optimiser must still be freshly instantiated with `torch.optim.AdamW(model.parameters(), ...)` before loading its state — `load_state_dict` does not construct the optimiser object itself, only populates an already-constructed one's internal buffers. This also means `optimizer.parameters()` at construction time must point to the same `model` whose weights were just loaded, so the optimiser's saved per-parameter buffers correctly match up with the actual parameter tensors by identity, not just by name.
 
-- `scheduler.state_dict()` — if you're using a learning rate scheduler.
-- `torch.get_rng_state()` and `torch.cuda.get_rng_state_all()` — to make resumed training produce the same shuffle order and dropout patterns.
-- `epoch` and `global_step` — so you know where to pick up.
+**What's missing for full resumability — and why it usually doesn't matter here.**
 
-Hugging Face's `Trainer` does all of this automatically inside its checkpoint folders (see chapter 12 for the structure). For the simple notebook here, just the model + optimiser is the minimum useful checkpoint.
+A complete training resume that reproduces the exact same training run bit-for-bit would also need the learning rate scheduler's state (`scheduler.state_dict()`, if one is used — it tracks where in the schedule, e.g. warmup or decay, training currently is), the random number generator state (`torch.get_rng_state()` and `torch.cuda.get_rng_state_all()`, which determine the exact shuffle order of the DataLoader and the exact dropout mask pattern on each forward pass), and the loop counters (`epoch` and `global_step`, so the resumed loop knows where to pick up rather than restarting epoch numbering from zero).
 
----
+For the simple notebook in this chapter, saving just the model and optimiser state is the practical minimum — training continues effectively even without RNG and scheduler state, just not bit-for-bit identically to an uninterrupted run.
+
+### Extra Notes
+
+Let me build it from scratch with tiny numbers so it's concrete.
+
+**The problem AdamW is solving.**
+
+Plain gradient descent updates each weight like this:
+
+```
+w = w - learning_rate × gradient
+```
+
+The problem is the raw gradient is noisy — it jumps around wildly from batch to batch because each batch is a random sample of the data. You end up zigzagging toward the minimum rather than moving smoothly.
+
+Adam fixes this by never using the raw gradient directly. Instead it maintains two running averages that it updates every step.
+
+**First moment $m$ — smoothed gradient (momentum).**
+
+Instead of using the raw gradient from this one batch, keep a running average of all past gradients:
+
+```
+Step 1:  gradient = 0.8
+         m = 0.9 × 0    + 0.1 × 0.8  = 0.08      ← mostly zero (cold start), small pull from 0.8
+
+Step 2:  gradient = 0.6
+         m = 0.9 × 0.08 + 0.1 × 0.6  = 0.072 + 0.06 = 0.132
+
+Step 3:  gradient = 0.9
+         m = 0.9 × 0.132 + 0.1 × 0.9 = 0.119 + 0.09 = 0.209
+
+Step 4:  gradient = 0.4
+         m = 0.9 × 0.209 + 0.1 × 0.4 = 0.188 + 0.04 = 0.228
+```
+
+The `0.9` (called $\beta_1$) is the "memory" — how much weight to give past history. The `0.1` is `(1 - 0.9)` — how much weight to give the new gradient. So $m$ is a slow-moving average that dampens the noisy jumps in the raw gradient. If the gradient consistently points in one direction, $m$ builds up and the weight moves faster (like a ball rolling downhill gaining speed). If the gradient flips direction every step, $m$ stays near zero and barely moves.
+
+**Second moment $v$ — smoothed squared gradient (adaptive step size).**
+
+```
+Step 1:  gradient = 0.8,   gradient² = 0.64
+         v = 0.999 × 0      + 0.001 × 0.64  = 0.00064
+
+Step 2:  gradient = 0.6,   gradient² = 0.36
+         v = 0.999 × 0.00064 + 0.001 × 0.36 = 0.00064 + 0.00036 = 0.001
+
+Step 3:  gradient = 0.9,   gradient² = 0.81
+         v = 0.999 × 0.001  + 0.001 × 0.81  = 0.000999 + 0.00081 = 0.00181
+```
+
+$v$ tracks how large the gradients have been historically for this specific parameter. The actual weight update divides by $\sqrt{v}$:
+
+```
+update = learning_rate × m / sqrt(v)
+```
+
+If a parameter has been getting consistently large gradients (large $v$), the update is scaled down — it doesn't need big nudges because it's already in an active region. If a parameter has been getting tiny gradients (small $v$), the update is scaled up — it needs bigger nudges to move at all. This is the "adaptive" part of Adam: every single parameter gets its own personalised step size.
+
+**Now you can see what happens if you lose the optimiser state.**
+
+Say you trained for 10,000 steps and your $m$ and $v$ for one particular weight look like:
+
+```
+m = 0.023    ← the gradient has been consistently pointing slightly positive
+v = 0.0041   ← gradients have been small and stable for this weight
+```
+
+The update Adam would compute: `lr × 0.023 / sqrt(0.0041) = lr × 0.359`
+
+Now you save only the weights and reload. Fresh AdamW starts with:
+
+```
+m = 0.0     ← no history
+v = 0.0     ← no history
+```
+
+First update after reload: `lr × raw_gradient / sqrt(near_zero)` — dividing by something near zero produces a huge, destabilising update. For the first ~100 steps Adam is essentially thrashing until $m$ and $v$ build back up to meaningful values. That's the loss spike you see after a naive resume — it's not that the weights got worse, it's that the optimiser is temporarily blind to the scale of gradients it should be working with.
+
+Saving `optimizer.state_dict()` preserves the exact $m$ and $v$ for every one of the 124M parameters, so when you reload, Adam picks up from step 10,001 as if training was never interrupted.
+
+**Gotchas.**
+
+The order of operations matters: `model.load_state_dict` must happen before `torch.optim.AdamW(model.parameters(), ...)` is constructed, or more precisely, the optimiser must be built on the same parameter tensors that will hold the loaded weights. Calling `optim.AdamW(model.parameters())` _before_ `load_state_dict` is actually fine too, since `load_state_dict` modifies the existing tensors in place rather than replacing them — but constructing the optimiser on a _different_ model instance than the one weights were loaded into will silently produce an optimiser whose buffers don't correspond to the model actually being trained.
+
+`weights_only=True` on a checkpoint that bundles both model and optimiser state still works correctly, because both dictionaries contain only tensors and basic Python types (the AdamW state dict includes plain Python floats and ints for step counts, alongside the tensor buffers) — nothing in a standard checkpoint requires unsafe deserialisation.
+
+If you change the learning rate or `weight_decay` when reconstructing the optimiser before loading (e.g. `lr=0.0005` here versus a different value used originally), the loaded `m` and `v` buffers are still valid, but the optimiser will immediately start applying updates at the new learning rate from the next step onward — this is sometimes intentional (e.g. resuming with a lower LR for fine-tuning) but easy to do by accident if you don't match the original training configuration.
 
 ## 25 — Section 5.5: Downloading OpenAI's GPT-2 Weights
 
