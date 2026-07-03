@@ -12,6 +12,8 @@ data
 *.keras
 *.h5
 *.pth
+*.pt
+**/checkpoints/
 **/gpt2/
 **/__pycache__/
 loss-plot.pdf
