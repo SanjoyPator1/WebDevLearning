@@ -383,43 +383,172 @@ tensor([[    0,     1,     2,     3,     4],
         [    7,     8,     9, 50256, 50256]])
 ```
 
-### What this draft does
+### Why do we need a collate function at all?
 
-Three sequences of different lengths get padded to the same length so they can be stacked into a single rectangular tensor.
+The `DataLoader` grabs a list of items from `__getitem__` and needs to stack them into a single tensor before passing them to the model. The problem is that each training example has a **different number of tokens** — one instruction response might be 40 tokens, another 85, another 62. `torch.stack` requires every tensor to have the same shape, so we can't stack them as-is.
 
-* `inputs_1` (length 5): unchanged.
-* `inputs_2` (length 2): padded with three `50256` tokens at the right.
-* `inputs_3` (length 3): padded with two `50256` tokens.
+This function solves that by padding every sequence to the same length with a special padding token.
 
-Final shape: `(batch_size=3, max_len=5)`.
+### The problem — three sequences of different lengths
 
-### Why `+1` and then `[:-1]`?
+Our toy batch has:
 
-Look carefully at the logic:
-
-```python
-batch_max_length = max(len(item) + 1 for item in batch)   # +1
-...
-new_item = item + [pad_token_id]                          # append one pad
-padded = new_item + [pad_token_id] * (batch_max_length - len(new_item))
-inputs = torch.tensor(padded[:-1])                        # drop last
+```
+inputs_1 = [0, 1, 2, 3, 4]     ← 5 tokens  (longest)
+inputs_2 = [5, 6]              ← 2 tokens  (shortest)
+inputs_3 = [7, 8, 9]           ← 3 tokens
 ```
 
-This roundabout dance does one thing: it guarantees that **every sequence ends with at least one pad token** (which we'll use as the EOS marker). After the `+1`, the longest sequence in the batch (e.g. length 5) becomes length 6 (with one pad). After `[:-1]`, it goes back to length 5 but with the original last element preserved.
+We cannot stack these as-is. We need them all to be the same length before calling `torch.stack`.
 
-This matters because in draft 2 we'll compute targets as `inputs[1:]` — shifted by one. The pad we appended becomes the *target* for the original last input token. The model learns to predict EOS at the end of every sequence.
+### Step 1 — compute the target length
+
+```python
+batch_max_length = max(len(item) + 1 for item in batch)
+```
+
+Trace through manually:
+
+```
+item = inputs_1,  len = 5,  len + 1 = 6
+item = inputs_2,  len = 2,  len + 1 = 3
+item = inputs_3,  len = 3,  len + 1 = 4
+
+max(6, 3, 4) = 6   ←  batch_max_length = 6
+```
+
+The longest sequence is 5 tokens — so why compute 6? The `+1` is a deliberate trick explained in full below.
+
+### Step 2 — full dry run for every item in the batch
+
+---
+
+**Processing `inputs_1 = [0, 1, 2, 3, 4]` (length 5):**
+
+```python
+# Line: new_item = item + [pad_token_id]
+new_item = [0, 1, 2, 3, 4] + [50256]
+new_item = [0, 1, 2, 3, 4, 50256]          ← length 6
+
+# Line: padded = new_item + [pad_token_id] * (batch_max_length - len(new_item))
+# batch_max_length=6, len(new_item)=6  →  6 - 6 = 0 extra pads needed
+padded = [0, 1, 2, 3, 4, 50256] + []       ← still length 6
+padded = [0, 1, 2, 3, 4, 50256]
+
+# Line: inputs = torch.tensor(padded[:-1])
+padded[:-1] = [0, 1, 2, 3, 4]              ← drop last element → length 5
+inputs = tensor([0, 1, 2, 3, 4])
+```
+
+---
+
+**Processing `inputs_2 = [5, 6]` (length 2):**
+
+```python
+# Line: new_item = item + [pad_token_id]
+new_item = [5, 6] + [50256]
+new_item = [5, 6, 50256]                   ← length 3
+
+# Line: padded = new_item + [pad_token_id] * (batch_max_length - len(new_item))
+# batch_max_length=6, len(new_item)=3  →  6 - 3 = 3 extra pads needed
+padded = [5, 6, 50256] + [50256, 50256, 50256]
+padded = [5, 6, 50256, 50256, 50256, 50256]  ← length 6
+
+# Line: inputs = torch.tensor(padded[:-1])
+padded[:-1] = [5, 6, 50256, 50256, 50256]    ← drop last element → length 5
+inputs = tensor([5, 6, 50256, 50256, 50256])
+```
+
+---
+
+**Processing `inputs_3 = [7, 8, 9]` (length 3):**
+
+```python
+# Line: new_item = item + [pad_token_id]
+new_item = [7, 8, 9] + [50256]
+new_item = [7, 8, 9, 50256]                ← length 4
+
+# Line: padded = new_item + [pad_token_id] * (batch_max_length - len(new_item))
+# batch_max_length=6, len(new_item)=4  →  6 - 4 = 2 extra pads needed
+padded = [7, 8, 9, 50256] + [50256, 50256]
+padded = [7, 8, 9, 50256, 50256, 50256]     ← length 6
+
+# Line: inputs = torch.tensor(padded[:-1])
+padded[:-1] = [7, 8, 9, 50256, 50256]       ← drop last element → length 5
+inputs = tensor([7, 8, 9, 50256, 50256])
+```
+
+---
+
+### Step 3 — stack into one rectangular tensor
+
+All three inputs are now length 5:
+
+```
+inputs_lst = [
+    tensor([    0,     1,     2,     3,     4]),
+    tensor([    5,     6, 50256, 50256, 50256]),
+    tensor([    7,     8,     9, 50256, 50256])
+]
+
+torch.stack(inputs_lst) →
+
+tensor([[    0,     1,     2,     3,     4],    ← inputs_1 (no padding needed)
+        [    5,     6, 50256, 50256, 50256],    ← inputs_2 (3 pads added)
+        [    7,     8,     9, 50256, 50256]])   ← inputs_3 (2 pads added)
+
+shape: (3, 5)   ← (batch_size, max_seq_len)
+```
+
+This is a proper rectangular tensor that the model can process.
+
+### Why the `+1` and then `[:-1]` trick?
+
+This is the most confusing part. Let's think through what it accomplishes.
+
+In Draft 2 (the very next section), we'll compute targets using `padded[1:]` — the sequence shifted right by one. For this to work correctly, every sequence must have **at least one EOS/padding token remaining at the end after the `[:-1]` slice**. That trailing EOS becomes the target for the model to predict at the final position of the real content — it's how the model learns "predict EOS when the response is done."
+
+Here's what would happen **without** the `+1` trick:
+
+```
+WITHOUT +1:  batch_max_length = max(5, 2, 3) = 5
+
+inputs_1 = [0,1,2,3,4]     → new_item=[0,1,2,3,4,50256] → padded=[0,1,2,3,4,50256]
+                              → padded[:-1]=[0,1,2,3,4]        ← length 5 ✓
+
+inputs_2 = [5, 6]           → new_item=[5,6,50256]       → padded=[5,6,50256,50256,50256]
+                              → padded[:-1]=[5,6,50256,50256]   ← length 4 ✗
+
+← inputs_1 is length 5, inputs_2 is length 4 — still mismatched! torch.stack would crash.
+```
+
+With `+1`, `batch_max_length = 6`, so every padded list is length 6, and every `[:-1]` slice is length 5 — **guaranteed equal** no matter how short the shortest sequence is:
+
+```
+           original    +[50256]    padded to 6    [:-1]    result length
+inputs_1    len 5       len 6         len 6        len 5       5  ✓
+inputs_2    len 2       len 3         len 6        len 5       5  ✓
+inputs_3    len 3       len 4         len 6        len 5       5  ✓
+```
+
+The `+1` is a mathematical guarantee: regardless of what lengths appear in the batch, `[:-1]` always produces tensors of exactly `batch_max_length - 1` tokens. Equal length = stackable.
 
 ### Why `pad_token_id=50256`?
 
-This is GPT-2's `<|endoftext|>` token. We're recycling it as both:
-* **PAD token** — fills the right side of short sequences.
-* **EOS token** — marks the end of meaningful content.
+This is GPT-2's `<|endoftext|>` token. We're recycling it for two purposes at once:
 
-GPT-2 wasn't designed with separate PAD and EOS, so this reuse is the standard convention.
+* **EOS (End-Of-Sequence)** — the one token appended at the end of every real sequence. In Draft 2, this becomes the target the model must predict to learn when to stop generating.
+* **PAD** — all the extra filler tokens on the right side of shorter sequences to make them equal length.
 
-### What's missing from draft 1?
+GPT-2 was not designed with separate PAD and EOS tokens, so this reuse is the standard convention when working with it.
 
-Targets. For training we need both `inputs` (what the model sees) and `targets` (what we want it to predict). Draft 2 adds targets.
+### What's missing from Draft 1?
+
+Targets. For next-token-prediction training we need:
+- `inputs` — what the model **sees** at each position
+- `targets` — what the model should **predict** at each position (= inputs shifted by one)
+
+Draft 1 only returns `inputs`. Draft 2 adds `targets` by computing `padded[1:]` alongside `padded[:-1]`.
 
 ---
 
@@ -443,51 +572,172 @@ def custom_collate_draft_2(batch, pad_token_id=50256, device="cpu"):
     return inputs_tensor, targets_tensor
 ```
 
-### The shift-by-one pattern
+### What changed from Draft 1?
 
-For input `[0, 1, 2, 3, 4]`:
+Exactly one line:
 
-| Position | Input | Target |
-|----------|-------|--------|
-| 0 | 0 | 1 |
-| 1 | 1 | 2 |
-| 2 | 2 | 3 |
-| 3 | 3 | 4 |
-| 4 | 4 | (next token, which is EOS-pad = 50256) |
-
-The target at position `t` is whatever token the model should output *after* seeing tokens `[0..t]`. This is the canonical next-token-prediction setup.
-
-### Where the `+1` finally pays off
-
-Look at the original sequence `[0, 1, 2, 3, 4]` of length 5. After `+ [pad_token_id]` it becomes `[0, 1, 2, 3, 4, 50256]` of length 6. With `max_length = max(len+1) = 6` for the longest sequence, no padding is added for it (`6 - 6 = 0`).
-
-Then:
-* `inputs = padded[:-1]` → `[0, 1, 2, 3, 4]` (back to length 5)
-* `targets = padded[1:]` → `[1, 2, 3, 4, 50256]` (length 5)
-
-The last target is `50256` — the model is taught to predict EOS at the end. This is what tells the model when to stop generating during inference.
-
-### Inspecting the output
-
-For our toy batch:
-
-```
-inputs:
-tensor([[    0,     1,     2,     3,     4],
-        [    5,     6, 50256, 50256, 50256],
-        [    7,     8,     9, 50256, 50256]])
-
-targets:
-tensor([[    1,     2,     3,     4, 50256],
-        [    6, 50256, 50256, 50256, 50256],
-        [    8,     9, 50256, 50256, 50256]])
+```python
+targets = torch.tensor(padded[1:])    # SHIFT BY ONE
 ```
 
-### What's still wrong?
+Draft 1 only returned `inputs = padded[:-1]`. Draft 2 also computes `targets = padded[1:]` and returns both. Everything else — the `+1` trick, the EOS append, the padding — is identical.
 
-Look at row 2's targets: `[6, 50256, 50256, 50256, 50256]`. The model is being asked to predict 50256 at positions 2, 3, AND 4 — that's three identical predictions on padding.
+### The core idea: next-token prediction
 
-In cross-entropy this drowns out the meaningful signal at position 1. The model spends most of its gradient learning to predict the padding token. Draft 3 fixes this.
+For every position in the sequence, the model needs to answer: **"given what I've seen so far, what token comes next?"**
+
+The simplest way to express this is to shift the sequence by one:
+
+```
+Full padded sequence (before any slicing):
+
+Index:  [  0,   1,   2,   3,   4,     5  ]
+Value:  [  0,   1,   2,   3,   4,  50256 ]
+
+padded[:-1]  →  [0, 1, 2, 3, 4]       ← what the model SEES (inputs)
+padded[1:]   →  [1, 2, 3, 4, 50256]   ← what the model must PREDICT (targets)
+
+                  ↑↑↑ each target is the token that comes AFTER the corresponding input
+```
+
+Aligning them position by position:
+
+```
+Position 0:  input=0       →  target=1       ("after seeing 0, predict 1")
+Position 1:  input=1       →  target=2       ("after seeing 0,1 predict 2")
+Position 2:  input=2       →  target=3       ("after seeing 0,1,2 predict 3")
+Position 3:  input=3       →  target=4       ("after seeing 0,1,2,3 predict 4")
+Position 4:  input=4       →  target=50256   ("after seeing 0,1,2,3,4 predict EOS")
+```
+
+The last target is the EOS token (`50256`). This teaches the model to predict "I'm done" after the final real content token — which is exactly what makes the model stop generating during inference.
+
+### Full dry run — every item in the batch
+
+Using the same batch from Section 7:
+```
+inputs_1 = [0, 1, 2, 3, 4]    ← length 5
+inputs_2 = [5, 6]             ← length 2
+inputs_3 = [7, 8, 9]          ← length 3
+batch_max_length = 6  (same as before)
+```
+
+---
+
+**Processing `inputs_1 = [0, 1, 2, 3, 4]` (length 5):**
+
+```python
+new_item = [0, 1, 2, 3, 4] + [50256]                          # [0,1,2,3,4,50256]   len 6
+padded   = [0, 1, 2, 3, 4, 50256] + [] (0 extra pads needed)  # [0,1,2,3,4,50256]   len 6
+
+inputs  = torch.tensor(padded[:-1])  # [0, 1, 2, 3, 4,    ??] → drop last → [0,1,2,3,4]
+targets = torch.tensor(padded[1:])   # [??, 1, 2, 3, 4, 50256] → drop first → [1,2,3,4,50256]
+```
+
+Side-by-side:
+```
+Position:  0    1    2    3    4
+inputs:    0    1    2    3    4
+targets:   1    2    3    4    50256
+                               ^^^^
+                         EOS is the last target
+```
+
+---
+
+**Processing `inputs_2 = [5, 6]` (length 2):**
+
+```python
+new_item = [5, 6] + [50256]                                            # [5,6,50256]             len 3
+padded   = [5, 6, 50256] + [50256, 50256, 50256]  (3 extra pads)      # [5,6,50256,50256,50256,50256]  len 6
+
+inputs  = torch.tensor(padded[:-1])  # [5, 6, 50256, 50256, 50256]    len 5
+targets = torch.tensor(padded[1:])   # [6, 50256, 50256, 50256, 50256] len 5
+```
+
+Side-by-side:
+```
+Position:  0    1      2      3      4
+inputs:    5    6   50256  50256  50256
+targets:   6  50256  50256  50256  50256
+               ^^^^
+         first EOS = real EOS (model learns to stop here)
+               after that: all padding (positions 2,3,4 are noise)
+```
+
+**Notice the problem starting here:** at positions 2, 3, and 4, both the inputs AND the targets are `50256`. The model is being asked to predict the padding token given padding — that contributes no useful learning signal, only noise. We'll fix this in Draft 3.
+
+---
+
+**Processing `inputs_3 = [7, 8, 9]` (length 3):**
+
+```python
+new_item = [7, 8, 9] + [50256]                                      # [7,8,9,50256]             len 4
+padded   = [7, 8, 9, 50256] + [50256, 50256]  (2 extra pads)       # [7,8,9,50256,50256,50256]  len 6
+
+inputs  = torch.tensor(padded[:-1])  # [7, 8, 9, 50256, 50256]     len 5
+targets = torch.tensor(padded[1:])   # [8, 9, 50256, 50256, 50256] len 5
+```
+
+Side-by-side:
+```
+Position:  0    1    2      3      4
+inputs:    7    8    9   50256  50256
+targets:   8    9  50256  50256  50256
+                    ^^^^
+              first EOS = real EOS (model learns to stop after token 9)
+                    after that: padding noise (positions 3,4)
+```
+
+---
+
+### Final stacked output
+
+```
+inputs_tensor:
+tensor([[    0,     1,     2,     3,     4],    ← inputs_1
+        [    5,     6, 50256, 50256, 50256],    ← inputs_2
+        [    7,     8,     9, 50256, 50256]])   ← inputs_3
+
+targets_tensor:
+tensor([[    1,     2,     3,     4, 50256],    ← targets_1  (last target = EOS)
+        [    6, 50256, 50256, 50256, 50256],    ← targets_2  (3 padding targets = noise)
+        [    8,     9, 50256, 50256, 50256]])   ← targets_3  (2 padding targets = noise)
+
+Both tensors: shape (3, 5)  ← (batch_size, seq_len)
+```
+
+### Why inputs and targets have the same shape
+
+Both `padded[:-1]` and `padded[1:]` drop exactly one element from a length-6 padded list, so both are length 5. Stacking 3 of each gives `(3, 5)` for both. The training loop zips them together position-by-position:
+
+```
+At every (batch_idx, position) pair:
+  model sees:    inputs[batch_idx, position]
+  model predicts: targets[batch_idx, position]
+```
+
+### What's still wrong — the padding target problem
+
+Look at `targets_2 = [6, 50256, 50256, 50256, 50256]`. After position 0, the model is asked to predict `50256` four times in a row. Only the **first** `50256` (at position 1) is a meaningful EOS signal — that's where the real sequence ends and the model should learn to stop.
+
+Positions 2, 3, and 4 are pure padding. They contain no information about the instruction or response. Yet cross-entropy counts them equally with the meaningful positions:
+
+```
+Loss for targets_2 = average over 5 positions:
+  position 0:  predict 6      ← real token prediction     ✓ useful
+  position 1:  predict 50256  ← real EOS prediction       ✓ useful
+  position 2:  predict 50256  ← padding prediction        ✗ noise
+  position 3:  predict 50256  ← padding prediction        ✗ noise
+  position 4:  predict 50256  ← padding prediction        ✗ noise
+
+3 out of 5 loss terms are noise. The model spends most of its gradient
+on learning to predict the padding token, which is useless.
+```
+
+For the shortest sequences in a batch this gets even worse — a 10-token sequence padded to 100 positions has 90 noisy loss terms for every 10 meaningful ones. This would heavily bias the model toward predicting EOS everywhere.
+
+Draft 3 (the final version) fixes this by replacing the targets of all padding positions *after* the first EOS with `-100`, which PyTorch's `cross_entropy` ignores entirely.
 
 ---
 
