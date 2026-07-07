@@ -780,41 +780,144 @@ def custom_collate_fn(
     )
 ```
 
-### The key new logic
+### What this section adds over Draft 2
+
+**Summary.** `custom_collate_fn` is the production version. It keeps everything from Draft 2 (EOS append, padding, `padded[:-1]` / `padded[1:]` shift) and adds one new masking block that replaces every **extra** `50256` in the targets tensor with `-100`. PyTorch's `cross_entropy` silently skips any position whose target is `-100`, so those padding positions contribute nothing to the loss or the gradient.
+
+**The problem it solves.** Draft 2's targets tensor looks like this for a short sequence:
+
+```
+targets_2 = [6, 50256, 50256, 50256, 50256]
+              ↑    ↑       ↑       ↑       ↑
+            real  EOS    pad     pad     pad
+            pred  (OK)  (noise) (noise) (noise)
+```
+
+3 of 5 loss terms are noise — the model is penalised for not predicting the padding token, a signal that carries zero semantic information. For very short sequences padded to a long batch, the padding positions can dominate the loss entirely, biasing the model to predict EOS everywhere.
+
+**The intuition.** Imagine grading a student's exam. The real answer ends at position 1. We want to grade positions 0 and 1, and then **draw a line through the remaining blank spaces** so they don't count toward the score — even if the student wrote nothing on them. `-100` is that "drawn line": PyTorch sees it and simply skips that cell when computing the average cross-entropy.
+
+---
+
+### Before vs. after masking — the full picture
+
+Starting from the Draft 2 `targets_tensor` (same toy batch as Sections 7 and 8):
+
+```
+Before masking (Draft 2 output):
+
+targets_tensor:
+  row 0: [    1,     2,     3,     4, 50256]   ← only 1 pad/EOS token
+  row 1: [    6, 50256, 50256, 50256, 50256]   ← 4 pad/EOS tokens
+  row 2: [    8,     9, 50256, 50256, 50256]   ← 3 pad/EOS tokens
+
+After masking (final output):
+
+targets_tensor:
+  row 0: [    1,     2,     3,     4, 50256]   ← unchanged (only 1 EOS, nothing to mask)
+  row 1: [    6, 50256,  -100,  -100,  -100]   ← positions 2,3,4 masked
+  row 2: [    8,     9, 50256,  -100,  -100]   ← positions 3,4 masked
+```
+
+The first `50256` in each row is kept — that is the **real EOS signal** the model must learn. Everything after it is replaced with `-100` and invisible to the loss.
+
+---
+
+### Full dry run — masking block for every row
+
+The masking block runs **inside the per-item loop**, on the 1-D `targets` tensor for that item. Let's trace all three items.
+
+---
+
+**Row 0 — `targets = tensor([1, 2, 3, 4, 50256])`**  *(no padding, only a real EOS)*
 
 ```python
-mask = targets == pad_token_id
-indices = torch.nonzero(mask).squeeze()
-if indices.numel() > 1:
-    targets[indices[1:]] = ignore_index
+# Step 1: find all positions where targets == 50256
+mask = targets == 50256
+# targets:  [    1,     2,     3,     4, 50256]
+# mask:     [False, False, False, False,  True]
+
+# Step 2: get indices of True positions
+# torch.nonzero(mask) → tensor([[4]])   (shape 1×1)
+# .squeeze()          → tensor(4)       (0-D scalar!)
+indices = torch.nonzero(mask).squeeze()   # → tensor(4)
+
+# Step 3: guard check
+indices.numel()  # → 1
+# 1 > 1 is False → skip masking entirely
+
+# targets unchanged:  [1, 2, 3, 4, 50256]
 ```
 
-Three steps:
+> **Key insight:** when there is exactly one `50256`, `indices` becomes a **0-D scalar tensor** after `.squeeze()`. The guard `if indices.numel() > 1` is not just an optimisation — it is a correctness check. Without it, attempting `indices[1:]` on a 0-D tensor would raise `IndexError: too many indices for tensor`.
 
-1. **`mask`** is a boolean tensor: True at every position where `targets[i] == 50256`.
-2. **`indices`** lists the positions where the mask is True.
-3. **`targets[indices[1:]] = -100`** replaces every padding-token target *except the first one* with `-100`.
+---
 
-### Why keep the *first* padding token?
+**Row 1 — `targets = tensor([6, 50256, 50256, 50256, 50256])`**  *(3 extra pad tokens)*
 
-The first 50256 in the targets is the **legitimate EOS** — the position where the model should learn to stop. We want gradient flowing through that target so the model learns to emit EOS at the right time.
+```python
+# Step 1:
+mask = targets == 50256
+# targets:  [    6, 50256, 50256, 50256, 50256]
+# mask:     [False,  True,  True,  True,  True]
 
-Every padding token *after* the first is just filler — we don't want gradients flowing through those.
+# Step 2:
+# torch.nonzero(mask) → tensor([[1], [2], [3], [4]])   (shape 4×1)
+# .squeeze()          → tensor([1, 2, 3, 4])            (1-D, shape 4)
+indices = tensor([1, 2, 3, 4])
 
-### What `-100` does
+# Step 3:
+indices.numel()  # → 4
+# 4 > 1 is True → enter the masking block
 
-The next section explains in detail, but the short version: PyTorch's `cross_entropy` treats `-100` as a special "ignore me" value. Positions with target `-100` are skipped entirely — they contribute nothing to the loss and nothing to the gradient.
+# indices[1:] = tensor([2, 3, 4])   ← everything after the first EOS
+targets[tensor([2, 3, 4])] = -100
 
-### After the mask, our toy batch becomes
-
+# targets after masking:  [6, 50256, -100, -100, -100]
+#                              ^^^^
+#               position 1 kept (real EOS) ✓
+#                         positions 2,3,4 silenced ✓
 ```
-targets:
-tensor([[    1,     2,     3,     4, 50256],     # last 50256 = real EOS, kept
-        [    6, 50256,  -100,  -100,  -100],     # 1st 50256 = EOS, rest masked
-        [    8,     9, 50256,  -100,  -100]])    # 1st 50256 = EOS, rest masked
+
+---
+
+**Row 2 — `targets = tensor([8, 9, 50256, 50256, 50256])`**  *(2 extra pad tokens)*
+
+```python
+# Step 1:
+mask = targets == 50256
+# targets:  [    8,     9, 50256, 50256, 50256]
+# mask:     [False, False,  True,  True,  True]
+
+# Step 2:
+# torch.nonzero(mask) → tensor([[2], [3], [4]])   (shape 3×1)
+# .squeeze()          → tensor([2, 3, 4])          (1-D, shape 3)
+indices = tensor([2, 3, 4])
+
+# Step 3:
+indices.numel()  # → 3
+# 3 > 1 is True → enter the masking block
+
+# indices[1:] = tensor([3, 4])   ← everything after the first EOS at position 2
+targets[tensor([3, 4])] = -100
+
+# targets after masking:  [8, 9, 50256, -100, -100]
+#                                ^^^^
+#              position 2 kept (real EOS) ✓
+#                        positions 3,4 silenced ✓
 ```
 
-Only **one** EOS per sequence contributes to the loss. The model learns the right thing: predict the next real token, then predict EOS, then *do not* contribute to the loss for anything that follows.
+---
+
+### Side-by-side summary of the masking step
+
+| Row | Before masking | `mask` (bool) | `indices` | `indices[1:]` | After masking |
+|-----|---------------|---------------|-----------|---------------|---------------|
+| 0 | `[1, 2, 3, 4, 50256]` | `[F,F,F,F,T]` | `4` (scalar) | — (skipped, numel=1) | `[1, 2, 3, 4, 50256]` |
+| 1 | `[6, 50256, 50256, 50256, 50256]` | `[F,T,T,T,T]` | `[1,2,3,4]` | `[2,3,4]` | `[6, 50256, -100, -100, -100]` |
+| 2 | `[8, 9, 50256, 50256, 50256]` | `[F,F,T,T,T]` | `[2,3,4]` | `[3,4]` | `[8, 9, 50256, -100, -100]` |
+
+---
 
 ### What `allowed_max_length` does
 
@@ -824,7 +927,19 @@ if allowed_max_length is not None:
     targets = targets[:allowed_max_length]
 ```
 
-A safety cap. GPT-2 Medium has a 1024-token context window. If a particular batch had a 2000-token entry (which shouldn't happen with this small dataset but is possible in general), feeding it to the model would crash on a positional-embedding out-of-bounds error. Truncating to 1024 prevents this.
+An optional safety truncation applied **after** the masking. GPT-2 Medium's positional embedding table only has 1024 entries — feeding a sequence longer than 1024 tokens would access out-of-bounds embeddings and crash with an index error. In practice, with `functools.partial` (Section 11), this is called as `allowed_max_length=1024`, so no entry in this 1,100-item dataset will ever exceed GPT-2's context window.
+
+The truncation happens here rather than globally so the collate function can be reused with any model and any context length simply by changing this one parameter.
+
+---
+
+### Gotchas
+
+**The `.squeeze()` scalar edge case.** When `torch.nonzero(mask)` returns a single row (exactly one `50256` in the targets), calling `.squeeze()` collapses the `(1, 1)` tensor to a **0-D scalar**. A 0-D scalar cannot be sliced with `[1:]`, so without the `indices.numel() > 1` guard, Row 0 would raise `IndexError: too many indices for tensor of dimension 0`. The guard also handles the degenerate case of zero padding tokens (a sequence exactly `batch_max_length - 1` tokens long with no EOS appended yet — shouldn't happen here, but defensively correct).
+
+**Why `targets == pad_token_id` and not `targets == 0`?** The padding token is `50256` (GPT-2's `<|endoftext|>`), not zero. Token ID `0` is a real vocabulary token (the `!` character in GPT-2). Using the wrong ID would mask real content tokens and silently corrupt training.
+
+**Masking happens on 1-D tensors, not the stacked batch.** The masking block runs inside the item loop on each 1-D `targets` tensor before stacking. This is important: `torch.nonzero` on a 2-D batch tensor returns `(row, col)` pairs, requiring different index arithmetic. Keeping the masking per-item keeps the logic simple and row-independent.
 
 ---
 
