@@ -18,22 +18,27 @@ fluency transfers directly to any NLP/LLM work.
 
 ## Working Convention
 
-Each chapter ships three artifacts:
+Each chapter ships four artifacts:
 
 1. `notes/chNN-<topic>.md` — long-form prose notes in the repo's mandatory
    style: intuition → math (LaTeX) → tiny-number dry-run, ASCII diagrams,
    per-section Key Takeaways, closing master decision table.
-2. `code/chNN/template/chNN-<topic>-practice.ipynb` — the fill-in practice
-   notebook. Each exercise states **the decision you're practicing**, gives a
-   stub cell with `# TODO` markers, and is followed by a pre-written
-   verification cell full of asserts that grades your work.
-3. `code/chNN/solutions/chNN-<topic>-solution.ipynb` — the fully solved
-   notebook, executed top-to-bottom with outputs saved, so you can diff your
-   attempt against a working reference.
+2. `code/chNN/template/chNN-<topic>-practice.ipynb` — the pristine fill-in
+   practice notebook. Each exercise states **the decision you're practicing**,
+   gives a stub cell with `# TODO` markers, and is followed by a pre-written
+   verification cell full of asserts that grades your work. *Never edit this
+   copy* — it stays clean so you can always restart.
+3. `code/chNN/solutions/chNN-<topic>-solution.ipynb` — **your working copy**
+   (starts as an exact copy of the template). This is where you hand-write
+   your answers.
+4. `code/chNN/solved/chNN-<topic>-solved.ipynb` — the fully solved reference,
+   executed top-to-bottom with outputs saved, so you can diff your attempt
+   against a working answer key.
 
-The intended workflow: **read the notes → fill the template → run the
-verification cells → diff against the solution.** Don't peek at the solution
-until the verification cell has either passed or genuinely stumped you.
+The intended workflow: **read the notes → hand-write code in `solutions/` →
+run the verification cells → diff against `solved/`.** Don't peek at the
+solved notebook until the verification cell has either passed or genuinely
+stumped you.
 
 ## Chapter List & Order
 
