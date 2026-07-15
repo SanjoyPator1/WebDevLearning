@@ -262,61 +262,67 @@ If you try to multiply a CPU tensor by a GPU tensor, PyTorch throws the famous `
 
 # 5: Indexing and Slicing
 
-## The Intuition
+## The Intuition: Views vs. Copies
 
-Given the storage+strides model from Section 2, there are exactly two kinds of
-"give me part of this tensor": selections that can be described by a new
-`(size, stride, offset)` recipe over the *same* storage — these are free
-**views** — and selections that cannot, which must **copy**. Regular slices
-are regular enough to be recipes. Arbitrary index lists are not.
+When you ask PyTorch for a specific part of a tensor, you are asking for a new Display Window. PyTorch will respond in one of two ways depending on *how* you ask:
 
-## The Rules
+**1. The View (Free and Fast):** If your request follows a predictable, repeating pattern (like "give me every second row"), the warehouse worker can simply write a **new recipe card** (new offset, size, and stride) for the *exact same warehouse aisle*. We call this a **View**.
 
-**Basic slicing is a view.** `t[1]`, `t[:, 2]`, `t[::2]`, `t[1:4]` — all just
-adjust size/stride/offset. Writing into a slice writes into the original.
+* *Danger/Superpower:* Because it shares the same physical boxes, if you change a number in a View, you instantly change the original tensor!
+
+**2. The Copy (Slow and Safe):**
+If your request is chaotic or out-of-order (like "give me row 2, then row 0, then row 1"), the worker *cannot* express this with a simple "take $X$ steps" stride recipe. They are forced to physically build a **brand new warehouse aisle** and duplicate the boxes. We call this a **Copy**.
+
+* *Note:* Changing a Copy does *not* affect the original tensor.
+
+## The Rules of Extraction
+
+### 1. Basic Slicing is always a VIEW
+
+Any time you use the standard colon `:` syntax (`start:stop:step`), PyTorch can calculate a new stride. It is free.
+
+```python
+batch = torch.arange(12).view(3, 4)      # Original warehouse setup
+first_seq = batch[0]                     # VIEW: Just changes offset to 0
+every_other_pos = batch[:, ::2]          # VIEW: Just multiplies the stride by 2
+
+first_seq[0] = 999                       # Watch out! batch[0,0] is now 999 too.
 
 ```
-batch = torch.arange(12).view(3, 4)      # 3 sequences, 4 token positions
-first_seq = batch[0]                     # view: offset 0, size (4,), stride (1,)
-every_other_pos = batch[:, ::2]          # view: size (3,2), stride (4,2) ← stride trick!
-first_seq[0] = 999                       # batch[0,0] is now 999 too
-```
 
-**Integer-array ("fancy") and boolean indexing copy.**
-`t[[2, 0, 1]]` (reorder rows by an index list) and `t[mask]` (keep elements
-where a `bool` mask is `True`) both gather scattered elements — no single
-stride pattern can describe "rows 2, 0, 1 in that order", so PyTorch
-materializes a new tensor.
+### 2. "Fancy" (List) Indexing is always a COPY
 
-**Boolean indexing flattens.** `t[mask]` returns a **1-D** tensor of the kept
-elements, however many dimensions `t` had. This is a feature for NLP: with
-`tokens` of shape `(batch, seq)` and a `bool` pad mask, `tokens[mask]` is the
-flat list of *real* (non-pad) tokens — exactly what you want for computing
-loss over non-padded positions.
+If you pass a list or array of specific indices (e.g., `[2, 0, 1]`), PyTorch panics. No single stride pattern can jump backward and forward like that. It is forced to copy the data to a new memory block.
 
-**Two small power tools.** Indexing with `None` inserts a size-1 axis
-(`t[None]` turns `(seq,)` into `(1, seq)` — instant batch dimension), and
-`...` (ellipsis) means "all the dimensions I didn't mention"
-(`t[..., 0]` grabs the first element of the last dim regardless of rank).
+### 3. Boolean (Mask) Indexing is a COPY *and* FLATTENS
+
+If you pass a mask of True/False values, PyTorch copies only the `True` values into a new tensor.
+
+* **The NLP Feature:** Boolean indexing always returns a **1-Dimensional** tensor, destroying the original rows and columns. This is actually a massive feature for NLP: if you have a 2D batch of tokens and a pad mask, doing `tokens[mask]` instantly gives you a flat 1D list of *only the real tokens*, which is exactly what you need to calculate your loss function!
+
+### 4. Two Small Power Tools
+
+* **`None` (Adds a dimension):** `t[None, :]` instantly wraps your tensor in an extra dimension. (e.g., turning a single sequence into a batch of 1).
+* **`...` (Ellipsis / Skip dimensions):** `t[..., 0]` means "I don't care how many dimensions this tensor has, just give me the very first element of the very last dimension."
 
 ## Dry-Run: View or Copy?
 
-```
-t = torch.arange(6).view(2, 3)          # storage [0,1,2,3,4,5]
+```python
+t = torch.arange(6).view(2, 3)          # storage [0, 1, 2, 3, 4, 5]
 
-t[1]        → tensor([3, 4, 5])          view  (offset 3, stride (1,))
-t[:, 1]     → tensor([1, 4])             view  (offset 1, stride (3,))
-t[[1, 0]]   → tensor([[3,4,5],[0,1,2]])  COPY  (no stride can express "swap rows")
-t[t > 3]    → tensor([4, 5])             COPY, flattened to 1-D
+# --- VIEWS ---
+t[1]        # -> [3, 4, 5]              (View: offset=3, stride=(1,))
+t[:, 1]     # -> [1, 4]                 (View: offset=1, stride=(3,))
+
+# --- COPIES ---
+t[[1, 0]]   # -> [[3,4,5], [0,1,2]]     (COPY: No stride can express "swap rows")
+t[t > 3]    # -> [4, 5]                 (COPY: Flattened to 1D)
+
 ```
 
 ## Key Takeaways for Section 5
 
-Slices are views (writes propagate!); fancy/boolean indexing copies. Boolean
-indexing flattens to 1-D — perfect for "all real tokens" extraction. `None`
-adds an axis; `...` skips axes. When you need per-row lookups by an index
-*tensor* (e.g., "the target token's logit in every row"), that is `gather` —
-chapter 2's territory.
+Basic slices (using `:`) are **views**; modifying them modifies the original data. Fancy indexing (using lists) and Boolean indexing (using `> < ==`) are **copies**. Boolean indexing flattens everything into a 1D line — a neat trick for extracting unpadded tokens. Use `None` to fake a batch dimension, and `...` to skip dimensions you don't want to type out.
 
 *Next: the most feared error message in PyTorch, defused.*
 
