@@ -47,8 +47,8 @@ stumped you.
 | 1 | Tensors & Shape Algebra | [ch01-tensors-and-shape-algebra.md](notes/ch01-tensors-and-shape-algebra.md) | Done — see [code/ch01/](code/ch01/) |
 | 2 | Tensor Operations for NLP | [ch02-tensor-ops-for-nlp.md](notes/ch02-tensor-ops-for-nlp.md) | Done — see [code/ch02/](code/ch02/) |
 | 3 | The Autograd Mental Model | [ch03-autograd-mental-model.md](notes/ch03-autograd-mental-model.md) | Done — see [code/ch03/](code/ch03/) |
-| 4 | Module Patterns | ch04-module-patterns.md | Not started |
-| 5 | NLP Layer & Loss Toolbox | ch05-nlp-layer-and-loss-toolbox.md | Not started |
+| 4 | Module Patterns | [ch04-module-patterns.md](notes/ch04-module-patterns.md) | Done — see [code/ch04/](code/ch04/) |
+| 5 | NLP Layer & Loss Toolbox | [ch05-nlp-layer-and-loss-toolbox.md](notes/ch05-nlp-layer-and-loss-toolbox.md) | Done — see [code/ch05/](code/ch05/) |
 | 6 | Text Data Pipeline | ch06-text-data-pipeline.md | Not started |
 | 7 | Training Loop Anatomy | ch07-training-loop-anatomy.md | Not started |
 | 8 | Devices, Checkpoints & Debugging | ch08-devices-checkpoints-and-debugging.md | Not started |
