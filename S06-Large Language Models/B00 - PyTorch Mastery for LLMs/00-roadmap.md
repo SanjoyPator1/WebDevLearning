@@ -50,7 +50,7 @@ stumped you.
 | 4 | Module Patterns | [ch04-module-patterns.md](notes/ch04-module-patterns.md) | Done — see [code/ch04/](code/ch04/) |
 | 5 | NLP Layer & Loss Toolbox | [ch05-nlp-layer-and-loss-toolbox.md](notes/ch05-nlp-layer-and-loss-toolbox.md) | Done — see [code/ch05/](code/ch05/) |
 | 6 | Text Data Pipeline | [ch06-text-data-pipeline.md](notes/ch06-text-data-pipeline.md) | Done — see [code/ch06/](code/ch06/) |
-| 7 | Training Loop Anatomy | ch07-training-loop-anatomy.md | Not started |
+| 7 | Training Loop Anatomy | [ch07-training-loop-anatomy.md](notes/ch07-training-loop-anatomy.md) | Done — see [code/ch07/](code/ch07/) |
 | 8 | Devices, Checkpoints & Debugging | ch08-devices-checkpoints-and-debugging.md | Not started |
 | 9 | Capstone: Text Classifier | ch09-capstone-text-classifier.md | Not started |
 
