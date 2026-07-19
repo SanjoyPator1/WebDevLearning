@@ -1,0 +1,82 @@
+[
+  {
+    "category": "session_review",
+    "mode": "strict",
+    "topic": "general",
+    "user": "We talked a lot today. Can you give me a review of the mistakes I made this session?",
+    "chosen": "SESSION REVIEW\n\nErrors this session (3 key patterns):\n1. Irregular past tense: 'goed' should be 'went', 'buyed' should be 'bought' — these are high-priority ones to memorize\n2. Subject-verb agreement: 'Everyone are' should be 'Everyone is' — words like everyone, nobody, and someone always take a singular verb\n3. Article use: 'I go to hospital' should be 'I go to the hospital' in your context — without 'the' it implies you are a patient\n\nPattern to watch: You consistently add '-ed' to irregular verbs. This is your single most important habit to work on right now.\n\nPractice exercise — rewrite these correctly:\n1. 'Yesterday she goed to the market and buyed some fruit.'\n2. 'Everyone are coming to the party tonight.'\n3. 'He is in hospital' vs 'He is in the hospital' — which fits 'he broke his leg'?\n\nYour conversation was really natural and engaging today — keep bringing topics in like that!",
+    "rejected": "You did really well today! You made a few small grammar mistakes but overall your English is improving a lot. Keep practicing and you will get better and better. Great effort!",
+    "reject_reason": "The rejected response is completely useless for learning. It names no specific errors, identifies no patterns, and gives no exercises to practice. Vague encouragement without any substance wastes the learner's time and teaches them nothing.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "session_review",
+    "mode": "strict",
+    "topic": "general",
+    "user": "Can you tell me which grammar mistakes I kept repeating today?",
+    "chosen": "SESSION REVIEW\n\nRepeated errors this session (2 recurring patterns):\n1. First conditional structure: You said 'If I will go' three times — the correct form is 'If I go' (present simple in the if-clause, not 'will')\n2. Preposition with days of the week: 'in Monday' and 'in Saturday' both came up — we always say 'on Monday', 'on Saturday' for specific days\n\nGood news: Your use of past simple for finished events improved noticeably during our conversation — that is real progress.\n\nPractice exercise:\n1. 'If I will have time, I will call you.' → Correct the if-clause.\n2. 'The meeting is in Thursday.' → Fix the preposition.\n3. 'She went to the cinema in Friday night.' → Fix the preposition.\n\nRepetition is completely normal — the fact that you noticed it yourself means you are getting very close to correcting it automatically!",
+    "rejected": "You made a couple of grammar mistakes today, mostly with tenses and prepositions. These are very common errors for learners at your level. Try to pay more attention to these areas and practice a little every day. You are doing great overall!",
+    "reject_reason": "The rejected response names only broad categories ('tenses', 'prepositions') with no specifics and no examples. 'Try to pay more attention' gives the learner absolutely nothing actionable. They are left knowing nothing more than before they asked.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "session_review",
+    "mode": "strict",
+    "topic": "general",
+    "user": "That was a great session. What should I focus on studying before we meet next time?",
+    "chosen": "SESSION REVIEW\n\nFocus areas before next session:\n1. Uncountable nouns (this came up 4 times today!): 'informations' should be 'information', 'advices' should be 'advice', 'furnitures' should be 'furniture', 'softwares' should be 'software'. None of these nouns have a plural form in English.\n2. Stative verbs: 'I am knowing', 'I am believing', 'I am understanding' — verbs that describe mental states are almost never used in the continuous tense. Use: 'I know', 'I believe', 'I understand'.\n\nRecommended mini-task before next session:\nWrite 5 separate sentences using: information, advice, furniture, software, and knowledge — without pluralizing any of them.\n\nYour vocabulary range today was genuinely impressive. The grammar patterns will follow — you are on the right track!",
+    "rejected": "Great session today! Your English is really developing well. Before next time, just review some grammar rules around nouns and verb tenses. See you next session — keep it up!",
+    "reject_reason": "Telling someone to 'review grammar rules around nouns and verb tenses' is so broad it gives the learner absolutely nothing to work with. The chosen version names the exact uncountable nouns that caused problems and provides a concrete, doable task.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "session_review",
+    "mode": "strict",
+    "topic": "general",
+    "user": "I feel like I keep making the same mistakes. Can you help me see the pattern so I understand it?",
+    "chosen": "SESSION REVIEW\n\nYou are right — there is a very clear pattern. Here is what I noticed:\n\nCore pattern: Indirect question word order.\nExamples from today:\n- 'I don't know where is the station' → should be 'I don't know where the station is'\n- 'Can you tell me what means this word' → should be 'Can you tell me what this word means'\n- 'I asked her what time does the shop open' → should be 'I asked her what time the shop opens'\n\nThe rule: In indirect questions (after phrases like 'I don't know', 'Can you tell me', 'I wonder'), the word order goes back to normal statement order — no inversion.\n\nPractice:\n1. 'I wonder what is her name.' → Fix it.\n2. 'Can you explain why did he leave?' → Fix it.\n3. 'I don't understand how does this machine work.' → Fix it.\n\nYou are definitely not going backwards — you are at the stage where one specific pattern is becoming clear. That is exactly when the real breakthrough happens!",
+    "rejected": "I completely understand how you feel! Language learning can sometimes feel like you are going in circles. The important thing is to keep going and not get discouraged. You are making progress even when it does not feel like it. Every mistake is a valuable learning opportunity!",
+    "reject_reason": "The rejected response completely ignores the learner's actual question. They asked to see the pattern in their mistakes — and the model responded with generic motivational language. This is a direct failure to answer what was specifically requested.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "session_review",
+    "mode": "strict",
+    "topic": "general",
+    "user": "Before we finish, can you score me on today and give me some exercises to practice?",
+    "chosen": "SESSION REVIEW\n\nToday's session: 7 out of 10\n\nStrengths:\n- Great use of present perfect throughout ('I have never been to...', 'Have you ever tried...')\n- Vocabulary range was confident and well-varied\n- Conversation felt natural and kept moving well\n\nAreas to improve (2 points deducted):\n1. Causative verbs: You said 'my teacher made me to study' — after 'make', use the bare infinitive: 'made me study'\n2. Double comparatives: 'more easier' should be 'easier' — 'easier' is already comparative, adding 'more' is redundant\n\nExercises:\n1. Rewrite: 'My parents always make me to clean my room on weekends.'\n2. Rewrite: 'This test was more harder than the last one.'\n3. Write two original sentences using 'make + someone + base verb' correctly.\n\nA solid session — your strengths clearly outweigh the weak spots today!",
+    "rejected": "You did very well today! I would give you about a 7 or 8 out of 10. You made some small mistakes but your English is clearly improving and you should be proud of yourself. Keep practicing every day!",
+    "reject_reason": "The rejected response gives a score but does not justify it, mentions 'small mistakes' without naming a single one, and completely ignores the learner's explicit request for exercises. It reads like a dismissal.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "session_review",
+    "mode": "flow",
+    "topic": "general",
+    "user": "We had a great long chat today. Can you give me a quick review of my English from this session?",
+    "chosen": "SESSION REVIEW\n\nQuick review from today's conversation:\n\nTop 2 grammar patterns to note:\n1. Narrative tense consistency: A few times you mixed past simple and present when telling a story — 'so then she goes to the door and opened it' — try to stay consistently in past simple when recounting past events\n2. Article before singular countable nouns: 'I want buy car' came up — singular countable nouns almost always need 'a' or 'the': 'I want to buy a car'\n\nWhat you did really well:\n- Your storytelling was expressive, detailed, and genuinely engaging\n- You asked natural follow-up questions throughout without prompting\n\nOne exercise: Write a 4-sentence story about something that happened last week, keeping all verbs in past simple throughout.\n\nThis was a really enjoyable conversation — you kept things moving naturally the whole time!",
+    "rejected": "Great chat today! You spoke very naturally and your English is getting better with every session. There were a few small errors here and there but nothing major at all. You should feel confident — you are really doing well!",
+    "reject_reason": "The rejected response is full of warm language but completely empty of useful feedback. 'A few small errors here and there but nothing major' is meaningless to a learner who wants to understand and improve their specific weaknesses.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "session_review",
+    "mode": "strict",
+    "topic": "general",
+    "user": "Can you summarize my three biggest mistakes from today so I can write them in my notebook?",
+    "chosen": "SESSION REVIEW\n\nYour 3 biggest mistakes today — ready to copy down:\n\n1. PREPOSITION WITH TRANSPORT: 'I travel with car' should be 'I travel by car'. Use 'by' for all modes of transport: by bus, by train, by plane, by taxi.\n\n2. ARTICLE OMISSION: 'I am going to buy new phone' should be 'I am going to buy a new phone' — singular countable nouns in English need 'a' or 'the' before them.\n\n3. PRONOUN DOUBLING: 'My brother he works in London' should be 'My brother works in London' — only use one subject per clause, either the noun or the pronoun, never both together.\n\nThose are your three clearest patterns from today. Great that you are keeping a notebook — that is a powerful habit!",
+    "rejected": "Of course! Today your main areas were grammar and vocabulary as usual. Try to write down any new rules or words from our sessions and look at them later. Keeping a notebook is a really useful habit for language learners to build. Keep it up!",
+    "reject_reason": "The learner asked for three specific mistakes to write down and received generic advice about keeping a notebook. This is a complete failure to answer what was asked. The chosen version gives exactly three specific, labeled, example-backed corrections ready to write down.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "session_review",
+    "mode": "strict",
+    "topic": "general",
+    "user": "I want an honest review — what are my real weaknesses based on everything I said today?",
+    "chosen": "SESSION REVIEW — Honest Assessment\n\nYour genuine weaknesses based on today (no sugarcoating):\n\n1. CONDITIONALS (recurring, most urgent): You mixed up conditional structures multiple times. Today: 'If I would study more, I will pass' mixes second and first conditional. Choose one: 'If I study more, I will pass' (first conditional) OR 'If I studied more, I would pass' (second conditional). They are not interchangeable.\n\n2. UNCOUNTABLE NOUNS (4 errors today): You pluralized: information, advice, equipment, and knowledge. None of these words can take an '-s' in English, ever.\n\n3. STATIVE VERBS (2 errors): 'I am knowing him' and 'I am wanting to go' — mental state verbs like know, want, understand, and believe are almost never used in the continuous tense.\n\nBeing honest: Conditionals are your biggest gap right now. Fixing that one area alone would make your English feel significantly more accurate and natural. Want to spend the first part of our next session drilling exactly that?",
+    "rejected": "Honest review? Honestly, you are doing really well! There are always areas to work on, but you should not be too hard on yourself. English is a complex language and the fact that you are here practicing is what matters most. Just keep talking and it will all come naturally in time!",
+    "reject_reason": "The learner explicitly asked for honesty and specificity about their weaknesses. The rejected response deflects with reassurance and gives zero concrete feedback. 'Just keep talking and it will come naturally' is the least useful thing a tutor can say to a learner who asked for honest, targeted feedback.",
+    "source": "handcrafted"
+  }
+]

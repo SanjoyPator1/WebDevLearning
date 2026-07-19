@@ -13,11 +13,18 @@ data
 *.h5
 *.pth
 *.pt
+*.gguf
 **/checkpoints/
 **/gpt2/
 **/__pycache__/
 loss-plot.pdf
 temperature-plot.pdf
+
+# W&B training run logs (generated artifacts)
+wandb/
+
+# Gradio auto-generated files
+.gradio/
 
 # Generated SQLite databases (e.g. MCP server demos)
 *.db

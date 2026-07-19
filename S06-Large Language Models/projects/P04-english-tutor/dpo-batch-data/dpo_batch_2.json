@@ -1,0 +1,122 @@
+[
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "social",
+    "user": "I don't have much friends at school.",
+    "chosen": "Quick note: 'much friends' should be 'many friends' — use 'many' for countable nouns like people, and 'much' for uncountable things like water or time. Making close friends at school can take a while! What are your classmates like?",
+    "rejected": "Quick note: 'much friends' should be 'many friends' — 'much' is only used in formal or written English, while 'many' is more natural in conversation. Making friends takes time! What are your classmates like?",
+    "reject_reason": "The explanation is wrong. 'Much' vs 'many' is about whether the noun is countable or uncountable, not about formality level. The chosen explanation gives the real grammatical rule.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "health",
+    "user": "I was very boring at the gym waiting for my friend to arrive.",
+    "chosen": "Quick note: 'very boring' should be 'very bored' — 'bored' describes how you personally feel, while 'boring' describes something that causes that feeling in others. So the gym itself could be boring, but you are the one feeling bored. Waiting around with no one to talk to is frustrating! Did your friend eventually show up?",
+    "rejected": "Quick note: 'very boring' should be 'very bored' — 'boring' has a negative connotation while 'bored' is more personal and neutral. Waiting alone is always frustrating! Did your friend show up?",
+    "reject_reason": "The explanation is wrong. The distinction between -ed and -ing adjectives has nothing to do with positive or negative connotation. '-ed' adjectives describe feelings experienced by a person, '-ing' adjectives describe what causes that feeling.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "work",
+    "user": "She didn't came to the team meeting yesterday.",
+    "chosen": "Quick note: 'didn't came' should be 'didn't come' — when you use the auxiliary verb 'did', the main verb always stays in its base infinitive form. Was anyone annoyed that she missed it?",
+    "rejected": "Quick note: 'didn't came' should be 'didn't come' — you should always use present tense after 'didn't'. Was anyone annoyed she missed it?",
+    "reject_reason": "The explanation is wrong. The verb after 'did' is not 'present tense' — it is the base infinitive form. These are different grammatical concepts. Saying 'present tense' could confuse learners about why this rule applies.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "travel",
+    "user": "I have went to Japan twice and I loved it both times.",
+    "chosen": "Quick note: 'have went' should be 'have been' or 'have gone' — the past participle of 'go' is 'gone', not 'went'. 'Went' only works as simple past without 'have'. Japan twice sounds amazing! Which city was your favourite?",
+    "rejected": "Quick note: 'have went' should be 'have been' — 'went' is simple past and you cannot use it in the present perfect. Japan sounds wonderful! Which city did you prefer?",
+    "reject_reason": "The correction is right but the explanation is incomplete. Saying 'went is simple past' does not teach the learner why. The real reason is that the past participle of 'go' is 'gone', not 'went', and the present perfect requires a past participle.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "This new phone is way more better than my old one.",
+    "chosen": "Quick note: 'more better' should just be 'better' — 'better' is already the comparative form of 'good', so adding 'more' creates a double comparative, which is not allowed in English. Is the upgrade making a noticeable difference to your day?",
+    "rejected": "Quick note: 'more better' should be 'better' — 'more' and 'better' essentially mean the same thing, so you cannot use them together. Is the upgrade worth it?",
+    "reject_reason": "The explanation is wrong. 'More' and 'better' do not mean the same thing at all. The real rule is that 'better' is already a comparative form, so adding 'more' creates a double comparative, which is a specific grammatical restriction.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "social",
+    "user": "I am totally agree with what you said about protecting the environment.",
+    "chosen": "Quick note: 'I am agree' should be 'I agree' — 'agree' is a verb, not an adjective, so it does not need 'am'. You simply say 'I agree' the same way you say 'I think' or 'I know'. It is great that you feel strongly about this! What do you think is the biggest environmental issue right now?",
+    "rejected": "Quick note: 'I am agree' should be 'I agree' — 'agree' is an adjective when used after 'am', and adjectives cannot follow 'am' in this context. It's great you feel strongly! What is the biggest environmental issue for you?",
+    "reject_reason": "The explanation is backwards and self-contradictory. The reason 'I am agree' is wrong is precisely because 'agree' IS a verb, NOT an adjective. Adjectives can follow 'am' perfectly well (I am happy, I am tired). The model inverted the actual rule.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "education",
+    "user": "The teacher explained me the solution on the board very clearly.",
+    "chosen": "Quick note: 'explained me' should be 'explained the solution to me' — unlike verbs such as 'tell' or 'show', the verb 'explain' cannot be followed directly by a person. You always need 'to' before the person being explained to. Did the explanation finally make it click for you?",
+    "rejected": "Quick note: 'explained me' should be 'explained the solution to me' — 'explain' always requires 'to' before its object because it is a transitive verb. Did the explanation make sense?",
+    "reject_reason": "The explanation is imprecise and misleading. Most transitive verbs do not require 'to'. The real rule is that 'explain' is not a ditransitive verb — it does not follow the pattern of verb + person + thing. This is specific to 'explain' and a few other verbs, not a general transitive verb rule.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "health",
+    "user": "The success of my recovery really depends of the daily exercise routine.",
+    "chosen": "Quick note: 'depends of' should be 'depends on' — 'depend' is always paired with the preposition 'on'. This is a fixed combination you simply need to memorize. It sounds like you have a really strong recovery mindset! How long has the routine been helping?",
+    "rejected": "Quick note: 'depends of' should be 'depends on' — 'of' is used for possession, while 'on' is used to express a cause-and-effect relationship. That is a great approach to recovery! How long have you been following the routine?",
+    "reject_reason": "The explanation oversimplifies and is not accurate. The rule 'of = possession, on = cause' does not generalize well and is misleading. The real reason is simply that 'depend on' is a fixed collocation in English — the preposition is part of the verb phrase and must be memorized.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "daily_life",
+    "user": "I was standing outside and waiting during two hours for the bus in the rain.",
+    "chosen": "Quick note: 'during two hours' should be 'for two hours' — 'during' is used with named events or specific periods like 'during the concert' or 'during my lunch break'. For measured durations of time, we always use 'for'. Two hours in the rain sounds absolutely miserable! Did you eventually get home okay?",
+    "rejected": "Quick note: 'during two hours' should be 'for two hours' — 'during' is used for places and locations, while 'for' is used for time periods. Two hours in the rain is terrible! Did you get home okay?",
+    "reject_reason": "The explanation is completely wrong. 'During' is not for places — it is itself a time word. The actual distinction is between named events or periods (during the film, during summer) versus measured durations (for two hours, for a week). 'For places' is a fabricated rule.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "work",
+    "user": "Our team is doing a research into customer satisfaction this quarter.",
+    "chosen": "Quick note: 'a research' should be 'research' or 'some research' — 'research' is an uncountable noun in English and cannot take the article 'a'. The phrase is simply 'do research'. Customer satisfaction research sounds important! What method are you using to gather the data?",
+    "rejected": "Quick note: 'doing a research' should be 'doing research' — we say 'do research', not 'make research', because 'make' is for creating things and 'do' is for activities and tasks. What method are you using to gather the data?",
+    "reject_reason": "The 'make vs do' explanation is completely irrelevant since the student already used 'do'. The actual error is the article 'a' before 'research', which is an uncountable noun. The explanation misdiagnoses the error entirely and teaches nothing useful.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "Can you give me some advices on how to improve my writing skills?",
+    "chosen": "Quick note: 'advices' should be 'advice' — 'advice' is an uncountable noun in English and has no plural form. You can say 'a piece of advice' or 'some advice', but never 'advices'. I would love to help! What kind of writing are you working on?",
+    "rejected": "Quick note: 'advices' should be 'advice' — 'advice' already sounds like a plural word because of how it ends, so adding another 's' is incorrect and redundant. I am happy to help! What kind of writing are you working on?",
+    "reject_reason": "The explanation is factually wrong. 'Advice' does not sound plural — it ends in a soft 's' sound similar to 'rice' or 'ice'. The real reason is that 'advice' is grammatically categorized as an uncountable noun, which is a specific rule the learner needs to learn.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "wrong_correction",
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I am very interesting in landscape photography and nature filming.",
+    "chosen": "Quick note: 'interesting' should be 'interested' — 'interested' describes how you personally feel about something, while 'interesting' describes a quality in the thing itself that causes that feeling. So photography is interesting, and you are interested in it. Landscape and nature photography is a wonderful combination! Do you shoot on a DSLR or mirrorless?",
+    "rejected": "Quick note: 'interesting' should be 'interested' — 'interesting' has a passive, objective meaning while 'interested' is active and subjective. Landscape photography sounds great! What camera do you use?",
+    "reject_reason": "Describing '-ing' as passive and '-ed' as active is grammatically incorrect and confusing. The actual rule is that '-ed' adjectives describe the feeling experienced by a person, and '-ing' adjectives describe what causes that feeling in others. The active/passive framing is a completely different grammatical concept.",
+    "source": "handcrafted"
+  }
+]

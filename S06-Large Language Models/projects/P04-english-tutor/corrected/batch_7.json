@@ -1,0 +1,402 @@
+[
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "I have been managing this project for over six months now.",
+    "assistant": "That is a significant amount of time to dedicate to one project. Are you getting close to the final launch phase?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "We finally decided to hire a new graphic designer for the marketing team.",
+    "assistant": "That should really help balance the workload for everyone else. Did you have a lot of strong candidates apply for the role?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "work",
+    "user": "Working from home has definitely improved my work-life balance.",
+    "assistant": "Eliminating the daily commute makes such a huge difference to your day. Do you ever miss the social aspect of being in the office?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "work",
+    "user": "My manager asked me to prepare a presentation for the board meeting next week.",
+    "assistant": "Presenting to the board is a great opportunity to showcase your work. Do you feel confident about the data you are sharing?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "We usually prefer to travel during the off-season to avoid the crowds.",
+    "assistant": "That is definitely the best way to experience a city authentically. Where is your favorite off-season destination?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "I always pack light so I don't have to check any luggage at the airport.",
+    "assistant": "Travelling with just a carry-on saves so much time when you land. What is your secret to fitting everything into one small bag?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "travel",
+    "user": "Our flight was delayed by three hours because of a severe thunderstorm.",
+    "assistant": "Waiting in the terminal for hours can be incredibly draining. Did the airline offer you any food vouchers while you waited?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "travel",
+    "user": "We rented a car so we could explore the countryside at our own pace.",
+    "assistant": "Having a car gives you so much freedom to find hidden gems. Did you stumble upon any interesting small towns on your drive?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "I have recently started cooking all my meals at home to save money.",
+    "assistant": "Eating out constantly really does drain your bank account quickly! Have you discovered any favorite recipes so far?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "We went to a brilliant Thai restaurant for my sister's birthday yesterday.",
+    "assistant": "Thai food has such a wonderful balance of sweet and spicy flavors. Did you order a green curry or something like Pad Thai?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "food",
+    "user": "I always try to buy vegetables from the local farmers' market on Saturday mornings.",
+    "assistant": "Fresh, locally sourced produce always tastes so much better than supermarket food. Are there any specific seasonal vegetables you look for?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "food",
+    "user": "Baking bread from scratch takes a lot of time, but the smell is totally worth it.",
+    "assistant": "There is absolutely nothing more comforting than the smell of freshly baked bread. Do you usually make sourdough or just a simple white loaf?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "I try to go for a brisk walk every evening to clear my head after work.",
+    "assistant": "A daily walk is such a fantastic way to separate your work day from your personal time. Do you listen to music while you walk, or just enjoy the silence?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "Drinking enough water throughout the day has really improved my energy levels.",
+    "assistant": "It is amazing how much mild dehydration can make you feel tired! Do you carry a reusable water bottle with you to help you remember?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "health",
+    "user": "I started taking a yoga class twice a week to help with my back pain.",
+    "assistant": "Yoga is incredibly effective for building core strength and flexibility. Has the instructor given you any specific stretches to do at home?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "health",
+    "user": "Getting eight hours of sleep consistently makes a huge difference to my mood.",
+    "assistant": "Sleep really is the foundation of good mental health. Do you have a strict evening routine to help you wind down?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I am currently writing a thesis on the economic impact of renewable energy.",
+    "assistant": "That is a highly relevant and rapidly evolving topic to research. Which specific countries are you focusing on in your study?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "Taking notes by hand helps me remember the information much better than typing.",
+    "assistant": "Many studies actually support the idea that writing by hand improves memory retention! Do you rewrite them later to study for exams?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "education",
+    "user": "I decided to take an evening class to improve my graphic design skills.",
+    "assistant": "Continuing education is a great way to stay competitive in your career. What specific software are you learning to use?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "education",
+    "user": "My professor gave me some excellent feedback on my first draft.",
+    "assistant": "Having a professor who takes the time to give detailed feedback is invaluable. Did they suggest any major structural changes to your essay?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "I finally updated the operating system on my laptop last night.",
+    "assistant": "Software updates always seem to take longer than you expect them to. Has the new system changed the interface very much?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "I rely on a password manager to keep all my online accounts secure.",
+    "assistant": "It is impossible to remember dozens of complex passwords without one! Have you ever had any issues syncing it across your different devices?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "technology",
+    "user": "Cloud storage has made it so much easier to share large files with my team.",
+    "assistant": "Not having to deal with email attachment limits is a huge relief. Do you organize the shared folders by project or by date?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "technology",
+    "user": "I try to limit my screen time on the weekends to give my eyes a rest.",
+    "assistant": "Taking a digital detox on the weekends is a very healthy habit. Do you find it difficult to ignore your phone when you first wake up?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "My family gets together for a big dinner on the first Sunday of every month.",
+    "assistant": "Maintaining a regular family tradition like that is wonderful. Does one person usually host, or do you take turns cooking?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "My younger brother just moved to London to start his university degree.",
+    "assistant": "Moving to a massive city like London is a huge adventure! Is he living in student halls, or did he rent a private flat?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "We are planning to organize a surprise party for my parents' anniversary.",
+    "assistant": "A surprise anniversary party will be such a memorable experience for them! Who is in charge of distracting them while everyone arrives?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "family",
+    "user": "I talk to my grandparents on the phone at least twice a week.",
+    "assistant": "Staying closely connected with your grandparents is really special. Do they enjoy hearing about your daily life and work?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "family",
+    "user": "Having siblings close to your own age means you always have someone to play with.",
+    "assistant": "The bond between siblings close in age is very unique, even if there is occasional bickering. Were you competitive with each other growing up?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "I have been practicing the piano for two hours every day this month.",
+    "assistant": "That level of dedication will definitely lead to rapid improvement! What piece of music are you working on right now?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "Gardening is incredibly relaxing, even though it requires a lot of physical effort.",
+    "assistant": "There is something very grounding about working with your hands in the soil. Are you currently growing any vegetables, or just flowers?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "I joined a local running club to help me train for my first marathon.",
+    "assistant": "Training with a group makes the long weekend runs so much easier to get through. How many miles is your longest run so far?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "Reading historical fiction is my favorite way to unwind after a stressful day.",
+    "assistant": "Historical fiction is a great way to learn about the past while enjoying a good story. Which historical period do you enjoy reading about the most?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "I love going to the cinema alone because I can completely focus on the film.",
+    "assistant": "A solo cinema trip feels like a real treat, especially with some good snacks. What was the last movie you went to see?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "I usually meet my friends for coffee on Saturday mornings to catch up.",
+    "assistant": "A weekend coffee date is the perfect low-pressure way to socialize. Do you have a favorite local cafe that you always go to?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "We stayed at the restaurant until closing time because we were talking so much.",
+    "assistant": "Those deep, hours-long conversations are the sign of a truly great friendship. Did the staff have to politely ask you to leave?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "social",
+    "user": "Organizing a group holiday can be a nightmare because everyone has different budgets.",
+    "assistant": "Money is definitely the trickiest part of planning group travel. Do you usually take charge and act as the main organizer?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "social",
+    "user": "I bumped into an old colleague from my previous job while I was shopping.",
+    "assistant": "Running into people you haven't seen in years is always a fun surprise. Did you have time to stop and have a proper chat?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I strongly believe that public transport should be free in major cities.",
+    "assistant": "Free public transport would certainly reduce traffic and lower emissions significantly. Do you think the local government could afford to subsidize it completely?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "It is very frustrating when politicians ignore the advice of climate scientists.",
+    "assistant": "It really highlights the tension between long-term environmental planning and short-term political goals. Do you think public pressure is starting to change their minds?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "Social media algorithms often create echo chambers that divide people further.",
+    "assistant": "Being constantly fed information that only confirms your existing biases is a huge problem. Do you try to actively follow people you disagree with to balance it out?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "opinions",
+    "user": "I think practical life skills should be taught in high school alongside academic subjects.",
+    "assistant": "Teaching teenagers how to budget or file taxes would save them so much stress later in life! What other skills do you think should be mandatory?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "childhood",
+    "user": "When I was a child, I spent most of my summers playing in the woods behind my house.",
+    "assistant": "Having access to nature right in your backyard is a wonderful way to grow up. Did you build treehouses or forts out there?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "childhood",
+    "user": "My favorite childhood memory is going camping with my dad near the lake.",
+    "assistant": "Camping by a lake sounds incredibly peaceful and nostalgic. Did your dad teach you how to fish or set up the tent?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "childhood",
+    "user": "I used to be terrified of the dark until I was about eight years old.",
+    "assistant": "A fear of the dark is so common when our imaginations are running wild at that age! Did you have to sleep with a nightlight on?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "childhood",
+    "user": "My family moved around a lot when I was young because of my father's job.",
+    "assistant": "Moving frequently forces you to become very adaptable, but it can be hard leaving friends behind. Which city was your favorite to live in?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "future_plans",
+    "user": "I am planning to buy an apartment in the city center within the next two years.",
+    "assistant": "Owning an apartment in the center would put you right in the heart of the action. Have you already started looking at property prices in your target area?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "future_plans",
+    "user": "If everything goes well, I hope to start my own consulting business eventually.",
+    "assistant": "Starting your own business gives you incredible autonomy over your career. What specific industry would you want to consult in?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "strict",
+    "topic": "future_plans",
+    "user": "I would love to learn how to speak Spanish fluently before I travel to South America.",
+    "assistant": "Being able to communicate with locals will completely transform your travel experience there. Are you currently taking formal classes or using an app?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  },
+  {
+    "mode": "flow",
+    "topic": "future_plans",
+    "user": "By the time I turn forty, I want to have visited at least thirty different countries.",
+    "assistant": "That is a brilliant travel goal to aim for! How many countries do you have left to visit to hit your target?",
+    "errors": [],
+    "source": "tutor_handcrafted"
+  }
+]

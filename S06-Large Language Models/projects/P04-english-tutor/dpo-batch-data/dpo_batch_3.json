@@ -1,0 +1,102 @@
+[
+  {
+    "category": "over_correction",
+    "mode": "strict",
+    "topic": "daily_life",
+    "user": "Yesterday I go to a shop and buyed three book for my sister.",
+    "chosen": "Quick note: 'go' should be 'went', and 'buyed' should be 'bought' — both are irregular past tense verbs. That is a really sweet thing to do for your sister! What kind of books did you pick for her?",
+    "rejected": "Quick note: 'go' should be 'went' (irregular past simple), 'buyed' should be 'bought' (another irregular past tense), 'three book' should be 'three books' (always use plural after a number), and 'for my sister' is natural but you could add 'as a gift' to be more specific. How thoughtful of you! What kind of books did you pick?",
+    "reject_reason": "Correcting 3 errors plus adding a style suggestion is overwhelming for a learner. The two irregular verb errors are the highest-priority issues. The plural noun mistake is minor and should be saved for a future turn to avoid overloading the learner.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "over_correction",
+    "mode": "strict",
+    "topic": "work",
+    "user": "I am working in this company since three years and I learn many new things.",
+    "chosen": "Quick note: 'am working since' should be 'have been working for' — use present perfect continuous for something that started in the past and is still continuing, and 'for' with a specific duration of time. Three years is a meaningful amount of time to grow! What is the biggest skill you have picked up?",
+    "rejected": "Quick note: 'am working' should be 'have been working' (present perfect continuous for ongoing actions), 'since' should be 'for' (use 'for' with a period, 'since' with a point in time), and 'I learn many new things' should be 'I have learned many new things' (present perfect for results of past actions). Three years is a long time at one company! What have you learned most?",
+    "reject_reason": "Three separate corrections at once is too much. The core tense issue with 'am working since' is the priority. The 'I learn' point is a secondary error that can and should be addressed in a follow-up turn after the learner has absorbed the first correction.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "over_correction",
+    "mode": "strict",
+    "topic": "social",
+    "user": "My friend he is very tall and have a lot of funny jokes that make everyone laugh.",
+    "chosen": "Quick note: 'have a lot of' should be 'has a lot of' — when talking about he, she, or it, the verb is always 'has'. A tall friend with a great sense of humour sounds like a wonderful person to be around! How did you two meet?",
+    "rejected": "Quick note: 'my friend he' is a double subject — you only need one, either 'my friend' or 'he', not both. Also 'have a lot of' should be 'has a lot of' since 'friend' is third person singular. Additionally, 'funny jokes' is slightly unusual — jokes are assumed to be funny, so 'great jokes' or 'a great sense of humour' would sound more natural. He sounds like a great person! How did you meet?",
+    "reject_reason": "Three corrections plus a style note is far too much. The subject-verb agreement error is the key grammatical point. The pronoun doubling is a minor speech pattern common even among fluent speakers, and the comment about 'funny jokes' is unnecessary style advice that could make the learner feel over-criticized.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "over_correction",
+    "mode": "strict",
+    "topic": "cinema",
+    "user": "Last night I seed a documentary about space and it was very interested.",
+    "chosen": "Quick note: 'seed' should be 'saw', and 'interested' should be 'interesting' — 'interesting' describes the documentary itself, not how you personally feel. Space documentaries really do make you think about how vast everything is! What aspect of it fascinated you the most?",
+    "rejected": "Quick note: 'seed' should be 'saw' (irregular past tense of see), 'interested' should be 'interesting' (-ing adjective for a thing that causes a feeling), and 'about space' could be made more specific — 'about space exploration' or 'about the solar system'. Also, the phrase 'Last night I seed' would flow better as 'I watched a documentary about space last night'. What part did you enjoy most?",
+    "reject_reason": "Four corrections and a word order suggestion is completely overwhelming. The two key errors are 'seed/saw' and 'interested/interesting'. The topic precision suggestion and word order comment are unnecessary and would make the learner feel their English is far worse than it is.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "over_correction",
+    "mode": "strict",
+    "topic": "health",
+    "user": "I don't understood why the doctor give me this medicine.",
+    "chosen": "Quick note: 'don't understood' should be 'don't understand' — after 'don't', always use the base form of the verb. It is really important to understand what you are taking! Did the doctor give you an information leaflet with the prescription?",
+    "rejected": "Quick note: 'don't understood' should be 'don't understand' (base form after 'don't'), 'give' should be 'gave' (past simple for a completed action) or 'has given' (present perfect if you mean recently), and rather than 'give me this medicine' it is more natural to say 'prescribe me this medicine' in a medical context. Understanding your medication is so important! Did you get a leaflet?",
+    "reject_reason": "The core error is 'don't understood' — that is the only correction that matters here. Offering both past tense options plus vocabulary style advice ('prescribed') is piling on too much and will confuse the learner about which feedback to focus on.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "over_correction",
+    "mode": "strict",
+    "topic": "food",
+    "user": "She suggest me to try the new Thai restaurant, and the food was very delicious.",
+    "chosen": "Quick note: 'suggest me to try' should be 'suggested I try' — 'suggest' is followed by a subject and base verb, not 'to + infinitive'. What a great recommendation it turned out to be! Are you planning to go back?",
+    "rejected": "Quick note: 'suggest me to try' should be 'suggested I try' (suggest takes a clause, not 'to + infinitive'), 'very delicious' is slightly redundant since 'delicious' already implies a high degree — 'absolutely delicious' is more natural, and 'the food was very delicious' is also vague — 'the dishes were' might be more precise. Will you go back?",
+    "reject_reason": "The only genuine grammatical error is the 'suggest' construction. The comment about 'very delicious' is a stylistic preference, not a grammar error. The 'food vs dishes' distinction is pedantic. This response would genuinely frustrate a learner who made one real mistake.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "over_correction",
+    "mode": "strict",
+    "topic": "education",
+    "user": "If I will study harder, I will pass the exam and my parents will be so proud.",
+    "chosen": "Quick note: 'If I will study' should be 'If I study' — in the first conditional, the 'if' clause always uses present simple, even when you are talking about the future. That is a brilliant motivating goal! How many hours a day are you planning to study?",
+    "rejected": "Quick note: 'If I will study' should be 'If I study' (present simple in the 'if' clause of the first conditional), 'will be so proud' is correct but you could also say 'will be incredibly proud' for a stronger effect, and consider saying 'work harder' instead of 'study harder' if you already know the material and just need to revise — the two words have slightly different nuances. How long will you study each day?",
+    "reject_reason": "The conditional tense error is the only real grammatical issue. The suggestion to swap 'so' for 'incredibly' is pure preference, and the 'study vs work' nuance is an advanced stylistic distinction that has no place in a correction of a first conditional error.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "over_correction",
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I have too many equipments for camping in my garage but I never use them.",
+    "chosen": "Quick note: 'many equipments' should be 'much equipment' — 'equipment' is an uncountable noun, so we use 'much' or 'a lot of', never 'many', and it has no plural form. That is such a relatable situation! Is there one piece of kit you keep meaning to use?",
+    "rejected": "Quick note: 'many equipments' should be 'much equipment' (equipment is uncountable), 'them' at the end should be 'it' to agree with the uncountable noun, and the phrase 'in my garage' — while grammatically correct — could be placed earlier for better flow: 'I have a lot of camping equipment in my garage but never use it'. Do you plan to go camping soon?",
+    "reject_reason": "The countable/uncountable correction is the clear priority. The 'them/it' pronoun point is a secondary consequence of understanding uncountable nouns and should be mentioned separately if at all. The word order style suggestion is completely unnecessary and should not appear in a first correction.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "over_correction",
+    "mode": "strict",
+    "topic": "family",
+    "user": "My grandmother she teached me to cook her special recipes when I was a small child.",
+    "chosen": "Quick note: 'teached' should be 'taught' — the past tense of 'teach' is irregular. Learning to cook from your grandmother is such a precious memory! What was the first dish she taught you?",
+    "rejected": "Quick note: 'my grandmother she' is a double subject — choose one, either 'my grandmother' or 'she'. Also 'teached' should be 'taught' (irregular past tense), and 'a small child' sounds slightly odd — we more commonly say 'a young child' when referring to age rather than physical size. What is the first dish she taught you?",
+    "reject_reason": "The irregular past tense error is the clear primary focus. The double subject comment is minor, and the 'small/young' preference is a stylistic observation that has absolutely no place alongside a grammar correction. It would make the learner feel unnecessarily self-conscious.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "over_correction",
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "I am believing that the world is changing very fast and it scares many people.",
+    "chosen": "Quick note: 'am believing' should be 'believe' — mental state verbs like believe, know, understand, and think describe states rather than actions, so they are not normally used in the continuous tense. That is a really perceptive observation! Do you think the pace of change is speeding up, or has it always felt this fast?",
+    "rejected": "Quick note: 'am believing' should be 'believe' (stative verbs are not used in continuous forms), 'is changing' could be replaced with 'has been changing' to emphasize the ongoing process, and 'it scares many people' is a bit vague — specifying which people, such as 'older generations' or 'people in rural communities', would make your argument more specific and persuasive. Do you feel the pace has always been this fast?",
+    "reject_reason": "The stative verb error is the one genuine issue. The 'is changing' point is debatable and context-dependent. The comment about adding specificity to 'many people' is a writing class note, not a grammar correction — it completely undermines a learner who just shared a valid opinion.",
+    "source": "handcrafted"
+  }
+]

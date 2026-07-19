@@ -1,0 +1,8 @@
+# VILLAINBOT Mac requirements
+# Install llama-cpp-python FIRST with Metal GPU support:
+#   CMAKE_ARGS="-DGGML_METAL=on" pip install llama-cpp-python
+#
+# Then install the rest:
+#   pip install -r requirements_mac.txt
+
+gradio>=6.0

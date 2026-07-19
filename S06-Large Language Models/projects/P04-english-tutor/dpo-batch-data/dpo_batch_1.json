@@ -1,0 +1,152 @@
+[
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "daily_life",
+    "user": "I have been living in this city for ten years now.",
+    "chosen": "Ten years is a long time! Has the city changed much since you first arrived?",
+    "rejected": "Quick note: 'have been living' should be 'have lived' — we prefer the simple present perfect for states rather than the continuous form. Ten years is a long time! Has the city changed much?",
+    "reject_reason": "Both 'have been living' and 'have lived' are grammatically correct here. The model invented a correction that does not exist.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "work",
+    "user": "She is always losing her phone at the office.",
+    "chosen": "That sounds so frustrating for everyone around her! Does she have to ask to borrow someone else's charger every single day?",
+    "rejected": "Quick note: 'is always losing' should be 'always loses' — use simple present for habits, not present continuous. That sounds really frustrating! Does she borrow people's chargers a lot?",
+    "reject_reason": "'Always + present continuous' is a perfectly standard construction in English used to express an annoying or surprising repeated habit. No correction is needed.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "travel",
+    "user": "We arrived at the airport two hours before our flight.",
+    "chosen": "Two hours early is the smart way to travel, especially at busy airports! Did you have time to relax in the departure lounge, or were you rushing through security?",
+    "rejected": "Quick note: 'arrived at the airport' should be 'arrived to the airport' — we use 'to' to show movement toward a destination. Two hours early is very sensible! Did you have time to relax?",
+    "reject_reason": "'Arrive at' is the grammatically correct form for specific locations like an airport. 'Arrived to' is actually the error here — the model invented the wrong rule.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "daily_life",
+    "user": "I am used to waking up at six every morning.",
+    "chosen": "That is impressive self-discipline! Do you find you are naturally a morning person, or did you have to train yourself over time?",
+    "rejected": "Quick note: 'am used to waking up' should be 'am used to wake up' — after 'used to' we use the base infinitive, not the gerund. That is impressive! Are you a natural morning person?",
+    "reject_reason": "'Be used to + gerund (-ing)' means 'be accustomed to' and is grammatically correct. 'Used to + bare infinitive' is a completely different construction meaning a past habit. The sentence is perfect as written.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "food",
+    "user": "I have been to that Italian restaurant three times this month.",
+    "chosen": "Three visits in one month — they must be doing something very right! Do you always order the same dish, or do you try something different each time?",
+    "rejected": "Quick note: 'have been to' should be 'went to' — use past simple when talking about specific occasions. Three visits this month shows serious loyalty! Do you always order the same thing?",
+    "reject_reason": "'Have been to' is correct here because 'this month' is still an unfinished time period. Past simple would only be correct if the time frame were closed, such as 'last month'. The model applied the rule backwards.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "She suggested going for a walk in the park after lunch.",
+    "chosen": "A post-lunch walk sounds like the perfect way to get some fresh air and clear your head! Is the park close to where you were?",
+    "rejected": "Quick note: 'suggested going' should be 'suggested to go' — after 'suggest', we use the infinitive with 'to'. A walk in the park is a lovely idea! Is it nearby?",
+    "reject_reason": "'Suggest + gerund' is the correct form in English. 'Suggested to go' is actually the incorrect construction. The model invented a nonexistent rule that inverts the truth.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "family",
+    "user": "My mother made me eat my vegetables every single night growing up.",
+    "chosen": "That sounds like a classic childhood battle at the dinner table! Did you eventually grow to like vegetables, or are you still not a fan?",
+    "rejected": "Quick note: 'made me eat' should be 'made me to eat' — after causative verbs like 'make', we use 'to' before the infinitive. That sounds like a strict but loving household! Do you eat vegetables now?",
+    "reject_reason": "The causative verb 'make' is followed by the bare infinitive, without 'to'. 'Made me eat' is grammatically perfect. The model invented a nonexistent grammar rule.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "social",
+    "user": "I wish I had more free time to spend with my friends.",
+    "chosen": "That feeling is so universal — life always seems to get busier just when you want to slow down! What would you do first if you suddenly had a whole free weekend?",
+    "rejected": "Quick note: 'wish I had' should be 'wish I have' — we use present tense to talk about current wishes. That is such a relatable feeling! What would you do with more free time?",
+    "reject_reason": "'Wish + past simple' is the grammatically correct structure for expressing a wish about a present situation. Using 'wish I have' would be the actual error. The model inverted the rule completely.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "technology",
+    "user": "I look forward to hearing your thoughts on the new software update.",
+    "chosen": "That is a very professional way to close a conversation! Did you send that in an email, or did you say it at the end of a meeting?",
+    "rejected": "Quick note: 'look forward to hearing' should be 'look forward to hear' — after 'look forward to', we use the base infinitive. That is a great professional phrase to use! Was this in an email?",
+    "reject_reason": "'Look forward to' is a phrasal verb where 'to' is a preposition, not part of an infinitive. It must therefore be followed by a gerund (-ing form). The sentence is completely correct as written.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "opinions",
+    "user": "It is high time the government took this environmental problem seriously.",
+    "chosen": "That frustration is completely understandable — some issues have been put off for far too long! Which specific aspect of the problem do you think needs the most urgent action?",
+    "rejected": "Quick note: 'the government took' should be 'the government takes' — we use present simple after 'it is high time' to refer to current situations. That is a fair point! Which issue are you thinking of?",
+    "reject_reason": "'It is high time + past simple' is a fixed grammatical structure in English. Using 'takes' (present simple) would be the actual error. The model invented the opposite rule.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "daily_life",
+    "user": "I would rather stay home and read tonight than go to that party.",
+    "chosen": "That is a very honest preference and honestly quite relatable! Is it the specific party that does not appeal to you, or do you generally prefer quiet evenings in?",
+    "rejected": "Quick note: 'would rather stay' should be 'would rather to stay' — after 'would rather', we use 'to' before the infinitive. That is a very honest answer! Do you prefer staying in generally?",
+    "reject_reason": "'Would rather + bare infinitive' without 'to' is the correct structure. Adding 'to' would be the grammatical error. The model invented a rule that is the opposite of correct.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "work",
+    "user": "By the time I arrived at the office, the meeting had already started.",
+    "chosen": "Walking into a meeting that has already started is so awkward! Did anyone make you feel bad about it, or were people generally understanding?",
+    "rejected": "Quick note: 'had already started' should be 'already started' — using the past perfect here sounds unnecessarily formal and complex for everyday speech. Walking in late is so uncomfortable! Was anyone annoyed?",
+    "reject_reason": "Past perfect is exactly the right tense here. It expresses an action completed before another past action, which is precisely the grammatical function described. Suggesting it sounds 'too formal' is incorrect — it is simply the right choice.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "travel",
+    "user": "I am planning to visit my grandparents who live in the countryside next summer.",
+    "chosen": "A summer trip to see your grandparents in the countryside sounds so peaceful and restorative! How long are you planning to stay with them?",
+    "rejected": "Quick note: 'in the countryside' should be 'in the country' — when we refer to rural areas in English, we say 'the country', not 'the countryside'. A trip to the countryside sounds lovely! How long will you stay?",
+    "reject_reason": "Both 'in the countryside' and 'in the country' are correct and natural ways to refer to rural areas in English. The model incorrectly flagged a perfectly standard phrase as an error.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "health",
+    "user": "There is no point in worrying about things you cannot change.",
+    "chosen": "That is genuinely wise advice, and easier said than done! Is that a mindset you have had to consciously work on, or does it come naturally to you?",
+    "rejected": "Quick note: 'no point in worrying' should be 'no point to worry' — after 'no point', we use 'to' and the infinitive form of the verb. That is very wise! Is that something you actively remind yourself of?",
+    "reject_reason": "'There is no point in + gerund' is the grammatically correct construction in English. 'No point to worry' would actually be the error. The model invented the opposite rule.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "hallucination",
+    "mode": "strict",
+    "topic": "education",
+    "user": "I have always been interested in how the human brain works.",
+    "chosen": "Neuroscience is one of the most fascinating fields there is — so much is still genuinely unknown! Did you ever consider studying it formally, or is it more of a personal curiosity for you?",
+    "rejected": "Quick note: 'have always been interested' should be 'am always interested' — using 'have always been' makes the sentence unnecessarily complex when the simpler present tense expresses the same meaning more cleanly. Are you interested in studying it formally?",
+    "reject_reason": "'Have always been interested in' is grammatically correct and expresses a long-standing interest that began in the past and continues to the present. No simplification is needed or grammatically justified. The model invented a preference where no error exists.",
+    "source": "handcrafted"
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "category": "no_continuation",
+    "mode": "strict",
+    "topic": "travel",
+    "user": "Last summer I go to Japan and eat the most delicious sushi of my life.",
+    "chosen": "Quick note: 'go' should be 'went', and 'eat' should be 'ate' — past simple for a completed trip. The most delicious sushi of your life is a serious claim! Was it the fish quality, the rice, or the whole atmosphere that made it so special?",
+    "rejected": "Quick note: 'go' should be 'went', and 'eat' should be 'ate' — past simple for a completed trip. Japan sounds amazing! What did you enjoy most about your trip?",
+    "reject_reason": "The rejected question is completely generic and could apply to any holiday anywhere. The chosen version picks up on the specific, vivid detail the learner highlighted — the sushi — and asks something genuinely curious about it.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "no_continuation",
+    "mode": "strict",
+    "topic": "cinema",
+    "user": "I seed a really gripping film about a soldier who survived alone in the jungle for twenty years.",
+    "chosen": "Quick note: 'seed' should be 'saw' — the past tense of 'see' is irregular. Surviving alone in the jungle for twenty years is an almost unimaginable premise! Was the film based on a true story, or was it pure fiction?",
+    "rejected": "Quick note: 'seed' should be 'saw' — the past tense of 'see' is irregular. That sounds like a great film! Did you enjoy it?",
+    "reject_reason": "Asking 'did you enjoy it?' after someone called the film 'really gripping' is pointless — they already told you they enjoyed it. The chosen version picks up on the specific fascinating detail (20 years, jungle survival) and asks something genuinely curious.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "no_continuation",
+    "mode": "strict",
+    "topic": "family",
+    "user": "My grandmother she teached me her secret apple pie recipe when I was just eight years old.",
+    "chosen": "Quick note: 'teached' should be 'taught' — the past tense of 'teach' is irregular. A secret apple pie recipe passed down at eight years old is such a precious memory! Do you still bake it today, and have you shared the secret with anyone else yet?",
+    "rejected": "Quick note: 'teached' should be 'taught' — the past tense of 'teach' is irregular. That is such a lovely memory! Who else taught you to cook?",
+    "reject_reason": "Asking 'who else taught you to cook?' after the learner just talked about their grandmother teaching them is completely ignoring what they said. The chosen version builds on the specific heartwarming detail — the secret recipe and the age.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "no_continuation",
+    "mode": "strict",
+    "topic": "hobbies",
+    "user": "I winned a writing competition at school with a story about a dragon who was terrified of fire.",
+    "chosen": "Quick note: 'winned' should be 'won' — the past tense of 'win' is irregular. A dragon who is afraid of fire — that is such a brilliantly clever and funny twist on the classic idea! Where did that concept come from?",
+    "rejected": "Quick note: 'winned' should be 'won' — the past tense of 'win' is irregular. Congratulations on winning! What kind of competition was it?",
+    "reject_reason": "Asking 'what kind of competition?' is a generic follow-up that ignores the far more interesting detail the learner shared — the dragon afraid of fire. The chosen version responds to the creative, specific idea and shows genuine curiosity.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "no_continuation",
+    "mode": "strict",
+    "topic": "health",
+    "user": "We hiked for eight hours to reach the waterfall and it was the most beautiful thing I ever seen.",
+    "chosen": "Quick note: 'I ever seen' should be 'I have ever seen' — after superlatives like 'the most beautiful', we use the present perfect. Eight hours of hiking to reach a single waterfall — it must have been something truly extraordinary to be worth all of that effort! Did you take photos, or were you too speechless to move?",
+    "rejected": "Quick note: 'ever seen' should be 'I have ever seen' — use present perfect after superlatives. That sounds amazing! Do you like hiking?",
+    "reject_reason": "Asking 'do you like hiking?' to someone who just hiked for eight hours to see a waterfall is almost absurd. The chosen version engages with the drama and emotion of the specific moment — the gruelling hike, the waterfall, the sense of awe.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "no_continuation",
+    "mode": "strict",
+    "topic": "food",
+    "user": "My friend bringed me a coffee from Ethiopia and it was the most strong and bitter coffee I ever drinked.",
+    "chosen": "Quick note: 'bringed' should be 'brought', 'most strong' should be 'strongest', and 'drinked' should be 'drunk' — all irregular forms. Ethiopian coffee has such an intense, distinctive character — was it undrinkably bitter, or more like a complex, acquired taste?",
+    "rejected": "Quick note: 'bringed' should be 'brought', 'most strong' should be 'strongest', and 'drinked' should be 'drunk'. That sounds like a lovely gift! Do you like coffee?",
+    "reject_reason": "Asking 'do you like coffee?' to someone who just described drinking coffee and forming a detailed sensory opinion about it is a completely tone-deaf question. The chosen version digs into the specific experience they described.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "no_continuation",
+    "mode": "strict",
+    "topic": "daily_life",
+    "user": "I adopting a rescue dog last month and he is destroying a different pair of my shoes every single day.",
+    "chosen": "Quick note: 'adopting' should be 'adopted' — past simple for a completed action last month. A shoe-destroying rescue dog sounds exhausting but also incredibly funny! Has he picked any particular type of shoe to target, or does he treat them all equally?",
+    "rejected": "Quick note: 'adopting' should be 'adopted' — past simple for a completed action. That is wonderful that you adopted a rescue dog! Do you enjoy having a pet?",
+    "reject_reason": "Asking 'do you enjoy having a pet?' to someone who is describing the comedic chaos of their new dog completely ignores the whole point of what they said. The chosen version leans into the specific, funny situation with genuine curiosity.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "no_continuation",
+    "mode": "strict",
+    "topic": "education",
+    "user": "I started learning Spanish because I am planning to move to Argentina for a whole year.",
+    "chosen": "Quick note: 'started learning' is great — the gerund after 'start' is perfectly natural! Moving to Argentina for an entire year is a serious adventure. Which city are you thinking of settling in — Buenos Aires, or somewhere smaller and less overwhelming?",
+    "rejected": "Quick note: 'started learning' is correct — well done! That is exciting! How is your Spanish coming along so far?",
+    "reject_reason": "Asking 'how is your Spanish coming along?' is the most generic language-learning question possible. The learner shared the far more interesting detail of moving to Argentina for a year — the chosen version engages with that specific life decision and its implications.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "no_continuation",
+    "mode": "strict",
+    "topic": "work",
+    "user": "My manager told me I will get a promotion if I finish this very complicated project before Friday.",
+    "chosen": "Quick note: 'will get' in the 'if' clause should be 'get' — first conditional uses present simple in the if-clause. Friday is incredibly close! What is the hardest part of the project right now — the actual work, or the time pressure?",
+    "rejected": "Quick note: 'will get' in the 'if' clause should be 'get' — first conditional uses present simple. That is great news! How do you feel about getting a promotion?",
+    "reject_reason": "The learner's message is dominated by the stress of the Friday deadline, not excitement about the promotion. Asking generically 'how do you feel about it?' completely misses the urgency and anxiety embedded in the message.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "no_continuation",
+    "mode": "strict",
+    "topic": "social",
+    "user": "I spend the whole weekend trying to cook a traditional Indian feast for my parents anniversary but everything burned.",
+    "chosen": "Quick note: 'spend' should be 'spent' — past simple for a completed weekend. A whole weekend of cooking ending in complete disaster sounds so stressful and heartbreaking! Did you manage to salvage anything at all, or did you end up having to order food at the last minute?",
+    "rejected": "Quick note: 'spend' should be 'spent' — past simple for a completed action. That sounds like a really stressful weekend. Did your parents enjoy the celebration?",
+    "reject_reason": "Asking 'did your parents enjoy the celebration?' completely glosses over the fact that the learner just said everything burned. The chosen version directly acknowledges the disaster and asks the most natural, empathetic follow-up question.",
+    "source": "handcrafted"
+  }
+]

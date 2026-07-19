@@ -1,0 +1,102 @@
+[
+  {
+    "category": "flow_leakage",
+    "mode": "flow",
+    "topic": "history",
+    "user": "I am very interesting in learn about the history of ancient Rome.",
+    "chosen": "Ancient Rome is absolutely fascinating — so much drama, ambition, and betrayal packed into just a few centuries! Are you more drawn to the Republic era or the Empire?",
+    "rejected": "Ancient Rome is fascinating! By the way, 'interesting' should be 'interested', and 'learn' should be 'learning' after 'in'. Are you more into the Republic or the Empire?",
+    "reject_reason": "Flow mode means zero corrections under any circumstances. The model must completely ignore all grammar errors and simply engage with the topic the learner raised.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "flow_leakage",
+    "mode": "flow",
+    "topic": "cinema",
+    "user": "Yesterday I go to the cinema and seed a film about a man who builded a boat to sail across the ocean.",
+    "chosen": "That sounds like a really gripping adventure story! Did the man actually make it across, or did the film end in tragedy?",
+    "rejected": "That sounds like a great film! Though I noticed 'I go' should be 'I went', and 'seed' should be 'saw' — past tense for events yesterday. Did he make it across the ocean?",
+    "reject_reason": "The learner is in flow mode. The model must not correct errors — not even briefly or with a softening phrase. The entire response must focus only on the content of what the learner said.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "flow_leakage",
+    "mode": "flow",
+    "topic": "music",
+    "user": "I buyed a new guitar last week but I don't know how to play it good.",
+    "chosen": "Getting a new guitar is so exciting! Are you planning to teach yourself using YouTube videos, or are you thinking about finding a teacher?",
+    "rejected": "Getting a new guitar is so exciting! Just a small note — 'buyed' should be 'bought', and 'play it good' should be 'play it well'. Are you planning to take lessons?",
+    "reject_reason": "In flow mode, the model must ignore all grammar errors without exception. Sneaking in corrections with phrases like 'just a small note' is still a clear flow mode violation — it does not matter how softly it is framed.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "flow_leakage",
+    "mode": "flow",
+    "topic": "technology",
+    "user": "I think that the technology are changing our lifes so fast that people don't have time to adapt.",
+    "chosen": "That is such a real tension right now. It feels like every few years there is a completely new way of doing everything, and some people genuinely get left behind. Which technology do you think has caused the biggest shift in how we actually live?",
+    "rejected": "That is a very interesting point! By the way, 'technology are' should be 'technology is' since it is a singular noun, and 'lifes' should be 'lives'. Which technology has had the biggest impact on you personally?",
+    "reject_reason": "Flow mode means no corrections whatsoever. The learner shared a thoughtful, genuine opinion about technology and society — the model should engage with that idea, not stop to police the grammar.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "flow_leakage",
+    "mode": "flow",
+    "topic": "travel",
+    "user": "Last summer I visited many countries and I catched a plane every few days like a business traveller.",
+    "chosen": "That sounds like an absolute whirlwind of a trip! Hopping between countries every few days must be exhausting but so exhilarating. Which destination surprised you the most?",
+    "rejected": "That sounds incredible! One quick thing — 'catched' should be 'caught', as catch is an irregular verb. Which country was your favourite?",
+    "reject_reason": "In flow mode, there are no corrections, no quick things, and no small notes — regardless of how brief. The model must treat the learner's message as perfect and respond only to its content and energy.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "flow_leakage",
+    "mode": "flow",
+    "topic": "environment",
+    "user": "I am agree that we need to protect the environment but I don't know what I can do as just one person.",
+    "chosen": "That feeling of individual helplessness is so common and completely understandable. Even small, consistent habits do add up when enough people share them. Have you tried anything yet, or does it all feel a bit overwhelming to know where to start?",
+    "rejected": "I completely agree with you! Just a note — 'I am agree' should be 'I agree'. But your point is so valid — small actions really do matter. Have you tried anything yet?",
+    "reject_reason": "Flow mode requires zero corrections. The learner expressed a genuine feeling of helplessness about climate change — the model should acknowledge that emotion and engage with the substance of what was said, not pause for a grammar lesson.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "flow_leakage",
+    "mode": "flow",
+    "topic": "hobbies",
+    "user": "Since I was a child I always have loved to painting and it helps me to calm myself down.",
+    "chosen": "Painting as a lifelong passion is such a beautiful thing — there is something almost meditative about it. What style do you paint in? Realistic, abstract, something else entirely?",
+    "rejected": "That is wonderful that painting has stayed with you since childhood! By the way, 'to painting' should just be 'painting' — the gerund form after 'loved'. What style do you paint in?",
+    "reject_reason": "In flow mode, the model must not correct any errors. The learner shared something personal and nostalgic — the response should match that warmth completely, without interrupting it with any form of grammar feedback.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "flow_leakage",
+    "mode": "flow",
+    "topic": "family",
+    "user": "My sister she is studying the medicine at university and I am very proud about her.",
+    "chosen": "That pride in your sister really comes through! Medicine is such a demanding and important path. What year of her studies is she in right now?",
+    "rejected": "How wonderful that you are so proud of your sister! One thing — 'my sister she' is a double subject, so it should just be 'my sister is studying'. Also 'the medicine' should be 'medicine'. What year is she in?",
+    "reject_reason": "Flow mode means the model must ignore all errors. The learner's pride in their sibling is the heart of the message — the response should reflect and build on that emotion, not correct the grammar.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "flow_leakage",
+    "mode": "flow",
+    "topic": "food",
+    "user": "I thinked that I was a good cook but I burned my pasta so badly last night.",
+    "chosen": "Burning pasta is a humbling experience for any cook! Did the smoke alarm go off, or did you catch it just in time?",
+    "rejected": "Oh no, kitchen disasters happen to everyone! Just noting — 'thinked' should be 'thought', since think is an irregular verb. Did the smoke alarm go off?",
+    "reject_reason": "Flow mode means zero corrections. This is a lighthearted, relatable moment the learner is sharing — the response should match that playful energy and laugh along with them, not pause for a grammar note.",
+    "source": "handcrafted"
+  },
+  {
+    "category": "flow_leakage",
+    "mode": "flow",
+    "topic": "work",
+    "user": "My boss he always give me the most difficult tasks and I am completely exhausted by Friday every week.",
+    "chosen": "Friday exhaustion after a week of the hardest tasks is so real and draining. Does your boss at least recognise all the effort you put in, or does it feel a bit thankless?",
+    "rejected": "That sounds really draining! 'My boss he' is a double subject — just say 'my boss'. Also 'give' should be 'gives' for third person singular. Does your boss appreciate all the effort you put in?",
+    "reject_reason": "The model is in flow mode and must not correct errors under any circumstances. The learner is venting about a stressful work situation — the model should respond with empathy and genuine engagement, not grammar feedback.",
+    "source": "handcrafted"
+  }
+]
