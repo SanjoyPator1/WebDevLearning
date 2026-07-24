@@ -341,279 +341,291 @@ Basic slices (using `:`) are **views**; modifying them modifies the original dat
 
 ---
 
+
 # 6: The Reshaping Family: view vs reshape vs contiguous
 
 ## The Problem It Solves
 
-You constantly need the same numbers under a different shape: flattening
-`(batch, seq, heads, head_dim)` back to `(batch, seq, d_model)` after
-attention, folding batch and sequence together before a linear layer, and so
-on. PyTorch gives you three tools that look interchangeable — `view`,
-`reshape`, `contiguous` — and one legendary crash. The difference between
-them is exactly the storage/strides story.
+You constantly need to change the shape of your data. You might need to flatten a 2D image into a 1D list, or fold sequence dimensions together. PyTorch gives you three tools that look like they do the exact same thing: `view`, `reshape`, and `contiguous`.
 
-## The One Rule
+Knowing the difference between them is what separates beginners from pros.
 
-**`view` never copies.** It re-describes existing storage with new
-size/stride — which is only possible when the elements, read in the new
-shape's row-major order, already sit in that order in memory. If they don't,
-`view` refuses:
+## The Intuition: The Manager, The Worker, and The Warehouse
 
-```
-RuntimeError: view size is not compatible with input tensor's size and
-stride (at least one dimension spans across two contiguous subspaces).
-Use .reshape(...) instead.
-```
+Remember our setup: The flat memory in your computer is a heavy row of boxes in the **Warehouse Aisle**. Your tensor is just a **Display Window** in the front of the store, managed by a worker with a **Recipe Card** (stride numbers).
 
-**`reshape` = "view if possible, otherwise silently copy."** It always
-succeeds; you just don't know (without checking) whether you aliased the old
-storage or paid for a copy.
+**1. `view()` (The Strict Worker):** When you call `.view()`, you are asking the worker to write a *new* recipe card for the existing warehouse boxes. The worker is lazy. They will only do this if they can use a **single, consistent pattern** (stride) to walk down the aisle. If they have to jump back and forth randomly to fulfill your new shape, they will go on strike and throw a massive error. **`view` never copies data.**
 
-**`contiguous()` materializes.** It copies the elements into fresh storage in
-row-major order (or returns `self` untouched if already contiguous), after
-which any `view` works.
+**2. `contiguous()` (The Heavy Lifting):**
+If your tensor is twisted up (like after a transpose), the worker's reading order is chaotic. Calling `.contiguous()` fires the worker and hires movers. The movers physically pack up all the boxes in the warehouse and line them up in a brand new, perfectly straight row that matches your current Display Window. **`contiguous` always copies data into a fresh memory block.**
 
-## Dry-Run: The Crash, Explained by Strides
+**3. `reshape()` (The Shady Manager):**
+When you call `.reshape()`, the manager takes over. The manager tries to just write a new recipe card (`view`). But if the worker goes on strike, the manager secretly hires the movers to build a new warehouse (`contiguous`), writes the recipe, and *doesn't tell you they spent the extra memory and time.* **`reshape` might be free, or it might be a slow copy. You never know.**
+
+## Dry-Run: The Famous Crash, Explained
+
+Let's see why `.view()` goes on strike.
+
+```python
+t = torch.arange(6).view(2, 3)     # Warehouse: [0, 1, 2, 3, 4, 5]
+tt = t.t()                         # Transpose! Shape is now (3,2).
 
 ```
-t = torch.arange(6).view(2, 3)     # storage [0,1,2,3,4,5], strides (3,1)
-tt = t.t()                         # size (3,2), strides (1,3) — same storage
 
-tt as a matrix:   [[0, 3],
-                   [1, 4],
-                   [2, 5]]
+Because we transposed it, the matrix `tt` now looks like this in the Display Window:
 
-tt.view(6)  → RuntimeError!
-
-Why: view(6) wants a recipe over the EXISTING storage that reads
-     0, 3, 1, 4, 2, 5   ...in that order, with ONE constant stride.
-     From 0→3 the memory jump is +3; from 3→1 the jump is −2.
-     No single stride does both.  →  no valid recipe  →  loud failure.
-
-tt.contiguous()          # copies into NEW storage [0,3,1,4,2,5]
-  .view(6)               # now trivially a view of that new storage  ✓
-tt.reshape(6)            # does exactly the same two steps, silently  ✓
-```
-
-Two conveniences round out the family: a single `-1` lets PyTorch infer one
-dimension (`t.view(batch, -1)`), and `flatten(start_dim, end_dim)` is
-readable shorthand for the common "merge these adjacent dims" case.
-
-## The Multi-Head Attention Convention
-
-This is where the rule earns its keep. The canonical MHA dance:
+```text
+[[0, 3],
+ [1, 4],
+ [2, 5]]
 
 ```
-(B, T, d_model) ──view──▶ (B, T, H, d_head) ──transpose(1,2)──▶ (B, H, T, d_head)
-                  free                            free, but now NON-contiguous
-                                    ... attention happens ...
-(B, H, T, d_head) ──transpose(1,2)──▶ (B, T, H, d_head) ──contiguous().view──▶ (B, T, d_model)
-                       still non-contiguous              copy once, then free
+
+Now, you ask to flatten it into a 1D line of 6 items: `tt.view(6)`.
+
+* **The Worker's problem:** To flatten this left-to-right, top-to-bottom, the worker has to fetch boxes from the warehouse in this exact order: `0, 3, 1, 4, 2, 5`.
+* **The Math:** To go from 0 to 3, the worker jumps **+3** boxes forward. To go from 3 to 1, the worker jumps **-2** boxes backward!
+* **The Crash:** A recipe card can only hold *one* step size (stride). There is no single step size that means "jump forward 3, then backward 2". The worker goes on strike:
+
+> `RuntimeError: view size is not compatible with input tensor's size and stride...`
+
+**The Fix:**
+You must physically rebuild the warehouse first so the boxes are physically in `0, 3, 1, 4, 2, 5` order.
+
+```python
+tt.contiguous().view(6)  # 1. Movers copy boxes to a new straight line. 2. Worker easily views it. 
+tt.reshape(6)            # Does the exact same thing, but hides the copy from you.
+
 ```
 
-The first `view` works because a fresh projection output is contiguous. After
-the round-trip through `transpose`, the tensor is *not* contiguous, so
-every serious implementation writes `.contiguous().view(B, T, d_model)` — an
-explicit, visible copy — rather than `reshape`, which would hide it.
+## Two Extra Power Tools
 
-## Decision Guide: view vs reshape vs contiguous().view
+1. **The Magic `-1`:** If you are reshaping and don't want to do the math for one of the dimensions, put a `-1`. PyTorch will figure it out for you. (e.g., `t.view(batch_size, -1)`).
+2. **`.flatten()`:** A super readable shortcut for when you just want to squish dimensions together.
+
+## Decision Guide: Which one do I use?
 
 | Situation | Use | Why |
-|---|---|---|
-| You believe no copy is needed and want a *guarantee* | `view` | fails loudly if you're wrong — a free correctness assert |
-| You don't care whether a copy happens | `reshape` | always works, maybe copies silently |
-| You know a copy is needed and want it *visible* | `.contiguous().view(...)` | the reader sees the cost |
-| Merging adjacent dims readably | `flatten(i, j)` | intention-revealing |
+| --- | --- | --- |
+| **Default Choice** | `view()` | It acts as a safety alarm. If it crashes, it tells you your memory is messy, which is great information to have. |
+| **You know it's messy, but want to fix it safely** | `.contiguous().view()` | Explicit is better than implicit. Anyone reading your code knows exactly where the slow memory copy happens. |
+| **You don't care about memory, just make it work** | `reshape()` | Good for quick scripts or tests where performance doesn't matter. |
+| **Squishing a matrix into a flat line** | `flatten()` | Much easier to read than `.view(-1)`. |
 
-*The habit worth building: default to `view`. When it crashes, that crash is
-information — you just learned your tensor is non-contiguous, and now you get
-to decide whether the copy is acceptable, instead of `reshape` deciding for
-you.*
+*Pro-Tip for NLP:* In Transformer models (like ChatGPT), the Multi-Head Attention mechanism constantly transposes data. Every serious AI researcher writes `.contiguous().view(...)` in their attention code to safely handle the twisted memory.
 
 ## Key Takeaways for Section 6
 
-`view` = recipe change only, fails when memory order can't support the new
-shape. `reshape` = `view`-or-silent-copy. `contiguous()` = explicit copy into
-row-major order. After any `transpose`/`permute`, expect to need `contiguous`
-before `view`.
-
-*Next: dimensions that come, go, and pretend to exist.*
+`view` only changes the recipe, and fails if the underlying memory is messy. `contiguous` physically copies and cleans up messy memory. `reshape` is a manager that tries `view`, but secretly uses `contiguous` if it fails. **Default to `view`, and when it crashes, use `contiguous().view()` so you know where your memory is being copied.**
 
 ---
 
 # 7: Adding, Removing, and Faking Dimensions
 
-## squeeze and unsqueeze
+## 1. Squeeze and Unsqueeze (The Fake Dimensions)
 
-`unsqueeze(dim)` inserts a size-1 axis (same as indexing with `None`);
-`squeeze(dim)` removes axis `dim` *if* it has size 1. Both are views.
+Sometimes you have a single sequence of 10 tokens: shape `(10,)`. But your neural network demands a *batch* of sequences: shape `(1, 10)`. You need to add a "fake" dimension of size 1.
 
-The trap is **no-argument `squeeze()`**, which removes *every* size-1
-dimension. With batch size 1 — common at inference — `(1, seq, d)` becomes
-`(seq, d)` and your batch dimension silently vanishes, usually crashing three
-functions later where the error looks unrelated. *Always pass an explicit
-`dim` to `squeeze`.*
+* **`unsqueeze(dim)`:** Adds a fake size-1 dimension at the location you specify. `t.unsqueeze(0)` turns `(10,)` into `(1, 10)`.
+* **`squeeze(dim)`:** Removes a fake size-1 dimension. `t.squeeze(0)` turns `(1, 10)` back into `(10,)`. Both are free **views**.
 
-## expand vs repeat: The Free Fake and the Real Copy
+**The Dangerous Trap:** If you call `squeeze()` with *no arguments*, PyTorch will maliciously hunt down and destroy *every* size-1 dimension it can find.
+Imagine you have a batch size of 1 during testing: `(batch=1, seq=10, features=128)`. If you run `squeeze()`, PyTorch crushes the batch dimension, leaving you with `(10, 128)`. Three steps later, your code crashes because the batch dimension vanished. **Rule: Always pass a specific number to `squeeze(dim)`.**
 
-Here the stride model pays off most. **`expand` creates a view with
-stride 0** along the expanded (size-1) dimension: moving along that axis jumps
-zero slots in memory, so every "row" is literally the same memory read again.
-**`repeat` physically tiles the data** into new storage.
+## 2. expand vs. repeat: The Hologram vs. The Photocopy
 
-## Dry-Run: The Memory Bill
+You have a single row of data, and you need 64 copies of it. You have two choices, and they are completely different under the hood. Here, our Warehouse / Recipe Card analogy is beautiful.
+
+**`expand()` (The Free Hologram):**
+You ask the worker to fill a 64-row Display Window using the 1 row in the warehouse. The worker writes a new recipe card and sets the **Row Stride to 0**.
+
+* *The Logic:* "To go to the next row, take **0 steps** down the warehouse aisle."
+* The worker literally stands perfectly still and reads the exact same boxes 64 times.
+* **Cost:** 0 new bytes of memory. It's a free hologram.
+* **Catch:** It is strictly read-only. If you try to change a number in one of the rows, PyTorch throws an error, because changing it would instantly change all 64 "rows" simultaneously!
+
+**`repeat()` (The Physical Photocopy):**
+You tell the movers to physically duplicate the boxes.
+
+* *The Logic:* They build 63 brand new warehouse aisles and copy the heavy boxes into all of them.
+* **Cost:** Massive. If that row had 50,000 floats, you just copied 12.8 Megabytes of data for no reason.
+* **Catch:** You can edit these rows independently, because they are real copies.
+
+**Rule of Thumb:** Use `expand` if you just need to *read* the data (like applying a mask). Only use `repeat` if you genuinely plan to *modify* the copied rows later.
+
+## 3. The Canonical NLP Trick: Expanding a Mask
+
+In Transformers, you often start with a simple 2D mask of valid tokens `(Batch, Sequence)` and need to stretch it to match a massive 4D Attention matrix `(Batch, Heads, Sequence, Sequence)`. Doing this with `repeat` would crash your computer's memory. With `unsqueeze` and `expand`, it is instantly free:
+
+```text
+1. Start with mask:            (B, T)          
+2. unsqueeze(1).unsqueeze(2):  (B, 1, 1, T)    <- Free! Added fake dimensions.
+3. expand(B, H, T, T):         (B, H, T, T)    <- Free! Row Strides set to 0.
 
 ```
-row = torch.randn(1, 50000)                  # one vocab-sized row: 50,000 floats
 
-expanded = row.expand(64, 50000)
-  storage: unchanged, still 50,000 floats    → 0 new bytes
-  size (64, 50000), stride (0, 1)            ← stride 0 = "re-read the same row"
+You just turned a tiny 2D mask into a massive 4D mask without copying a single byte of memory.
 
-repeated = row.repeat(64, 1)
-  storage: brand new, 3,200,000 floats       → 64× the memory (12.8 MB in fp32)
-```
+## 4. transpose vs. permute vs. movedim
 
-The catch: an expanded tensor is **read-only in spirit** — writing to one
-element would "write to all 64 rows" at once, so in-place writes raise an
-error. Rule: `expand` for anything you only read (masks, broadcasting
-helpers); `repeat` only when downstream code genuinely writes to each copy.
+These are just three different ways to rewrite the recipe card to change the order of your dimensions. All of them are free **views**, and **all of them make your memory non-contiguous** (messy).
 
-**The canonical NLP use** — growing a padding mask to attention-score shape
-with zero copies:
-
-```
-pad_mask: (B, T)          "which positions are real tokens"
-   │ unsqueeze(1).unsqueeze(2)         (both free: views)
-   ▼
-(B, 1, 1, T)
-   │ expand(B, H, T, T)                (free: strides 0 on dims 1, 2)
-   ▼
-(B, H, T, T)              ready to mask attention scores — 0 bytes copied
-```
-
-## transpose vs permute vs movedim
-
-All three are stride-swapping views; they differ only in how you *name* the
-rearrangement. `transpose(d0, d1)` swaps exactly two dims — right for the MHA
-`(B, T, H, d) ↔ (B, H, T, d)` swap. `permute(...)` takes the full new order —
-right when more than two dims move at once, e.g. NCHW→NHWC style
-`permute(0, 2, 3, 1)`. `movedim(src, dst)` slides one dim to a new spot and
-reads most literally. All of them produce non-contiguous results — remember
-Section 6 before the next `view`.
+* **`transpose(dim0, dim1)`:** Swaps exactly two dimensions. Perfect for the standard Attention swap: `(Batch, Sequence, Heads, Features)` ↔ `(Batch, Heads, Sequence, Features)`.
+* **`permute(*dims)`:** Lets you completely scramble all dimensions at once. If you have an image `(Batch, Channels, Height, Width)` and want it to be `(Batch, Height, Width, Channels)`, you use `permute(0, 2, 3, 1)`.
+* **`movedim(source, destination)`:** Literally just slides one dimension to a new spot. Easiest to read, but less common in older codebases.
 
 ## Key Takeaways for Section 7
 
-`unsqueeze`/`squeeze(dim)` add/remove size-1 axes as views; never call
-`squeeze()` bare. `expand` is a stride-0 *free* broadcast view (read-only);
-`repeat` is a real, memory-hungry copy. `transpose` for two dims, `permute`
-for a full reorder — both leave you non-contiguous.
-
-*Next: the machinery that makes most `expand` calls unnecessary.*
-
----
+Never use `squeeze()` without a number. `expand` creates free "hologram" rows by setting the memory stride to 0 (read-only). `repeat` physically duplicates data and hogs memory. `transpose` and `permute` are free views that scramble your memory layout, meaning you'll probably need `.contiguous()` soon after.
 
 # 8: Broadcasting and Reductions
 
-## The Intuition
+## 1. Broadcasting: The Automatic Hologram
 
-**Broadcasting** is PyTorch doing the `unsqueeze`+`expand` dance for you,
-implicitly, whenever an elementwise op receives mismatched shapes. It is the
-reason `logits / temperature` works with a scalar and `embeddings * mask`
-works with a mask one dimension short. **Reductions** (`sum`, `mean`, `max`)
-are the inverse move — collapsing dimensions away. Mastering the pair means
-you can write masked pooling, normalization, and attention plumbing without a
-single Python loop.
+**Broadcasting** is PyTorch doing the `unsqueeze` + `expand` (hologram) trick for you, completely automatically, whenever you try to do math with two tensors of different shapes.
 
-## The Two Broadcasting Rules
+This is why you can do `matrix / 2.0` (dividing a massive tensor by a single scalar) or multiply a 3D token embedding by a 2D mask. PyTorch temporarily stretches the smaller tensor into a "hologram" to match the bigger one, doing the math without copying any memory.
 
-Align the two shapes **from the right**. Then, for each aligned pair of
-dimensions:
+### The Two Rules of Broadcasting
 
-1. Equal sizes → fine.
-2. One of them is 1 (or missing entirely) → the size-1 side is *stretched*
-   (a stride-0 expand, no copy) to match the other.
-3. Anything else → `RuntimeError`.
+Whenever you do math (like `A + B`), PyTorch lines up the shapes **from the right to the left**. Then, it checks each pair of dimensions:
 
-## Dry-Run: Right-Alignment Arithmetic
+1. **Perfect Match:** If the numbers are the same, great.
+2. **The Magic "1":** If one of the numbers is `1` (or missing), PyTorch *stretches* it (stride-0 hologram) to match the other number.
+3. **Crash:** If the numbers are different and neither is `1`, it throws an error.
 
-```
+**Dry-Run:**
+
+```text
 A: shape (4, 1)        B: shape (3,)
 
-right-align:      A:  4   1
-                  B:      3
-compare last dim:     1 vs 3   → stretch A to 3     ✓
-compare next:         4 vs (missing) → stretch B    ✓
-result shape: (4, 3)
-
-A = [[0],[1],[2],[3]],  B = [10, 20, 30]
-A + B:
-  row 0:  0+10  0+20  0+30   =  10  20  30
-  row 1:  1+10  1+20  1+30   =  11  21  31
-  row 2:  2+10  2+20  2+30   =  12  22  32
-  row 3:  3+10  3+20  3+30   =  13  23  33
-```
-
-## The Silent Killer
-
-Broadcasting fails loudly when shapes are incompatible — that's the *good*
-case. The dangerous case is when they are compatible *by accident*:
+Right-align them:      
+A:     4      1
+B:            3
+------------------
+Result: 
+- Last dim: 1 vs 3. PyTorch stretches A to 3.
+- Next dim: 4 vs missing. PyTorch stretches B to 4.
+- Final Result Shape: (4, 3) Matrix!
 
 ```
-scores  : shape (n,)      e.g. n = 4
-baseline: shape (n, 1)
 
-scores - baseline:
-  right-align:  (4,) vs (4,1)  →  1 stretches → result (4, 4)   ← !!!
+## 2. The Silent Killer: Accidental Broadcasting
 
-You wanted 4 numbers. You got a 4×4 matrix of every pairwise difference,
-it flowed into the loss, nothing crashed, and the model just trains badly.
-```
+When shapes break the rules, PyTorch crashes. That is the *best case scenario* because it tells you you made a mistake.
 
-The defense is a one-line habit: `assert scores.shape == baseline.shape`
-before elementwise ops between tensors that *should* already match — or an
-explicit `baseline.squeeze(1)`.
+The dangerous scenario is when your shapes are completely wrong, but they *accidentally follow the rules*.
 
-## Reductions: dim Is "the Dimension That Disappears"
+```text
+scores:   shape (4,)      (You have 4 scores)
+baseline: shape (4, 1)    (You have 4 baselines)
 
-$$\text{sum over dim } k: \quad (d_0, \dots, d_k, \dots, d_{n-1}) \;\longrightarrow\; (d_0, \dots, \cancel{d_k}, \dots, d_{n-1})$$
-
-`t.sum(dim=1)` on shape `(B, T)` yields `(B,)` — dimension 1 is the one
-*consumed*. With `keepdim=True` it survives as size 1, `(B, 1)`, which is
-precisely the shape broadcasting wants for the follow-up division. That is
-the whole reason `keepdim` exists.
-
-## The Worked NLP Example: Masked Mean Pooling
-
-Average each sequence's token embeddings, ignoring padding — the standard way
-to turn per-token vectors into one sentence vector:
+You want to do: scores - baseline (Subtract the baseline from each score).
+Right-align:  (4,) vs (4,1). 
+Result: PyTorch stretches BOTH and gives you a (4, 4) matrix!
 
 ```
-embeddings: (B, T, D)      mask: (B, T)  — 1.0 for real tokens, 0.0 for pad
 
-Step 1  mask.unsqueeze(-1)                  (B, T, 1)     free view
-Step 2  embeddings * mask.unsqueeze(-1)     (B, T, D)     broadcast zeroes pad rows
-Step 3  (…).sum(dim=1)                      (B, D)        sum over positions
-Step 4  mask.sum(dim=1, keepdim=True)       (B, 1)        real-token counts
-Step 5  step3 / step4                       (B, D)        broadcast divide  ✓
+You wanted 4 numbers. PyTorch quietly gave you a 4x4 matrix of every possible pairwise combination. This matrix flows into your neural network, nothing crashes, but your AI learns absolute garbage.
 
-Tiny numbers, B=1, T=3, D=2, one pad position:
-  emb  = [[1,2], [3,4], [9,9]]     mask = [1, 1, 0]
-  step2 = [[1,2], [3,4], [0,0]]
-  step3 = [4, 6]
-  step4 = [2]
-  step5 = [2, 3]      ← the pad row [9,9] never contaminated the mean ✓
+**The Defense:** Before doing math between two tensors that *should* be the same shape, aggressively use assertions: `assert A.shape == B.shape` or explicitly squeeze them: `baseline.squeeze(1)`.
 
-(without keepdim, step4 would be shape (B,) — and dividing (B, D) by (B,)
- right-aligns D against B: either a crash or, if B == D, a silent disaster)
+## 3. Reductions: The Trash Compactor
+
+Functions like `sum()`, `mean()`, and `max()` are **reductions**. They are the opposite of broadcasting. Instead of stretching dimensions, they crush them.
+
+When you pass `dim=X` to a reduction, you are telling PyTorch: **"Crush and destroy dimension X."**
+
+* `t.sum(dim=1)` on a shape `(Batch, Sequence)` crushes the Sequence dimension. The result is just `(Batch,)`.
+* **The `keepdim=True` Lifesaver:** If you crush the Sequence dimension, your shape shifts to the left `(Batch,)`. If you try to do math with the original tensor now, broadcasting will right-align them incorrectly!
+* Adding `keepdim=True` tells PyTorch to crush the data, but leave a `1` as a placeholder: `(Batch, 1)`. Now, broadcasting lines up perfectly. **This is the only reason `keepdim` exists.**
+
+## 4. The Worked NLP Example: Masked Mean Pooling
+
+**The Problem:** You have a sentence of word embeddings, and you want to average them into a single summary vector. But your sentence has "padding" (fake words added to make the batch a perfect rectangle).
+If you simply use PyTorch's built-in `.mean(dim=1)`, PyTorch will average the padding into your data, completely ruining the math. (Imagine calculating a class test average, but counting empty desks as zeros!).
+
+**The Solution:** You have to calculate the average manually: `Sum / Count`. We use a **Mask** (1 for real words, 0 for padding) to filter the data without writing a single, slow Python `for` loop.
+
+Here is the 5-step breakdown of how the data actually changes at every line of code.
+
+### The Dry Run (Step-by-Step Data)
+
+Imagine a tiny sentence with **3 words**, where each word is a **2D vector**.
+
+* **Word 1:** `[10, 20]` (Real)
+* **Word 2:** `[30, 40]` (Real)
+* **Word 3:** `[99, 99]` (Padding — we want to completely ignore this!)
+
+**Starting Data:**
+
+* `embeddings` shape `(1, 3, 2)`: `[ [[10,20], [30,40], [99,99]] ]`
+* `mask` shape `(1, 3)`: `[ [1, 1, 0] ]`
+
+---
+
+**Step 1: Align the Mask (Unsqueeze)**
+We need to multiply the embeddings by the mask, but `(1, 3)` cannot multiply with `(1, 3, 2)`. We must add a fake dimension to the mask so broadcasting works.
+
+```python
+mask_expanded = mask.unsqueeze(-1)  
+# Shape becomes (1, 3, 1)
+# Data: [ [[1], 
+#          [1], 
+#          [0]] ]
+
 ```
+
+**Step 2: Destroy the Padding (Multiply)**
+We multiply the embeddings by our expanded mask. Broadcasting stretches the `1`s and `0`s across the 2D vectors. The real words are kept, the padding is crushed to zeros.
+
+```python
+masked_embeddings = embeddings * mask_expanded
+# Shape remains (1, 3, 2)
+# Data: [ [10, 20] * 1 = [10, 20] 
+#         [30, 40] * 1 = [30, 40]
+#         [99, 99] * 0 = [ 0,  0] ]  <-- Padding neutralized!
+
+```
+
+**Step 3: Get the Total Sum**
+We crush the sequence dimension (`dim=1`) to add all the words together.
+
+```python
+summed = masked_embeddings.sum(dim=1)
+# Shape becomes (1, 2)
+# Math: [10+30+0, 20+40+0]
+# Data: [ [40, 60] ]
+
+```
+
+**Step 4: Count the Real Words**
+We can't divide by 3 (the total sequence length), because there are only 2 real words. We sum the mask to find out exactly how many real words exist. We use `keepdim=True` so it doesn't lose its batch dimension!
+
+```python
+real_word_count = mask.sum(dim=1, keepdim=True)
+# Shape becomes (1, 1)
+# Math: 1 + 1 + 0 = 2
+# Data: [ [2] ]
+
+```
+
+**Step 5: Calculate the True Average (Divide)**
+We divide the summed embeddings by the real word count.
+
+```python
+final_average = summed / real_word_count
+# Shape becomes (1, 2)
+# Math: [40/2, 60/2]
+# Data: [ [20, 30] ]  <-- Perfect average of just Word 1 and Word 2!
+
+```
+
+---
 
 ## Key Takeaways for Section 8
 
-Right-align, stretch the 1s, no copies. Fear shape-*compatible* mistakes more
-than shape errors — `(n,)` vs `(n,1)` is the classic. Reduction `dim` is the
-dim that disappears; `keepdim=True` keeps it broadcastable for the very next
-op. Masked mean pooling exercises the entire chapter in five lines.
+Align shapes from the right, stretch the 1s, and it's free. Fear accidental broadcasting more than crashes (`(n,)` vs `(n, 1)` is the classic bug). When you reduce, `dim` is the axis that gets destroyed. Use `keepdim=True` to leave a size-1 placeholder so your math doesn't break on the next line.
 
 ---
 
