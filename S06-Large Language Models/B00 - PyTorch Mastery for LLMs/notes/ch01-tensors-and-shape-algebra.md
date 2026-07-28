@@ -255,7 +255,7 @@ If you try to multiply a CPU tensor by a GPU tensor, PyTorch throws the famous `
 | **Tokens & Indices** | `int64` / `torch.long` | Lookup tables (Embeddings) require whole numbers. |
 | **Masks** | `bool` | Extremely memory efficient (1 byte). |
 | **Default Weights** | `float32` | Standard precision, completely safe from overflow. |
-| **Fast LLM Training** | `bfloat16` | Won't overflow on large logits; natively supported on modern GPUs (Ampere/RTX 3000+). |
+| **Fast LLM Training** | `bfloat16` | Won't overflow on large logits; natively supported on recent GPUs. |
 | **Older GPUs** | `float16` | Required if your GPU doesn't support bf16, but requires extra code to prevent NaN explosions. |
 
 ---
