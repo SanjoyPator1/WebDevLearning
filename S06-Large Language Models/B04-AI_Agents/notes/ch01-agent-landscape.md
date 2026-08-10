@@ -726,16 +726,20 @@ step to step.
 
 ## Step-by-Step: How the Context Grows
 
-At step $k$ (the $k$-th time the model is called, $k = 1 \dots 15$), the
-prefill (input) sent to the model is the fixed prefix **plus every prior
-turn's completion and observation**, because the agent loop from Section 2 is
-append-only — nothing gets removed yet (that's Chapter 4's whole job):
+At step $k$ (the $k$-th time the model is called, where $k = 1 \dots 15$), the prefill (input) sent to the model is the **fixed prefix plus every prior turn's completion and observation**. Because the agent loop from Section 2 is append-only, nothing gets removed yet (that's Chapter 4's whole job).
+
+Before calculating, here is a quick cheat sheet of where the numbers come from:
+
+* **$4{,}200$**: The fixed prefix (system prompt + tool schemas) sent every single time.
+* **$150$**: The average tokens the model outputs per step (its "thought" plus the requested tool call).
+* **$800$**: The average tokens returned by the tool execution (the observation).
+* **$950$**: The total new tokens permanently added to the transcript each turn ($150 \text{ model output} + 800 \text{ tool observation}$).
+
+The formula for the prefill at any given step looks like this:
 
 $$\text{prefill}_k = 4{,}200 + (k-1) \times (150 + 800) = 4{,}200 + (k-1) \times 950$$
 
-Here $(k-1)$ is the number of previous turns already sitting in the
-transcript, and $950$ is how many tokens each of those turns adds (150 for the
-model's own prior completion, 800 for the tool observation that followed it).
+Here, $(k-1)$ represents the number of *previous* turns already sitting in the transcript. Because the history grows by 950 tokens every turn, the math looks like this in practice:
 
 ```
 Step  1: prefill = 4,200 + (0)(950) = 4,200 tokens
@@ -743,20 +747,16 @@ Step  2: prefill = 4,200 + (1)(950) = 5,150 tokens
 Step  3: prefill = 4,200 + (2)(950) = 6,100 tokens
    ...
 Step 15: prefill = 4,200 + (14)(950) = 17,500 tokens
+
 ```
 
-Summing every step's prefill gives total prefill tokens processed across the
-whole 15-step run:
+Summing every step's prefill gives the total input tokens processed across the entire 15-step run. *(Note: in the formula below, $\sum_{k=0}^{14} k$ is just adding $0 + 1 + 2 + \dots + 14$, which equals $105$)*:
 
 $$\sum_{k=1}^{15} \text{prefill}_k = 15 \times 4{,}200 + 950 \times \sum_{k=0}^{14} k = 63{,}000 + 950 \times 105 = 162{,}750 \text{ tokens}$$
 
-Plus $15 \times 150 = 2{,}250$ output tokens across the run. **A 15-step agent
-on a modest task processes over 160,000 input tokens — not because any single
-message is long, but because the transcript is resent in full, every single
-step.** This is the concrete arithmetic behind Section 7's "context anxiety":
-by step 15 the model is reading a 17,500-token prefix just to decide one more
-150-token move.
+Plus $15 \times 150 = 2{,}250$ output tokens across the run.
 
+**A 15-step agent on a modest task processes over 160,000 input tokens — not because any single message is long, but because the transcript is resent in full, every single step.** This is the concrete arithmetic behind Section 7's "context anxiety": by step 15, the model is reading a 17,500-token prefix just to decide one more 150-token move.
 ## Adding Prompt Caching
 
 Anthropic's prompt caching (illustrative of the mechanism every major
