@@ -1,0 +1,4 @@
+{"step": 1, "stop_reason": "tool_use", "cumulative_tokens": 340, "tool_calls_this_step": 2}
+{"step": 2, "stop_reason": "tool_use", "cumulative_tokens": 775, "tool_calls_this_step": 1}
+{"step": 3, "stop_reason": "tool_use", "cumulative_tokens": 1735, "tool_calls_this_step": 2}
+{"step": 4, "stop_reason": "end_turn", "cumulative_tokens": 2727, "tool_calls_this_step": 0}

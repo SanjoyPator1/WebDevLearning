@@ -49,15 +49,19 @@ testing with real models" — a contract between deterministic code and a
 non-deterministic reader, not between two deterministic systems.
 
 *Everything in this chapter is demonstrated against Anthropic's tool-use wire
-format (`input_schema`, `tool_use`, `tool_result`) because that is the
-concrete surface `ai_config`'s reference path exposes today. But the
-principles — clear names, right-sized granularity, lean return values,
-actionable errors — are not Anthropic-specific. They apply identically to
-Gemini's `functionDeclarations` and to any MCP tool a Bedrock-hosted model
-calls through the same JSON-Schema-shaped `input_schema`/`parameters`
-contract. Where a mechanic genuinely only exists on one platform — the Tool
-Search Tool's `defer_loading` field in Section 11 is the clearest example —
-this chapter says so explicitly.*
+format (`input_schema`, `tool_use`, `tool_result`) — the same format this
+course's notebooks connect to directly through `AnthropicBedrockMantle`
+(Claude Sonnet, via AWS Bedrock). The principles themselves — clear names,
+right-sized granularity, lean return values, actionable errors — aren't tied
+to any one platform's exact field names; they apply to any tool-calling
+model that expresses "the model wants to call a function" through a
+JSON-Schema-shaped input contract, MCP-sourced tools included. This chapter
+doesn't demonstrate that generality with a second vocabulary, for the same
+reason Chapter 2 settled on one: depth on a single real wire format teaches
+the underlying lesson better than a shallow tour of several. Where a
+mechanic genuinely only exists on this platform — the Tool Search Tool's
+`defer_loading` field in Section 11 is the clearest example — this chapter
+says so explicitly.*
 
 ## Connection Back to Chapter 1's Failure Modes
 

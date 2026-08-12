@@ -54,13 +54,13 @@ it easier to lose one.
 
 *Everything mechanical in this chapter — the compaction API, tool-result
 clearing, the caching interaction — is demonstrated against Anthropic's
-Messages API, because that's the concrete, currently-documented mechanism
-`ai_config`'s reference path can reach. But the underlying problem (a
-transformer's attention has to spread itself across everything in the
-window) and the four-operation framework in Section 4 are not
-Anthropic-specific — they are the same reason every major agent harness in
-2026, regardless of vendor, ships some version of compaction, memory files,
-and sub-agent delegation.*
+Messages API, the same one this course's notebooks connect to directly
+through `AnthropicBedrockMantle` (Claude Sonnet, via AWS Bedrock). But the
+underlying problem (a transformer's attention has to spread itself across
+everything in the window) and the four-operation framework in Section 4 are
+not Anthropic-specific — they are the same reason every major agent harness
+in 2026, regardless of vendor, ships some version of compaction, memory
+files, and sub-agent delegation.*
 
 ## Key Takeaways for Section 1
 
