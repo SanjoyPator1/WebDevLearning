@@ -702,6 +702,10 @@ actually sits behind it.*
 
 # 4: Writing the Dispatch Table
 
+## What is a Dispatch Table?
+
+A dispatch table is simply a Python dictionary that maps string names (like `"get_weather"`) to actual Python functions. When the model decides to use a tool, it outputs a string name. Your code uses this dictionary to "dispatch" (or route) that string name to the real code that does the work.
+
 ## The Intuition
 
 Picture a **hotel concierge desk with a phone directory taped to the wall**.
@@ -750,9 +754,51 @@ def execute_tool_call(block):
         return f"Error: {exc}", True
 ```
 
+## The Tool Schema (What the Model Actually Sees)
+
+While the dictionary above maps names to Python functions, the model itself never sees your Python code. You must define a `tools` list containing JSON Schema objects for each tool.
+
+**Where is this used?** This exact array is passed to the API on every turn in the main loop (as seen in Section 3):
+`client.messages.create(..., tools=tools, ...)`
+
+This list is the bridge between the model's choices and your dispatch table. When the model reads this list, it learns what tools exist, what they do, and what arguments they require.
+
+```python
+tools = [
+    {
+        "name": "get_weather",
+        "description": "Look up the current weather for a city. Call this when the user asks for the weather in a specific location.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "The city and state, e.g. San Francisco, CA"
+                }
+            },
+            "required": ["location"]
+        }
+    },
+    {
+        "name": "read_file",
+        "description": "Return the contents of a file at `path`. Use this to inspect code or read reports.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "description": "The absolute or relative path to the file"
+                }
+            },
+            "required": ["path"]
+        }
+    }
+]
+```
+
 ## Definitions Are a User Interface Whose User Is a Model
 
-The `name`, `description`, and `input_schema` you declare for each tool are
+The `name`, `description`, and `input_schema` you declare for each tool in the JSON array above are
 not documentation for a human reading your code later — they are the *entire*
 information the model has about what a tool does and how to call it. A vague
 description ("processes text") produces vague, wrong tool calls just as
@@ -802,23 +848,46 @@ looping the same half-mile forever.
 | **Wall-clock guard** | A single step (or the whole run) is taking pathologically long | `time.monotonic()` checked at the top of each iteration |
 | **Explicit `finish` tool** | You want the model itself to signal "I'm confident this is complete" as a deliberate, checkable action rather than inferring it from `end_turn` | A tool literally named `finish` or `submit_answer` that the loop treats as terminal when called |
 
+### The Five Guards in Code (Applying the Theory)
+
+To see how these concepts connect to actual code, look at how the guards are distributed. Pre-flight checks (like budget and time) happen *before* calling the API, while response checks (natural stop or a `finish` tool) happen *after*.
+
 ```python
 MAX_STEPS = 20
 MAX_TOKENS_BUDGET = 50_000
 start_time = time.monotonic()
+cumulative_tokens = 0
 
 for step in range(MAX_STEPS):
-    if time.monotonic() - start_time > 300:          # wall-clock guard
+    # 1. Wall-clock guard (Pre-flight check)
+    if time.monotonic() - start_time > 300:
+        print("Hit wall-clock limit.")
         break
-    if cumulative_tokens > MAX_TOKENS_BUDGET:          # budget guard
+        
+    # 2. Budget guard (Pre-flight check)
+    if cumulative_tokens > MAX_TOKENS_BUDGET:
+        print("Hit token budget limit.")
         break
 
     response = client.messages.create(...)
     cumulative_tokens += response.usage.input_tokens + response.usage.output_tokens
 
-    if response.stop_reason == "end_turn":             # natural stop
+    # 3. Natural stop (Post-flight check)
+    if response.stop_reason == "end_turn":
+        print("Model completed its turn naturally.")
         break
-    # ... handle tool_use, append, continue
+        
+    # 4. Explicit 'finish' tool (Checking tool_use blocks)
+    if response.stop_reason == "tool_use":
+        # Check if the model called our explicit termination tool
+        is_finished = any(block.name == "finish" for block in response.content if block.type == "tool_use")
+        if is_finished:
+            print("Model explicitly called the 'finish' tool.")
+            break
+            
+        # ... otherwise, handle normal tools, append results, and continue
+
+# 5. Max-iteration guard (The loop itself)
 else:
     # the for/else fires only if MAX_STEPS was exhausted without a `break`
     print("Hit max-iteration guard without a natural stop.")
@@ -864,18 +933,63 @@ process.**
 
 ## Errors Are Training Data for the Next Step
 
-When `execute_tool_call` catches an exception, it does not propagate that
-exception up and kill the Python process — it converts the exception into a
-string and feeds it back to the model as a `tool_result`, marked with
-`is_error: true`:
+Here is a visual representation of how a tool failure becomes a self-correction opportunity:
+
+```text
+   [Model]                                [Loop]                               [Tool]
+      │                                     │                                    │
+      │   tool_use(path="reports.txt")      │                                    │
+      │────────────────────────────────────▶│                                    │
+      │                                     │  execute read_file("reports.txt")  │
+      │                                     │───────────────────────────────────▶│
+      │                                     │                                    │
+      │                                     │    Exception: FileNotFoundError    │
+      │                                     │◀───────────────────────────────────│
+      │                                     │                                    │
+      │                                     │ (Catch exception, set is_error=True)
+      │                                     │                                    │
+      │   user msg + tool_result (Error)    │                                    │
+      │◀────────────────────────────────────│                                    │
+      │                                     │                                    │
+      │   tool_use(path="report.txt")       │                                    │
+      │────────────────────────────────────▶│    <-- Self Correction!            │
+```
+
+### Catching Errors in Code (Applying the Theory)
+
+To see this in practice, look at the `execute_tool_call` function. This is where the Python exception is caught and converted into a clean string, rather than crashing your script.
 
 ```python
+def execute_tool_call(block):
+    fn = TOOL_DISPATCH.get(block.name)
+    if fn is None:
+        # Tool doesn't exist? That's an error for the model to fix.
+        return f"Error: no such tool '{block.name}'", True
+        
+    try:
+        # Attempt to run the real Python function
+        result = fn(**block.input)
+        return str(result), False                            # Success! is_error=False
+    except Exception as exc:
+        # We caught an error! Do NOT raise it.
+        # Instead, return it as a string so the model can read it.
+        return f"Error: {type(exc).__name__}: {exc}", True   # Failure! is_error=True
+```
+
+Then, back in your main loop, you use that boolean flag to build the JSON object exactly as the API expects:
+
+```python
+# Inside the main loop...
+content_str, is_error = execute_tool_call(block)
+
 tool_result = {
     "type": "tool_result",
     "tool_use_id": block.id,
-    "content": "Error: file 'reports.txt' not found. Did you mean 'report.txt'?",
-    "is_error": True,
+    "content": content_str,   # Contains the error string if it failed!
+    "is_error": is_error,     # Crucial flag that tells the model it messed up
 }
+
+messages.append({"role": "user", "content": [tool_result]})
 ```
 
 Section 11's dry-run walks through exactly this scenario end to end: the
@@ -920,43 +1034,137 @@ and report back together.
 
 ## The Rule That's Easy to Get Backwards
 
-Parallel tool use is the default behavior — one assistant message may
-legitimately contain several `tool_use` blocks. Your loop must execute all of
-them (concurrently if they're independent — nothing stops you from using a
-thread pool or `asyncio.gather` here) and then return **every** result in a
-**single** user turn:
+Parallel tool use is the default behavior — one assistant message may legitimately contain several `tool_use` blocks. 
 
-```python
-tool_use_blocks = [b for b in response.content if b.type == "tool_use"]
-results = []
-for block in tool_use_blocks:
-    content, is_error = execute_tool_call(block)
-    results.append({
-        "type": "tool_result",
-        "tool_use_id": block.id,
-        "content": content,
-        "is_error": is_error,
-    })
+Here is what the flow looks like when the model asks for two weather checks at once:
 
-messages.append({"role": "user", "content": results})   # ONE turn, ALL results
+```text
+  [Model]                                  [Loop]
+     │                                       │
+     │  tool_use(location="Paris")           │
+     │  tool_use(location="Tokyo")           │
+     │──────────────────────────────────────▶│ (Loop executes both tools)
+     │                                       │
+     │  [tool_result("72F and sunny"),       │ 
+     │   tool_result("65F and raining")]     │
+     │◀──────────────────────────────────────│ (Returned together in ONE user message)
 ```
 
-**Splitting the results across multiple user messages — one per tool —
-silently trains the model to stop making parallel calls.** This isn't a crash
-or an error you'll see in a stack trace; it's a quiet behavioral regression
-where the model, having apparently learned that its parallel requests don't
-come back together the way it expects, starts making tool calls one at a
-time instead, and your agent gets slower with no obvious cause. If you're
-debugging "why did my agent stop batching tool calls," check this exact spot
-first.
+### Implementing Parallel Calls in Code (Applying the Theory)
+
+When the API returns a `tool_use` stop reason, it doesn't just return one tool—it returns an array of them inside `response.content`. To handle this correctly, we gather *all* tool calls from that single turn, execute them, and pack *all* the results into a single list before appending it to `messages`. 
+
+Here is exactly where this fits into our loop from Section 5:
+
+```python
+    if response.stop_reason == "tool_use":
+        # ... (check for the explicit 'finish' tool) ...
+        
+        # 1. Extract ALL tool requests the model made in this turn
+        tool_use_blocks = [b for b in response.content if b.type == "tool_use"]
+        
+        # 2. Execute and gather ALL results
+        results = []
+        for block in tool_use_blocks:
+            content_str, is_error = execute_tool_call(block)
+            results.append({
+                "type": "tool_result",
+                "tool_use_id": block.id,
+                "content": content_str,
+                "is_error": is_error,
+            })
+
+        # 3. Append them together as exactly ONE user turn
+        messages.append({"role": "user", "content": results})
+```
+
+### [DRY-RUN] The Message State Before and After
+
+To make this completely concrete, let's look at the actual JSON of the `messages` list during this process. 
+
+**Before appending the results**, the message list contains the user's initial request, followed by the assistant asking for two things at once:
+
+```json
+[
+  {
+    "role": "user",
+    "content": "What's the weather like in Paris and Tokyo?"
+  },
+  {
+    "role": "assistant",
+    "content": [
+      {
+        "type": "tool_use",
+        "id": "toolu_paris",
+        "name": "get_weather",
+        "input": {"location": "Paris"}
+      },
+      {
+        "type": "tool_use",
+        "id": "toolu_tokyo",
+        "name": "get_weather",
+        "input": {"location": "Tokyo"}
+      }
+    ]
+  }
+]
+```
+
+**After appending the results** using the Python code above, we append exactly **one** new user message that contains an array of both results:
+
+```json
+[
+  {
+    "role": "user",
+    "content": "What's the weather like in Paris and Tokyo?"
+  },
+  {
+    "role": "assistant",
+    "content": [ ... the two tool calls from above ... ]
+  },
+  {
+    "role": "user",
+    "content": [
+      {
+        "type": "tool_result",
+        "tool_use_id": "toolu_paris",
+        "content": "72F and sunny",
+        "is_error": false
+      },
+      {
+        "type": "tool_result",
+        "tool_use_id": "toolu_tokyo",
+        "content": "65F and raining",
+        "is_error": false
+      }
+    ]
+  }
+]
+```
+
+### The "Silent Regression" Bug Explained
+
+A very common mistake developers make is appending a separate user message for *each* tool result, which looks like this:
+
+```json
+// INCORRECT: Splitting results into separate turns
+[
+  { "role": "user", "content": "What's the weather like in Paris and Tokyo?" },
+  { "role": "assistant", "content": [ ... two tool calls ... ] },
+  { "role": "user", "content": [ { "type": "tool_result", "tool_use_id": "toolu_paris"... } ] },
+  { "role": "user", "content": [ { "type": "tool_result", "tool_use_id": "toolu_tokyo"... } ] }
+]
+```
+
+If you do this, the API won't crash. It is syntactically valid. However, **it silently trains the model to stop making parallel calls.**
+
+Why? Because models learn how to behave from the transcript (the `messages` list). When the model asks for two things at once, but the transcript shows it getting the answers back in separate disconnected turns, the model assumes its parallel request wasn't supported by the system. In future turns, it will "adapt" by making tool calls one at a time, making your agent frustratingly slow. 
+
+If you are ever debugging the question, "Why did my agent stop batching tool calls?", check this exact spot in your code. Ensure all tool results are packed into a single `user` message.
 
 ## Key Takeaways for Section 7
 
-One assistant turn can carry several `tool_use` blocks; execute all of them
-and return all their `tool_result` blocks together, in exactly one user
-message. Splitting them across multiple messages is syntactically valid and
-silently wrong — it degrades parallel tool use over time without ever
-throwing an error.
+One assistant turn can carry several `tool_use` blocks. You must execute all of them and return all their `tool_result` blocks together, in **exactly one** user message. Splitting them across multiple messages is syntactically valid but silently wrong — it trains the model that parallel tools aren't supported, degrading performance over time without ever throwing an error.
 
 *Next: everything so far assumed a plain, blocking request-response call —
 here's what changes when tokens arrive incrementally and the model reasons
@@ -968,78 +1176,94 @@ between tool calls.*
 
 ## The Intuition
 
-A blocking call is like sending a letter and waiting for the full reply
-before you read any of it. Streaming is like a phone call — words arrive as
-they're spoken, and you can react (or at least render them to a screen) as
-they come in, instead of staring at a blank page until the other person
-finishes their entire thought.
+A blocking call is like sending a letter and waiting for the full reply before you read any of it. Streaming is like a phone call — words arrive as they're spoken, and you can react (or at least render them to a screen) as they come in, instead of staring at a blank page until the other person finishes their entire thought.
 
 ## What Changes About the Loop
 
-Streaming itself is not unique to this API — most current providers offer
-some form of incremental token delivery. What follows is written against
-Anthropic's specific event names, the ones this chapter's notebook actually
-uses.
+Streaming itself is not unique to this API — most current providers offer some form of incremental token delivery. What follows is written against Anthropic's specific event names.
 
-Streaming doesn't change the *logic* of the loop — you still read a final
-`stop_reason`, still branch on `tool_use` vs `end_turn`, still append the
-same shapes to `messages`. What changes is *how you get there*: instead of
-one blocking call that returns a complete `Message`, you open a stream and
-consume events (`content_block_start`, `content_block_delta`,
-`content_block_stop`, `message_delta`, `message_stop`) as they arrive, and
-either render the deltas live or simply collect them and ask for the fully
-accumulated message once the stream ends. In practice, almost every agent
-loop uses the SDK's convenience wrapper for exactly this reason — stream for
-the live tokens if you want them, but always end with the complete,
-accumulated `Message` object before making any loop-control decision, because
-`stop_reason` and `tool_use` blocks only exist once a content block has fully
-closed.
+To understand what changes, we have to look at how data actually arrives over the network. 
+
+**In a Blocking Call:**
+You ask the API for a response. Your code freezes and waits in silence for 5 seconds. Finally, the API returns **one massive, complete JSON object** all at once.
+
+**In a Streaming Call:**
+You ask the API for a response. Instantly, the API starts firing dozens of tiny "events" at your code, piece by piece, as the model generates them. 
+
+Here is an example of what those tiny events look like as they arrive one by one over the wire:
+
+```text
+Event 1: content_block_start  (The model is starting to speak)
+Event 2: content_block_delta  "I "
+Event 3: content_block_delta  "will "
+Event 4: content_block_delta  "check "
+Event 5: content_block_delta  "the weather."
+Event 6: content_block_stop   (The model finished its sentence)
+Event 7: tool_use_start       (The model decided to use a tool)
+Event 8: input_json_delta     "{\"location\": "
+Event 9: input_json_delta     "\"Paris\"}"
+Event 10: message_stop        (The model is completely done with its turn)
+```
+
+The core point is this: **Streaming doesn't change the *logic* of your agent loop.** Whether you wait 5 seconds for the massive object, or you catch 50 tiny events over 5 seconds, the end result is exactly the same. You still read a final `stop_reason`, you still branch on `tool_use` vs `end_turn`, and you still append the exact same data to your `messages` array. What changes is merely *how you get there*.
+
+### Streaming in Code (Applying the Theory)
+
+Instead of manually parsing all those JSON chunk events, almost every agent loop uses the SDK's convenience wrapper. It lets you stream the live text, but critically, it automatically reconstructs the final `Message` object for you so your loop logic doesn't have to change:
 
 ```python
 with client.messages.stream(model=MODEL, max_tokens=4096,
                              tools=tools, messages=messages) as stream:
+    # 1. Yield live tokens to the UI as they arrive
     for text in stream.text_stream:
-        print(text, end="", flush=True)     # live output, if you want it
-    response = stream.get_final_message()    # the same Message object a blocking call would give you
+        print(text, end="", flush=True)
+        
+    # 2. Wait for the stream to close, then grab the reconstructed message
+    response = stream.get_final_message()
+    
+# 3. Resume your normal loop logic!
+if response.stop_reason == "tool_use":
+    # ...
 ```
 
-Streaming is also the practical answer to a very mundane but real problem:
-**large `max_tokens` values on a non-streaming call risk hitting HTTP request
-timeouts** before the model finishes generating. Once your loop's steps start
-producing long completions (long tool inputs, long reasoning), streaming
-stops being an optional nicety and becomes the thing that keeps the request
-from timing out at all.
+Streaming is also the practical answer to a very mundane problem: **large `max_tokens` values on a non-blocking call risk hitting HTTP request timeouts** before the model finishes. Once your loop produces long tool inputs or long reasoning, streaming becomes mandatory just to keep the connection alive.
 
 ## Interleaved Thinking
 
-On models with adaptive thinking, the model can reason *between* tool calls
-within a single multi-step turn, not only before its first action — this is
-what "interleaved thinking" refers to, and on current-generation models it is
-enabled automatically whenever adaptive thinking is on, with no separate
-configuration. Practically, this means a single assistant turn's `content`
-array can now contain a `thinking` block, then a `tool_use` block, and after
-the *next* tool result comes back, another `thinking` block before the
-following action — the model is visibly "thinking out loud" at each decision
-point in the loop, not just once at the start.
+On models with adaptive thinking (like Claude 3.7+), the model can reason *between* tool calls within a single multi-step turn. This is called "interleaved thinking." 
 
-Two rules matter here, and both are easy to get wrong quietly rather than
-loudly: **thinking blocks must be passed back to the model unchanged** when
-you continue a conversation on the *same* model (the API validates that you
-haven't tampered with them, and a modification produces a hard error); and if
-you ever fork the conversation onto a *different* model — a subagent, a
-fallback, a cheaper model for a sub-step — that model will simply **drop**
-the thinking blocks it doesn't recognize rather than erroring, so you never
-need to strip them yourself, but you also can't rely on that reasoning
-surviving the fork.
+Practically, this means a single assistant turn's `content` array can now contain a `thinking` block, then a `tool_use` block, and (after you return the tool result) another `thinking` block before the following action. The model is visibly "thinking out loud" at each decision point.
+
+### [DRY-RUN] The Message State with Thinking Blocks
+
+To see what this actually looks like under the hood, here is the JSON of an assistant message that thought before acting. Notice the `signature` field—this is a cryptographic hash generated by the API:
+
+```json
+{
+  "role": "assistant",
+  "content": [
+    {
+      "type": "thinking",
+      "thinking": "I need to fetch the weather first to answer this.",
+      "signature": "sig_01abc123xyz..."
+    },
+    {
+      "type": "tool_use",
+      "id": "toolu_01",
+      "name": "get_weather",
+      "input": {"location": "Paris"}
+    }
+  ]
+}
+```
+
+Two critical rules apply to these blocks, and both are easy to get wrong quietly:
+1. **Thinking blocks must be passed back unchanged:** When you append this assistant message to your history for the next turn, you cannot edit the `thinking` text. The API uses the `signature` to validate the block's integrity; if you tamper with it, the API will throw a hard 400 error.
+2. **Forks drop thinking:** If you ever fork the conversation onto a *different* model (like passing the history to a cheaper model for a sub-task), that model will simply **drop** the thinking blocks it doesn't recognize. It won't error, but that reasoning won't survive the fork.
 
 ## Key Takeaways for Section 8
 
-Streaming changes *how* you receive a response, not the loop's branching
-logic — always resolve to the same final, accumulated `Message` before making
-a `stop_reason` decision. Interleaved thinking lets the model reason between
-tool calls, not just before the first one; pass thinking blocks back
-unmodified on the same model, and expect them to vanish (harmlessly) if the
-conversation ever continues on a different one.
+Streaming changes *how* you receive a response, not the loop's branching logic. Always resolve to the same final, accumulated `Message` before making a `stop_reason` decision. Interleaved thinking lets the model reason between tool calls; pass thinking blocks (and their signatures) back unmodified, and expect them to vanish harmlessly if you switch models.
 
 *Next: none of this chapter's careful bookkeeping is worth anything if you
 can't look back at what actually happened — which is the entire point of the
@@ -1068,10 +1292,14 @@ incrementally, no need to hold the whole file structure in memory or rewrite
 it), trivially greppable, and trivially loadable a record at a time even from
 a run that crashed partway through.
 
+### Logging in Code (Applying the Theory)
+
+First, define the function that writes a single step to the file:
+
 ```python
 import json, time
 
-def log_step(step_num, request_messages, response, tool_results):
+def log_step(step_num, response, tool_results):
     record = {
         "step": step_num,
         "timestamp": time.time(),
@@ -1083,6 +1311,34 @@ def log_step(step_num, request_messages, response, tool_results):
     }
     with open("trajectory.jsonl", "a") as f:
         f.write(json.dumps(record) + "\n")
+```
+
+Crucially, **where does this go in your loop?** It belongs at the very end of your iteration step, right after you've collected all the tool results, but before the loop repeats for the next turn:
+
+```python
+# ... inside your main loop from Section 5 ...
+
+    response = client.messages.create(...)
+    
+    if response.stop_reason == "end_turn":
+        log_step(step, response, tool_results=[])
+        break
+        
+    if response.stop_reason == "tool_use":
+        # ... execute tools and collect results ...
+        
+        # Log the step with the results we just got back!
+        log_step(step, response, tool_results=results)
+        
+        messages.append({"role": "user", "content": results})
+```
+
+### [DRY-RUN] Inside `trajectory.jsonl`
+
+If you open the resulting `trajectory.jsonl` file after the first step, you will see exactly one long string of JSON. If you format it for readability, it looks like this:
+
+```json
+{"step": 0, "timestamp": 1718293041.5, "stop_reason": "tool_use", "input_tokens": 152, "output_tokens": 48, "assistant_content": [{"type": "tool_use", "id": "toolu_paris", "name": "get_weather", "input": {"location": "Paris"}}], "tool_results": [{"type": "tool_result", "tool_use_id": "toolu_paris", "content": "72F and sunny", "is_error": false}]}
 ```
 
 ## Why This File Is Your Debugger, Your Eval Dataset, and Later Your RL Rollout
@@ -1121,40 +1377,68 @@ looks like wearing three different framework costumes.*
 
 ## The Intuition
 
-Think of this like **three ways to get a pizza**: cook it yourself from raw
-ingredients (you control everything, you own every step, you also do all the
-work); order from a pizza-assembly kit where someone gives you pre-portioned
-ingredients and you still bake it (less work, still your oven, still your
-kitchen); or order delivery and have someone else's kitchen make the whole
-thing and bring it to your door (almost no work, but it's not your kitchen
-and you can't see inside it). None of these is "the right one" — they trade
-control for convenience along a real spectrum, and the right choice depends
-entirely on how much of the process you actually need to see and steer.
+Think of this like **three ways to get a pizza**: cook it yourself from raw ingredients (Manual loop), order a meal-kit where someone gives you pre-portioned ingredients and you bake it (Tool Runner), or order delivery where someone else cooks it and brings it to your door (Agent SDK). 
+
+Here is a visual breakdown of what you actually have to write in each approach:
+
+```text
+  [1. Manual Loop]       [2. Tool Runner]        [3. Agent SDK]
+     You Write               You Write             You Write
+   ┌────────────┐          ┌────────────┐        ┌────────────┐
+   │   Tools    │          │   Tools    │        │   Prompt   │
+   ├────────────┤          ├┈┈┈┈┈┈┈┈┈┈┈┈┤        ├┈┈┈┈┈┈┈┈┈┈┈┈┤
+   │    Loop    │          │  SDK Loop  │        │  SDK Loop  │
+   ├────────────┤          ├────────────┤        ├────────────┤
+   │  Mem/Logs  │          │  Mem/Logs  │        │ SDK Tools  │
+   └────────────┘          └────────────┘        └────────────┘
+   (Full Control)       (SDK Automation)     (Batteries Included)
+```
+
+None of these is "the right one" — they trade control for convenience along a real spectrum, and the right choice depends entirely on how much of the process you actually need to see and steer.
 
 ## The Three Real Options
 
 | # | Approach | You write | Who supplies the loop | Tools available | Reach for this when |
 |---|---|---|---|---|---|
-| 1 | **Manual loop** (this chapter) | The `while` loop yourself, exactly as built above | You do — full ownership, full visibility | Only tools you define | You want to own the *entire* loop, need a control flow a framework's hooks don't fit, or want zero framework dependency |
-| 2 | **Tool Runner** (SDK helper) | Just the tool functions, decorated | The SDK — it drives the request → execute → feed-back cycle for you | Only tools you define | You want a custom-tool agent without hand-writing the loop, and you're fine trusting the SDK's per-turn hooks for approval gates, retries, and streaming |
-| 3 | **Claude Agent SDK** — *a separate product* | A prompt plus configuration options | The SDK — it supplies the full Claude Code harness | Built-in file read/write/edit, bash, grep, web search, plus MCP and subagents | You want a batteries-included coding/filesystem agent and don't need to define your own tool surface from scratch |
+| 1 | **Manual loop** | The `while` loop yourself | You do — full ownership, full visibility | Only tools you define | You want to own the *entire* loop, or want zero framework dependency |
+| 2 | **Tool Runner** (SDK helper) | Just the tool functions, decorated | The SDK — it drives the request → execute → feed-back cycle for you | Only tools you define | You want a custom-tool agent without hand-writing the `while` loop |
+| 3 | **Claude Agent SDK** (Separate product) | A prompt plus configuration options | The SDK — it supplies the full Claude Code harness | Built-in file read/write/edit, bash, grep, web search, plus MCP and subagents | You want a batteries-included coding/filesystem agent and don't need to define your own tools from scratch |
 
-The Tool Runner is genuinely a thin convenience layer over exactly the loop
-you just wrote — it automates the request/execute/feedback cycle for tools
-*you* define, and still exposes per-turn hooks so you can intercept an
-approval gate, retry a failed call, or modify a result before it goes back to
-the model. It has no built-in tools and no filesystem access of its own; it
-is option 1's mechanics with the bookkeeping done for you.
+### Option 2 in Code: The Tool Runner (Applying the Theory)
 
-The Claude Agent SDK is a different thing entirely, and worth being precise
-about the distinction: it is Claude Code itself, packaged as a library — the
-full agent loop, built-in tools, context management, hooks, subagents,
-permissions, and sessions all bundled together. Where the Tool Runner loops
-over tools you supply, the Agent SDK ships its own substantial toolset and
-its own harness decisions already made. Neither one manages *deployment* for
-you (you still host and run both); that's what Chapter 1's fourth column —
-Managed Agents, a separate hosted product — adds on top, and it's out of
-scope for this folder.
+Instead of the `while` loop we wrote in Section 5, you define your tools, and tell the SDK to run the loop for you. The SDK handles formatting the `tool_result` array and appending it to messages automatically.
+
+```python
+# 1. Define your tools
+def get_weather(location: str): ...
+def read_file(path: str): ...
+
+# 2. Let the SDK handle the loop!
+response = client.messages.create(
+    model="claude-3-7-sonnet-20250219",
+    max_tokens=4096,
+    messages=[{"role": "user", "content": "What's the weather in Paris?"}],
+    # We pass the functions directly, the SDK extracts their schemas and runs the loop
+    tool_choice={"type": "auto"},
+    tools=[get_weather, read_file] # Notice these are the actual functions, not JSON schemas!
+)
+# The SDK handles catching errors, sending tool_results back, and repeating the cycle.
+```
+
+### Option 3 in Code: The Agent SDK
+
+The Claude Agent SDK is a completely different library (`claude-agent`). It has built-in tools (like bash and file editing) so you don't even need to define your own.
+
+```python
+from claude_agent import Agent
+
+# You just provide a prompt and let it loose on your filesystem
+agent = Agent(
+    tools=["bash", "file_editor"], 
+    system_prompt="You are a helpful coding assistant."
+)
+agent.run("Find the error in my python script and fix it.")
+```
 
 ## Filling In the Comparison Yourself
 
@@ -1201,73 +1485,92 @@ and it's exactly Section 6's error-handling principle made concrete.
 
 ## Step-by-Step, With the Message Array After Each Step
 
+```json
+[
+  { "role": "user", "content": "How many words are in report.txt? It's in the current directory." } 
+]
 ```
-Before any call:
-  messages = [
-    user: "How many words are in report.txt? It's in the current directory."  (20 tok)
+
+**Step 1 — API call 1.** Input = 600 (fixed prefix) + 20 (user msg) = **620 tokens**. The model, guessing at a filename, responds with a short text aside plus a `tool_use` block:
+
+```json
+// The API returns this to your loop:
+{
+  "role": "assistant",
+  "content": [
+    { "type": "text", "text": "Let me look for that file." },
+    { "type": "tool_use", "id": "toolu_01", "name": "read_file", "input": {"path": "reports.txt"} }
   ]
+}
 ```
 
-**Step 1 — API call 1.** Input = 600 (fixed prefix) + 20 (user msg) = **620
-tokens**. The model, guessing at a filename, responds with a short text
-aside plus a `tool_use` block:
+*Applying the Code:* Back in Python, your loop hits the `if response.stop_reason == "tool_use":` block, and runs `execute_tool_call("read_file", {"path": "reports.txt"})`. This hits a `FileNotFoundError`. Per Section 6, this becomes an error `tool_result`, not a crash. You append it:
 
-```
-assistant: [text: "Let me look for that file." (10 tok),
-            tool_use: read_file(path="reports.txt") (15 tok)]     -- 25 tok completion
-stop_reason: tool_use
-```
-
-We execute `read_file("reports.txt")` → `FileNotFoundError`. Per Section 6,
-this becomes an error `tool_result`, not a crash:
-
-```
-messages now:
-  [user(20), assistant(25),
-   user: tool_result(is_error=true, "Error: reports.txt not found. Did you mean report.txt?") (20 tok)]
+```json
+// The state of your messages list after Step 1 finishes:
+[
+  { "role": "user", "content": "How many words are in report.txt? It's in the current directory." },
+  { "role": "assistant", "content": [ ... text block ..., ... tool_use block ... ] },
+  { "role": "user", "content": [
+      { "type": "tool_result", "tool_use_id": "toolu_01", "content": "Error: reports.txt not found.", "is_error": true }
+    ] 
+  }
+]
 ```
 
-**Step 2 — API call 2.** Input = 620 + 25 (assistant turn 1) + 20 (error
-result) = **665 tokens**. The model self-corrects on the very next step,
-exactly as Section 6 predicted — no extra prompting needed:
+**Step 2 — API call 2.** Input = 620 + 25 (assistant turn 1) + 20 (error result) = **665 tokens**. The model sees its own error in the transcript and self-corrects on the very next step, exactly as Section 6 predicted — no extra prompting needed:
 
-```
-assistant: [tool_use: read_file(path="report.txt")]     -- 15 tok completion
-stop_reason: tool_use
-```
-
-`read_file("report.txt")` succeeds this time, returning the file's contents —
-say the report is **200 tokens** long.
-
-```
-messages now:
-  [..., assistant(15), user: tool_result("<200-token file content>") (200 tok)]
+```json
+// The API returns:
+{
+  "role": "assistant",
+  "content": [
+    { "type": "tool_use", "id": "toolu_02", "name": "read_file", "input": {"path": "report.txt"} }
+  ]
+}
 ```
 
-**Step 3 — API call 3.** Input = 665 + 15 + 200 = **880 tokens**. The model
-now calls `word_count`, and here is the detail worth stopping on: to pass the
-file's content *into* `word_count`, the model must **re-emit that entire
-200-token string as the tool's input argument** — it cannot simply point at
-what `read_file` already returned.
+> [!NOTE]
+> **How did it know the correct spelling without running `ls`?**
+> Because the stateless API receives the *entire* `messages` array every single time, the model can simply look up at the very first message where you explicitly typed `"How many words are in report.txt?"`. It recognizes its own typo and fixes it. If you hadn't provided the filename in the prompt, the agent would indeed be stuck here unless you had given it a `list_directory` tool.
 
-```
-assistant: [tool_use: word_count(text="<the same 200-token content, re-typed>")]   -- ~205 tok completion
-stop_reason: tool_use
+*Applying the Code:* Your loop runs `execute_tool_call` again. `read_file("report.txt")` succeeds this time, returning the file's contents. Let's say the report is **200 tokens** long. Your loop appends it:
+
+```json
+// End of Step 2:
+[
+  ... previous history ...,
+  { "role": "assistant", "content": [ ... tool_use_2 ... ] },
+  { "role": "user", "content": [ { "type": "tool_result", "content": "<200-token file content>", "is_error": false } ] }
+]
 ```
 
-**The file content now exists twice in the transcript** — once as
-`read_file`'s `tool_result`, once again as `word_count`'s `tool_use` input.
-That's not a mistake in this trace; it's the honest, measurable cost of
-chaining two tools through the model. `word_count` executes locally against
-that string and returns `"142 words"` (5 tokens).
+**Step 3 — API call 3.** Input = 665 + 15 + 200 = **880 tokens**. The model now calls `word_count`. Here is the detail worth stopping on: to pass the file's content *into* `word_count`, the model must **re-emit that entire 200-token string as the tool's input argument** — it cannot simply point at what `read_file` already returned.
 
-**Step 4 — API call 4.** Input = 880 + 205 + 5 = **1,090 tokens**. The model
-produces its final answer:
+```json
+{
+  "role": "assistant",
+  "content": [
+    { "type": "tool_use", "id": "toolu_03", "name": "word_count", "input": {"text": "<the same 200-token content, re-typed by the model>"} }
+  ]
+}
+```
 
+**The file content now exists twice in the transcript** — once as `read_file`'s `tool_result`, once again as `word_count`'s `tool_use` input. That's not a mistake in this trace; it's the honest, measurable cost of chaining two tools through the model. 
+
+*Applying the Code:* Your Python loop runs `execute_tool_call` one last time. `word_count` executes locally against that string and returns `"142 words"` (5 tokens), which gets appended.
+
+**Step 4 — API call 4.** Input = 880 + 205 + 5 = **1,090 tokens**. The model produces its final answer:
+
+```json
+{
+  "role": "assistant",
+  "content": [ { "type": "text", "text": "The report contains 142 words." } ]
+}
+// stop_reason = "end_turn"
 ```
-assistant: [text: "The report contains 142 words."]     -- 10 tok completion
-stop_reason: end_turn   →   loop exits
-```
+
+*Applying the Code:* Your Python loop hits `if response.stop_reason == "end_turn":`, logs the final step, and safely `break`s out of the loop.
 
 ## The Totals, and the One Thing Worth Remembering
 
@@ -1276,13 +1579,15 @@ Total input tokens across 4 calls:  620 + 665 + 880 + 1,090 = 3,255
 Total completion tokens:             25 +  15 + 205 +   10 =   255
 ```
 
-**The content-duplication cost is not a bug to route around inside this
-chapter's loop — it's the honest price of tool chaining through a model's
-context, and it's exactly what Chapter 8's code-execution pattern exists to
-eliminate:** letting a tool's output flow to another tool's input via a
-sandboxed script, never touching the model's output tokens at all. Seeing the
-extra 200 tokens appear twice in this tiny four-step trace is the concrete,
-felt reason that later chapter is worth its own weight.
+> [!IMPORTANT]
+> **The Hidden Cost of Tool Chaining**
+> Because the API is stateless, it has no memory. It only knows what is in the `messages` array. If `report.txt` was 10,000 tokens long, here is what happens to your context window:
+> 1. In Step 2, you append the file contents to the array as a `tool_result` (10,000 tokens).
+> 2. In Step 3, the model must re-type the entire file as the input argument for `word_count`. This gets appended as a `tool_use` JSON block (another 10,000 tokens).
+>
+> By Step 4, your `messages` array contains **20,000 tokens** of the exact same text! The model had to waste time generating it, and you have to pay for it sitting in the context window. 
+>
+> This is not a bug to route around inside this chapter's loop — it's the honest price of standard tool chaining. It's exactly why **Chapter 8** introduces Bash/Script execution tools. If the model can just run `cat report.txt | wc -w` in a terminal, the data flows locally. The 10,000 tokens never enter the API's context window, solving this massive duplication problem entirely.
 
 ## Key Takeaways for Section 11
 
@@ -1309,14 +1614,14 @@ deliberately, missing everything that turns a working demo into something you
 would trust unattended, and naming that list precisely is more useful than
 pretending it's already done:
 
-| Missing capability | Symptom without it | Where it's built |
-|---|---|---|
-| **Memory across sessions** | Every run starts from zero; nothing learned in run 1 carries into run 2 | Chapter 9 |
-| **Verification beyond `end_turn`** | The model's own claim of success is the only signal — Chapter 1's *victory declaration bias* in its purest form | Chapter 6 |
-| **Permissions / blast-radius limits** | Any tool this loop can call, it calls freely — no approval gate exists yet | Chapter 16 |
-| **Persistence across a crash** | Kill the process at step 30 of 60 and the entire run is gone, not resumed | Chapter 12 |
-| **Formal evals** | You can *feel* whether a run went well; you cannot yet *measure* it against a benchmark or catch a regression | Chapter 14 |
-| **Context management beyond "let it grow"** | Exactly Section 2's problem — nothing here ever compacts, evicts, or externalizes | Chapter 4 |
+| Missing capability | Symptom without it | Code Preview (How we'll fix it) | Where it's built |
+|---|---|---|---|
+| **Memory across sessions** | Every run starts from zero; nothing learned in run 1 carries into run 2 | `db.load_history(user_id)` before loop | Chapter 9 |
+| **Verification beyond `end_turn`** | The model's own claim of success is the only signal | `if verify(result): break` | Chapter 6 |
+| **Permissions / blast-radius** | Any tool this loop can call, it calls freely without asking | `if tool.unsafe and not approve():` | Chapter 16 |
+| **Persistence across a crash** | Kill the process at step 30 of 60 and the entire run is gone | `save_state(step)` in the loop | Chapter 12 |
+| **Formal evals** | You can *feel* if it went well; you cannot *measure* regressions | `assert evaluate(trajectory) > 0.9` | Chapter 14 |
+| **Context management** | Nothing ever compacts, evicts, or externalizes | `messages = summarize(messages)` | Chapter 4 |
 
 ## Why Naming This List Matters More Than It Sounds
 
@@ -1346,19 +1651,19 @@ stop_reason → branch → (execute + append) → repeat`, and the message list 
 the entire state of the world.** Everything from here forward in B04 is a
 deliberate addition to this exact cycle.
 
-| I want to know... | Reach for | Key fact |
+| I want to know... | Reach for | Key fact (Code Reminder) |
 |---|---|---|
-| What actually holds the conversation's state | Section 2 | The message list itself — the API is stateless, nothing persists server-side |
-| Why `content[0].text` sometimes crashes | Section 3 | Branch on `stop_reason` first; `tool_use` means no top-level text, `refusal` can mean empty content |
-| How a tool call actually gets executed | Section 4 | A plain dict from tool name → Python function; the model never calls code directly |
-| Why my loop never stops | Section 5 | `end_turn` alone is not enough — layer an iteration cap, a budget, a wall-clock limit, and (optionally) an explicit finish tool |
-| What to do when a tool throws | Section 6 | Catch it, return a `tool_result` with `is_error: true` — never crash, never drop it silently |
-| Why my agent stopped batching tool calls | Section 7 | All `tool_result` blocks for one turn must go back in a single user message, not split across several |
-| What changes with streaming | Section 8 | How you receive tokens, not the loop's branching logic; always resolve to the final accumulated message before deciding anything |
-| Why I should log every step | Section 9 | The same JSONL file is your debugger today, your eval case in Ch 14, and your RL rollout in Ch 18 |
-| Which of the three SDK options to use | Section 10 | Manual loop (full control) vs Tool Runner (same loop, less bookkeeping) vs Claude Agent SDK (a different product entirely) |
-| Why chaining two tools costs more than it looks | Section 11 | Content the model must pass from one tool to another gets re-emitted as tool input — it appears twice in the transcript |
-| What this loop still can't do | Section 12 | Memory, verification, permissions, persistence, evals, and context management — each with an exact later chapter |
+| What actually holds the conversation's state | Section 2 | The `messages = []` array itself — the API is stateless, nothing persists |
+| Why `content[0].text` sometimes crashes | Section 3 | Check `if response.stop_reason == "tool_use":` first; it implies no text |
+| How a tool call actually gets executed | Section 4 | A dict lookup: `dispatch_table[name](**args)`. The model never runs code |
+| Why my loop never stops | Section 5 | `end_turn` isn't enough; add a `for _ in range(max):` iteration guard |
+| What to do when a tool throws | Section 6 | Catch it and return `{"is_error": true, "content": "..."}`. Never crash |
+| Why my agent stopped batching tool calls | Section 7 | Pack all results into a single `{"role": "user", "content": [results]}` message |
+| What changes with streaming | Section 8 | Use `stream.get_final_message()` before running your standard loop logic |
+| Why I should log every step | Section 9 | The `trajectory.jsonl` file is your debugger today, and your eval dataset later |
+| Which of the three SDK options to use | Section 10 | Manual `while` loop (control) vs Tool Runner (automation) vs Agent SDK (built-in tools) |
+| Why chaining two tools costs more than it looks | Section 11 | Duplicate text: 10k tokens in the `tool_result` + 10k re-typed in the `tool_use` |
+| What this loop still can't do | Section 12 | Memory, verification, permissions, persistence, evals, and context limits |
 
 **Connection forward:** Chapter 3 goes back to the tool definitions this
 chapter treated as given — naming, schema shape, granularity, error-message
