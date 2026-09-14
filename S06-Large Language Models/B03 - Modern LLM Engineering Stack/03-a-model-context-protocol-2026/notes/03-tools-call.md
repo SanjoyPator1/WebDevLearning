@@ -205,6 +205,65 @@ ERROR  Tool 'broken_on_purpose' raised an unexpected exception
 
 The information was **not lost**. It was deliberately not *sent*.
 
+#### How this actually works, read from the SDK itself
+
+This is not a filter or a redaction step running somewhere — there is no code anywhere
+that inspects a message and decides "this looks sensitive." The whole mechanism is two
+`except` clauses inside the tool-execution wrapper
+(`mcp/server/mcpserver/tools/base.py`), and the fork is entirely about *which exception
+class* was raised, never about the message text itself:
+
+```python
+except (ToolError, ResourceError) as exc:
+    # Raised deliberately — your own message text IS kept.
+    raise ToolError(f"Error executing tool {self.name}: {exc}") from exc
+except Exception as exc:
+    # A crash — the exception's own text stays on the server.
+    raise UnexpectedToolError(f"Error executing tool {self.name}") from exc
+```
+
+Look at the two f-strings. The `ToolError` branch interpolates `{exc}` — your text rides
+along. The bare-`Exception` branch never interpolates `exc` anywhere; only the tool's own
+*name* appears. Your exception is still attached via `from exc` (Python's `__cause__`
+chaining), but that is a server-side-only detail for logging and tracebacks — it is never
+serialized to the client. The generic message isn't *stripped of* your text; it never
+*contained* it.
+
+One layer up, in `server.py`'s `_handle_call_tool`, both branches land in the same final
+line, which is the part that makes this automatic rather than opt-in — this handler runs
+for *every* tool call, unconditionally:
+
+```python
+except Exception as exc:
+    if isinstance(exc, ToolError) and not isinstance(exc, UnexpectedToolError):
+        logger.info("Tool %r failed: %r", params.name, str(exc))        # one line, no traceback
+    else:
+        logger.exception("Tool %r raised an unexpected exception", params.name)  # full traceback
+    return CallToolResult(content=[TextContent(type="text", text=str(exc))], is_error=True)
+```
+
+This handler has no idea whether the text in front of it is safe — it trusts a decision
+that was already made below it. It does one uniform thing: take whatever `str(exc)`
+currently is, and send exactly that back as the tool result. A `ToolError` also gets one
+`INFO` log line with no traceback (the failure was anticipated); anything else gets
+`logger.exception`, which is what prints the whole traceback block you saw above.
+Confirmed both by reading the installed `mcp` 2.1.1 source directly and against the
+official SDK docs, which describe the same split in the same words: "the SDK catches any
+exception besides `ToolError` and `MCPError`, sanitizes it for the model, and logs the
+full details server-side" — see
+[Handling errors — MCP Python SDK](https://py.sdk.modelcontextprotocol.io/servers/handling-errors/).
+
+So the full answer to "how do we not send the exact error": **you never decide this
+per-call.** You decide it once, structurally, by choosing which exception type to raise.
+Let a bare exception (or a real bug) crash through, and this wrapper *automatically*
+replaces your text with the generic "Error executing tool X" before it ever reaches
+`_handle_call_tool`. Raise `ToolError("...")` instead, and that same wrapper carries your
+text through untouched. There is no separate "sanitize this" function to call — the two
+exception classes' own `raise ... f"..."` lines *are* the entire mechanism. This is also
+exactly why the blanket-wrapper anti-pattern further below actually defeats the
+protection: it manually copies unsafe text into the one exception type this wrapper
+already trusts to forward.
+
 This is the right default and it is worth being able to defend. Your exception messages
 are written for you, not for a model. In real code they contain connection strings, file
 paths, row ids, internal hostnames, occasionally a token. Anything handed to a model may
@@ -213,8 +272,36 @@ in the model's own reply. The SDK cannot tell which of your exception messages a
 so it assumes none are.
 
 Which reframes `ToolError`. It is not "the MCP way to raise an error". It is **the
-mechanism by which you assert that a particular message is safe to disclose.** That is why
-you should never write a blanket wrapper like this:
+mechanism by which you assert that a particular message is safe to disclose.**
+
+#### Two ways to raise it safely, and one way that isn't
+
+The common case needs no `try`/`except` at all — you already know the message is safe
+because you wrote it yourself, at the exact spot where you detected the problem:
+
+```python
+@mcp.tool()
+def get_drink(slug: str) -> DrinkResult:
+    drink = menu.find(slug)
+    if drink is None:
+        # YOUR words. No exception was even caught here.
+        raise ToolError(f"No drink named {slug!r}. Try list_drinks first.")
+    return DrinkResult(drink)
+```
+
+Sometimes the safe thing to say *does* come from a caught exception — but only when it is
+one **specific, known** exception type whose message you have actually checked:
+
+```python
+try:
+    price = lookup_price(slug)
+except PriceNotFoundError as exc:      # a SPECIFIC, known exception, not `Exception`
+    raise ToolError(f"No price for {slug}: {exc}") from exc   # safe: you know what this one says
+```
+
+`exc` is fine to fold in *here* because `PriceNotFoundError` is a type you defined or
+audited — not because catching-and-forwarding is generally okay. That is why you should
+never write a blanket wrapper like this:
 
 ```python
 # DO NOT DO THIS
@@ -224,8 +311,10 @@ except Exception as exc:
     raise ToolError(str(exc)) from exc
 ```
 
-That undoes the whole protection, one line, everywhere. If a message is safe, say so at
-the specific place where you know it is safe.
+That undoes the whole protection, one line, everywhere — `Exception` matches *anything*,
+including bugs you never anticipated and never audited. If a message is safe, say so at
+the specific place where you know it is safe, for the one exception type you know it is
+true of — not for every exception that could ever reach that line.
 
 And now the asymmetry from the start of the chapter resolves cleanly: the SDK reveals
 **its own validator's** wording because it wrote that wording and knows it contains only

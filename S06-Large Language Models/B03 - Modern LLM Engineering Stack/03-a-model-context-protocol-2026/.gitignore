@@ -1,0 +1,8 @@
+# This project has its own venv, separate from the repo root one — see SETUP.md.
+.venv/
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+*.egg-info/

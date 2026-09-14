@@ -1,0 +1,60 @@
+[project]
+name = "cafe-mcp"
+version = "0.1.0"
+description = "A stateless MCP coffee-shop counter, built as a learning ladder for MCP 2026-07-28"
+requires-python = ">=3.11"
+dependencies = [
+    # The official MCP Python SDK, v2 line. v2 is the first line that speaks the
+    # 2026-07-28 (stateless) revision of the protocol.
+    "mcp[cli]>=2.1,<3",
+    # NOTE: `mcp` pulls in `httpx2` (httpx 2.x is published under a NEW distribution
+    # name). The import is `import httpx2 as httpx`. It arrives transitively, but we
+    # list it because our own client scripts import it directly.
+    "httpx2>=2.5",
+    # Arrives transitively via `mcp[cli]`, but topic 14's proxy (solved/loadbalancer.py)
+    # and tests/test_wire_subscriptions.py both import it directly to run a real
+    # server on a real port, so it is listed rather than borrowed silently.
+    "uvicorn>=0.30",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4",
+    "pytest-asyncio>=1.0",
+    "ruff>=0.14",
+]
+
+[tool.ruff]
+line-length = 100
+# The notes use hand-aligned comments inside ```python fences to line explanations
+# up with the code they describe. Recent ruff versions will happily reformat those
+# code blocks and destroy the alignment, so markdown is out of scope.
+extend-exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.isort]
+# So imports group stdlib -> third-party -> local, per the repo's code style.
+known-first-party = ["cafe_mcp"]
+
+[tool.ruff.lint.per-file-ignores]
+# The menu is data, and every drink's `description` is a single sentence written
+# to be read by a language model. Reflowing those onto two lines to satisfy a
+# line-length rule would make the file harder to read, not easier.
+"*/cafe_mcp/menu.py" = ["E501"]
+# The starter stubs in solutions/ import things you have not used YET. A linter
+# complaining about that while you are mid-exercise is noise, not signal.
+"solutions/*" = ["E501", "F401"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+# `solved` so tests can import the topic servers and cafe_mcp;
+# `tests` so they can import the shared `wire` harness.
+pythonpath = ["solved", "tests"]
+
+[tool.setuptools]
+# `cafe_mcp` lives under solved/ so that solutions/ can hold your own copy.
+package-dir = { "" = "solved" }
+packages = ["cafe_mcp"]
