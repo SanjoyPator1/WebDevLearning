@@ -488,6 +488,420 @@ class ResearchPlanModel(BaseModel):
 
 `list[Task]` is a closed, enumerable shape — exactly the same number and names of fields on every element — which strict JSON Schema can express as a fixed `properties` object with `additionalProperties: false`, `required` listing every field. This is the same "strict mode" contract covered in depth on the tool-schema side back in the B04 tools chapter: no additional properties, everything required, no open-ended keys.
 
+## How Strict Mode Actually Works: Schema → Grammar → Blocked Tokens
+
+### The One-Sentence Summary
+
+Strict mode turns your JSON Schema into a small set of rules for "what is allowed to come next" (a **grammar**), and at every generation step the provider blocks each token that would break those rules, so the model can only ever write JSON that fits the schema.
+
+### The Problem: Asking Is Not Forcing
+
+Section 2 said every token is sampled from a probability distribution over the whole vocabulary. A system prompt that says "respond with only JSON" raises the score of `{`, but it never makes `Sure! Here's your plan:` impossible. It only makes it less likely. That is exactly the approach in `03_output_types_basic.py`: describe the shape in the prompt, then run `json.loads` and `model_validate` afterwards, inside a `try/except` for the times the model wanders off. Checking afterwards *catches* failures. Constrained decoding *prevents* them.
+
+### The Intuition: A Keyboard That Greys Out Keys
+
+Picture typing on a keyboard where, after every keystroke, every key that would break the format turns grey and stops working. At the very start of the reply, only `{` works. Right after `{`, only the key `"tasks"` works. Inside the list, you can type any task text, then either a comma or `]`. You still choose *what the tasks say*, but you physically cannot type a friendly opening sentence, a markdown fence, or a key called `"plan"`. The model is the typist. The provider is the one greying out keys.
+
+### The Pipeline: From a Pydantic Class to Blocked Tokens
+
+```text
+ YOUR PROCESS (client side)                    PROVIDER (server side)
+ ──────────────────────────                    ──────────────────────────────────────────────
+ ResearchPlanModel (Pydantic class)
+      │ .model_json_schema()
+      ▼
+ JSON Schema
+      │ strict check  ◀── the UserError above fires HERE, before any network call
+      │                   (file 04 has you write this check yourself)
+      ▼
+ sent with the request ─────────────────────▶  compile schema into a grammar (a state machine)
+                                               — done once per new schema, then cached
+                                                     │
+                                                     ▼  at EVERY generation step:
+                                   model scores (logits) for the whole vocabulary
+                                                     │
+                                   mask: every token the grammar forbids → −∞
+                                                     │
+                                   softmax → pick a token → move to the next grammar state
+```
+
+Two things happen in two different places. The strict check runs inside your Python process, which is why the `UserError` needs no network. The masking runs on the provider's servers while the model generates. Anthropic's docs state that a new schema has a one-time compilation cost and is then cached. That compilation is the "build the grammar" box above.
+
+### The Grammar for `{"tasks": list[str]}`
+
+A **state machine** is a list of situations the writer can be in (called **states**), plus the moves allowed out of each one. Here is the real schema Pydantic produces for the working model:
+
+```python
+class ResearchPlanModel(BaseModel):
+    tasks: list[str]
+
+ResearchPlanModel.model_json_schema()
+```
+
+```json
+{
+  "properties": {
+    "tasks": {"items": {"type": "string"}, "title": "Tasks", "type": "array"}
+  },
+  "required": ["tasks"],
+  "title": "ResearchPlanModel",
+  "type": "object"
+}
+```
+
+The SDK's strict step then adds `"additionalProperties": false` to that top-level object. The provider compiles the result into roughly this state machine:
+
+```text
+STATE          ALLOWED NEXT        GOES TO
+─────────────  ──────────────────  ────────────
+START          {                   EXPECT_KEY
+EXPECT_KEY     "tasks"             EXPECT_COLON   <- ONE legal key: the only name in "properties"
+EXPECT_COLON   :                   EXPECT_ARRAY
+EXPECT_ARRAY   [                   IN_ARRAY
+IN_ARRAY       any quoted text     AFTER_ITEM     <- the grammar fixes the SHAPE, not the words
+AFTER_ITEM     ,                   IN_ARRAY       <- another task
+AFTER_ITEM     ]                   EXPECT_CLOSE   <- list finished
+EXPECT_CLOSE   }                   DONE
+```
+
+Every state has a short, known list of legal next tokens. That only works because the schema pins the shape down. `EXPECT_KEY` can list exactly one legal key because `properties` names exactly one, and `additionalProperties: false` promises there are no others.
+
+### Why `dict[int, str]` Gets Rejected
+
+Here is the real schema Pydantic produces for the broken model:
+
+```json
+"tasks": {"additionalProperties": {"type": "string"}, "title": "Tasks", "type": "object"}
+```
+
+There is no `properties` list at all. It just says "any key at all, as long as the value is a string." Calling the SDK's strict-schema helper directly on this schema gives the lower-level reason behind the `UserError` above:
+
+```
+UserError : additionalProperties should not be set for object types. This could be because
+you're using an older version of Pydantic, or because you configured additional properties
+to be allowed. If you really need this, update the function or output tool to not use a
+strict schema.
+```
+
+To be precise about *why*: a grammar engine *could* allow "any quoted key" here (the grammar would just loop), and some local engines do exactly that. The reason strict mode refuses is its promise. It guarantees "the output has exactly these fields, all present, nothing extra." With open-ended keys, the schema itself no longer says which fields exist, so there's nothing exact to promise. That's why OpenAI's and Anthropic's strict modes both accept only a *subset* of JSON Schema in which every object has `additionalProperties: false`. Anthropic's docs list "`additionalProperties` set to anything other than `false`" as unsupported. The `list[Task]` fix works because it turns the unknown keys (`1`, `2`, `3`) into two known field names (`id`, `description`), and the grammar is back to short, fixed lists.
+
+### The Math: Masking Before Softmax
+
+**Intuition first.** This is the same softmax from section 4, with one extra step in front. Every blocked token's score is set to minus infinity, so its probability comes out as exactly zero, and the allowed tokens share all of the probability between them.
+
+$$\tilde{z}_i = \begin{cases} z_i & \text{if } \text{token}_i \in A(s) \\ -\infty & \text{otherwise} \end{cases}$$
+
+$$P(\text{token}_i \mid s) = \frac{e^{\tilde{z}_i / T}}{\sum_{j} e^{\tilde{z}_j / T}}$$
+
+Every symbol:
+
+- $s$ is the current grammar state, for example `EXPECT_KEY`.
+- $A(s)$ is the set of tokens the grammar allows in that state.
+- $z_i$ is the model's raw score (logit) for token $i$. It is unchanged: the model itself knows nothing about the grammar.
+- $\tilde{z}_i$ is the masked score: the same as $z_i$ if the token is allowed, $-\infty$ if not.
+- $T$ is the temperature, exactly as in section 4.
+
+Because $e^{-\infty} = 0$, a blocked token adds nothing to the top or the bottom of the fraction. Its probability is exactly 0, and the allowed tokens' probabilities rescale to sum to 1. This is the same "remove, then rescale" move as top-p in section 4. The only difference is *who decides what gets removed*: top-p removes unlikely tokens, while the grammar removes illegal ones, no matter how likely the model thought they were.
+
+### Dry Run
+
+**Step 1: state `START`, allowed = `{`.** A chatty model's raw scores at $T = 1$:
+
+```
+Candidates: "Sure" = 3.0, "```" = 2.5, "{" = 2.0, "Here" = 1.0
+
+Without mask:
+e^3.0 = 20.086,  e^2.5 = 12.182,  e^2.0 = 7.389,  e^1.0 = 2.718
+sum = 42.375
+P("Sure") = 20.086 / 42.375 = 0.474
+P("```")  = 12.182 / 42.375 = 0.287
+P("{")    =  7.389 / 42.375 = 0.174   <- only a 17% chance the reply even STARTS as JSON
+P("Here") =  2.718 / 42.375 = 0.064
+
+With mask (A = {"{"}):
+masked scores: "Sure" = -inf, "```" = -inf, "{" = 2.0, "Here" = -inf
+e^-inf = 0, so sum = 0 + 0 + 7.389 + 0 = 7.389
+P("{") = 7.389 / 7.389 = 1.000
+```
+
+**Step 2: state `EXPECT_KEY`, allowed = `"tasks"`.** Here the mask overrides the model's own favourite:
+
+```
+Candidates: "plan" = 2.2, "tasks" = 1.5, "steps" = 0.8, "}" = 0.3
+
+Without mask:
+e^2.2 = 9.025,  e^1.5 = 4.482,  e^0.8 = 2.226,  e^0.3 = 1.350
+sum = 17.083
+P("plan")  = 9.025 / 17.083 = 0.528   <- the model's favourite: would fail model_validate in file 03
+P("tasks") = 4.482 / 17.083 = 0.262
+P("steps") = 2.226 / 17.083 = 0.130
+P("}")     = 1.350 / 17.083 = 0.079
+
+With mask (A = {"tasks"}):
+P("tasks") = 4.482 / 4.482 = 1.000
+```
+
+**Step 6: state `AFTER_ITEM`, allowed = `,` or `]`.** Two legal options, so the model still gets a real choice:
+
+```
+Candidates: "]" = 2.0, "}" = 1.5, "," = 1.0
+
+With mask ("}" is illegal here -> -inf):
+e^2.0 = 7.389,  e^1.0 = 2.718
+sum = 10.107
+P("]") = 7.389 / 10.107 = 0.731
+P(",") = 2.718 / 10.107 = 0.269
+```
+
+The grammar doesn't pick for the model. It only takes the illegal options off the table.
+
+*Aside:* real tokenizers split `"tasks"` into several pieces (roughly `"`, `tasks`, `"`), so a real state machine tracks progress piece by piece *inside* a key. The idea is identical, just with more, smaller steps.
+
+### The Same Idea as Runnable Code (No API Needed)
+
+This toy script builds the state machine above by hand, gives it fake model scores, and runs masked greedy decoding (always pick the top token, the $T \to 0$ case):
+
+```python
+# ============================================================
+# TOPIC: How strict mode forces schema-valid JSON (constrained decoding)
+# MATH:  P(token | state) = softmax(masked logits); masked logit = -inf if token not in A(state)
+# REF:   B05 ch02 notes, section 8
+# ============================================================
+
+# --- Imports ---
+import math
+
+# --- Toy grammar for {"tasks": [ "<string>", ... ]} as a state machine ---
+# Each state lists the ONLY tokens allowed next, and the state each one leads to.
+# "<string>" stands for any quoted text: the grammar fixes the shape, not the words.
+TASKS_GRAMMAR = {
+    "START":        {"{": "EXPECT_KEY"},
+    "EXPECT_KEY":   {'"tasks"': "EXPECT_COLON"},
+    "EXPECT_COLON": {":": "EXPECT_ARRAY"},
+    "EXPECT_ARRAY": {"[": "IN_ARRAY"},
+    "IN_ARRAY":     {"<string>": "AFTER_ITEM"},
+    "AFTER_ITEM":   {",": "IN_ARRAY", "]": "EXPECT_CLOSE"},
+    "EXPECT_CLOSE": {"}": "DONE"},
+}
+
+# --- Fake model scores (logits) for each step: a chatty model that loves prose ---
+MODEL_LOGITS_PER_STEP = [
+    {"Sure": 3.0, "```": 2.5, "{": 2.0, "Here": 1.0},
+    {'"plan"': 2.2, '"tasks"': 1.5, '"steps"': 0.8, "}": 0.3},
+    {":": 4.0, ",": 0.5},
+    {"[": 3.0, '"': 1.0},
+    {"<string>": 3.5, "]": 1.0},
+    {"]": 2.0, "}": 1.5, ",": 1.0},
+    {"}": 3.0, " Hope this helps!": 2.0},
+]
+
+
+def softmax(logits_by_token):
+    """
+    Turn raw scores into probabilities that sum to 1.
+
+    Args:
+        logits_by_token (dict[str, float]): token -> raw score (may contain -inf)
+    Returns:
+        dict[str, float]: token -> probability
+    Note: e^(-inf) = 0, so a masked token gets probability exactly 0.
+    """
+    exponentials = {token: math.exp(score) for token, score in logits_by_token.items()}
+    total = sum(exponentials.values())
+    return {token: value / total for token, value in exponentials.items()}
+
+
+def mask_logits(logits_by_token, allowed_tokens):
+    """
+    Block every token the grammar does not allow in the current state.
+
+    Args:
+        logits_by_token (dict[str, float]): the model's raw scores
+        allowed_tokens (set[str]): tokens the grammar allows right now
+    Returns:
+        dict[str, float]: same scores, with blocked tokens set to -inf
+    """
+    return {token: (score if token in allowed_tokens else -math.inf)
+            for token, score in logits_by_token.items()}
+
+
+def run_constrained_decoding():
+    """
+    Walk the toy grammar step by step, picking the top token after masking (greedy, T -> 0).
+
+    Returns:
+        str: the generated text
+    """
+    grammar_state = "START"
+    generated_tokens = []
+
+    for step_number, model_logits in enumerate(MODEL_LOGITS_PER_STEP, start=1):
+        allowed_tokens = set(TASKS_GRAMMAR[grammar_state])
+        free_probs = softmax(model_logits)
+        masked_probs = softmax(mask_logits(model_logits, allowed_tokens))
+
+        free_pick = max(free_probs, key=free_probs.get)
+        forced_pick = max(masked_probs, key=masked_probs.get)
+
+        print(f"STEP {step_number}  state={grammar_state:<12} allowed={sorted(allowed_tokens)}")
+        print(f"  without mask: model's top pick = {free_pick!r} (p={free_probs[free_pick]:.3f})")
+        print(f"  with mask   : picked           = {forced_pick!r} (p={masked_probs[forced_pick]:.3f})")
+
+        generated_tokens.append(forced_pick)
+        grammar_state = TASKS_GRAMMAR[grammar_state][forced_pick]
+
+    print(f"\nfinal state: {grammar_state}")
+    return "".join(generated_tokens)
+
+
+if __name__ == "__main__":
+    print("-" * 60)
+    print("Constrained decoding on a toy grammar")
+    print("-" * 60)
+    output_text = run_constrained_decoding()
+    print(f"generated text: {output_text}")
+```
+
+Output:
+
+```
+------------------------------------------------------------
+Constrained decoding on a toy grammar
+------------------------------------------------------------
+STEP 1  state=START        allowed=['{']
+  without mask: model's top pick = 'Sure' (p=0.474)
+  with mask   : picked           = '{' (p=1.000)
+STEP 2  state=EXPECT_KEY   allowed=['"tasks"']
+  without mask: model's top pick = '"plan"' (p=0.528)
+  with mask   : picked           = '"tasks"' (p=1.000)
+STEP 3  state=EXPECT_COLON allowed=[':']
+  without mask: model's top pick = ':' (p=0.971)
+  with mask   : picked           = ':' (p=1.000)
+STEP 4  state=EXPECT_ARRAY allowed=['[']
+  without mask: model's top pick = '[' (p=0.881)
+  with mask   : picked           = '[' (p=1.000)
+STEP 5  state=IN_ARRAY     allowed=['<string>']
+  without mask: model's top pick = '<string>' (p=0.924)
+  with mask   : picked           = '<string>' (p=1.000)
+STEP 6  state=AFTER_ITEM   allowed=[',', ']']
+  without mask: model's top pick = ']' (p=0.506)
+  with mask   : picked           = ']' (p=0.731)
+STEP 7  state=EXPECT_CLOSE allowed=['}']
+  without mask: model's top pick = '}' (p=0.731)
+  with mask   : picked           = '}' (p=1.000)
+
+final state: DONE
+generated text: {"tasks":[<string>]}
+```
+
+Left alone, this model would have started with "Sure" and used the key `"plan"`. With the mask, it produces valid JSON even though two of its top picks were wrong. Step 6 is the one place where the model's own preference still decides between two legal options.
+
+*Side note on the header:* it says "How strict mode forces ... (constrained decoding)" rather than "Constrained decoding: how ...". Python treats any comment in a file's first two lines that matches `coding: <word>` as a source-encoding declaration, so "decod**ing: how**" makes the script fail with `SyntaxError: encoding problem: how`.
+
+### Asking vs Forcing: Where Each Chapter 2 File Sits
+
+| | Asking (prompt + validate) | Forcing (strict mode / constrained decoding) |
+|---|---|---|
+| Where the shape lives | In the system prompt, as text | In the request, as a JSON Schema |
+| Who enforces it | Nobody during generation; your `model_validate` afterwards | The provider, at every single token |
+| Can the model write prose, fences, or wrong keys? | Yes: less likely, never impossible | No |
+| Do you still need `try/except`? | Yes, always | Only for the gotchas below |
+| Which shapes are allowed | Anything you can describe | A subset: closed objects, every field required |
+| Chapter 2 files | `03_output_types_basic.py`, `05_output_types_fixed.py` | What `output_type=` does in the SDK versions. `04_output_types.py` is the client-side strict check that runs *before* forcing |
+
+### Gotchas: What Strict Mode Does NOT Guarantee
+
+- **Shape, not meaning.** Inside a string value, almost any token is legal. The grammar can't make each task 5 words or less, or force exactly 5 tasks. Anthropic lists `minLength`/`maxLength` and complex array rules as unsupported (its Python SDK removes them from the schema it sends and checks them on your side instead). Keep your own validation.
+- **Running out of `max_tokens` mid-object.** Generation just stops, and you get cut-off JSON like `{"tasks": ["Define agents", "Stud`. Check `finish_reason == "length"` (OpenAI-compatible) or `stop_reason == "max_tokens"` (Anthropic) before parsing. This is the same budget problem file 02 hit with thinking models, and reasoning tokens still count against the budget here.
+- **Refusals.** If the model refuses for safety reasons, the output may not match the schema. OpenAI-compatible APIs put this in `message.refusal`; Anthropic returns `stop_reason == "refusal"`.
+- **Quality can dip when the mask keeps overruling the model.** Forcing `"tasks"` when it wanted `"plan"` is harmless. But forcing a shape the prompt never explained pushes the model down paths it scored low. Describe the shape in the prompt as well, even with strict mode on.
+- **Support differs by provider.** See the code and the comparison table below.
+
+### The Code, Per Provider
+
+**OpenAI-compatible: Gemini (our default), and real OpenAI.** The SDK helper builds the strict schema from the class and parses the reply for you:
+
+```python
+from openai import AsyncOpenAI
+from pydantic import BaseModel
+
+
+class ResearchPlanModel(BaseModel):
+    tasks: list[str]
+
+
+response = await client.chat.completions.parse(
+    model=MODEL_NAME,
+    messages=messages,
+    response_format=ResearchPlanModel,   # pass the class itself; the SDK makes it strict
+)
+message = response.choices[0].message
+if message.refusal:
+    raise RuntimeError(f"model refused: {message.refusal}")
+plan = message.parsed                     # already a ResearchPlanModel instance
+print(plan.tasks)
+```
+
+The same request without the helper, which is roughly what `.parse()` sends:
+
+```python
+response = await client.chat.completions.create(
+    model=MODEL_NAME,
+    messages=messages,
+    response_format={
+        "type": "json_schema",
+        "json_schema": {
+            "name": "research_plan",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {"tasks": {"type": "array", "items": {"type": "string"}}},
+                "required": ["tasks"],
+                "additionalProperties": False,
+            },
+        },
+    },
+)
+plan = ResearchPlanModel.model_validate_json(response.choices[0].message.content)
+```
+
+Gemini accepts `response_format` with `json_schema` on its OpenAI-compatible endpoint for Gemini 2.5 models and newer, on normal (real-time) calls. Its Batch API rejects `json_schema`. Gemini also supports its own subset of JSON Schema, so keep validating on receipt.
+
+**Ollama (our fallback).** Ollama's OpenAI-compatible endpoint doesn't fully support `response_format` with `json_schema` yet (it's an open issue on Ollama's GitHub). Through `AsyncOpenAI`, you're effectively on the asking path. The grammar-backed version uses Ollama's own `format` field, where Ollama builds a llama.cpp grammar from your schema:
+
+```python
+from ollama import AsyncClient   # pip install ollama
+
+response = await AsyncClient().chat(
+    model="qwen3:8b",
+    messages=messages,
+    format=ResearchPlanModel.model_json_schema(),   # Ollama compiles this into a grammar
+)
+plan = ResearchPlanModel.model_validate_json(response.message.content)
+```
+
+**Anthropic.** `messages.parse()` takes the class and returns a validated instance. No beta header is needed:
+
+```python
+from anthropic import AsyncAnthropic
+
+client = AsyncAnthropic()
+
+response = await client.messages.parse(
+    model=MODEL_NAME,
+    max_tokens=16000,
+    system=instructions,
+    messages=[{"role": "user", "content": "learn about AI agents"}],
+    output_format=ResearchPlanModel,
+)
+if response.stop_reason in ("refusal", "max_tokens"):
+    raise RuntimeError(f"output may not match the schema: stop_reason={response.stop_reason}")
+plan = response.parsed_output          # already a ResearchPlanModel instance
+print(plan.tasks)
+```
+
+On `messages.create()` the same thing is written as `output_config={"format": {"type": "json_schema", "schema": {...}}}`, and you run `json.loads` on the text block yourself. (The older top-level `output_format` parameter on `messages.create()` is deprecated. `output_format=` is still what `.parse()` takes.)
+
 ## What Changes Without a Real OpenAI Key
 
 Structured-output *enforcement* — the part that makes malformed output structurally impossible rather than merely unlikely — is implemented server-side by the provider. Ollama's OpenAI-compatible endpoint accepts the same request shape but doesn't apply the same generation-time constraint the way OpenAI's own API does. In practice this means: the `UserError` above still fires identically (client-side, pre-network), but *after* the fix, Ollama is more likely than real OpenAI to occasionally return a response that fails Pydantic validation on our end, because nothing forced its token sampling to stay inside the schema — it's following the schema because the prompt and type hints ask it to, not because it's structurally unable to do otherwise. If exercise 3's final run throws a Pydantic validation error rather than a clean parse, that's the model wandering off-schema, not a bug in the wiring.
