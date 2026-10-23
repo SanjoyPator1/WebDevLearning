@@ -1,0 +1,92 @@
+# ============================================================
+# WebDevLearning-pyspark: root .gitignore
+# Keeps: docs/, notes/, code/, data/ (inputs), old_code_2024/ (archive)
+# Drops: environments, caches, IDE state, and everything Spark writes at runtime
+# ============================================================
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+*.whl
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.coverage
+.coverage.*
+htmlcov/
+
+# ---------- Virtual environments / tooling ----------
+.venv/
+venv/
+env/
+.python-version
+.uv/
+.ipynb_checkpoints/
+
+# ---------- Secrets ----------
+.env
+.env.*
+!.env.example
+
+# ---------- IDEs ----------
+.idea/
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+
+# ---------- Spark runtime artifacts ----------
+# local Hive metastore (Derby) + managed-table warehouse
+metastore_db/
+derby.log
+spark-warehouse/
+# logs from log4j / log4j2 / PySparkLogger
+app-logs/
+*.log
+# event logs for the History Server
+spark-events/
+# streaming checkpoints + state stores
+chk/
+checkpoints/
+_checkpoint*/
+# Declarative Pipelines storage
+pipeline-storage/
+# Spark/Hadoop CRC side files and job markers
+*.crc
+_SUCCESS
+# local Ivy cache if spark.jars.ivy points inside the repo
+.ivy2*/
+
+# ---------- Job outputs (anything jobs write) ----------
+# inputs live in data/ and ARE tracked; outputs never are
+output/
+dataSink/
+quarantine/
+/tmp/
+
+# ---------- Lakehouse local warehouses ----------
+iceberg-warehouse/
+delta-tables/
+
+# ---------- Docker / misc ----------
+*.pid
+nohup.out
+
+# ---------- Exceptions: data the old course needs to run ----------
+# 21-BucketJoinDemo reads pre-built bucketed tables (its CREATE block is commented out),
+# so its local metastore + warehouse are inputs, not junk (~14 MB).
+!old_code_2024/21-BucketJoinDemo/metastore_db/
+!old_code_2024/21-BucketJoinDemo/metastore_db/**
+!old_code_2024/21-BucketJoinDemo/spark-warehouse/
+!old_code_2024/21-BucketJoinDemo/spark-warehouse/**
