@@ -1,0 +1,2 @@
+# Files the scripts write at run time (e.g. 07's saved graph memory)
+data/
