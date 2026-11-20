@@ -1,0 +1,17 @@
+{
+  // Not part of this exercise: a ready-made debugger configuration.
+  // Usage: run `pnpm start:debug`, then start this configuration (F5).
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Nest (pnpm start:debug)",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/**/dist/**/*.js", "!**/node_modules/**"],
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    }
+  ]
+}

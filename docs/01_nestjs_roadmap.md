@@ -16,9 +16,10 @@
 - [Roadmap at a Glance](#roadmap-at-a-glance)
 - [Phase 0: Orientation and Prerequisites](#phase-0-orientation-and-prerequisites)
   - [0.1 The Node.js Runtime for Nest Developers](#01-the-nodejs-runtime-for-nest-developers)
-  - [0.2 TypeScript Features Nest Is Built On](#02-typescript-features-nest-is-built-on)
-  - [0.3 The NestJS Philosophy and Landscape](#03-the-nestjs-philosophy-and-landscape)
-  - [0.4 Tooling and Project Setup](#04-tooling-and-project-setup)
+  - [0.2 TypeScript Refresher](#02-typescript-refresher)
+  - [0.3 TypeScript Features Nest Is Built On](#03-typescript-features-nest-is-built-on)
+  - [0.4 The NestJS Philosophy and Landscape](#04-the-nestjs-philosophy-and-landscape)
+  - [0.5 Tooling and Project Setup](#05-tooling-and-project-setup)
 - [Phase 1: Core Building Blocks](#phase-1-core-building-blocks)
   - [1.1 Application Bootstrap](#11-application-bootstrap)
   - [1.2 Modules](#12-modules)
@@ -120,7 +121,7 @@
   - **Core**: needed for day-to-day work and for every interview.
   - **Deep**: separates senior engineers from mid-level ones. Expect these in senior rounds.
   - **Elective**: learn when a project needs it.
-- **Checkboxes** track progress. Tick a subtopic when its notes and code exist.
+- **Checkboxes** track your own learning progress. Tick a subtopic when you have read its notes and finished its exercise. The materials existing does not count as done.
 - **Notes** live in `docs/<phase folder>/`. Every doc starts with a clickable Table of Contents. See [Repository Layout](#repository-layout).
 - **Code** lives in `projects/<phase folder>/`. Each exercise has `template/`, `solution/` and `solved/` folders. See [Exercise Workflow](#exercise-workflow).
 - **Testing starts in Phase 1.** Every milestone has tests. Phase 6 is the deep dive, not the first time tests appear.
@@ -136,17 +137,17 @@ WebDevLearning/
 │   ├── 01_nestjs_roadmap.md                  # this file
 │   ├── phase_00_orientation/
 │   │   ├── 01_nodejs_runtime.md              # notes for topic 0.1
-│   │   └── 02_typescript_for_nest.md         # notes for topic 0.2
+│   │   └── 02_typescript_refresher.md        # notes for topic 0.2
 │   └── phase_01_core_building_blocks/
 │       └── 07_guards.md                      # notes for topic 1.7
 ├── projects/
 │   ├── phase_00_orientation/
-│   │   ├── 02_typescript_for_nest/           # exercise for topic 0.2
+│   │   ├── 02_typescript_refresher/          # exercise for topic 0.2
 │   │   │   ├── README.md                     # task, hints, link to the notes
 │   │   │   ├── template/                     # unsolved starter, never changes
 │   │   │   ├── solution/                     # your work, copied from template/
 │   │   │   └── solved/                       # complete reference answer
-│   │   └── milestone_hello_nest/             # same three folders
+│   │   └── 07_milestone_hello_nest/          # same three folders
 │   └── phase_01_core_building_blocks/
 ├── scripts/
 │   └── start_exercise.sh                     # copies template/ to solution/
@@ -158,7 +159,8 @@ WebDevLearning/
 - Phase folder names are identical under `docs/` and `projects/`. Use the names in the table below.
 - A notes file is `NN_name.md`, where `NN` is the topic's number inside its phase. Topic 1.7 Guards becomes `docs/phase_01_core_building_blocks/07_guards.md`, and topic 1.10 becomes `10_...`.
 - An exercise folder uses the same `NN_name` as its notes file. Not every topic gets an exercise. Conceptual topics may only have notes.
-- Phase milestones are `milestone_<name>/`, which sort after the numbered topics.
+- Phase milestones keep counting after the phase's last topic, in the order they should be done. Phase 0 has topics 01 to 05, so its milestones are `06_milestone_toy_di` and `07_milestone_hello_nest`. Phase 1 has ten topics, so its milestone is `11_milestone_tasks_api`. A milestone has no notes file of its own, so it exists only under `projects/`.
+- Reading order inside any phase folder is therefore just the number order: topics first, then milestones.
 - Docs at the root of `docs/`, such as this roadmap and future cheat sheets, use `NN_name.md`.
 
 | Phase | Folder name |
@@ -196,7 +198,7 @@ Every exercise and milestone has three copies of the same project:
 4. When stuck, read `solved/`, or compare with `diff -r solution/src solved/src`.
 5. Tick the subtopics in this roadmap.
 
-**Capstone milestones** carry over between phases. Each phase's `milestone_ticketing/template/` starts from the previous phase's `solved/` code, with the new parts stubbed out.
+**Capstone milestones** carry over between phases. Each phase's `NN_milestone_ticketing/template/` starts from the previous phase's `solved/` code, with the new parts stubbed out.
 
 **Dependencies**: each of the three folders is a separate Node project, and `node_modules/` is gitignored. Prefer pnpm, whose shared store hard-links packages, so three copies of a project don't cost three times the disk space.
 
@@ -228,10 +230,10 @@ Each topic is learned in isolation. Anything not about the topic adds noise and 
 
 | Concern | Choice | Notes |
 |---|---|---|
-| Runtime | Node.js LTS (24.15+ or 26+) | The v12 CLI needs 22.22.3+, 24.15+ or 26+. Apps run on 20.19+ or 22.12+. |
+| Runtime | Node.js 24 LTS (24.15+), project pinned with `.nvmrc` | The schematics behind `nest new`, `generate` and `upgrade` need 22.22.3+, 24.15+ or 26+ (the CLI binary itself needs only 20.11+). Apps run on 20.19+ or 22.12+, but Node 20 reached end of life on 2026-04-30, so don't start new work on it. Node 26 is LTS too (nvm lists 26.13.1 as the latest LTS) and the Phase 0 exercises passed on it. Tested: `nest new` still works on Node 24.11.1 with an engine warning. |
 | Framework | NestJS 12 | ESM packages; CommonJS apps still work through `require(esm)`. |
 | Module format | ESM for new projects | Learn CommonJS too, because most existing codebases still use it. |
-| Language | TypeScript 6 | `@nestjs/schematics` v12 has TypeScript 6 as a peer dependency. |
+| Language | TypeScript 6 | `@nestjs/schematics` v12 has TypeScript 6 as a peer dependency. Stay on TypeScript 6 for now. TypeScript 7 (the Go-based compiler, July 2026) has no programmatic API until 7.1, and the Nest CLI refuses to build with it (tested with 7.0.2). `npm i -D typescript` installs 7.x, so pin `~6.0`. |
 | Tests | Vitest (ESM default), Jest 30 (CJS) | Jest loads ESM-only v12 packages only on Node 24.9+. |
 | Lint and format | oxlint, Prettier | oxlint is the v12 default for generated projects. |
 | Build | tsc (default), SWC, Rspack for monorepos | Rspack replaced webpack as the monorepo bundler. |
@@ -249,6 +251,7 @@ The archived work in `archive/2022-nestjs-v9/` targeted NestJS 9. The important 
   - Route wildcard syntax changed. Named wildcards such as `/*splat` replace bare `*`.
   - Node 16 and 18 support was dropped.
 - **v12:**
+  - Released 2026-08-27, according to the GitHub release and npm timestamps.
   - All `@nestjs/*` packages ship as ESM, and `nest new` asks whether to create a CJS or ESM project.
   - Validation and serialization accept Standard Schema (Zod, Valibot, ArkType) alongside class-validator.
   - Vitest is the default test runner for ESM projects, and oxlint is the default linter.
@@ -257,6 +260,8 @@ The archived work in `archive/2022-nestjs-v9/` targeted NestJS 9. The important 
   - The legacy Terminus health indicator API was removed.
   - NATS moved to v3 (`@nats-io/transport-node`), and GraphQL subscriptions moved to `graphql-ws` only.
 - **Docs:** the official docs now have Observability, Reliability, MCP and AI sections.
+- **TypeScript:** moved from 4.7 to 6, and a native 7.0 compiler shipped in July 2026. Topic 0.2 covers the changes.
+- **New first-party packages:** the v12 scaffold's `AGENTS.md` lists packages that didn't exist in 2022, and all of them exist on npm: `@nestjs/authentication`, `authorization`, `resilience`, `idempotency`, `outbox`, `locks`, `workflows`, `webhooks`, `mail`, `storage`, `i18n`, `ai` and `mcp`, plus `@nestjs/platform-node` (a `NodeAdapter`). Most are at version 0.0.x to 0.1.x, so they are early. **To do:** when we reach Phases 5, 7, 9 and 12, research each one and compare it with the established library (`@nestjs/jwt` and Passport, BullMQ, and so on) before choosing what the notes teach.
 
 ---
 
@@ -266,7 +271,7 @@ Time estimates assume about 8 to 10 hours per week.
 
 | Phase | Theme | Rough time | Outcome |
 |---|---|---|---|
-| 0 | Orientation and prerequisites | 1 week | Node, TypeScript decorators and a v12 project set up |
+| 0 | Orientation and prerequisites | 2 weeks | Modern TypeScript, decorators, Node and a v12 project set up |
 | 1 | Core building blocks | 2 weeks | A REST API built with every request-pipeline component |
 | 2 | Under the hood: DI and fundamentals | 2 to 3 weeks | Explain how the container works, and write a reusable dynamic module |
 | 3 | Production REST APIs | 2 to 3 weeks | Validated config, DTOs, errors, versioning, OpenAPI |
@@ -285,7 +290,7 @@ Time estimates assume about 8 to 10 hours per week.
 
 ## Phase 0: Orientation and Prerequisites
 
-Nest is built on TypeScript decorators, reflection metadata and the Node event loop. Learning these first makes the rest of the framework make sense.
+Nest is built on TypeScript decorators, reflection metadata and the Node event loop. Learning these first makes the rest of the framework make sense. The phase includes a full TypeScript refresher covering the changes from 2022 to 2026.
 
 ### 0.1 The Node.js Runtime for Nest Developers
 
@@ -299,19 +304,67 @@ Nest is built on TypeScript decorators, reflection metadata and the Node event l
 - [ ] ESM vs CommonJS: `require(esm)`, `import.meta.dirname`, `.js` extensions under `nodenext`
 - [ ] The Node release and LTS policy, and which lines Nest 12 supports
 
-### 0.2 TypeScript Features Nest Is Built On
+### 0.2 TypeScript Refresher
 
 **Priority:** Core
 
-- [ ] Classes, abstract classes, and interfaces vs types, including why an interface can't be an injection token: it is erased at runtime
+A refresher for someone who last used TypeScript around version 4.7 (2022). The fundamentals are a quick review. More time goes to what changed between 2022 and 2026. Nest-specific features (decorators and metadata) are in 0.3.
+
+**Fundamentals (quick review)**
+
+- [ ] `any` vs `unknown` vs `never`, and literal, union and intersection types
+- [ ] Narrowing: `typeof`, `instanceof`, `in`, discriminated unions, exhaustiveness checks with `never`
+- [ ] Custom type guards (`x is T`) and assertion functions (`asserts x is T`)
+- [ ] Interfaces vs type aliases, optional and `readonly` properties, index signatures
+- [ ] Functions: overloads, optional and default parameters, typing `this`
+- [ ] Classes: access modifiers vs `#private` fields, `readonly`, parameter properties, `abstract`, `implements`, `override`, static members
+- [ ] Enums vs string literal unions vs `as const` objects, and why many teams now avoid enums
+- [ ] Typing async code: `Promise<T>`, `Awaited<T>`, `unknown` in `catch` clauses, custom `Error` subclasses with `cause`
+
+**Generics and type-level programming**
+
+- [ ] Generics: constraints, defaults, generic classes
+- [ ] `keyof`, `typeof` in a type position, indexed access types
+- [ ] Mapped types, key remapping with `as`, the `-readonly` and `-?` modifiers
+- [ ] Conditional types, `infer`, and how conditional types distribute over unions
+- [ ] Template literal types
+- [ ] Built-in utility types: `Partial`, `Required`, `Pick`, `Omit`, `Record`, `Readonly`, `ReturnType`, `Parameters`, `InstanceType`, `NoInfer`
+
+**What changed from TypeScript 4.7 to 7.0**
+
+- [ ] 4.9: the `satisfies` operator and the `accessor` keyword
+- [ ] 5.0: TC39 standard decorators (compared with Nest's legacy decorators in 0.3), `const` type parameters, `moduleResolution: bundler`, `verbatimModuleSyntax`
+- [ ] 5.2: `using` and `await using` for automatic resource cleanup
+- [ ] 5.4 and 5.5: `NoInfer`, inferred type predicates, `isolatedDeclarations`
+- [ ] 5.8: `erasableSyntaxOnly`, and `require()` of ESM modules under `module: nodenext`
+- [ ] 6.0, the last compiler written in JavaScript: new defaults such as `strict: true`, and removed legacy options such as the `es5` target, `baseUrl` and `outFile`. The exact list is confirmed against the official release notes and written up in the notes file.
+- [ ] 7.0 (July 2026): the compiler rewritten in Go, about 10x faster. Its full programmatic API only arrives in 7.1, so tools built on that API may lag. Check which TypeScript version Nest 12 supports.
+
+**Modules, config and how TypeScript runs**
+
+- [ ] `import type`, `export type` and `verbatimModuleSyntax`
+- [ ] tsconfig essentials: the `strict` family, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `module`, `moduleResolution`, `target`, `lib`, `isolatedModules`, `sourceMap`
+- [ ] Ways to run TypeScript: `tsc` (type checks and emits), SWC or esbuild (strip types without checking), Node's built-in type stripping (erasable syntax only)
+
+**Exercise**
+
+- [ ] Small typing katas covering narrowing, generics, and mapped and conditional types, checked with `tsc --noEmit` and Vitest `expectTypeOf`
+
+### 0.3 TypeScript Features Nest Is Built On
+
+**Priority:** Core
+
+- [ ] What survives to runtime: classes do, interfaces and types are erased. This is why an interface can't be an injection token.
 - [ ] Legacy `experimentalDecorators` vs TC39 standard decorators. Nest uses the legacy model because parameter decorators and emitted metadata exist only there.
+- [ ] Decorator kinds and their evaluation order: class, method, property, parameter
 - [ ] `emitDecoratorMetadata` and `design:paramtypes`, which is how Nest knows what to inject
 - [ ] The `reflect-metadata` API: `defineMetadata`, `getMetadata`, metadata keys
-- [ ] Generics, mapped types and utility types, which power `PartialType` and `PickType`
-- [ ] The tsconfig options that matter: `strict`, `module` and `moduleResolution` set to `nodenext`, `target`, `paths`
-- [ ] Exercise: build a toy DI container of about 50 lines with decorators and `reflect-metadata`
+- [ ] Why Nest code can't run on Node's built-in type stripping: parameter properties need a real compile step, and decorators are a plain `SyntaxError` on every Node version tested, even with the transform flag
+- [ ] How Vitest runs decorators: Vite 8's Oxc transformer reads `experimentalDecorators` and `emitDecoratorMetadata` from tsconfig, and dropping `emitDecoratorMetadata` makes `design:paramtypes` come out `undefined`
+- [ ] Pitfalls that break injection silently: a type-only import of a class used in a constructor, interface-typed parameters, circular imports (a loud `ReferenceError` under ESM, a silent `undefined` under CommonJS), and `useDefineForClassFields` on ES2022+ targets disabling legacy property decorators
+- [ ] Exercise: write class, method, property and parameter decorators, then read their metadata back. The toy DI container is the phase milestone.
 
-### 0.3 The NestJS Philosophy and Landscape
+### 0.4 The NestJS Philosophy and Landscape
 
 **Priority:** Core
 
@@ -321,7 +374,7 @@ Nest is built on TypeScript decorators, reflection metadata and the Node event l
 - [ ] The version history that matters: v9, v10, v11 (Express 5), v12 (ESM, Standard Schema, observability)
 - [ ] How to use the official docs, the API reference and the `sample/` folder in `nestjs/nest`
 
-### 0.4 Tooling and Project Setup
+### 0.5 Tooling and Project Setup
 
 **Priority:** Core
 
@@ -330,11 +383,13 @@ Nest is built on TypeScript decorators, reflection metadata and the Node event l
 - [ ] Builders: `tsc` (default), SWC for fast builds, Rspack for monorepos
 - [ ] Linting with oxlint, formatting with Prettier
 - [ ] Test runners: Vitest for ESM projects, Jest 30 for CJS, and the Node 24.9+ requirement for Jest with v12
+- [ ] What the scaffold does not check: `vitest run` and `oxlint --type-aware` both pass with a deliberate type error (tested). Only `tsc --noEmit` or `nest build` report it, so our exercises run `tsc --noEmit && vitest run`.
 - [ ] Watch mode, debugging in VS Code with breakpoints, the Nest REPL
 - [ ] `nest upgrade` and how Nest versions its packages
 
 **Interview checkpoint**
 
+- What is the difference between `unknown` and `any`, and when would you use `satisfies` instead of a type annotation?
 - Why can't a TypeScript interface be used as an injection token?
 - What does `emitDecoratorMetadata` emit, and what breaks without it?
 - What happens to other requests when one handler runs a 2-second CPU loop?
@@ -342,8 +397,8 @@ Nest is built on TypeScript decorators, reflection metadata and the Node event l
 
 **Milestone**
 
-- `phase_00_orientation/milestone_toy_di`: a minimal DI container built on decorators and reflection
-- `phase_00_orientation/milestone_hello_nest`: an ESM Nest 12 app that runs, has a working debugger breakpoint, and has one passing Vitest test
+- `phase_00_orientation/06_milestone_toy_di`: a minimal DI container built on decorators and reflection
+- `phase_00_orientation/07_milestone_hello_nest`: an ESM Nest 12 app that runs, has a working debugger breakpoint, and has one passing Vitest test
 
 ---
 
@@ -461,7 +516,7 @@ This phase covers the components that make up the HTTP request pipeline. The aim
 
 **Milestone**
 
-- `phase_01_core_building_blocks/milestone_tasks_api`: an in-memory CRUD API that uses every component from this phase, with unit tests for the service and one e2e test
+- `phase_01_core_building_blocks/11_milestone_tasks_api`: an in-memory CRUD API that uses every component from this phase, with unit tests for the service and one e2e test
 
 ---
 
@@ -561,7 +616,7 @@ This phase is where senior interviews are won or lost. Read the `@nestjs/core` s
 
 **Milestone**
 
-- `phase_02_di_and_fundamentals/milestone_dynamic_module_lib`: a `NotificationsModule.forRootAsync()` library with custom providers and a discovery-based decorator
+- `phase_02_di_and_fundamentals/10_milestone_dynamic_module_lib`: a `NotificationsModule.forRootAsync()` library with custom providers and a discovery-based decorator
 - A short benchmark comparing request-scoped providers with CLS
 - A notes doc that walks through the core injector source
 
@@ -642,6 +697,7 @@ This phase is where senior interviews are won or lost. Read the `@nestjs/core` s
 
 - [ ] Express 5 changes: path matching, wildcards, async error handling
 - [ ] `FastifyAdapter`: setup, plugin differences, performance profile
+- [ ] `@nestjs/platform-node` and its `NodeAdapter`, a third adapter that exists on npm (12.5.1). The scaffold's `AGENTS.md` claims it is the fastest, ahead of Fastify. Benchmark it ourselves before believing that.
 - [ ] Writing adapter-agnostic code that doesn't leak Express types through `@Req`
 - [ ] Keep-alive, raw body, HTTPS, multiple servers
 
@@ -655,7 +711,7 @@ This phase is where senior interviews are won or lost. Read the `@nestjs/core` s
 
 **Milestone**
 
-- `phase_03_production_rest_apis/milestone_tasks_api`: start from the Phase 1 solved tasks API and bring it to production grade with validated config, DTO validation and serialization, problem-details errors, versioning, Swagger docs, file attachments
+- `phase_03_production_rest_apis/09_milestone_tasks_api`: start from the Phase 1 solved tasks API and bring it to production grade with validated config, DTO validation and serialization, problem-details errors, versioning, Swagger docs, file attachments
 
 ---
 
@@ -721,7 +777,7 @@ This phase is where senior interviews are won or lost. Read the `@nestjs/core` s
 
 **Milestone**
 
-- `phase_04_data_and_persistence/milestone_ticketing`: the start of the capstone, with Postgres in Docker Compose, the chosen ORM with migrations, a transactional booking flow with locking, a Redis cache, and integration tests on a real database
+- `phase_04_data_and_persistence/07_milestone_ticketing`: the start of the capstone, with Postgres in Docker Compose, the chosen ORM with migrations, a transactional booking flow with locking, a Redis cache, and integration tests on a real database
 
 ---
 
@@ -1171,7 +1227,7 @@ This phase runs alongside the others. Each phase's interview checkpoint feeds in
 
 One project grows across the phases. Ticket booking exercises concurrency, locking, idempotency, queues, real-time updates and payments webhooks, and it is a common system design interview question.
 
-Phases 1 to 3 use the smaller tasks API so the focus stays on the framework. The capstone starts in Phase 4. Each phase's `milestone_ticketing/` builds on the previous phase's solved code (see [Exercise Workflow](#exercise-workflow)).
+Phases 1 to 3 use the smaller tasks API so the focus stays on the framework. The capstone starts in Phase 4. Each phase's `NN_milestone_ticketing/` builds on the previous phase's solved code (see [Exercise Workflow](#exercise-workflow)).
 
 | Phase | Increment |
 |---|---|
@@ -1218,6 +1274,10 @@ Phases 1 to 3 use the smaller tasks API so the focus stays on the framework. The
 - [InfoQ: NestJS 12, ESM Packages, Standard Schema Validation and Native Observability](https://www.infoq.com/news/2026/10/nestjs-12-observability/)
 - [Trilon: NestJS v12 is Coming](https://trilon.io/blog/nestjs-12-is-coming) (written before the release)
 - [DEV: NestJS 12 deep dive](https://dev.to/x4nent/nestjs-12-deep-dive-full-esm-migration-standard-schema-route-validation-and-the-4fe0) (written before the release)
+- [Announcing TypeScript 7.0 (Microsoft DevBlogs)](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/)
+- [TypeScript `erasableSyntaxOnly` option](https://www.typescriptlang.org/tsconfig/erasableSyntaxOnly.html)
+- [Node.js: running TypeScript natively](https://nodejs.org/download/release/v24.5.0/docs/api/typescript.html)
+- [LogRocket: TypeScript 6 migration guide](https://blog.logrocket.com/typescript-v6-migration-guide/) (third party, used only for the 6.0 defaults, which still need checking)
 - [Coddy: NestJS interview questions](https://coddy.tech/interview-questions/nestjs)
 - [Hyring: Top NestJS interview questions (2026)](https://hyring.com/jobseeker-toolkit/interview-questions/technical/nestjs)
 - [DEV: NestJS roadmap for 2025](https://dev.to/tak089/nestjs-roadmap-for-2025-5jj)
