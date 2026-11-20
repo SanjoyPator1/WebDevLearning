@@ -104,4 +104,4 @@ In real code you cannot easily write two classes in one file that need each othe
 
 ## Not in This Exercise
 
-Modules, provider scopes, `useClass` and `useFactory` providers, async providers and lifecycle hooks are real Nest features that come later: see 1.2, 2.2, 2.4 and 2.8 in the [roadmap](../../../notes/01_nestjs_roadmap.md). Do not add them here.
+Modules, provider scopes, `useClass` and `useFactory` providers, async providers and lifecycle hooks are real Nest features that come later: see 1.2, 2.2, 2.4 and 2.8 in the [roadmap](../../../docs/01_nestjs_roadmap.md). Do not add them here.

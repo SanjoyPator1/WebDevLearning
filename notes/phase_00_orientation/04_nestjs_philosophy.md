@@ -109,7 +109,7 @@ The Nest README states it plainly: "The architecture is heavily inspired by Angu
 
 There is direct evidence in the tooling. When we installed the CLI on a Node version below its floor, npm's warnings named four packages: `@nestjs/schematics` and three Angular ones, `@angular-devkit/core`, `@angular-devkit/schematics` and `@angular-devkit/schematics-cli` (see [05 Tooling and Setup](05_tooling_and_setup.md)). The Nest CLI's generators are built on Angular's schematics engine.
 
-For a developer coming from Python this is the most unfamiliar part: a framework that builds an object graph at startup from class metadata, rather than calling functions per request. FastAPI's `Depends` is the closest relative, but it builds a call graph per request. The mapping is in the roadmap's [Appendix A](../01_nestjs_roadmap.md#appendix-a-fastapi-to-nestjs-concept-map).
+For a developer coming from Python this is the most unfamiliar part: a framework that builds an object graph at startup from class metadata, rather than calling functions per request. FastAPI's `Depends` is the closest relative, but it builds a call graph per request. The mapping is in the roadmap's [Appendix A](../../docs/01_nestjs_roadmap.md#appendix-a-fastapi-to-nestjs-concept-map).
 
 ---
 
@@ -214,7 +214,7 @@ You know FastAPI, so here is the real difference, not the surface one:
 - **Typing story:** FastAPI's types are enforced at runtime by Pydantic. TypeScript types are erased at runtime, which is why Nest validation needs classes with decorators or schema libraries, and why interfaces cannot be injection tokens (topic 0.3).
 - **Concurrency:** FastAPI async code runs on an event loop in one thread unless you use workers, so the same "do not block the loop" rules from [01 The Node.js Runtime](01_nodejs_runtime.md) apply. Python additionally has the GIL for CPU-bound threads.
 
-Pick by team and problem, not by language preference. The roadmap's [Appendix A](../01_nestjs_roadmap.md#appendix-a-fastapi-to-nestjs-concept-map) maps each FastAPI concept to its Nest counterpart.
+Pick by team and problem, not by language preference. The roadmap's [Appendix A](../../docs/01_nestjs_roadmap.md#appendix-a-fastapi-to-nestjs-concept-map) maps each FastAPI concept to its Nest counterpart.
 
 ### Nest and Spring Boot
 

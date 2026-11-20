@@ -1,6 +1,6 @@
 # 05 Tooling and Setup
 
-> **Topic 0.5** | Priority: Core | Prerequisites: [01 Node.js Runtime](01_nodejs_runtime.md), [03 TypeScript Features Nest Is Built On](03_typescript_for_nest.md) | Time: 3 to 4 hours | Exercise: [07_milestone_hello_nest](../../projects/phase_00_orientation/07_milestone_hello_nest/README.md) | Next: Phase 1, topic 1.1 (see the [roadmap](../01_nestjs_roadmap.md))
+> **Topic 0.5** | Priority: Core | Prerequisites: [01 Node.js Runtime](01_nodejs_runtime.md), [03 TypeScript Features Nest Is Built On](03_typescript_for_nest.md) | Time: 3 to 4 hours | Exercise: [07_milestone_hello_nest](../../projects/phase_00_orientation/07_milestone_hello_nest/README.md) | Next: Phase 1, topic 1.1 (see the [roadmap](../../docs/01_nestjs_roadmap.md))
 >
 > Everything here was run on 2026-11-20 on macOS with Node v24.11.1, npm 11.6.2, pnpm 8.15.9, `@nestjs/cli` 12.0.13, `@nestjs/core` 12.5.1 and TypeScript 6.0.3. Anything not run is marked "Not verified".
 

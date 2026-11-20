@@ -2,7 +2,7 @@
 
 Twelve small typing katas that rebuild the TypeScript skills Nest leans on: narrowing, generics, mapped and conditional types, and the features added since TypeScript 4.7. Everything is plain TypeScript. There is no Nest, no decorators and no framework in this exercise.
 
-**Read first:** [02_typescript_refresher.md](../../../notes/phase_00_orientation/02_typescript_refresher.md) (topic 0.2 in the [roadmap](../../../notes/01_nestjs_roadmap.md)).
+**Read first:** [02_typescript_refresher.md](../../../notes/phase_00_orientation/02_typescript_refresher.md) (topic 0.2 in the [roadmap](../../../docs/01_nestjs_roadmap.md)).
 
 ## How to start
 

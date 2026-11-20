@@ -87,4 +87,4 @@ The compiler calls the parameter decorator once per parameter, last parameter fi
 
 ## Not in This Exercise
 
-Dependency injection, modules, guards, HTTP and parameter pipes are later topics: see 1.2, 1.3 and 2.1 in the [roadmap](../../../notes/01_nestjs_roadmap.md). The container comes next in `06_milestone_toy_di`.
+Dependency injection, modules, guards, HTTP and parameter pipes are later topics: see 1.2, 1.3 and 2.1 in the [roadmap](../../../docs/01_nestjs_roadmap.md). The container comes next in `06_milestone_toy_di`.

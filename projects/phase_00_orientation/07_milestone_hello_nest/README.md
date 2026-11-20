@@ -2,7 +2,7 @@
 
 **Goal.** Run a real NestJS 12 ESM project end to end: make its tests pass, watch it hot reload, stop on a breakpoint in a debugger, lint it, build it and run the built output. The code to write is one line. The point is the toolchain.
 
-**Read first:** [05 Tooling and Setup](../../../notes/phase_00_orientation/05_tooling_and_setup.md). Topic 0.5 in the [roadmap](../../../notes/01_nestjs_roadmap.md).
+**Read first:** [05 Tooling and Setup](../../../notes/phase_00_orientation/05_tooling_and_setup.md). Topic 0.5 in the [roadmap](../../../docs/01_nestjs_roadmap.md).
 
 ## Before You Start
 
