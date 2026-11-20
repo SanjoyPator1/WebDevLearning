@@ -3,7 +3,7 @@
 **Phase 0 milestone.** Topics used: 0.2 and 0.3 only.
 **Goal:** build a dependency injection container in about 60 lines, using nothing but decorators and `reflect-metadata`. When this works you know how Nest decides what to inject into a constructor, because Nest does the same thing at a bigger scale.
 
-**Read first:** [03_typescript_for_nest.md](../../../docs/phase_00_orientation/03_typescript_for_nest.md), especially `emitDecoratorMetadata`, the `reflect-metadata` API and "How Nest Uses Metadata". Do exercise `03_typescript_for_nest` before this one if you have not.
+**Read first:** [03_typescript_for_nest.md](../../../notes/phase_00_orientation/03_typescript_for_nest.md), especially `emitDecoratorMetadata`, the `reflect-metadata` API and "How Nest Uses Metadata". Do exercise `03_typescript_for_nest` before this one if you have not.
 
 ## How to Start
 
@@ -104,4 +104,4 @@ In real code you cannot easily write two classes in one file that need each othe
 
 ## Not in This Exercise
 
-Modules, provider scopes, `useClass` and `useFactory` providers, async providers and lifecycle hooks are real Nest features that come later: see 1.2, 2.2, 2.4 and 2.8 in the [roadmap](../../../docs/01_nestjs_roadmap.md). Do not add them here.
+Modules, provider scopes, `useClass` and `useFactory` providers, async providers and lifecycle hooks are real Nest features that come later: see 1.2, 2.2, 2.4 and 2.8 in the [roadmap](../../../notes/01_nestjs_roadmap.md). Do not add them here.

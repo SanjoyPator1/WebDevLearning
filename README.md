@@ -2,11 +2,11 @@
 
 Learning NestJS from scratch again (restarted November 2026, on NestJS 12).
 
-Start with the roadmap: [docs/01_nestjs_roadmap.md](docs/01_nestjs_roadmap.md).
+Start with the roadmap: [notes/01_nestjs_roadmap.md](notes/01_nestjs_roadmap.md).
 
 ## Layout
 
-- `docs/`: the knowledge base. Holds the roadmap and the notes for each phase.
+- `notes/`: the knowledge base. Holds the roadmap and the notes for each phase.
 - `projects/`: exercises for each phase. Each one has three folders:
   - `template/`: the unsolved starter.
   - `solution/`: your work.

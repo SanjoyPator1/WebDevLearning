@@ -122,7 +122,7 @@
   - **Deep**: separates senior engineers from mid-level ones. Expect these in senior rounds.
   - **Elective**: learn when a project needs it.
 - **Checkboxes** track your own learning progress. Tick a subtopic when you have read its notes and finished its exercise. The materials existing does not count as done.
-- **Notes** live in `docs/<phase folder>/`. Every doc starts with a clickable Table of Contents. See [Repository Layout](#repository-layout).
+- **Notes** live in `notes/<phase folder>/`. Every notes file starts with a clickable Table of Contents. See [Repository Layout](#repository-layout).
 - **Code** lives in `projects/<phase folder>/`. Each exercise has `template/`, `solution/` and `solved/` folders. See [Exercise Workflow](#exercise-workflow).
 - **Testing starts in Phase 1.** Every milestone has tests. Phase 6 is the deep dive, not the first time tests appear.
 - **Each phase ends with:**
@@ -133,7 +133,7 @@
 
 ```
 WebDevLearning/
-├── docs/
+├── notes/
 │   ├── 01_nestjs_roadmap.md                  # this file
 │   ├── phase_00_orientation/
 │   │   ├── 01_nodejs_runtime.md              # notes for topic 0.1
@@ -156,12 +156,12 @@ WebDevLearning/
 
 **Naming rules**
 
-- Phase folder names are identical under `docs/` and `projects/`. Use the names in the table below.
-- A notes file is `NN_name.md`, where `NN` is the topic's number inside its phase. Topic 1.7 Guards becomes `docs/phase_01_core_building_blocks/07_guards.md`, and topic 1.10 becomes `10_...`.
+- Phase folder names are identical under `notes/` and `projects/`. Use the names in the table below.
+- A notes file is `NN_name.md`, where `NN` is the topic's number inside its phase. Topic 1.7 Guards becomes `notes/phase_01_core_building_blocks/07_guards.md`, and topic 1.10 becomes `10_...`.
 - An exercise folder uses the same `NN_name` as its notes file. Not every topic gets an exercise. Conceptual topics may only have notes.
 - Phase milestones keep counting after the phase's last topic, in the order they should be done. Phase 0 has topics 01 to 05, so its milestones are `06_milestone_toy_di` and `07_milestone_hello_nest`. Phase 1 has ten topics, so its milestone is `11_milestone_tasks_api`. A milestone has no notes file of its own, so it exists only under `projects/`.
 - Reading order inside any phase folder is therefore just the number order: topics first, then milestones.
-- Docs at the root of `docs/`, such as this roadmap and future cheat sheets, use `NN_name.md`.
+- Notes at the root of `notes/`, such as this roadmap and future cheat sheets, use `NN_name.md`.
 
 | Phase | Folder name |
 |---|---|

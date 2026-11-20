@@ -3,7 +3,7 @@
 **Topic:** 0.3 TypeScript Features Nest Is Built On
 **Goal:** write the four kinds of decorator (class, method, property, parameter) so they record metadata with `reflect-metadata`, then read that metadata back to build a route table, the same idea Nest's router uses at bootstrap. There is no DI container here (that is the next exercise, `06_milestone_toy_di`) and no HTTP.
 
-**Read first:** [03_typescript_for_nest.md](../../../docs/phase_00_orientation/03_typescript_for_nest.md), at least the sections on decorator kinds, evaluation order, `reflect-metadata` and `emitDecoratorMetadata`.
+**Read first:** [03_typescript_for_nest.md](../../../notes/phase_00_orientation/03_typescript_for_nest.md), at least the sections on decorator kinds, evaluation order, `reflect-metadata` and `emitDecoratorMetadata`.
 
 ## How to Start
 
@@ -87,4 +87,4 @@ The compiler calls the parameter decorator once per parameter, last parameter fi
 
 ## Not in This Exercise
 
-Dependency injection, modules, guards, HTTP and parameter pipes are later topics: see 1.2, 1.3 and 2.1 in the [roadmap](../../../docs/01_nestjs_roadmap.md). The container comes next in `06_milestone_toy_di`.
+Dependency injection, modules, guards, HTTP and parameter pipes are later topics: see 1.2, 1.3 and 2.1 in the [roadmap](../../../notes/01_nestjs_roadmap.md). The container comes next in `06_milestone_toy_di`.
