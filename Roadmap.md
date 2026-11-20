@@ -261,57 +261,1367 @@
 
 ### Week 4: Security & Authentication
 
-#### Day 1-3: Security Fundamentals
+#### **Day 1: HTTPS, SSL/TLS & Basic Security Headers**
 
-- **HTTPS and SSL/TLS**
-  - Certificate management
-  - Enforcing HTTPS
-  - SSL termination
-- **Security headers**
-  - Content-Security-Policy
-  - X-Frame-Options
-  - X-Content-Type-Options
-  - Strict-Transport-Security (HSTS)
-  - X-XSS-Protection
-- **CORS (Cross-Origin Resource Sharing)**
-  - CORS middleware configuration
-  - Allowed origins
-  - Credentials handling
-  - Preflight requests
-- **Input sanitization**
-  - SQL injection prevention
-  - XSS prevention
-  - Path traversal prevention
-  - File upload validation
+**File**: `day-1-https-ssl-security-headers.md`
 
-#### Day 4-7: Authentication & Authorization
+```markdown
+1. Understanding HTTPS and SSL/TLS
+   1.1 What is HTTPS?
+   1.2 HTTP vs HTTPS
+   1.3 SSL vs TLS (Protocol Evolution)
+   1.4 Why HTTPS Matters
+       - Data encryption in transit
+       - Authentication
+       - Data integrity
 
-- **Authentication methods**
-  - API keys
-  - Basic authentication
-  - Bearer tokens
-  - Cookie-based auth
-- **OAuth2 implementation**
-  - OAuth2 password flow
-  - JWT tokens (access & refresh)
-  - Token generation and validation
-  - Password hashing (bcrypt, passlib)
-- **JWT deep dive**
-  - Token structure (header, payload, signature)
-  - Claims and scopes
-  - Token expiration
-  - Refresh token rotation
-  - Token revocation strategies
-- **Authorization patterns**
-  - Role-Based Access Control (RBAC)
-  - Permission-based authorization
-  - Resource ownership checks
-  - Scopes in OAuth2
-  - Dependency-based authorization
-- **Multi-factor authentication (MFA)**
-  - TOTP implementation
-  - SMS-based OTP
-  - Backup codes
+2. SSL/TLS Deep Dive
+   2.1 How SSL/TLS Handshake Works
+       - Client Hello
+       - Server Hello
+       - Certificate verification
+       - Key exchange
+       - Encrypted communication
+   2.2 SSL/TLS Flow Diagram
+   2.3 TLS Versions (1.0, 1.1, 1.2, 1.3)
+
+3. Certificate Management
+   3.1 What are SSL Certificates?
+   3.2 Certificate Types
+       - Self-signed certificates
+       - Domain Validated (DV)
+       - Organization Validated (OV)
+       - Extended Validation (EV)
+   3.3 Certificate Authority (CA)
+   3.4 Let's Encrypt (Free SSL)
+   3.5 Certificate Installation
+   3.6 Certificate Renewal
+   3.7 Certificate Lifecycle Management
+
+4. Enforcing HTTPS in FastAPI
+   4.1 Redirect HTTP to HTTPS
+       - Middleware implementation
+       - Production configuration
+   4.2 HTTPS-Only Cookies
+   4.3 Secure Flag on Cookies
+
+5. SSL Termination
+   5.1 What is SSL Termination?
+   5.2 SSL Termination Locations
+       - At Load Balancer
+       - At Reverse Proxy (Nginx, Caddy)
+       - At Application Server
+   5.3 When to Use Each Approach
+   5.4 X-Forwarded-Proto Header
+   5.5 Configuration Examples
+
+6. Security Headers Introduction
+   6.1 Why Security Headers Matter
+   6.2 Content-Security-Policy (CSP)
+       - What is CSP?
+       - CSP directives
+       - CSP implementation
+   6.3 X-Frame-Options
+       - Clickjacking attacks
+       - DENY vs SAMEORIGIN vs ALLOW-FROM
+   6.4 X-Content-Type-Options
+       - MIME type sniffing
+       - nosniff directive
+
+7. Complete Practical Example
+   7.1 FastAPI app with HTTPS enforcement
+   7.2 Basic security headers middleware
+   7.3 Testing HTTPS configuration
+
+8. Testing Your Security Setup
+   8.1 Using curl
+   8.2 Browser DevTools
+   8.3 SSL Labs Test
+
+9. Common Pitfalls
+10. Key Takeaways
+11. Practice Exercises
+```
+
+---
+
+#### **Day 2: Advanced Security Headers & CORS**
+
+**File**: `day-2-advanced-headers-cors.md`
+
+```markdown
+1. Advanced Security Headers
+   1.1 Strict-Transport-Security (HSTS)
+       - What is HSTS?
+       - HSTS directives (max-age, includeSubDomains, preload)
+       - HSTS preload list
+       - Implementation
+   1.2 X-XSS-Protection
+       - XSS filtering
+       - Modern alternatives (CSP is better)
+   1.3 Referrer-Policy
+       - Controlling referrer information
+       - Policy options
+   1.4 Permissions-Policy (formerly Feature-Policy)
+       - Controlling browser features
+       - Camera, microphone, geolocation
+
+2. Implementing All Security Headers in FastAPI
+   2.1 Custom Middleware Approach
+   2.2 Third-party Middleware Libraries
+   2.3 Security Headers Configuration
+   2.4 Testing All Headers
+
+3. CORS (Cross-Origin Resource Sharing)
+   3.1 What is CORS?
+   3.2 Why CORS Exists
+   3.3 Same-Origin Policy
+       - Origin definition (protocol, domain, port)
+       - Why browsers enforce it
+
+4. CORS Request Flow
+   4.1 Simple Requests
+       - What qualifies as simple
+       - Simple request flow
+   4.2 Preflight Requests
+       - OPTIONS method
+       - When preflight is triggered
+       - Preflight request/response flow
+   4.3 CORS Flow Diagrams
+
+5. CORS Headers Explained
+   5.1 Access-Control-Allow-Origin
+       - Wildcard (*) vs specific origins
+       - Security implications
+   5.2 Access-Control-Allow-Methods
+   5.3 Access-Control-Allow-Headers
+   5.4 Access-Control-Allow-Credentials
+       - Credentials with CORS
+       - Cannot use wildcard with credentials
+   5.5 Access-Control-Max-Age
+       - Caching preflight responses
+   5.6 Access-Control-Expose-Headers
+
+6. CORS Middleware in FastAPI
+   6.1 CORSMiddleware Configuration
+   6.2 Allowed Origins
+       - List of origins
+       - Regex patterns
+       - Dynamic origin validation
+   6.3 Credentials Handling
+   6.4 Allowed Methods and Headers
+   6.5 Complete Configuration Examples
+
+7. CORS Common Scenarios
+   7.1 Frontend on different port (development)
+   7.2 Multiple frontend domains
+   7.3 Mobile app CORS
+   7.4 Third-party API integration
+
+8. CORS Troubleshooting
+   8.1 Common CORS Errors
+   8.2 Debugging CORS Issues
+   8.3 Browser DevTools for CORS
+
+9. Complete Practical Example
+   9.1 FastAPI with all security headers
+   9.2 CORS configuration for multiple scenarios
+   9.3 Testing setup
+
+10. Security Headers Testing Tools
+11. Common Pitfalls
+12. Key Takeaways
+13. Practice Exercises
+```
+
+---
+
+#### **Day 3: Input Sanitization & Attack Prevention**
+
+**File**: `day-3-input-sanitization-attacks.md`
+
+```markdown
+1. Input Sanitization Overview
+   1.1 Why Input Sanitization Matters
+   1.2 Never Trust User Input
+   1.3 Defense in Depth Strategy
+   1.4 Validation vs Sanitization
+   1.5 OWASP Top 10 Injection Attacks
+
+2. SQL Injection Prevention
+   2.1 What is SQL Injection?
+   2.2 SQL Injection Attack Examples
+       - Basic injection
+       - Union-based injection
+       - Blind injection
+   2.3 SQL Injection Impact
+   2.4 Prevention Strategies
+       - Parameterized queries (prepared statements)
+       - ORM protection (SQLAlchemy)
+       - Input validation
+       - Least privilege database users
+   2.5 Parameterized Query Examples
+   2.6 Pydantic Validation for SQL Safety
+   2.7 Testing for SQL Injection
+
+3. XSS (Cross-Site Scripting) Prevention
+   3.1 What is XSS?
+   3.2 XSS Attack Types
+       - Stored XSS (persistent)
+       - Reflected XSS (non-persistent)
+       - DOM-based XSS
+   3.3 XSS Attack Examples
+   3.4 XSS Impact
+   3.5 Prevention Strategies
+       - HTML escaping/encoding
+       - Content Security Policy (CSP)
+       - Input validation
+       - Output encoding
+       - HTTPOnly cookies
+   3.6 HTML Escaping in FastAPI
+   3.7 Content Sanitization Libraries
+   3.8 Testing for XSS
+
+4. Path Traversal Prevention
+   4.1 What is Path Traversal?
+   4.2 Path Traversal Attack Examples
+       - ../ sequences
+       - Absolute paths
+       - URL encoding tricks
+   4.3 Prevention Strategies
+       - Path validation
+       - Whitelist approach
+       - Secure file operations
+       - Restrict base directory
+   4.4 Secure Path Handling in Python
+   4.5 Code Examples
+
+5. File Upload Validation
+   5.1 File Upload Security Risks
+       - Malicious file execution
+       - Path traversal via filename
+       - DoS via large files
+       - Virus/malware uploads
+   5.2 File Type Validation
+       - MIME type checking
+       - Magic number validation
+       - File extension validation
+   5.3 File Size Limits
+   5.4 Filename Sanitization
+       - Removing special characters
+       - Length limits
+       - Path traversal prevention
+   5.5 File Content Scanning
+       - Virus scanning integration
+       - Content analysis
+   5.6 Secure File Storage
+       - Storage location
+       - Permissions
+       - Serving uploaded files safely
+   5.7 Complete File Upload Implementation
+
+6. Input Validation with Pydantic
+   6.1 Pydantic Validators
+       - Field validators
+       - Root validators
+       - Model validators
+   6.2 Custom Validation Functions
+   6.3 Regex Patterns for Validation
+       - Email validation
+       - URL validation
+       - Username validation
+   6.4 Field Constraints
+       - String constraints (min_length, max_length, regex)
+       - Numeric constraints (ge, le, gt, lt)
+   6.5 Validation Examples
+
+7. Other Input Attack Prevention
+   7.1 Command Injection
+   7.2 LDAP Injection
+   7.3 XML Injection
+   7.4 NoSQL Injection
+
+8. Complete Practical Examples
+   8.1 Secure file upload endpoint
+   8.2 SQL injection prevention with SQLAlchemy
+   8.3 XSS prevention in user content
+   8.4 Path traversal prevention in file serving
+   8.5 Comprehensive input validation
+
+9. Security Testing
+   9.1 Manual testing techniques
+   9.2 Automated security testing tools
+   9.3 Penetration testing basics
+
+10. Common Pitfalls
+11. Key Takeaways
+12. Practice Exercises
+```
+
+---
+
+#### **Day 4: Basic Authentication Methods**
+
+**File**: `day-4-basic-authentication-methods.md`
+
+```markdown
+1. Authentication Overview
+   1.1 What is Authentication?
+   1.2 Authentication vs Authorization
+   1.3 Authentication Flow Basics
+   1.4 Authentication Methods Comparison Table
+
+2. API Key Authentication
+   2.1 What are API Keys?
+   2.2 How API Keys Work
+   2.3 When to Use API Keys
+       - Service-to-service communication
+       - Public APIs with usage tracking
+       - Simple authentication needs
+   2.4 API Key Generation
+       - Random string generation
+       - UUID-based keys
+       - Secure generation practices
+   2.5 API Key Storage
+       - Environment variables
+       - Database storage (hashed)
+       - Key management services
+   2.6 API Key Transmission
+       - HTTP headers (X-API-Key)
+       - Query parameters (less secure)
+       - Custom headers
+   2.7 Implementing API Keys in FastAPI
+       - Header-based API keys
+       - Query parameter API keys
+       - Custom security dependency
+       - API key validation
+   2.8 API Key Security Best Practices
+       - Key rotation
+       - Rate limiting
+       - Key scoping
+       - Expiration
+   2.9 API Key Management
+       - Key lifecycle
+       - Key revocation
+       - Multiple keys per user
+
+3. Basic HTTP Authentication
+   3.1 What is Basic Authentication?
+   3.2 How Basic Auth Works
+       - Authorization header format
+       - Base64 encoding
+       - Credentials format (username:password)
+   3.3 Basic Auth Flow Diagram
+   3.4 Implementing Basic Auth in FastAPI
+       - HTTPBasic security
+       - HTTPBasicCredentials
+       - Credentials verification
+       - Custom basic auth dependency
+   3.5 When to Use Basic Auth
+       - Development/testing
+       - Internal tools
+       - Simple authentication needs
+   3.6 Basic Auth Limitations
+       - Credentials in every request
+       - Must use HTTPS
+       - No built-in expiration
+       - Limited security
+   3.7 Basic Auth Best Practices
+
+4. Bearer Token Authentication
+   4.1 What are Bearer Tokens?
+   4.2 How Bearer Tokens Work
+       - Authorization header format
+       - Token format
+   4.3 Bearer Token Types
+       - Opaque tokens
+       - JWT tokens
+       - Custom tokens
+   4.4 Implementing Bearer Tokens in FastAPI
+       - HTTPBearer security
+       - Token validation logic
+       - Custom token generation
+       - Token storage (database/cache)
+   4.5 Bearer Token Lifecycle
+       - Token generation
+       - Token validation
+       - Token expiration
+       - Token revocation
+   4.6 Bearer Token Best Practices
+
+5. Authentication Methods Comparison
+   5.1 Security Comparison
+   5.2 Complexity Comparison
+   5.3 Use Case Matrix
+   5.4 Performance Considerations
+   5.5 Mobile vs Web Considerations
+   5.6 Decision Framework
+
+6. Complete Practical Examples
+   6.1 API Key Authentication System
+       - Key generation endpoint
+       - Key validation dependency
+       - Protected endpoints
+   6.2 Basic Auth System
+       - User credentials storage
+       - Basic auth dependency
+       - Protected endpoints
+   6.3 Bearer Token System
+       - Token generation endpoint
+       - Token validation dependency
+       - Protected endpoints
+   6.4 Multi-Method Authentication
+       - Supporting multiple auth methods
+       - Authentication strategy pattern
+
+7. Testing Authentication
+   7.1 Testing with curl
+   7.2 Testing with Postman
+   7.3 Testing with Python requests
+   7.4 Automated authentication tests
+
+8. Common Pitfalls
+9. Key Takeaways
+10. Practice Exercises
+```
+
+---
+
+#### **Day 5: Cookie-based Authentication & Session Management**
+
+**File**: `day-5-cookie-session-authentication.md`
+
+```markdown
+1. Cookie-based Authentication Fundamentals
+   1.1 What are HTTP Cookies?
+   1.2 How Cookies Work
+   1.3 Cookie Lifecycle
+   1.4 Cookies vs Tokens
+   1.5 When to Use Cookie Authentication
+
+2. Cookie Attributes Deep Dive
+   2.1 Domain Attribute
+       - Domain matching rules
+       - Subdomain handling
+   2.2 Path Attribute
+       - Path matching
+       - Cookie visibility
+   2.3 Expires and Max-Age
+       - Absolute expiration (Expires)
+       - Relative expiration (Max-Age)
+       - Session cookies
+       - Persistent cookies
+   2.4 Secure Flag
+       - HTTPS-only cookies
+       - Why Secure matters
+   2.5 HttpOnly Flag
+       - JavaScript access prevention
+       - XSS protection
+   2.6 SameSite Attribute
+       - SameSite=Strict
+       - SameSite=Lax
+       - SameSite=None
+       - CSRF protection
+   2.7 Cookie Priority
+
+3. Implementing Cookies in FastAPI
+   3.1 Setting Cookies
+       - Response.set_cookie()
+       - Cookie parameters
+   3.2 Reading Cookies
+       - Cookie dependency
+       - Request.cookies
+   3.3 Deleting Cookies
+       - Response.delete_cookie()
+   3.4 Secure Cookie Configuration
+   3.5 Code Examples
+
+4. Session Management
+   4.1 What are Sessions?
+   4.2 Session vs Token Authentication
+   4.3 Session ID Generation
+       - Secure random generation
+       - UUID vs random strings
+       - Session ID requirements
+   4.4 Session Storage Options
+       - In-memory storage (development)
+       - Redis storage (recommended)
+       - Database storage
+       - Memcached storage
+   4.5 Session Storage Comparison
+   4.6 Implementing Redis Session Storage
+       - Redis connection
+       - Session CRUD operations
+       - Session serialization
+
+5. Session Lifecycle Management
+   5.1 Session Creation
+   5.2 Session Validation
+   5.3 Session Expiration
+       - Absolute timeout
+       - Idle timeout
+       - Sliding expiration
+   5.4 Session Renewal
+       - Regenerating session IDs
+       - When to renew
+   5.5 Session Revocation
+       - Manual logout
+       - Admin revocation
+       - Security-based revocation
+
+6. CSRF (Cross-Site Request Forgery) Protection
+   6.1 What is CSRF?
+   6.2 How CSRF Attacks Work
+   6.3 CSRF Prevention Strategies
+       - CSRF tokens
+       - SameSite cookies
+       - Double submit cookies
+       - Custom headers
+   6.4 Implementing CSRF Tokens
+       - Token generation
+       - Token validation
+       - Token in forms
+       - Token in AJAX requests
+   6.5 CSRF Token Storage
+
+7. Complete Session Authentication Implementation
+   7.1 User login endpoint
+       - Credentials verification
+       - Session creation
+       - Cookie setting
+   7.2 Session validation dependency
+   7.3 Protected endpoints
+   7.4 Logout endpoint
+       - Session deletion
+       - Cookie deletion
+   7.5 "Remember Me" functionality
+       - Long-lived sessions
+       - Implementation strategies
+
+8. Session Security Best Practices
+   8.1 Session ID security
+   8.2 Session fixation prevention
+   8.3 Session hijacking prevention
+   8.4 Secure session storage
+
+9. Cookies vs JWT Tokens Comparison
+   9.1 Security comparison
+   9.2 Scalability comparison
+   9.3 Mobile app considerations
+   9.4 Browser considerations
+   9.5 Use case decision matrix
+
+10. Complete Practical Examples
+    10.1 Redis session system
+    10.2 CSRF protection system
+    10.3 "Remember me" implementation
+    10.4 Multi-device session management
+
+11. Testing Cookie Authentication
+12. Common Pitfalls
+13. Key Takeaways
+14. Practice Exercises
+```
+
+---
+
+#### **Day 6: OAuth2 & Password Hashing**
+
+**File**: `day-6-oauth2-password-hashing.md`
+
+```markdown
+1. OAuth2 Fundamentals
+   1.1 What is OAuth2?
+   1.2 OAuth2 vs OAuth 1.0
+   1.3 OAuth2 Components (Roles)
+       - Resource Owner (user)
+       - Client (application)
+       - Authorization Server
+       - Resource Server
+   1.4 OAuth2 Terminology
+       - Access Token
+       - Refresh Token
+       - Authorization Code
+       - Scope
+       - Grant
+
+2. OAuth2 Grant Types (Flows)
+   2.1 Authorization Code Flow
+       - How it works
+       - When to use
+       - Flow diagram
+   2.2 Implicit Flow (Deprecated)
+       - Why it's deprecated
+   2.3 Resource Owner Password Credentials Flow
+       - How it works
+       - When to use (and when not to)
+       - Flow diagram
+   2.4 Client Credentials Flow
+       - How it works
+       - Service-to-service auth
+       - Flow diagram
+   2.5 Refresh Token Flow
+   2.6 Choosing the Right Flow
+
+3. OAuth2 Password Flow Deep Dive
+   3.1 Understanding Password Flow
+   3.2 When to Use Password Flow
+       - First-party applications
+       - Mobile apps
+       - Legacy migration
+   3.3 Password Flow Diagram
+   3.4 Password Flow Steps
+
+4. OAuth2 Implementation in FastAPI
+   4.1 FastAPI OAuth2 Components
+       - OAuth2PasswordBearer
+       - OAuth2PasswordRequestForm
+       - Security scopes
+   4.2 OAuth2PasswordBearer Setup
+   4.3 Token Endpoint Implementation
+       - Accepting credentials
+       - User authentication
+       - Token generation
+       - Response format
+   4.4 Protected Endpoint Implementation
+       - Token extraction
+       - Token validation
+       - User retrieval
+   4.5 Current User Dependency
+
+5. Password Hashing Deep Dive
+   5.1 Why Hash Passwords?
+   5.2 Never Store Plain Text Passwords
+   5.3 Hashing vs Encryption
+       - One-way vs two-way
+       - When to use each
+   5.4 Hash Algorithm Comparison
+       - MD5 (never use for passwords)
+       - SHA family (not for passwords)
+       - bcrypt (recommended)
+       - argon2 (also good)
+       - scrypt
+       - PBKDF2
+   5.5 Algorithm Selection Guide
+
+6. Using Passlib with Bcrypt
+   6.1 Installing Passlib
+   6.2 CryptContext Setup
+       - Configuring schemes
+       - Deprecated schemes
+   6.3 Password Hashing
+       - Hash generation
+       - Computational cost (rounds)
+   6.4 Password Verification
+       - Verifying against hash
+       - Constant-time comparison
+   6.5 Salt in Bcrypt
+       - Automatic salt generation
+       - Why salt matters
+   6.6 Cost Factor (Work Factor)
+       - Adjusting difficulty
+       - Future-proofing
+
+7. Password Security Best Practices
+   7.1 Password Strength Requirements
+       - Minimum length (12+ recommended)
+       - Character diversity
+       - Common password blocking
+   7.2 Password Validation with Pydantic
+       - Length validation
+       - Uppercase requirement
+       - Lowercase requirement
+       - Digit requirement
+       - Special character requirement
+       - Custom validators
+   7.3 Password Policies
+       - Expiration policies (debated)
+       - Reuse prevention
+       - Breach checking (HaveIBeenPwned)
+   7.4 Password Reset Security
+   7.5 Account Lockout Policies
+
+8. Complete OAuth2 + Password Hashing Implementation
+   8.1 User Model
+       - With hashed password
+       - Additional fields
+   8.2 User Registration Endpoint
+       - Input validation
+       - Password hashing
+       - User creation
+   8.3 Login Endpoint (Token Generation)
+       - Credential verification
+       - Password verification
+       - Token creation
+       - Response formatting
+   8.4 Protected Endpoints
+       - Current user dependency
+       - User profile endpoint
+       - User-specific data
+   8.5 Password Change Endpoint
+       - Old password verification
+       - New password hashing
+   8.6 Fake Database Setup (for learning)
+
+9. Testing OAuth2 Flow
+   9.1 Using /docs (Swagger UI)
+       - Authorize button
+       - Testing protected endpoints
+   9.2 Using curl
+       - Login request
+       - Using access token
+   9.3 Using Python requests
+   9.4 Automated tests
+
+10. OAuth2 Security Considerations
+11. Common Pitfalls
+12. Key Takeaways
+13. Practice Exercises
+```
+
+---
+
+#### **Day 7: JWT Deep Dive & Token Pairs**
+
+**File**: `day-7-jwt-tokens-deep-dive.md`
+
+```markdown
+1. JWT (JSON Web Token) Fundamentals
+   1.1 What is JWT?
+   1.2 JWT Use Cases
+   1.3 JWT vs Session Tokens
+       - Stateless vs stateful
+       - Scalability comparison
+       - Security comparison
+   1.4 When to Use JWT
+   1.5 When NOT to Use JWT
+
+2. JWT Structure Deep Dive
+   2.1 JWT Format (Three Parts)
+   2.2 Header
+       - Algorithm (alg)
+           - HS256 (HMAC with SHA-256)
+           - RS256 (RSA with SHA-256)
+           - ES256 (ECDSA with SHA-256)
+       - Token Type (typ)
+       - Algorithm selection guide
+   2.3 Payload (Claims)
+       - Registered Claims
+           - iss (issuer)
+           - sub (subject)
+           - aud (audience)
+           - exp (expiration)
+           - nbf (not before)
+           - iat (issued at)
+           - jti (JWT ID)
+       - Public Claims
+       - Private (Custom) Claims
+       - Claims best practices
+   2.4 Signature
+       - How signature is created
+       - HMAC signature process
+       - RSA signature process
+       - Signature verification
+   2.5 Base64URL Encoding
+   2.6 Complete JWT Example Breakdown
+
+3. JWT Implementation with python-jose
+   3.1 Installing python-jose
+   3.2 Configuration
+       - Secret key management
+       - Algorithm selection
+       - Token expiration defaults
+   3.3 Token Generation (Encoding)
+       - Creating payload
+       - Setting expiration
+       - Adding custom claims
+       - Encoding JWT
+   3.4 Token Validation (Decoding)
+       - Decoding JWT
+       - Verifying signature
+       - Checking expiration
+       - Extracting claims
+       - Handling decode errors
+   3.5 Error Handling
+       - JWTError types
+       - Expired signature
+       - Invalid signature
+       - Invalid token format
+
+4. Access and Refresh Token Strategy
+   4.1 Why Two Token Types?
+   4.2 Security Benefits of Token Pairs
+   4.3 Access Token Characteristics
+       - Short lifespan (15-30 minutes)
+       - Used for API requests
+       - Stateless validation
+       - Contains user identity
+   4.4 Refresh Token Characteristics
+       - Long lifespan (7-30 days)
+       - Used to get new access tokens
+       - Can be stored in database
+       - Can be revoked
+   4.5 Token Pair Flow Diagram
+   4.6 Token Storage Comparison
+       - Client-side storage options
+       - Security implications
+
+5. Implementing Token Pairs
+   5.1 Token Models
+       - TokenPair response model
+       - Token claims structure
+   5.2 Access Token Generation
+       - Setting appropriate expiration
+       - Adding user claims
+   5.3 Refresh Token Generation
+       - Longer expiration
+       - Unique identifier (jti)
+       - Database storage option
+   5.4 Login Endpoint with Token Pair
+       - User authentication
+       - Generating both tokens
+       - Response format
+   5.5 Refresh Token Storage
+       - In-memory (development)
+       - Redis storage
+       - Database storage
+       - Storage comparison
+
+6. Token Refresh Flow
+   6.1 Why Refresh Tokens?
+   6.2 Refresh Token Endpoint
+       - Accepting refresh token
+       - Validating refresh token
+       - Checking expiration
+       - Checking revocation
+       - Generating new access token
+   6.3 Refresh Token Response
+   6.4 Client-side Refresh Logic
+       - Detecting expired access token
+       - Automatic refresh
+       - Retry failed request
+   6.5 Complete Refresh Flow Diagram
+
+7. JWT Claims and Scopes
+   7.1 Standard Claims Usage
+   7.2 Custom Claims
+       - User role
+       - Permissions
+       - User metadata
+   7.3 OAuth2 Scopes in JWT
+       - Scope claim
+       - Scope validation
+       - Scope-based access control
+   7.4 Token Payload Best Practices
+       - Keep payload small
+       - Don't store sensitive data
+       - Version your tokens
+
+8. Complete JWT Implementation
+   8.1 Configuration and setup
+   8.2 Token generation functions
+   8.3 Token validation dependency
+   8.4 Login endpoint (token pair)
+   8.5 Refresh endpoint
+   8.6 Protected endpoints
+   8.7 Current user with claims
+
+9. Testing JWT Implementation
+   9.1 Manual testing with /docs
+   9.2 Testing token generation
+   9.3 Testing token validation
+   9.4 Testing token refresh
+   9.5 Automated tests
+
+10. JWT Security Best Practices
+    10.1 Secret Key Management
+        - Key generation
+        - Key rotation
+        - Environment variables
+    10.2 Algorithm Selection
+    10.3 Token Expiration
+    10.4 Token Size Considerations
+    10.5 HTTPS Requirement
+    10.6 XSS Protection
+
+11. Common Pitfalls
+12. Key Takeaways
+13. Practice Exercises
+```
+
+---
+
+#### **Day 8: Token Rotation & Revocation**
+
+**File**: `day-8-token-rotation-revocation.md`
+
+```markdown
+1. Token Expiration Management
+   1.1 Why Tokens Expire
+   1.2 Setting Expiration Times
+       - Access token expiration (15-30 min)
+       - Refresh token expiration (7-30 days)
+       - Expiration trade-offs
+   1.3 Handling Expired Tokens
+       - Client-side handling
+       - Error responses
+       - User experience considerations
+   1.4 Token Renewal Strategies
+   1.5 Expiration Best Practices
+
+2. Refresh Token Rotation
+   2.1 What is Token Rotation?
+   2.2 Why Rotate Refresh Tokens?
+       - Security benefits
+       - Token theft detection
+       - Limiting damage window
+   2.3 Rotation Strategies
+       - Rotate on every use
+       - Rotate periodically
+       - Hybrid approach
+   2.4 Implementing Refresh Token Rotation
+       - Mark old token as used
+       - Generate new refresh token
+       - Return both tokens
+       - Update storage
+   2.5 Token Rotation Flow Diagram
+
+3. Detecting Token Reuse
+   3.1 Why Token Reuse Matters
+   3.2 Reuse Detection Strategy
+       - Marking tokens as used
+       - Tracking usage
+   3.3 Handling Detected Reuse
+       - Invalidate all tokens for user
+       - Security alert
+       - Force re-authentication
+   3.4 Implementation Example
+
+4. Token Revocation Strategies
+   4.1 Why Revoke Tokens?
+       - User logout
+       - Security breach
+       - Account suspension
+       - Password change
+   4.2 Revocation Challenges with JWT
+       - JWTs are stateless
+       - Cannot truly revoke without state
+   4.3 Revocation Strategy Comparison
+
+5. Token Blacklisting
+   5.1 How Blacklisting Works
+   5.2 In-Memory Blacklist
+       - Implementation
+       - Limitations
+       - Use cases
+   5.3 Redis Blacklist
+       - Redis setup
+       - Storing revoked tokens
+       - TTL management
+       - Checking blacklist
+   5.4 Database Blacklist
+       - Table structure
+       - Query optimization
+       - Cleanup strategies
+   5.5 Blacklist Comparison
+   5.6 Complete Blacklist Implementation
+
+6. Token Versioning
+   6.1 What is Token Versioning?
+   6.2 Version in JWT Claims
+   6.3 Incrementing Version on Events
+       - Password change
+       - Permission changes
+       - Security events
+   6.4 Validating Token Version
+   6.5 Implementation Example
+
+7. JTI (JWT ID) for Revocation
+   7.1 What is JTI?
+   7.2 Generating Unique JTIs
+   7.3 Storing Active JTIs
+       - Whitelist approach
+       - Redis storage
+   7.4 Validating JTI
+   7.5 Revoking by JTI
+   7.6 JTI Cleanup
+   7.7 Implementation Example
+
+8. Short Expiration as Alternative
+   8.1 Security Through Short Lifespan
+   8.2 Extremely Short Access Tokens (5-15 min)
+   8.3 Trade-offs
+       - More refresh requests
+       - Better security
+       - User experience impact
+   8.4 When to Use This Approach
+
+9. Complete Token Management System
+   9.1 Token generation with JTI
+   9.2 Token validation with blacklist check
+   9.3 Refresh with rotation
+   9.4 Logout endpoint (revocation)
+   9.5 Revoke all tokens endpoint
+   9.6 Token cleanup jobs
+
+10. Token Storage on Client Side
+    10.1 Storage Options
+        - localStorage (persistent)
+        - sessionStorage (session)
+        - Memory (most secure)
+        - Cookies (with HttpOnly)
+    10.2 Security Implications
+    10.3 XSS Protection
+    10.4 Storage Best Practices
+
+11. Advanced Token Features
+    11.1 Device Fingerprinting
+    11.2 Token Binding
+    11.3 Token Introspection
+    11.4 Token Exchange
+
+12. Complete Practical Example
+    12.1 Full token system with rotation
+    12.2 Blacklist integration
+    12.3 Logout and revocation
+    12.4 Security monitoring
+
+13. Monitoring and Logging
+    13.1 Token generation events
+    13.2 Token validation failures
+    13.3 Revocation events
+    13.4 Security alerts
+
+14. Common Pitfalls
+15. Key Takeaways
+16. Practice Exercises
+```
+
+---
+
+#### **Day 9: Authorization Patterns (RBAC, Permissions, Scopes)**
+
+**File**: `day-9-authorization-patterns.md`
+
+```markdown
+1. Authorization Fundamentals
+   1.1 Authentication vs Authorization
+   1.2 Authorization Models Overview
+       - RBAC (Role-Based Access Control)
+       - ABAC (Attribute-Based Access Control)
+       - ACL (Access Control Lists)
+       - PBAC (Policy-Based Access Control)
+   1.3 Choosing Authorization Model
+   1.4 Principle of Least Privilege
+
+2. Role-Based Access Control (RBAC)
+   2.1 What is RBAC?
+   2.2 RBAC Components
+       - Users
+       - Roles
+       - Permissions
+   2.3 User → Role → Permission Model
+   2.4 RBAC Benefits
+   2.5 RBAC Use Cases
+
+3. Implementing Roles in FastAPI
+   3.1 Role Enumeration
+       - Defining roles
+       - Role hierarchy
+   3.2 User Model with Role
+   3.3 Role-Based Dependency
+       - require_role function
+       - Multiple role checking
+   3.4 Role-Based Endpoint Protection
+       - Single role requirement
+       - Multiple role options
+       - Role hierarchy handling
+   3.5 Code Examples
+
+4. Permission-Based Authorization
+   4.1 What are Permissions?
+   4.2 Granular Permissions
+       - Resource-level permissions
+       - Action-level permissions
+   4.3 Permission Enumeration
+   4.4 Role-to-Permission Mapping
+       - Static mapping
+       - Dynamic mapping
+       - Database-driven permissions
+   4.5 User Permission Property
+   4.6 Permission Dependencies
+       - require_permission function
+       - Multiple permission checking
+       - Permission combinations (AND/OR)
+   4.7 Permission-Based Endpoint Protection
+
+5. Hierarchical Roles
+   5.1 Role Hierarchy Concept
+   5.2 Implementing Role Hierarchy
+   5.3 Inheritance of Permissions
+   5.4 Super Admin Pattern
+
+6. Resource Ownership Checks
+   6.1 What is Resource Ownership?
+   6.2 Ownership Patterns
+       - Owner-only access
+       - Owner or admin access
+       - Shared resource access
+   6.3 Implementing Ownership Verification
+       - Resource retrieval
+       - Ownership comparison
+       - HTTP 403 vs 404
+   6.4 Owner-Based Dependencies
+   6.5 Owner or Admin Pattern
+   6.6 Complete Examples
+
+7. OAuth2 Scopes in FastAPI
+   7.1 What are OAuth2 Scopes?
+   7.2 Scopes vs Roles vs Permissions
+   7.3 Defining Scopes
+       - Scope naming conventions
+       - Scope granularity
+   7.4 Requesting Scopes
+       - Client requesting scopes
+       - User consent
+   7.5 Scopes in JWT Token
+   7.6 Validating Scopes
+       - Security scopes dependency
+       - Scope checking
+   7.7 Scope-Based Endpoints
+   7.8 Combining Scopes and Roles
+
+8. Dependency-Based Authorization
+   8.1 Composable Authorization
+   8.2 Dependency Chaining
+       - Authentication dependency
+       - Authorization dependency
+       - Resource dependency
+   8.3 Reusable Authorization Patterns
+   8.4 Custom Authorization Dependencies
+   8.5 Combining Multiple Checks
+
+9. Advanced Authorization Patterns
+   9.1 Time-Based Access Control
+       - Business hours restriction
+       - Temporary access
+   9.2 Location-Based Access Control
+   9.3 Dynamic Permission Loading
+   9.4 Permission Caching
+   9.5 Audit Logging for Authorization
+
+10. Complete Authorization System
+    10.1 User model with roles and permissions
+    10.2 RBAC implementation
+    10.3 Permission system
+    10.4 Resource ownership
+    10.5 OAuth2 scopes
+    10.6 Combined authorization example
+
+11. Testing Authorization
+    11.1 Testing roles
+    11.2 Testing permissions
+    11.3 Testing ownership
+    11.4 Testing scopes
+    11.5 Automated authorization tests
+
+12. Authorization Best Practices
+    12.1 Design principles
+    12.2 Security considerations
+    12.3 Performance optimization
+    12.4 Maintainability
+
+13. Common Pitfalls
+14. Key Takeaways
+15. Practice Exercises
+```
+
+---
+
+#### **Day 10: Multi-Factor Authentication (MFA)**
+
+**File**: `day-10-multi-factor-authentication.md`
+
+```markdown
+1. Multi-Factor Authentication Fundamentals
+   1.1 What is MFA?
+   1.2 Why MFA Matters
+   1.3 MFA Statistics and Benefits
+   1.4 MFA vs 2FA
+   1.5 When to Implement MFA
+
+2. Authentication Factors
+   2.1 Factor Categories
+       - Something you know (password)
+       - Something you have (device/token)
+       - Something you are (biometric)
+   2.2 Multi-Factor Combinations
+   2.3 Factor Strength Comparison
+
+3. TOTP (Time-based One-Time Password)
+   3.1 What is TOTP?
+   3.2 How TOTP Works
+       - Shared secret
+       - Time window (30 seconds)
+       - Hash algorithm
+       - Code generation
+   3.3 TOTP Algorithm Diagram
+   3.4 TOTP vs HOTP (Counter-based)
+   3.5 TOTP Security Properties
+
+4. Implementing TOTP with PyOTP
+   4.1 Installing PyOTP and QRCode
+   4.2 Generating TOTP Secret
+       - Random base32 secret
+       - Secret storage
+   4.3 Creating Provisioning URI
+       - URI format
+       - Parameters (label, issuer)
+   4.4 QR Code Generation
+       - QR code library
+       - Generating QR image
+       - Serving QR code
+   4.5 Verifying TOTP Codes
+       - Code validation
+       - Time window tolerance
+       - Rate limiting verification attempts
+
+5. MFA Setup Flow
+   5.1 MFA Setup Endpoint
+       - Generate secret
+       - Store secret (encrypted)
+       - Return QR code
+   5.2 MFA Enable Endpoint
+       - Verify initial code
+       - Enable MFA for user
+       - Generate backup codes
+   5.3 User Model with MFA
+       - mfa_secret field
+       - mfa_enabled field
+       - backup_codes field
+   5.4 Setup Flow Diagram
+
+6. MFA Login Flow
+   6.1 Modified Login Process
+       - Primary authentication (password)
+       - Check if MFA enabled
+       - Request MFA code
+       - Verify MFA code
+       - Issue token
+   6.2 Two-Step Login Implementation
+       - Intermediate token/state
+       - MFA verification endpoint
+       - Final token issuance
+   6.3 Login Flow Diagram
+   6.4 Error Handling
+
+7. SMS-based OTP
+   7.1 How SMS OTP Works
+   7.2 SMS Provider Integration
+       - Twilio integration
+       - AWS SNS integration
+       - Other providers
+   7.3 OTP Generation
+       - Random number generation
+       - OTP length (6 digits)
+       - OTP expiration
+   7.4 OTP Storage
+       - Temporary storage (Redis)
+       - Expiration handling
+   7.5 OTP Verification
+       - Code validation
+       - Expiration check
+       - Attempt limiting
+   7.6 SMS OTP Implementation
+   7.7 Rate Limiting for SMS
+
+8. Backup Codes
+   8.1 Why Backup Codes?
+   8.2 Generating Backup Codes
+       - Number of codes (8-10)
+       - Code format
+       - Secure random generation
+   8.3 Storing Backup Codes
+       - Hashing backup codes
+       - Database storage
+   8.4 Using Backup Codes
+       - Code verification
+       - One-time use enforcement
+       - Marking as used
+   8.5 Regenerating Backup Codes
+   8.6 Backup Code Implementation
+
+9. MFA Recovery Process
+   9.1 When Users Lose Device
+   9.2 Recovery Options
+       - Backup codes
+       - SMS recovery
+       - Email recovery
+       - Support ticket
+   9.3 Recovery Flow
+   9.4 Security Considerations
+
+10. MFA Disable Flow
+    10.1 Disabling MFA Securely
+    10.2 Verification Requirements
+    10.3 Cleanup Process
+
+11. Complete MFA Implementation
+    11.1 User model with MFA fields
+    11.2 MFA setup endpoints
+    11.3 MFA login flow
+    11.4 Backup code system
+    11.5 SMS OTP integration
+    11.6 Recovery endpoints
+
+12. MFA User Experience
+    12.1 "Trust This Device" Feature
+    12.2 Remember Device Implementation
+    12.3 MFA Frequency Configuration
+    12.4 User-Friendly Error Messages
+
+13. MFA Security Best Practices
+    13.1 Secret storage (encrypted)
+    13.2 Rate limiting
+    13.3 Attempt lockout
+    13.4 Audit logging
+    13.5 Time synchronization
+
+14. Testing MFA
+    14.1 Testing TOTP generation
+    14.2 Testing verification
+    14.3 Testing backup codes
+    14.4 Integration tests
+
+15. Advanced MFA Topics
+    15.1 WebAuthn / FIDO2
+    15.2 Push Notifications
+    15.3 Biometric Authentication
+    15.4 Adaptive MFA (Risk-Based)
+
+16. Common Pitfalls
+17. Key Takeaways
+18. Practice Exercises
+```
+
+---
+
+#### **Final Summary Table (10 Days)**
+
+| Day | File | Main Topics | Roadmap Section |
+|-----|------|-------------|-----------------|
+| **1** | `day-1-https-ssl-security-headers.md` | HTTPS/TLS, Certificates, SSL Termination, Basic Security Headers | **Day 1-3: Security Fundamentals** |
+| **2** | `day-2-advanced-headers-cors.md` | HSTS, Advanced Headers, CORS Deep Dive | **Day 1-3: Security Fundamentals** |
+| **3** | `day-3-input-sanitization-attacks.md` | SQL Injection, XSS, Path Traversal, File Uploads | **Day 1-3: Security Fundamentals** |
+| **4** | `day-4-basic-authentication-methods.md` | API Keys, Basic Auth, Bearer Tokens | **Day 4-7: Auth & Authorization** |
+| **5** | `day-5-cookie-session-authentication.md` | Cookies, Sessions, CSRF Protection | **Day 4-7: Auth & Authorization** |
+| **6** | `day-6-oauth2-password-hashing.md` | OAuth2 Flows, Password Flow, Bcrypt Hashing | **Day 4-7: Auth & Authorization** |
+| **7** | `day-7-jwt-tokens-deep-dive.md` | JWT Structure, Access/Refresh Tokens, Claims & Scopes | **Day 4-7: Auth & Authorization** |
+| **8** | `day-8-token-rotation-revocation.md` | Token Expiration, Rotation, Revocation Strategies | **Day 4-7: Auth & Authorization** |
+| **9** | `day-9-authorization-patterns.md` | RBAC, Permissions, Resource Ownership, OAuth2 Scopes | **Day 4-7: Auth & Authorization** |
+| **10** | `day-10-multi-factor-authentication.md` | TOTP, SMS OTP, Backup Codes, MFA Flows | **Day 4-7: Auth & Authorization** |
+
+---
 
 ### Week 5: Advanced FastAPI Features
 
