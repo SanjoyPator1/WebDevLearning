@@ -17,6 +17,8 @@ export class TimingInterceptor implements NestInterceptor {
     const start = Date.now();
 
     return next.handle().pipe(
+      // tap is for peeking. It lets us run some code when the value goes past, but it doesnot touch the value.
+      // Whatever came in comes out unchanged
       tap({
         next: () => {
           this.logger.log(
