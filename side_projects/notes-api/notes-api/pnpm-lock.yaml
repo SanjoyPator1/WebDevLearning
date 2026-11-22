@@ -8,6 +8,9 @@ dependencies:
   '@nestjs/common':
     specifier: ^12.0.1
     version: 12.6.0(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+  '@nestjs/config':
+    specifier: ^12.1.1
+    version: 12.1.1(@nestjs/common@12.6.0)(rxjs@7.8.2)
   '@nestjs/core':
     specifier: ^12.0.1
     version: 12.6.0(@nestjs/common@12.6.0)(@nestjs/platform-express@12.6.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -1118,6 +1121,20 @@ packages:
       uid: 2.0.2
     transitivePeerDependencies:
       - supports-color
+
+  /@nestjs/config@12.1.1(@nestjs/common@12.6.0)(rxjs@7.8.2):
+    resolution: {integrity: sha512-e9DrgYbF0NBM6TU9tl6Q645kgzwaJ1fC+M1YYu7KX61+q2nSYm31CqlZmRel5ouhcSa5gaoGO1tMqeelreIBpw==}
+    peerDependencies:
+      '@nestjs/common': ^11.0.0 || ^12.0.0
+      rxjs: ^7.1.0
+    dependencies:
+      '@nestjs/common': 12.6.0(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@standard-schema/spec': 1.1.0
+      dotenv: 18.0.3
+      dotenv-expand: 13.0.0
+      es-toolkit: 1.53.1
+      rxjs: 7.8.2
+    dev: false
 
   /@nestjs/core@12.6.0(@nestjs/common@12.6.0)(@nestjs/platform-express@12.6.0)(reflect-metadata@0.2.2)(rxjs@7.8.2):
     resolution: {integrity: sha512-LmIF9DtTw4HgGWxlNZYFr3L+D8hw8vzwBV7Fkgr+lcVfeYYFBshQpwuwt6ewT6YvDnvIgI8+GdRDV7RbcVAiRA==}
@@ -2722,6 +2739,24 @@ packages:
     engines: {node: '>=0.3.1'}
     dev: true
 
+  /dotenv-expand@13.0.0:
+    resolution: {integrity: sha512-aBfBS8eYIeXmpHI9ThIlA7/WLq+SLt18iXUZhb52rW89QLKQFoIpPG1bPeewoPZsTyjSSO3T7234FBVUM1V2rA==}
+    engines: {node: '>=12'}
+    dependencies:
+      dotenv: 17.4.2
+    dev: false
+
+  /dotenv@17.4.2:
+    resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /dotenv@18.0.3:
+    resolution: {integrity: sha512-/8CJTyL817qPnfbQrJgOEcrU3fDrJkRIoXBE566wHuvIXKOCHUZhPqGPbCPi9SogjdGnreF0TlvnTgK6J/8zpA==}
+    engines: {node: '>=12'}
+    hasBin: true
+    dev: false
+
   /dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
@@ -2803,6 +2838,10 @@ packages:
       has-tostringtag: 1.0.2
       hasown: 2.0.4
     dev: true
+
+  /es-toolkit@1.53.1:
+    resolution: {integrity: sha512-VhMc6IXmexu8iYFfL2aaAww6IvJTdHlqBLruLoEUs33YD4IcP5DdZcLOybMsMmmLsiy1c8PsiLsrM0DdIuuRUA==}
+    dev: false
 
   /escalade@3.2.0:
     resolution: {integrity: sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==}

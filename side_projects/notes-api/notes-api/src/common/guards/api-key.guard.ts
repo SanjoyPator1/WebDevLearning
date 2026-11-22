@@ -5,14 +5,22 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
+  private readonly expectedKey: string;
+
+  constructor(configService: ConfigService) {
+    this.expectedKey = configService.getOrThrow<string>('API_KEY');
+  }
+
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
     const apiKey = request.headers['x-api-key'];
 
-    if (apiKey !== 'secret-key-123') {
+    // it gets this from the .env
+    if (apiKey !== this.expectedKey) {
       throw new UnauthorizedException('Invalid or missing API key');
     }
 

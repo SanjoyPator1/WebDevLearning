@@ -10,7 +10,8 @@ import { ResponseWrapInterceptor } from './common/interceptors/response-wrap.int
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalGuards(new ApiKeyGuard());
+  // NOT NEEDED NOW
+  // app.useGlobalGuards(new ApiKeyGuard());
 
   app.useGlobalInterceptors(
     new TimingInterceptor(),
