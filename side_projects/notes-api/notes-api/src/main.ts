@@ -18,8 +18,7 @@ async function bootstrap() {
   );
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  app.useGlobalFilters(new AllExceptionFilter());
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new AllExceptionFilter(), new HttpExceptionFilter());
 
   await app.listen(process.env.PORT ?? 3000);
 }
