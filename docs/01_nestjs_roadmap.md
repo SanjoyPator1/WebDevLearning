@@ -1,6 +1,6 @@
 # NestJS Roadmap: Basics to Advanced
 
-> Knowledge base doc 01. Target version: **NestJS 12** (12.x; `@nestjs/core` 12.5.1 on npm when researched).
+> Document 01 of the `docs/` knowledge hub. The per-topic study notes are in `notes/`, and the exercises are in `projects/`; each topic below links to them once they are written. Target version: **NestJS 12** (12.x; `@nestjs/core` 12.5.1 on npm when researched).
 > Last researched: 2026-11-20.
 > Written for a senior backend engineer who already knows FastAPI, PostgreSQL and Docker. The goal is a deep understanding of how Nest works plus interview readiness.
 
@@ -122,7 +122,8 @@
   - **Deep**: separates senior engineers from mid-level ones. Expect these in senior rounds.
   - **Elective**: learn when a project needs it.
 - **Checkboxes** track your own learning progress. Tick a subtopic when you have read its notes and finished its exercise. The materials existing does not count as done.
-- **Notes** live in `notes/<phase folder>/`. Every notes file starts with a clickable Table of Contents. Cross-topic documents such as this roadmap live in `docs/`. See [Repository Layout](#repository-layout).
+- **Notes** are the per-topic study notes. They live in `notes/<phase folder>/`, one file per topic, and every notes file starts with a clickable Table of Contents.
+- **Docs** are the cross-topic documents of the knowledge hub, such as this roadmap. They live in `docs/`. See [Repository Layout](#repository-layout).
 - **Code** lives in `projects/<phase folder>/`. Each exercise has `template/`, `solution/` and `solved/` folders. See [Exercise Workflow](#exercise-workflow).
 - **Testing starts in Phase 1.** Every milestone has tests. Phase 6 is the deep dive, not the first time tests appear.
 - **Each phase ends with:**
@@ -134,7 +135,8 @@
 ```
 WebDevLearning/
 ├── docs/                                     # knowledge hub: cross-topic documents
-│   └── 01_nestjs_roadmap.md                  # this file
+│   ├── 01_nestjs_roadmap.md                  # this file
+│   └── 03_side_projects.md                   # rules and index for side_projects/
 ├── notes/                                    # study notes, one file per topic
 │   ├── phase_00_orientation/
 │   │   ├── 01_nodejs_runtime.md              # notes for topic 0.1
@@ -150,6 +152,8 @@ WebDevLearning/
 │   │   │   └── solved/                       # complete reference answer
 │   │   └── 07_milestone_hello_nest/          # same three folders
 │   └── phase_01_core_building_blocks/
+├── side_projects/                            # your own projects, outside the roadmap
+│   └── notes-api/                            # one standalone folder per project
 ├── scripts/
 │   └── start_exercise.sh                     # copies template/ to solution/
 └── archive/                                  # old 2022 material
@@ -163,6 +167,7 @@ WebDevLearning/
 - Phase milestones keep counting after the phase's last topic, in the order they should be done. Phase 0 has topics 01 to 05, so its milestones are `06_milestone_toy_di` and `07_milestone_hello_nest`. Phase 1 has ten topics, so its milestone is `11_milestone_tasks_api`. A milestone has no notes file of its own, so it exists only under `projects/`.
 - Reading order inside any phase folder is therefore just the number order: topics first, then milestones.
 - `docs/` is the knowledge hub for documents that cut across topics: this roadmap and, later, cheat sheets and the interview question bank. They use `NN_name.md`, numbered in the order they are written. Per-topic study notes never go in `docs/`.
+- `side_projects/` is for your own projects outside the roadmap. They are not exercises, so they have no phase folders and no `template/solution/solved`, and the Focus Rule does not apply. See [03_side_projects.md](03_side_projects.md).
 
 | Phase | Folder name |
 |---|---|
@@ -296,6 +301,7 @@ Nest is built on TypeScript decorators, reflection metadata and the Node event l
 ### 0.1 The Node.js Runtime for Nest Developers
 
 **Priority:** Core
+**Notes:** [01_nodejs_runtime.md](../notes/phase_00_orientation/01_nodejs_runtime.md)
 
 - [ ] Event loop phases, microtasks vs macrotasks, and why one blocking call stalls every in-flight request
 - [ ] Promise error propagation, unhandled rejections and process crash behavior
@@ -308,6 +314,7 @@ Nest is built on TypeScript decorators, reflection metadata and the Node event l
 ### 0.2 TypeScript Refresher
 
 **Priority:** Core
+**Notes:** [02_typescript_refresher.md](../notes/phase_00_orientation/02_typescript_refresher.md) | **Exercise:** [02_typescript_refresher](../projects/phase_00_orientation/02_typescript_refresher/README.md)
 
 A refresher for someone who last used TypeScript around version 4.7 (2022). The fundamentals are a quick review. More time goes to what changed between 2022 and 2026. Nest-specific features (decorators and metadata) are in 0.3.
 
@@ -354,6 +361,7 @@ A refresher for someone who last used TypeScript around version 4.7 (2022). The 
 ### 0.3 TypeScript Features Nest Is Built On
 
 **Priority:** Core
+**Notes:** [03_typescript_for_nest.md](../notes/phase_00_orientation/03_typescript_for_nest.md) | **Exercise:** [03_typescript_for_nest](../projects/phase_00_orientation/03_typescript_for_nest/README.md)
 
 - [ ] What survives to runtime: classes do, interfaces and types are erased. This is why an interface can't be an injection token.
 - [ ] Legacy `experimentalDecorators` vs TC39 standard decorators. Nest uses the legacy model because parameter decorators and emitted metadata exist only there.
@@ -368,6 +376,7 @@ A refresher for someone who last used TypeScript around version 4.7 (2022). The 
 ### 0.4 The NestJS Philosophy and Landscape
 
 **Priority:** Core
+**Notes:** [04_nestjs_philosophy.md](../notes/phase_00_orientation/04_nestjs_philosophy.md)
 
 - [ ] What Nest adds on top of Express or Fastify: structure, DI and conventions, inspired by Angular
 - [ ] Nest vs Express, Fastify and Hono, and Nest vs FastAPI (see [Appendix A](#appendix-a-fastapi-to-nestjs-concept-map))
@@ -378,6 +387,7 @@ A refresher for someone who last used TypeScript around version 4.7 (2022). The 
 ### 0.5 Tooling and Project Setup
 
 **Priority:** Core
+**Notes:** [05_tooling_and_setup.md](../notes/phase_00_orientation/05_tooling_and_setup.md)
 
 - [ ] Nest CLI: `nest new` (the CJS or ESM prompt), `nest generate`, the `resource` CRUD generator
 - [ ] Project anatomy: `main.ts`, the root module, `nest-cli.json`, `tsconfig.build.json`
@@ -398,8 +408,8 @@ A refresher for someone who last used TypeScript around version 4.7 (2022). The 
 
 **Milestone**
 
-- `phase_00_orientation/06_milestone_toy_di`: a minimal DI container built on decorators and reflection
-- `phase_00_orientation/07_milestone_hello_nest`: an ESM Nest 12 app that runs, has a working debugger breakpoint, and has one passing Vitest test
+- [`phase_00_orientation/06_milestone_toy_di`](../projects/phase_00_orientation/06_milestone_toy_di/README.md): a minimal DI container built on decorators and reflection
+- [`phase_00_orientation/07_milestone_hello_nest`](../projects/phase_00_orientation/07_milestone_hello_nest/README.md): an ESM Nest 12 app that runs, has a working debugger breakpoint, and has one passing Vitest test
 
 ---
 
@@ -410,15 +420,17 @@ This phase covers the components that make up the HTTP request pipeline. The aim
 ### 1.1 Application Bootstrap
 
 **Priority:** Core
+**Notes:** [01_application_bootstrap.md](../notes/phase_01_core_building_blocks/01_application_bootstrap.md) | **Exercise:** [01_application_bootstrap](../projects/phase_01_core_building_blocks/01_application_bootstrap/README.md)
 
 - [ ] `NestFactory.create`, the application instance, `listen`, global prefix, CORS
-- [ ] Bootstrap at a high level: scan modules, build the container, instantiate providers, register routes, run lifecycle hooks (deep dive in 2.8)
-- [ ] Logger and other `NestApplicationOptions` at bootstrap
-- [ ] Choosing the HTTP adapter: Express (default) or `FastifyAdapter`
+- [ ] Bootstrap at a high level: scan modules, build the container, instantiate providers, register routes, run lifecycle hooks (deep dive in 2.8). Measured in 12.5.1: routes are registered before `onModuleInit` runs, and the "Nest application successfully started" line is logged at the end of `init()`, not `listen()`.
+- [ ] Logger and `NestApplicationOptions` at bootstrap, including `bufferLogs` (which also flushes at the end of `init()` in 12.5.1, although the official logger page says `listen`) and the other options in 12.5.1: `return503OnClosing`, `cookies`, `autoFlushLogs`, `forceConsole`, `moduleIdGeneratorAlgorithm`
+- [ ] Choosing the HTTP adapter: Express (default), `FastifyAdapter` or `NodeAdapter`. See 3.8 for the official recommendation.
 
 ### 1.2 Modules
 
 **Priority:** Core
+**Notes:** [02_modules.md](../notes/phase_01_core_building_blocks/02_modules.md) | **Exercise:** [02_modules](../projects/phase_01_core_building_blocks/02_modules/README.md)
 
 - [ ] `@Module` metadata: `imports`, `controllers`, `providers`, `exports`
 - [ ] Feature modules and shared modules. Providers are private to their module by default.
@@ -426,10 +438,13 @@ This phase covers the components that make up the HTTP request pipeline. The aim
 - [ ] `@Global` modules and why to use them sparingly
 - [ ] A first look at dynamic modules (`forRoot`, `register`). The deep dive is in 2.3.
 - [ ] Reading and fixing "Nest can't resolve dependencies of X" errors
+- [ ] Silent failures that produce no error: a class without `@Module()` in `imports` is accepted as an empty module, and a class without any decorator is built with `undefined` constructor parameters
+- [ ] Import order matters when two imported modules export the same token: the first match wins, silently
 
 ### 1.3 Controllers and Routing
 
 **Priority:** Core
+**Notes:** [03_controllers_and_routing.md](../notes/phase_01_core_building_blocks/03_controllers_and_routing.md) | **Exercise:** [03_controllers_and_routing](../projects/phase_01_core_building_blocks/03_controllers_and_routing/README.md)
 
 - [ ] `@Controller` and the route method decorators, route params, `@Query`, `@Body`, `@Headers`
 - [ ] `@Req` and `@Res`, why to avoid `@Res`, and `passthrough: true`
@@ -442,6 +457,7 @@ This phase covers the components that make up the HTTP request pipeline. The aim
 ### 1.4 Providers and Services
 
 **Priority:** Core
+**Notes:** [04_providers_and_services.md](../notes/phase_01_core_building_blocks/04_providers_and_services.md) | **Exercise:** [04_providers_and_services](../projects/phase_01_core_building_blocks/04_providers_and_services/README.md)
 
 - [ ] `@Injectable`, constructor injection, property injection
 - [ ] Providers are singletons by default, so in-memory state is shared across requests
@@ -451,6 +467,7 @@ This phase covers the components that make up the HTTP request pipeline. The aim
 ### 1.5 Middleware
 
 **Priority:** Core
+**Notes:** [05_middleware.md](../notes/phase_01_core_building_blocks/05_middleware.md) | **Exercise:** [05_middleware](../projects/phase_01_core_building_blocks/05_middleware/README.md)
 
 - [ ] Class middleware vs functional middleware
 - [ ] `NestModule.configure`, `MiddlewareConsumer`, `forRoutes`, `exclude`
@@ -461,6 +478,7 @@ This phase covers the components that make up the HTTP request pipeline. The aim
 ### 1.6 Pipes
 
 **Priority:** Core
+**Notes:** [06_pipes.md](../notes/phase_01_core_building_blocks/06_pipes.md) | **Exercise:** [06_pipes](../projects/phase_01_core_building_blocks/06_pipes/README.md)
 
 - [ ] Transformation vs validation
 - [ ] Built-in pipes: `ParseIntPipe`, `ParseUUIDPipe`, `ParseEnumPipe`, `ParseArrayPipe`, `DefaultValuePipe`, `ParseFilePipe`
@@ -471,6 +489,7 @@ This phase covers the components that make up the HTTP request pipeline. The aim
 ### 1.7 Guards
 
 **Priority:** Core
+**Notes:** [07_guards.md](../notes/phase_01_core_building_blocks/07_guards.md) | **Exercise:** [07_guards](../projects/phase_01_core_building_blocks/07_guards/README.md)
 
 - [ ] `CanActivate`, returning a boolean, Promise or Observable
 - [ ] `ExecutionContext` basics
@@ -481,6 +500,7 @@ This phase covers the components that make up the HTTP request pipeline. The aim
 ### 1.8 Interceptors
 
 **Priority:** Core
+**Notes:** [08_interceptors.md](../notes/phase_01_core_building_blocks/08_interceptors.md) | **Exercise:** [08_interceptors](../projects/phase_01_core_building_blocks/08_interceptors/README.md)
 
 - [ ] `NestInterceptor` and `CallHandler`, and running code before and after the handler
 - [ ] The RxJS needed for Nest: `map`, `tap`, `catchError`, `timeout`, `finalize`
@@ -490,6 +510,7 @@ This phase covers the components that make up the HTTP request pipeline. The aim
 ### 1.9 Exception Filters
 
 **Priority:** Core
+**Notes:** [09_exception_filters.md](../notes/phase_01_core_building_blocks/09_exception_filters.md) | **Exercise:** [09_exception_filters](../projects/phase_01_core_building_blocks/09_exception_filters/README.md)
 
 - [ ] The built-in `HttpException` hierarchy and the default error response shape
 - [ ] The v12 `errorCode` option, as in `new BadRequestException('...', { errorCode: 'WEAK_PASSWORD' })`
@@ -500,6 +521,7 @@ This phase covers the components that make up the HTTP request pipeline. The aim
 ### 1.10 Custom Decorators and the Request Lifecycle
 
 **Priority:** Core
+**Notes:** [10_decorators_and_lifecycle.md](../notes/phase_01_core_building_blocks/10_decorators_and_lifecycle.md) | **Exercise:** [10_decorators_and_lifecycle](../projects/phase_01_core_building_blocks/10_decorators_and_lifecycle/README.md)
 
 - [ ] Parameter decorators with `createParamDecorator`, for example `@CurrentUser()`
 - [ ] Decorator composition with `applyDecorators`
@@ -552,6 +574,7 @@ This phase is where senior interviews are won or lost. Read the `@nestjs/core` s
 - [ ] Naming conventions: `forRoot`, `forRootAsync`, `register`, `forFeature`
 - [ ] `ConfigurableModuleBuilder`
 - [ ] Async options with `useFactory`, `inject` and `imports`
+- [ ] How dynamic modules are identified: by their serialized definition, so calling `forRoot()` twice can give two module instances. Re-exporting a dynamic module is worth testing, because the 1.2 notes only read that path in the source.
 - [ ] Exercise: write a configurable library module such as a payments or notifications client
 
 ### 2.4 Injection Scopes
@@ -577,7 +600,7 @@ This phase is where senior interviews are won or lost. Read the `@nestjs/core` s
 
 **Priority:** Deep
 
-- [ ] `ModuleRef.get`, `resolve` and `create`, and the `strict` option
+- [ ] `ModuleRef.get`, `resolve` and `create`, and the `strict` option. `app.get` is non-strict by default, and `{ strict: true }` checks only the selected module's own providers, not what it imports.
 - [ ] Resolving scoped providers dynamically
 - [ ] `LazyModuleLoader` for serverless cold starts
 
@@ -595,6 +618,7 @@ This phase is where senior interviews are won or lost. Read the `@nestjs/core` s
 
 - [ ] Lifecycle hooks: `onModuleInit`, `onApplicationBootstrap`, `onModuleDestroy`, `beforeApplicationShutdown`, `onApplicationShutdown`
 - [ ] The v12 change: hooks run by component hierarchy level
+- [ ] Where the hooks sit in bootstrap: measured in 12.5.1, routes are registered before `onModuleInit`, so check the order again here instead of trusting a diagram
 - [ ] `enableShutdownHooks`, OS signals, and why hooks may not fire (PID 1 in Docker)
 - [ ] Graceful shutdown: draining requests (the v12 Express adapter drains in-flight requests), closing pools, the Kubernetes `preStop` hook
 
@@ -619,7 +643,7 @@ This phase is where senior interviews are won or lost. Read the `@nestjs/core` s
 
 - `phase_02_di_and_fundamentals/10_milestone_dynamic_module_lib`: a `NotificationsModule.forRootAsync()` library with custom providers and a discovery-based decorator
 - A short benchmark comparing request-scoped providers with CLS
-- A notes doc that walks through the core injector source
+- A short write-up in `notes/phase_02_di_and_fundamentals/` that walks through the core injector source
 
 ---
 
@@ -698,7 +722,7 @@ This phase is where senior interviews are won or lost. Read the `@nestjs/core` s
 
 - [ ] Express 5 changes: path matching, wildcards, async error handling
 - [ ] `FastifyAdapter`: setup, plugin differences, performance profile
-- [ ] `@nestjs/platform-node` and its `NodeAdapter`, a third adapter that exists on npm (12.5.1). The scaffold's `AGENTS.md` claims it is the fastest, ahead of Fastify. Benchmark it ourselves before believing that.
+- [ ] `@nestjs/platform-node` and its `NodeAdapter`, a third adapter that exists on npm (12.5.1). The scaffold's `AGENTS.md` claims it is the fastest, ahead of Fastify. The official docs page `http/performance.md` goes further: it recommends `NodeAdapter` from v12.3 and says it is planned to become the default in v13, with quoted figures of about 50% faster than Express and about 5% faster than Fastify. Those figures are not verified, so benchmark it ourselves, and re-check the adapter choice before writing the 3.8 notes.
 - [ ] Writing adapter-agnostic code that doesn't leak Express types through `@Req`
 - [ ] Keep-alive, raw body, HTTPS, multiple servers
 
@@ -1197,7 +1221,7 @@ This phase runs alongside the others. Each phase's interview checkpoint feeds in
 
 **Priority:** Core
 
-- [ ] Write answers to every interview checkpoint question in a dedicated doc
+- [ ] Write answers to every interview checkpoint question in the interview question bank, a cross-topic document in `docs/`
 - [ ] Explain each Deep topic aloud in under 2 minutes
 
 ### 13.2 Live Coding and Code Reading
