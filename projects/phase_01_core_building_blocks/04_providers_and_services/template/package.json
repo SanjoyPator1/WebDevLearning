@@ -1,0 +1,28 @@
+{
+  "name": "providers-services-exercise",
+  "version": "0.0.1",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+  },
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run",
+    "test": "tsc --noEmit && vitest run"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.0.1",
+    "@nestjs/core": "^12.0.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^12.0.1",
+    "@types/node": "^24.0.0",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.0",
+    "vitest": "^4.1.2"
+  }
+}

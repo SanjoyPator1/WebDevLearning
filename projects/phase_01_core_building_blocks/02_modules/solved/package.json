@@ -1,0 +1,37 @@
+{
+  "name": "modules-exercise",
+  "version": "0.0.1",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run",
+    "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
+    "test": "tsc --noEmit && vitest run && vitest run --config ./vitest.config.e2e.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.0.1",
+    "@nestjs/core": "^12.0.1",
+    "@nestjs/platform-express": "^12.0.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^12.0.0",
+    "@nestjs/schematics": "^12.0.0",
+    "@nestjs/testing": "^12.0.1",
+    "@types/express": "^5.0.0",
+    "@types/node": "^24.0.0",
+    "@types/supertest": "^7.0.0",
+    "supertest": "^7.0.0",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.0",
+    "vitest": "^4.1.2"
+  }
+}
