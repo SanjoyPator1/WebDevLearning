@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { AllExceptionFilter } from './common/filters/all-exceptions.filter';
-import { ApiKeyGuard } from './common/guards/api-key.guard';
 import { TimingInterceptor } from './common/interceptors/timing.interceptor';
 import { ResponseWrapInterceptor } from './common/interceptors/response-wrap.interceptor';
 
